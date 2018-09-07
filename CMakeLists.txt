@@ -1,10 +1,11 @@
-cmake_minimum_required(VERSION 3.6)
-project(nmap)
+# cmake_minimum_required(VERSION <specify CMake version here>)
+project(nmap C)
 
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_C_STANDARD 11)
 
-set(SOURCE_FILES
+include_directories(incl)
+
+add_executable(nmap
 		incl/nmap.h
-		src/main.c)
-
-add_executable(nmap ${SOURCE_FILES})
+		src/main.c
+		src/parser.c)

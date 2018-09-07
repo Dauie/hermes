@@ -20,7 +20,7 @@
 
 ### HOST DISCOVERY
  - [ ] Ping scan (-sn)
- - [ ] Scan list (-sL)
+ - [ ] List scan (-sL)
  - [ ] Skip host discovery (-Pn)
  - [ ] Host discovery methods (With port list)
  	- [ ] TCP SYN host discovery (-PS <portlist>)
