@@ -1,7 +1,8 @@
-# TODO:
+# TODOs:
 
+## Woot 
  - [ ] compiles
- - [ ] resolution of service types is requested
+
 
 ### TARGET SPECIFICATION
  - [ ] Can pass hostnames, IP addresses, networks, etc.
@@ -22,9 +23,9 @@
  - [ ] Scan list (-sL)
  - [ ] Skip host discovery (-Pn)
  - [ ] Host discovery methods (With port list)
- 	- [ ] TCP SYN host discovery (-PS)
- 	- [ ] TCP ACK host discovery (-PA)
- 	- [ ] UDP host discovery (-PU)
+ 	- [ ] TCP SYN host discovery (-PS <portlist>)
+ 	- [ ] TCP ACK host discovery (-PA <portlist>)
+ 	- [ ] UDP host discovery (-PU <portlist>)
  	- [ ] SUPER BONUS: SCTP host discovery (-PY)
  - [ ] Host discovery (ICMP)
  	- [ ] ICMP Echo host discovery (-PE)
@@ -34,7 +35,21 @@
  - [ ] BONUS: Custom DNS Servers (--dns-servers)
 
 ### MISC PARSING
- - [ ] choose # of threads (jobs)
+ - [ ] choose # of threads (--thread <num>)
+
+### WORKER MODE
+ - [ ] Run in "worker mode", and await a job. (--worker <port>)
+
+###  TIMING AND PERFORMANCE
+ - [ ] Timeing templates (-T0..-T5)
+ - [ ] Specify minimum initial wait time for probe response (--min-rtt-timeout <time>)
+ - [ ] Specify maximum initial wait time for probe response (--max-rtt-timeout <time>)
+ - [ ] Specify host timeout. Give up on host after this time if scan is not complete. (--host-timeout <time>)
+ - [ ] Specify lowest amount of packets sent per second (--min-rate <packet amount>)
+ - [ ] Specify highest amount of packets sent per second (--max-rate <packet amount>)
+ - [ ] Specify max number of probe retransmissions to a single port (--max-retries)
+ - [ ] Specify scan delay inbetween sending any probe from a host. (--scan-delay)
+ - [ ] Specify max scan delay. The scan delay can grow as Nmap detects packet loss, so set a max. (--max-scan-delay)
 
 ### SCANS
  - [ ] scans
@@ -67,6 +82,7 @@
  - [ ] Send packets with a bogus TCP/UDP/(BONUS: SCTP) checksum (--badsum)
 
 ### OUTPUT
+ - [ ] Verbose output (-v, increase verbosity -vv)
  - [ ] Normal output (-oN) (default)
  - [ ] XML output (-oX)
  - [ ] Only show open (or possibly open) ports (--open)
@@ -75,5 +91,3 @@
  - [ ] BONUS: Print host interfaces and routes (for debugging) (--iflist)
  - [ ] help screen
 	- [ ] time limit
-
-###
