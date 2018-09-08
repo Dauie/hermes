@@ -35,7 +35,7 @@ int parse_opts(t_ * workload, int ac, char ** args)
     return (0);
 }
 
-t_scanjob * parser(t_scanjob * workload, int ac, char ** args) // TODO : args
+t_job * parser(t_job * workload, int ac, char ** args) // TODO : args
 {
 	/* parser() takes two parameters:
 	 *  @p workload is a pointer to a struct of type
@@ -67,7 +67,7 @@ int main(int ac, char **av)
 {
     int     i;
     char ** ex;
-    t_scanjob workload;
+    t_job workload;
 
     ex = parse_opts(workload, ac, av);
     printf("%d\n", ex);

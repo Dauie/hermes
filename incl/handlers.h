@@ -9,12 +9,24 @@ typedef struct  s_tab_entry
 
 typedef struct t_tab_entry t_tab;
 
-#define DTAB_ENTRIES 2
-
 /* Dispatch TABle */
-t_tab DTAB[256] = {
-        { '-ip', h_ip },
-        { '-iL', h_file }
+
+# define DTAB_ENTRIES 2
+
+t_tab DTAB[DTAB_ENTRIES] = {
+        { "-ip", h_ip },
+        { "-iL", h_file }
 };
+
+/* LEXicon for
+ * file parsing
+ */
+
+# define LEX_ENTRIES 1
+
+t_tab LEX[LEX_ENTRIES][] = {
+        { "#IP", GENERIC }
+};
+
 
 #endif
