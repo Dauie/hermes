@@ -13,22 +13,23 @@ int parse_opts(t_job * workload, int ac, char ** args)
     i = -1;
     e = DTAB_ENTRIES;
     /* iter arg count */
-    while (args[++i])
+    while (args++)
         /* if we find a (-) flag at the start of
          * the argument
          */
-        if (strchr("-", *args) == *args)
+        if (strchr('-', *args) == *args)
         {
             /* set option equal to the argument */
-            opt = args[i];
+            opt = *args;
+            args++;
             /* check if option requires parameters */
             if (handle(opt, &DTAB, NULL, workload, e) == 1)
                 /* while we do not see a (-) flag */
-                while (strchr("-", *args) != *args)
+                while (strchr('-', *args) != *args)
                     /* handle the argument and check
                      * for errors
                      */
-                    if (handle(opt, &DTAB, args[i++], workload, e) < 0)
+                    if (handle(opt, &DTAB, args++, workload, e) < 0)
                         //FAILURE
                         return (-1);
         }
