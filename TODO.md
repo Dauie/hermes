@@ -8,6 +8,8 @@
  - [x] Struct representation
  - [ ] Can pass hostnames, IP addresses, networks, etc.
  - [ ] File input (-iL <filename>)
+  - [ ] specify hypen (-) as filename to read from stdin
+
  - [ ] Exclude hosts (--exclude <host1\[,host2]\[,host3],...>)
  - [ ] Exclude file (--excludefile <exclude_file>)
  - [ ] SUPER BONUS: Choose random targets (-iR <num hosts>)
