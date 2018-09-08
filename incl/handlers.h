@@ -25,7 +25,7 @@ t_tab DTAB[DTAB_ENTRIES] = {
 # define LEX_ENTRIES 1
 
 t_tab LEX[LEX_ENTRIES][] = {
-        { "#IP", GENERIC }
+        { "#IP", NULL }
 };
 
 
