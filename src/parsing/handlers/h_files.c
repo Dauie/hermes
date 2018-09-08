@@ -1,59 +1,47 @@
 #include "../../hermes.h"
 
-int resolve_handler(char * opt, t_tab * TAB, arg, t_job * workload)
-{
-    int len;
-
-    len = strlen(opt)
-    while (++i < DTAB_ENTRIES && result == NULL)
-        result = memcmp(opt, TAB[i].name);
-
-    if (result)
-    {
-        if (&TAB[i].function != NULL)
-            return (TAB[i].function(workload, arg));
-        else
-            return (1);
-    }
-
-    return (0);
-}
-
 int h_file(t_job * workload, char * args)
 {
     int     r;
     int     fd;
+    int     len;
+    char *  opt;
     char *  line;
 
-    if (!args) return (1);
+    if (args == NULL) return (1);
 
     if ((fd = open(args, O_RDONLY)) < 0)
         return (fd);
 
     r = 1;
     while ((r = get_next_line(fd, &line)) > 0)
-        if (strchr('#', line) == line)
+        /*
+         * TODO: debate using memory safe functions
+         * with less efficiency than str function
+         * with more efficiency
+         */
+        len = strlen(line);
+        if (memchr(line, '#', len) == line)
         {
             /* set option equal to the file header */
             opt = line;
             /* check if option requires parameters */
-            if (handle(opt, &LEX, NULL, workload) == 1)
-                /* while we do not see a (-) flag */
-                while (strchr('#', line) != line)
+            if (handle(opt, &LEX, NULL, workload, LEX_ENTRIES) == 1)
+                /* while we do not see a (#) flag */
+                while (memchr(line, '#', len) != line)
                     /* handle the argument and check
                      * for errors
                      */
-                    if (handle(opt, &LEX, line, workload) < 0)
+                    if (handle(opt, &LEX, line, workload, LEX_ENTRIES) < 0)
                         //FAILURE
+                        //print and exit
                         return (-1);
         }
-    //invalid IP
-    //print and exit
-    return (-1);
 
     if (line) free(line);
     close(fd);
+
     if (r < 0)
-        return (-1);
-    return (1);
+        return (r);
+    return (0);
 }

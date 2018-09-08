@@ -6,13 +6,14 @@ int handle(char *   opt,
            t_job *  workload,
            int tab_entries)
 {
-    int il
+    int i;
     int len;
 
     i = -1;
-    len = strlen(opt)
+    len = strlen(opt);
+    /* iterate TAB and look for the correct entry */
     while (++i < tab_entries && result == NULL)
-        result = memcmp(opt, TAB[i].name);
+        result = strnstr(opt, TAB[i].name, len);
 
     if (result)
     {
