@@ -11,7 +11,7 @@ int resolve_handler(char * opt, t_tab * TAB, arg, t_job * workload)
     if (result)
     {
         if (&TAB[i].function != NULL)
-            return (TAB[i].function(workload, ));
+            return (TAB[i].function(workload, arg));
         else
             return (1);
     }
@@ -28,12 +28,11 @@ int h_file(t_job * workload, char * args)
     if (!args) return (1);
 
     if ((fd = open(args, O_RDONLY)) < 0)
-        return (-1);
+        return (fd);
 
     r = 1;
-    //if (isin(line, &LEX, workload)
     while ((r = get_next_line(fd, &line)) > 0)
-        if (strchr('#', line) == **args)
+        if (strchr('#', line) == line)
         {
             /* set option equal to the file header */
             opt = line;
