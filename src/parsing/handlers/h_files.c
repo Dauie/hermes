@@ -27,6 +27,7 @@ int h_file(t_job * workload, char * args)
 	else
             /* check if option requires parameters */
             if (handle(opt, &LEX, NULL, workload, LEX_ENTRIES) == 1)
+	    {
                 /* if we do not see a (#) flag */
             	if (memchr(line, '#', len) != line)
                     /* handle the argument and check
@@ -36,6 +37,10 @@ int h_file(t_job * workload, char * args)
                         //FAILURE
                         //print and exit
                         return (-1);
+		else
+			/* we know we need an argument but we don't have one */
+			return (-1);
+	    }
 
     if (line) free(line);
     close(fd);
