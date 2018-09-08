@@ -1,37 +1,38 @@
-//#include "nmap.h"
+#include "../../hermes.h"
 
-int parse_opts(t_ * workload, int ac, char ** args)
+int parse_opts(t_job * workload, int ac, char ** args)
 {
 	/* receive array of args
 	 *
 	 */
 
     int     i;
+    int     e;
     char *  opt;
 
-    i = 0;
+    i = -1;
+    e = DTAB_ENTRIES;
     /* iter arg count */
-    while (i < ac)
-    {
+    while (args[++i])
         /* if we find a (-) flag at the start of
          * the argument
          */
-        if (strchr('-', **args) == **args)
+        if (strchr("-", *args) == *args)
         {
             /* set option equal to the argument */
-            opt = *args++;
+            opt = args[i];
             /* check if option requires parameters */
-            if (handle(workload, opt, NULL))
+            if (handle(opt, &DTAB, NULL, workload, e) == 1)
                 /* while we do not see a (-) flag */
-                while (strchr('-', **args) != **args)
+                while (strchr("-", *args) != *args)
                     /* handle the argument and check
                      * for errors
                      */
-                    if (handle(workload, opt, *args++) < 0)
+                    if (handle(opt, &DTAB, args[i++], workload, e) < 0)
                         //FAILURE
                         return (-1);
         }
-    }
+
     return (0);
 }
 
