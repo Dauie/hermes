@@ -33,18 +33,18 @@ int h_file(t_job * workload, char * args)
     r = 1;
     //if (isin(line, &LEX, workload)
     while ((r = get_next_line(fd, &line)) > 0)
-        if (strchr('-', **args) == **args)
+        if (strchr('#', line) == **args)
         {
-            /* set option equal to the argument */
-            opt = *args++;
+            /* set option equal to the file header */
+            opt = line;
             /* check if option requires parameters */
-            if (handle(workload, opt, NULL) == 1)
+            if (handle(opt, &LEX, NULL, workload) == 1)
                 /* while we do not see a (-) flag */
-                while (strchr('-', **args) != **args)
+                while (strchr('#', line) != line)
                     /* handle the argument and check
                      * for errors
                      */
-                    if (handle(r, &LEX, NULL, workload))
+                    if (handle(opt, &LEX, line, workload) < 0)
                         //FAILURE
                         return (-1);
         }
