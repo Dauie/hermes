@@ -5,6 +5,7 @@
 
 
 ### TARGET SPECIFICATION
+ - [x] Struct representation
  - [ ] Can pass hostnames, IP addresses, networks, etc.
  - [ ] File input (-iL <filename>)
  - [ ] Exclude hosts (--exclude <host1\[,host2]\[,host3],...>)
@@ -12,6 +13,7 @@
  - [ ] SUPER BONUS: Choose random targets (-iR <num hosts>)
 
 ### PORT SPECIFICATION AND SCAN ORDER
+ - [x] Struct representation
  - [ ] Only scan specified ports (-p <port ranges>) (Ex: -p22; -p1-65535; -p U:53,111,137,T:21-25,80,139,8080,S:9)
  - [ ] Exclude the specified ports from scanning (--exclude-ports <port ranges>)
  - [ ] Scan ports consecutively - don't randomize (-r)
@@ -19,6 +21,7 @@
  - [ ] BONUS: Fast mode - Scan fewer ports than the default scan (-F)
 
 ### HOST DISCOVERY
+ - [x] Struct representation
  - [ ] Ping scan (-sn)
  - [ ] List scan (-sL)
  - [ ] Skip host discovery (-Pn)
@@ -35,12 +38,15 @@
  - [ ] BONUS: Custom DNS Servers (--dns-servers)
 
 ### MISC PARSING
+ - [x] Struct representation
  - [ ] choose # of threads (--thread <num>)
 
 ### WORKER MODE
+ - [x] Struct representation (not needed)
  - [ ] Run in "worker mode", and await a job. (--worker <port>)
 
 ###  TIMING AND PERFORMANCE
+ - [x] Struct representation
  - [ ] Timeing templates (-T0..-T5)
  - [ ] Specify minimum initial wait time for probe response (--min-rtt-timeout <time>)
  - [ ] Specify maximum initial wait time for probe response (--max-rtt-timeout <time>)
@@ -52,6 +58,7 @@
  - [ ] Specify max scan delay. The scan delay can grow as Nmap detects packet loss, so set a max. (--max-scan-delay)
 
 ### SCANS
+ - [x] Struct representation
  - [ ] scans
 	- [ ] SYN (-sS)
 	- [ ] NULL (-sT)
@@ -63,17 +70,20 @@
 	- [ ] can run any combination of scans
 
 ### OS DETECTION
+ - [x] Struct representation
  - [ ] OS detection (-O)
 
 ### SERVICE/VERSION DETECTION
+ - [x] Struct representation
  - [ ] Probe open ports to determine service/version info (-sV)
  - [ ] Intensity (--version-intensity <level{0-9}>) (need default)
 
 ### FIREWALL/IDS EVASION AND SPOOFING
+ - [x] Struct representation
  - [ ] Fragment packets (optionally w/given MTU) (-f; --mtu <val>:)
  - [ ] Cloak a scan with decoys (-D <decoy1,decoy2\[,ME],...>)
  - [ ] Spoof source address (-S <IP_Address>)
- - [ ] Use specified interface (-e <iface>)
+ - [ ] (BONUS hard to work on all hosts) Use specified interface (-e <iface>)
  - [ ] Use given port number (-g/--source-port <portnum>)
  - [ ] Set IP time-to-live field (--ttl <val>)
  - [ ] Append a custom payload to sent packets (--data <hex string>)
@@ -82,6 +92,7 @@
  - [ ] Send packets with a bogus TCP/UDP/(BONUS: SCTP) checksum (--badsum)
 
 ### OUTPUT
+ - [x] Struct representation
  - [ ] Verbose output (-v, increase verbosity -vv)
  - [ ] Normal output (-oN) (default)
  - [ ] XML output (-oX)
