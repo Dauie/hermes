@@ -4,8 +4,30 @@ int populate_ip(t_job * workload, uint32_t ip)
     return (0);
 }
 
-int construct_ip(t_job * workload, uint32_t ** ip, int is_range)
+int construct_ip(t_job * workload, uint32_t ** ip)
 {
+    /* construct_ip() takes two parameters:
+     *  @p workload is the main job struct
+     *
+     *  @p ip is the 2D uint32_t array with 1 or more
+     *      IPs
+     *
+     * -------------------------------------------
+     *
+     *  construct ip calls populate_ip() with the
+     *      fully-constructed ip to create an IP
+     *      node
+     *
+     *  while looping through the ip array, we store the
+     *      two IPs and move to a comparison
+     *
+     *  ip_a = start, ip_z = end
+     *
+     *  if end < start  : return an error message
+     *  if start < end  : create an ip range struct
+     *  if start == end : create a single ip struct
+     */
+
     int         i;
     int         j;
     char **     ip_r;
@@ -16,29 +38,55 @@ int construct_ip(t_job * workload, uint32_t ** ip, int is_range)
 
     ip_a = 0;
     ip_z = 0;
+    /* while looping through
+     * ip addresses
+     */
     for (i = 0; ip[i]; i++)
     {
-        (ip_a ^= ip_z),
-        (ip_z ^= ip_a),
-        (ip_a ^= ip_z);
-
+        /* while looping through
+         * ip octets
+         */
         for (j = 0; ip[i][j]; j++)
         {
+            /* if ip is in accepted range */
             if (ip[i][j] >= 0 || ip[i][j] <= 255)
+                /* shift the LSB over by one
+                 * octet and logically OR them
+                 * with the starting IP
+                 */
                 ip_a = ip[i][j] | (ip_a << 8);
             else
                 return (-1);
         }
-        if (ip_z < ip_a)
+
+        /* swap the two
+         * IP addrs so
+         * we can use
+         * ip_a on the
+         * second loop
+         */
+        (ip_a ^= ip_z),
+        (ip_z ^= ip_a),
+        (ip_a ^= ip_z);
+
+        /* we need both IPs before
+         * checks
+         */
+        if (ip_a == 0);
+        else if (ip_z < ip_a)
             //FAILURE
             //IP_Z !> IP_A
             return (-1);
-        else
+        else if (ip_a < ip_z)
         {
-            for (; ip_a < ip_z; ip_a++)
-                if (populate_ip(workload, ip_a) < 0)
-                    return (-1);
+            // TODO : populate ip with IP range struct
+            /*
+            if (populate_ip(workload, ip_a) < 0)
+                return (0);
+             */
         }
+        else
+            populate_ip()
         /* START DEBUG */
         char *test;
         test = inet_pton(AF_INET, ip_a, test, INET_ADDRSTRLEN);
@@ -53,6 +101,30 @@ int construct_ip(t_job * workload, uint32_t ** ip, int is_range)
 
 uint32_t ** split_range(char * ips)
 {
+    /* split_range() takes one parameter:
+     *  @p ips is a char range of two
+     *      expected IPs; start to end
+     *      e.x. ("IP.1-IP.2")
+     *
+     * ----------------------------
+     *  first the IPs are split by
+     *      delim(-) into a 2D char array
+     *
+     *  a 2D array of uint32_t is
+     *      malloc'ed to hold the
+     *      individual parts of the
+     *      IP address with room for
+     *      two IPs
+     *
+     *  if any of the parts of the
+     *      IP are split by delim(-)
+     *      then they are parsed into
+     *      two different arrays in
+     *      the ip_r table
+     *
+     *  return (ip_r table);
+     */
+
     char **     q;
     int         len;
     char **     range;
@@ -66,22 +138,33 @@ uint32_t ** split_range(char * ips)
     else
         return (NULL);
 
+    /* create a 2 * 4 sized table to hold up to two IPs*/
     ip_r = (uint32_t**)calloc(2, sizeof(uint32_t * 4));
     if (ip_r == NULL)
         return (NULL);
 
     for (i = 0; q[i]; i++)
     {
+        /* if range */
         if (memchr('-', ips, len))
         {
+            /* split range */
             if ((range = ft_strsplit(q[i], '-')) == NULL)
                 return (NULL);
+            /* first row is individual parts of the IP and the first
+             * number in the range
+             *
+             * second row is individual parts of the IP and the second
+             * number in the range
+             */
             if (inet_pton(AF_INET, range[0], ip_r[0][i]) == NULL ||
                 inet_pton(AF_INET, range[1], ip_r[1][i]) == NULL)
                 return (NULL)
         }
+        /* if not range */
         else
         {
+            /* both rows are the same IP */
             if (inet_pton(AF_INET, q[i], ip_r[0][i]) == NULL ||
                 inet_pton(AF_INET, q[i], ip_r[1][i]) == NULL)
                 return (NULL)
