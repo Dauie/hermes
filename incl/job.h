@@ -1,41 +1,25 @@
-#ifndef NMAP_H
-# define NMAP_H
+#ifndef HERMESE_JOB_H
+# define HERMESE_JOB_H
 
-# include <stdlib.h>
-# include <pthread.h>
-# include <netdb.h>
-# include <netinet/ip.h>
-# include <netinet/ip_icmp.h>
-# include <netinet/udp.h>
-# include <netinet/tcp.h>
-
-typedef struct		s_ip4range
-{
-	u_int32_t		start;
-	u_int32_t		end;
-}					t_ip4range;
-
-typedef struct			s_ip4_node
-{
-	u_int32_t			addr;
-	struct s_ip4_node	*next;
-}						t_ip4node;
-
-typedef struct				s_ip4range_node
-{
-	t_ip4range				range;
-	struct s_ip4range_node	*next;
-}							s_ip4range_node;
+# include "ip4.h"
 
 /*
 ** If allocated the port list's first member will be the array's length
 */
-typedef struct			s_disc_portlists
+
+typedef struct			s_portlist
 {
-	uint16_t			*syn_portlist;
-	uint16_t			*ack_portlist;
-	uint16_t			*udp_portlist;
-}						t_disc_portlists;
+	uint16_t			port_count;
+	uint16_t			*ports;
+}						t_portlist;
+
+typedef struct			s_portlists
+{
+	t_portlist			*portlist;
+	t_portlist			*disc_syn_portlist;
+	t_portlist			*disc_ack_portlist;
+	t_portlist			*disc_udp_portlist;
+}						t_portlists;
 
 typedef struct			s_port_ops
 {
@@ -48,21 +32,22 @@ typedef struct			s_port_ops
 
 typedef struct			s_disc_ops
 {
-	uint16_t			skip: 1;
-	uint16_t			ping_scan: 1;
-	uint16_t			list_scan: 1;
-	uint16_t			syn: 1;
-	uint16_t			ack: 1;
-	uint16_t			udp: 1;
-	uint16_t			netmask: 1;
-	uint16_t			timestamp: 1;
-	uint16_t			echo: 1;
-	uint16_t			tracert: 1;
+	uint16_t			skip: 1;			/* Skip host discovery */
+	uint16_t			list_scan: 1;		/* Do not send any probes, just do reverse dns resolution on target list */
+	uint16_t			ping_scan: 1;		/* Do not send any probes, just do ping scan, and traceroute or OS Detection if specified, then quit */
+	uint16_t			echo: 1;			/* Send ICMP ECHO_REQUEST probe during host discovery */
+	uint16_t			timestamp: 1;		/* Send ICMP_TSTAMP probe during host discovery */
+	uint16_t			netmask: 1;			/* Send ICMP_MASKREQ probe during host discovery */
+	uint16_t			syn: 1;				/* Send TCP SYN probe during host discovery */
+	uint16_t			ack: 1;				/* Send TCP ACK probe during host discovery */
+	uint16_t			udp: 1;				/* Send UDP Datagram during host discovery */
+	uint16_t			tracert: 1;			/* Perform a traceroute on hosts */
 }						t_disc_ops;
 
 typedef struct			s_time_ops
 {
 	struct timeval		min_rtt_timeo;
+	struct timeval		init_rtt_timeo;
 	struct timeval		max_rtt_timeo;
 	struct timeval		host_timeo;
 	struct timeval		scan_delay;
@@ -71,9 +56,15 @@ typedef struct			s_time_ops
 
 typedef struct			s_rate_ops
 {
-	uint				min_rate;
-	uint 				max_rate;
-	uint				max_retries;
+	float			min_packet_rate;
+	float			max_packet_rate;
+	uint32_t		max_retries;
+	uint32_t		min_parallelism;
+	uint32_t		max_parallelism;
+	uint32_t		min_hostgroup;
+	uint32_t		max_hostgroup;
+	uint32_t		icmp_ratelimit;
+	uint32_t		rst_ratelimit;
 }						t_rate_ops;
 
 typedef struct			s_scan_ops
@@ -111,8 +102,8 @@ typedef struct			s_evasion_ops
 	uint8_t				rand_payload: 1;
 	uint16_t			rpayload_len;
 	uint16_t			mtu;
-	uint16_t			port;
-	uint32_t			addr;
+	uint16_t			spoofed_port;
+	uint32_t			spoofed_addr;
 }						t_evasion_ops;
 
 typedef struct			s_ops
@@ -123,18 +114,18 @@ typedef struct			s_ops
 	t_disc_ops			discops;
 	t_time_ops			timeops;
 	t_rate_ops			rateops;
-	t_evasion_ops		evasion;
+	t_evasion_ops		evasops;
+	t_out_ops			outops;
 }						t_ops;
 
-typedef struct			s_scanjob
+typedef struct			s_job
 {
 	t_ops				options;
-	u_int16_t			*ports;
 	t_ip4node			*targets;
 	t_ip4range			*target_ranges;
 	t_ip4node			*decoys;
-	t_disc_portlists	*disc_portlists;
+	t_portlists			*portlists;
 	void				*custom_payload;
-}						t_scanjob;
+}						t_job;
 
 #endif

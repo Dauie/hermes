@@ -22,13 +22,14 @@ int h_file(t_job * workload, char * args)
          */
         len = strlen(line);
         if (memchr(line, '#', len) == line)
-        {
             /* set option equal to the file header */
             opt = line;
+	else
             /* check if option requires parameters */
             if (handle(opt, &LEX, NULL, workload, LEX_ENTRIES) == 1)
-                /* while we do not see a (#) flag */
-                while (memchr(line, '#', len) != line)
+	    {
+                /* if we do not see a (#) flag */
+            	if (memchr(line, '#', len) != line)
                     /* handle the argument and check
                      * for errors
                      */
@@ -36,7 +37,10 @@ int h_file(t_job * workload, char * args)
                         //FAILURE
                         //print and exit
                         return (-1);
-        }
+		else
+			/* we know we need an argument but we don't have one */
+			return (-1);
+	    }
 
     if (line) free(line);
     close(fd);
