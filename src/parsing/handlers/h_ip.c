@@ -51,8 +51,8 @@ int construct_ip(t_job * workload, uint32_t ** ip)
             /* if ip is in accepted range */
             if (ip[i][j] >= 0 || ip[i][j] <= 255)
                 /* shift the LSB over by one
-                 * octet and logically OR them
-                 * with the starting IP
+                 * octet and OR them with the
+                 * starting IP
                  */
                 ip_a = ip[i][j] | (ip_a << 8);
             else
@@ -72,25 +72,23 @@ int construct_ip(t_job * workload, uint32_t ** ip)
         /* we need both IPs before
          * checks
          */
-        if (ip_a == 0);
+        if (ip_a == 0)
+            ;
         else if (ip_z < ip_a)
             //FAILURE
-            //IP_Z !> IP_A
+            //IP_A !< IP_Z
             return (-1);
         else if (ip_a < ip_z)
-        {
             // TODO : populate_ip() with IP range struct
-            /*
-            if (populate_ip(workload, ip_a) < 0)
-                return (0);
-             */
-        }
+            if (populate_ip(workload, ip_a, ip_z) < 0)
+                return (-1);
         else
             // TODO : populate_ip() with single IP struct
-            // populate_ip()
+            if (populate_ip(workload, ip_a, NULL) < 0)
+                return (-1);
         /* START DEBUG */
         char *test;
-        test = inet_pton(AF_INET, ip_a, &test, INET_ADDRSTRLEN);
+        test = inet_ntop(AF_INET, ip_a, &test, INET_ADDRSTRLEN);
         printf("TESTING IP CONVERSION == %s\n", test);
         /* END DEBUG */
     }
@@ -159,7 +157,7 @@ uint32_t ** split_range(char * ips)
              * number in the range
              */
             if (sscanf(range[0], "%"SCNu32, &ip_r[0][i] == NULL ||
-                sscanf(range[0], "%"SCNu32, &ip_r[0][i] == NULL)
+                sscanf(range[1], "%"SCNu32, &ip_r[0][i] == NULL)
                 return (NULL)
         }
         /* if not range */
