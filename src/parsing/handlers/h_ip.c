@@ -90,7 +90,7 @@ int construct_ip(t_job * workload, uint32_t ** ip)
             // populate_ip()
         /* START DEBUG */
         char *test;
-        test = inet_pton(AF_INET, ip_a, test, INET_ADDRSTRLEN);
+        test = inet_pton(AF_INET, ip_a, &test, INET_ADDRSTRLEN);
         printf("TESTING IP CONVERSION == %s\n", test);
         /* END DEBUG */
     }
@@ -158,16 +158,16 @@ uint32_t ** split_range(char * ips)
              * second row is individual parts of the IP and the second
              * number in the range
              */
-            if (inet_pton(AF_INET, range[0], ip_r[0][i]) == NULL ||
-                inet_pton(AF_INET, range[1], ip_r[1][i]) == NULL)
+            if (sscanf(range[0], "%"SCNu32, &ip_r[0][i] == NULL ||
+                sscanf(range[0], "%"SCNu32, &ip_r[0][i] == NULL)
                 return (NULL)
         }
         /* if not range */
         else
         {
             /* both rows are the same IP */
-            if (inet_pton(AF_INET, q[i], ip_r[0][i]) == NULL ||
-                inet_pton(AF_INET, q[i], ip_r[1][i]) == NULL)
+            if (sscanf(q[i], "%"SCNu32, &ip_r[0][i]); == NULL ||
+                sscanf(q[i], "%"SCNu32, &ip_r[1][i]) == NULL)
                 return (NULL)
         }
     }
