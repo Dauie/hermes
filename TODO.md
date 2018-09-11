@@ -32,7 +32,7 @@
  	- [ ] TCP ACK host discovery (-PA <portlist>)
  	- [ ] UDP host discovery (-PU <portlist>)
  	- [ ] SUPER BONUS: SCTP host discovery (-PY)
- - [ ] Host discovery (ICMP)
+ - [ ] Host discovery (ICMP with portlists)
  	- [ ] ICMP Echo host discovery (-PE)
  	- [ ] ICMP Timestamp host discovery (-PP)
  	- [ ] ICMP Netmask request host discovery (-PM)
