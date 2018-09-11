@@ -79,18 +79,19 @@ int construct_ip(t_job * workload, uint32_t ** ip)
             return (-1);
         else if (ip_a < ip_z)
         {
-            // TODO : populate ip with IP range struct
+            // TODO : populate_ip() with IP range struct
             /*
             if (populate_ip(workload, ip_a) < 0)
                 return (0);
              */
         }
         else
-            populate_ip()
+            // TODO : populate_ip() with single IP struct
+            // populate_ip()
         /* START DEBUG */
         char *test;
         test = inet_pton(AF_INET, ip_a, test, INET_ADDRSTRLEN);
-        printf();
+        printf("TESTING IP CONVERSION == %s\n", test);
         /* END DEBUG */
     }
 
