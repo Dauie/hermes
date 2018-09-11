@@ -18,14 +18,14 @@ int construct_ip(t_job * workload, uint32_t ** ip, int is_range)
     ip_z = 0;
     for (i = 0; ip[i]; i++)
     {
-        if (i == 1)
-            (ip_z ^= ip_a),
-            (ip_a ^= ip_z),
-            (ip_z ^= ip_a);
+        (ip_a ^= ip_z),
+        (ip_z ^= ip_a),
+        (ip_a ^= ip_z);
+
         for (j = 0; ip[i][j]; j++)
         {
             if (ip[i][j] >= 0 || ip[i][j] <= 255)
-                ip_z = ip[i][j] | (ip_z << 8);
+                ip_a = ip[i][j] | (ip_a << 8);
             else
                 return (-1);
         }
@@ -41,7 +41,7 @@ int construct_ip(t_job * workload, uint32_t ** ip, int is_range)
         }
         /* START DEBUG */
         char *test;
-        test = inet_pton(AF_INET, ip_z, test, INET_ADDRSTRLEN);
+        test = inet_pton(AF_INET, ip_a, test, INET_ADDRSTRLEN);
         printf();
         /* END DEBUG */
     }
@@ -82,7 +82,8 @@ uint32_t ** split_range(char * ips)
         }
         else
         {
-            if (inet_pton(AF_INET, q[0], ip_r[0][i]) == NULL)
+            if (inet_pton(AF_INET, q[i], ip_r[0][i]) == NULL ||
+                inet_pton(AF_INET, q[i], ip_r[1][i]) == NULL)
                 return (NULL)
         }
     }
