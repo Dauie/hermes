@@ -1,6 +1,8 @@
 #include "../../incl/job.h"
 #include <memory.h>
 
+g_single_ops =
+
 int parse_opts(t_job * job, int ac, char ** args)
 {
 	/* receive array of args
@@ -41,6 +43,18 @@ int parse_opts(t_job * job, int ac, char ** args)
 	}
 	return (0);
 }
+
+int			parse_ops(t_job *job, int ac, char **av)
+{
+	int		i;
+
+	i = 0;
+	while (++i < ac) {
+		while ()
+	}
+	return (0);
+}
+
 
 t_job * parser(t_job * job, int ac, char ** args) // TODO : args
 {

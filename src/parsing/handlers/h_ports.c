@@ -19,6 +19,7 @@ int				add_port(t_portlist *list, char *prt)
 	data->port = (uint16_t)port;
 	node->data = data;
 	listadd_head(&list->ports, node);
+	list->port_count++;
 	return (0);
 }
 
@@ -34,7 +35,7 @@ int				add_range(t_portlist *list, char **range)
 	/*
 	** check to make sure port is in range.
 	*/
-	if (start > PORT_MAX || end > PORT_MAX || start <= 0 || end <= 0) /* You are here. */
+	if (start > PORT_MAX || end > PORT_MAX || start <= 0 || end <= 0)
 		return (-1);															/* TODO: add hermese_error call*/
 	if (!(node = (t_node *)memalloc(sizeof(t_node))))
 		return (-1);															/* TODO: add hermese_error call*/
@@ -44,25 +45,28 @@ int				add_range(t_portlist *list, char **range)
 	data->end = (uint16_t)end;
 	node->data = data;
 	listadd_head(&list->port_range, node);
+	list->range_count++;
 	return (0);
 }
 
 int				parse_port(t_portlist **list, char *input)
 {
 	char		*port;
-	char		*port_range;
+	char		**port_range;
 
 																				/* TODO: Make sure all portlists in job are free'd */
 	if (!(*list = memalloc(sizeof(t_portlist))))
 		return (-1);
-	while ((port = strsep(&input, ",")) != NULL) {
-		if (strchr(port, '-')) {
+	while ((port = strsep(&input, ",")) != NULL)
+	{
+		if (strchr(port, '-'))
+		{
 			if (!(port_range = strsplit(port, '-')))							/* TODO: make strsplit implementation for libhermese */
 				return (-1);													/* TODO: add hermese_error() call */
 			add_range(*list, port_range);
-			tbldel(port_range);													/* TODO: add tbldel to libhermese */
-		} else {
+			tbldel(&port_range);													/* TODO: add tbldel to libhermese */
+		} else
 			add_port(*list, port);
-		}
 	}
+	return (0);
 }

@@ -8,8 +8,7 @@
  - [x] Struct representation
  - [ ] Can pass hostnames, IP addresses, networks, etc.
  - [ ] File input (-iL <filename>)
-  - [ ] specify hypen (-) as filename to read from stdin
-
+    - [ ] specify hypen (-) as filename to read from stdin
  - [ ] Exclude hosts (--exclude <host1\[,host2]\[,host3],...>)
  - [ ] Exclude file (--excludefile <exclude_file>)
  - [ ] SUPER BONUS: Choose random targets (-iR <num hosts>)
@@ -32,12 +31,12 @@
  	- [ ] TCP ACK host discovery (-PA <portlist>)
  	- [ ] UDP host discovery (-PU <portlist>)
  	- [ ] SUPER BONUS: SCTP host discovery (-PY)
- - [ ] Host discovery (ICMP with portlists)
+ - [ ] Host discovery (ICMP without portlists)
  	- [ ] ICMP Echo host discovery (-PE)
  	- [ ] ICMP Timestamp host discovery (-PP)
  	- [ ] ICMP Netmask request host discovery (-PM)
  - [ ] Traceroute (--trace)
- - [ ] BONUS: Custom DNS Servers (--dns-servers)
+ - [ ] BONUS (I think this would require us implementing a getaddrinfo func): Custom DNS Servers (--dns-servers)
 
 ### MISC PARSING
  - [x] Struct representation
@@ -49,15 +48,15 @@
 
 ###  TIMING AND PERFORMANCE
  - [x] Struct representation
- - [ ] Timeing templates (-T0..-T5)
+ - [ ] Timeing templates (-T0..-T5) (This will be taken care of after we figure out timing)
  - [ ] Specify minimum initial wait time for probe response (--min-rtt-timeout <time>)
  - [ ] Specify maximum initial wait time for probe response (--max-rtt-timeout <time>)
  - [ ] Specify host timeout. Give up on host after this time if scan is not complete. (--host-timeout <time>)
  - [ ] Specify lowest amount of packets sent per second (--min-rate <packet amount>)
  - [ ] Specify highest amount of packets sent per second (--max-rate <packet amount>)
- - [ ] Specify max number of probe retransmissions to a single port (--max-retries)
- - [ ] Specify scan delay inbetween sending any probe from a host. (--scan-delay)
- - [ ] Specify max scan delay. The scan delay can grow as Nmap detects packet loss, so set a max. (--max-scan-delay)
+ - [ ] Specify max number of probe retransmissions to a single port (--max-retries <time>)
+ - [ ] Specify scan delay inbetween sending any probe from a host. (--scan-delay <time>)
+ - [ ] Specify max scan delay. The scan delay can grow as Nmap detects packet loss, so set a max. (--max-scan-delay <time>)
 
 ### SCANS
  - [x] Struct representation
@@ -78,7 +77,6 @@
 ### SERVICE/VERSION DETECTION
  - [x] Struct representation
  - [ ] Probe open ports to determine service/version info (-sV)
- - [ ] Intensity (--version-intensity <level{0-9}>) (need default)
 
 ### FIREWALL/IDS EVASION AND SPOOFING
  - [x] Struct representation

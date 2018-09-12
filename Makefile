@@ -21,6 +21,8 @@ $(NAME):
 		$(MAKE) -C ./libft/ re
 		$(CC) $(CFLAGS) $(INCL) $(SRCFILES) $(LIBFT) -o $(NAME)
 
+all: $(NAME)
+
 clean:
 		$(RM) $(OBJDIR)
 
