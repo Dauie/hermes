@@ -30,17 +30,17 @@ int parse_opts(t_job * job, int ac, char ** args)
 			opt = *args;
 			args++;
 			/* check if option requires parameters */
-			if ((handle(opt, &g_dispatch, NULL, job, e) = iters))
+			if (handle(opt, &g_dispatch_wopt, NULL, job, e))
 				/* while we do not see a (-) flag */
 				while (args[0] != '-' && i++ < ac)
 					/* handle the argument and check for errors */
-					if ((handle(opt, &g_dispatch, args++, job,
-								DTAB_ENTRIES) = iters) < 0)
+					if (handle(opt, &g_dispatch, args++, job,
+								DTAB_ENTRIES) < 0)
 						//FAILURE
 						//print and exit
 						return (-1);
-			else if ((handle(opt, &g_dispatch_wopt, NULL, job,
-							DTAB_WOPT_ENTRIES) = iters) <= 1)
+			else if (handle(opt, &g_dispatch, NULL, job,
+							DTAB_WOPT_ENTRIES) < 0)
 				return (-1);
 		}
 	}
