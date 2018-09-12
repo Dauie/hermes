@@ -5,17 +5,16 @@ g_single_ops =
 
 int parse_opts(t_job * job, int ac, char ** args)
 {
-	/* receive array of args
+	/*
 	 *
 	 */
 
 	int     i;
 	int     e;
-	int     len;
 	char	*opt;
+	int     iters;
 
 	i = -1;
-	e = DTAB_ENTRIES;
 	/* iter arg count */
 	while (args++ && ++i < ac) {
 		/*
@@ -23,28 +22,33 @@ int parse_opts(t_job * job, int ac, char ** args)
 		 * with less efficiency than str function
 		 * with faster efficiency
 		 */
-		len = strlen(*args);
+		//len = strlen(*args);
 		/* if we find a (-) flag at the start of the argument */
 		/* TODO: I think just checking args[0] would be faster than using memchr; however, this way is pretty cool.*/
-		if (memchr(*args, '-', len) == *args) {
+		if (args[0] == '-') {
 			/* set option equal to the argument */
 			opt = *args;
 			args++;
 			/* check if option requires parameters */
-			if (handle(opt, &DTAB, NULL, job, e) == 1)
+			if ((handle(opt, &g_dispatch, NULL, job, e) = iters))
 				/* while we do not see a (-) flag */
-				while (memchr(*args, '-', len) != *args && i++ < ac)
+				while (args[0] != '-' && i++ < ac)
 					/* handle the argument and check for errors */
-					if (handle(opt, &DTAB, args++, job, e) < 0)
+					if ((handle(opt, &g_dispatch, args++, job,
+								DTAB_ENTRIES) = iters) < 0)
 						//FAILURE
 						//print and exit
 						return (-1);
+			else if ((handle(opt, &g_dispatch_wopt, NULL, job,
+							DTAB_WOPT_ENTRIES) = iters) <= 1)
+				return (-1);
 		}
 	}
+
 	return (0);
 }
 
-int			parse_ops(t_job *job, int ac, char **av)
+int			parse_opts(t_job *job, int ac, char **av)
 {
 	int		i;
 
