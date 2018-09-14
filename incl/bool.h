@@ -1,10 +1,9 @@
-#ifndef BOOL_H
-# define BOOL_H
+#ifndef HERMESE_BOOL_H
+# define HERMESE_BOOL_H
 
-typedef enum	s_bool
-{
-	FALSE,
-	TRUE
-}				t_bool;
+# define TRUE 1
+# define FALSE 0
+# define SUCCESS 0
+# define FAILURE -1
 
 #endif

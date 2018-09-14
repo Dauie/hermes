@@ -9,6 +9,7 @@ typedef struct			s_node
 
 typedef struct			s_ip4range
 {
+	u_int23_t			range_size;
 	u_int32_t			start;
 	u_int32_t			end;
 }						t_ip4range;

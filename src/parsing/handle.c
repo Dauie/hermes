@@ -1,4 +1,5 @@
-#include "../../hermes.h"
+# include "../../incl/job.h"
+# include "../../incl/parser.h"
 
 int handle(char *opt, t_tab *TAB, char *arg, t_job *workload)
 {

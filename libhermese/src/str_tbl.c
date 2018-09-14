@@ -7,12 +7,12 @@ void		tbldel(char ***tbl)
 	tmp = *tbl;
 	while (tmp) {
 		free(tmp);
-		tmp = tmp->next;
+		tmp++;
 	}
 	free(*tbl);
 }
 
 char 		**strsplit(const char *str, char delim)
 {
-
+	/* TODO implement a strsplit func */
 }
