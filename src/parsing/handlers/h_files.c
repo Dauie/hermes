@@ -1,4 +1,16 @@
-#include "../../hermes.h"
+# include "../../../incl/job.h"
+# include "../../../incl/parser.h"
+# include "../../../incl/bool.h"
+
+void			h_append_output(t_job *job)
+{
+	job->options.outops.apnd_file = TRUE;
+}
+
+void			h_show_only_open(t_job *job)
+{
+	job->options.outops.only_open = TRUE;
+}
 
 int h_file(t_job * workload, char * args)
 {
