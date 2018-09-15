@@ -81,14 +81,8 @@ int parse_opts(t_job * job, int ac, char ** args)
 	i = -1;
 	/* iter arg count */
 	while (args++ && ++i < ac) {
-		/*
-		 * TODO: debate using memory safe functions
-		 * with less efficiency than str function
-		 * with faster efficiency
-		 */
 		//len = strlen(*args);
 		/* if we find a (-) flag at the start of the argument */
-		/* TODO: I think just checking args[0] would be faster than using memchr; however, this way is pretty cool.*/
 		if (*args[0] == '-') {
 			/* set option equal to the argument */
 			opt = *args;
