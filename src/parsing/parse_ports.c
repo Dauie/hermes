@@ -49,6 +49,15 @@ static int		add_range(t_portlist *list, char **range)
 	return (SUCCESS);
 }
 
+int				get_port(char *port_str)
+{
+	int			port;
+
+	if ((port = atoi(port_str)) <= 0 || port > PORT_MAX)
+		return (-1); /*hermese error fatal*/
+	return (port);
+}
+
 int				parse_port(t_portlist **list, char *input)
 {
 	char		*port;

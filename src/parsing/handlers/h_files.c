@@ -25,7 +25,6 @@ int h_file(t_job * workload, char * args)
     if ((fd = open(args, O_RDONLY)) < 0)
         return (fd);
 
-    r = 1;
     while ((r = get_next_line(fd, &line)) > 0)
         /*
          * TODO: debate using memory safe functions
