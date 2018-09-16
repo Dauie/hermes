@@ -88,7 +88,7 @@ int parse_opts(t_job * job, int ac, char ** args)
 
 		if (*args[0] == '-') {
 			if (handle(*args, g_dispatch_wopt, *(args + 1), job) < 0) {
-				if (handle(args, g_dispach, NULL, job) < 0)
+				if (handle(*args, g_dispach, NULL, job) < 0)
 					//FAILURE
 					return (-1);
 			} else {
