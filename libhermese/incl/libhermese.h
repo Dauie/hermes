@@ -6,6 +6,12 @@
 # include <stdint.h>
 # include <stdlib.h>
 
+# ifndef fast_swap_ints
+# define fast_swap_ints(x, y) ((x ^= y),(y ^= x),(x ^= y))
+# endif
+
+#ifndef determine_type
+
 /*
 **	Structs
 */
