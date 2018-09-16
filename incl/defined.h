@@ -7,8 +7,10 @@
 **   Im positive that these defaults are product of years of research
 **   and trial and error.
 */
-
-# define MAX_DECOYS 128
+# define PORT_MAX (65535)
+# define MAX_THREADS (256)
+# define MAX_HOSTGROUP (4096)
+# define MIN_HOSTGROUP (1)
 
 # define DEFAULT_TCP_PROBE_PORT 80
 # define DEFAULT_SCTP_PROBE_PORT 80
