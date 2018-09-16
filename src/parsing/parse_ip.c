@@ -96,14 +96,14 @@ void *construct_ip(char ** ip)
 		} else if (ip_a < ip_z) {
 			if ((data = (t_ip4range*)memalloc(sizeof(t_ip4range))) == NULL)
 				return (NULL);
-        	memcpy(data->range, ip_z - ip_a + 1, sizeof(uint32_t));
-			memcpy(data->start, ip_a, sizeof(uint32_t));
-			memcpy(data->end, ip_z, sizeof(uint32_t));
+        	memcpy(data->range, htonl(ip_z - ip_a + 1), sizeof(uint32_t));
+			memcpy(data->start, htonl(ip_a), sizeof(uint32_t));
+			memcpy(data->end, htonl(ip_z), sizeof(uint32_t));
 			return (data);
 		} else {
 			if ((data = (t_ip4*)memalloc(sizeof(t_ip4))) == NULL)
 				return (NULL);
-			memcpy(&data, ip_a, sizeof(uint32_t));
+			memcpy(&data, htonl(ip_a), sizeof(uint32_t));
 			return (data);
 			//TODO : fix warnings
 		}
@@ -200,7 +200,7 @@ uint8_t ** split_range(char * ips)
     return (ip_r);
 }
 
-int h_ip(t_targetlist *ip_list, char * args)
+int h_ip(t_targetlist *ip_list, char *args)
 {
     /* h_ip() takes two parameters:
      *  @p workload is a pointer to the
