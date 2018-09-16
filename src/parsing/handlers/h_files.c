@@ -4,12 +4,12 @@
 
 void			h_append_output(t_job *job)
 {
-	job->options.outops.apnd_file = TRUE;
+	job->options.bitops.apnd_file = TRUE;
 }
 
-void			h_show_only_open(t_job *job)
+void			h_show_only_open_ports(t_job *job)
 {
-	job->options.outops.only_open = TRUE;
+	job->options.bitops.output_only_open_ports = TRUE;
 }
 
 int h_file(t_job * workload, char * args)

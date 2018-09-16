@@ -21,12 +21,13 @@ void			h_custom_random_payload(t_job *job, char *input)
 		return ;					/* TODO hermese_error() */
 	if (fread(payload, sizeof(uint8_t), len, devrand) < len)
 		return ;					/* TODO hermese_error() for not getting the correct payload size */
+	job->options.bitops.custom_rand_payload = TRUE;
 	job->custom_payload = payload;
 }
 
 void			h_custom_payload_ascii(t_job *job, char *input)
 {
-	job->options.evasops.ascii_payload = TRUE;
 	if (!(job->custom_payload = (void *)strdup(input)))
 		return ; /* TODO hermese_error() */
+	job->options.bitops.custom_ascii_payload = TRUE;
 }
