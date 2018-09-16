@@ -24,11 +24,11 @@ ARCHIVE = ar rc
 
 INDEX = ranlib
 
-HEADDR =
+HEADDR = incl/libhermese.h
 
-FILES =
+FILES = list.c memory.c str_tbl.c
 
-SRC_DIR =
+SRC_DIR = src
 
 SRC = $(addprefix $(SRC_DIR)/, $(FILES))
 

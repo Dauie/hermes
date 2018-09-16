@@ -1,4 +1,6 @@
-# include "../../incl/parser.h"
+#include "../../incl/hermese.h"
+#include "../../incl/parser.h"
+
 /*
 **	If something is commented out in DTABs, it is low priority.
 */
@@ -91,33 +93,4 @@ int			parse_opts(t_job * job, int ac, char ** args)
 			parse_ip(job->targets, *args);
 	}
 	return (0);
-}
-
-
-/* parser() takes two parameters:
-**  @p job is a pointer to a struct of type
-**      job. job contains a struct of
-**      flags to be set.
-**
-**  @p args contains arguments passed to the
-**      program.
-**
-**  --------------------------------------------
-**
-**  the args are parsed into tuple-like options,
-**      delimited by a '-' in front of each flag
-**      argument, e.x. "-O" (os-detection)
-**
-**  the opts are then iterated and are passed
-**      to a dispatch table for verification and
-**      processing
-*/
-t_job * parser(t_job * job, int ac, char ** args) // TODO : args
-{
-
-
-	if (parse_opts(job, ac, args) < 0)
-		//FAILURE
-		return (NULL);
-	return (job);
 }

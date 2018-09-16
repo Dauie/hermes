@@ -15,17 +15,19 @@
 /*
 **	Structs
 */
-typedef struct		s_node
+typedef struct			s_node
 {
-	void			*data;
-	struct s_node	*next;
-}					t_node;
+	struct s_node		*next;
+	void				*data;
+}						t_node;
 
 /*TODO MAKE ALL THESE v*/
 /*
 **	Character Manipulation Functions
 */
+size_t				cntwrds(char *str, char c);
 char				**strsplit(const char *str, char delim);
+char				*strsub(char const *s, int start, size_t len);
 void				tbldel(char ***tbl);
 
 
