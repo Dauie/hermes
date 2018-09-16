@@ -1,23 +1,26 @@
 #ifndef HERMESE_JOB_H
 # define HERMESE_JOB_H
 
+#include <stdint.h>
+
 typedef struct			s_node
 {
 	struct s_node		*next;
+	struct s_node		*prev;
 	void				*data;
 }						t_node;
 
 typedef struct			s_ip4range
 {
-	u_int23_t			range_size;
-	u_int32_t			start;
-	u_int32_t			end;
+	uint32_t			range_size;
+	uint32_t			start;
+	uint32_t			end;
 }						t_ip4range;
 
 typedef struct			s_ip4
 {
 	uint32_t			addr;
-};
+}						t_ip4;
 
 typedef struct			s_port
 {
@@ -145,11 +148,18 @@ typedef struct			s_ops
 	t_out_ops			outops;
 }						t_ops;
 
+typedef struct			s_worker
+{
+	t_ip4 				ip;
+	t_port				port;
+}						t_worker;
+
 typedef struct			s_job
 {
 	t_ops				options;
 	t_targetlist		*targets;
 	t_targetlist		*exclude_targets;
+	t_node				*worker_list; /* node pop. w/ worker type -> next worker */
 	t_portlist			*scan_portlist;
 	t_portlist			*exclude_portlist;
 	t_portlist			*d_syn_portlist;
