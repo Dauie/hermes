@@ -243,27 +243,26 @@ int h_ip(t_targetlist *ip_list, char * args)
      *  return (0);
      */
 
-    int         i;
-    char 		*ip;
+//    char 		*ip;
 	uint32_t 	ip_r;
 	void 		*ip_n;
-	int         subnet;
-	char 		**ip_sub;
+//	int         subnet;
+//	char 		**ip_sub;
 
-    if (args == NULL) return (1);
+    if (args == NULL) return (-1);
 
-    if (memchr('/', args, strlen(args)))
-    {
-        ip_sub = ft_strsplit(args, '/');
-        ip = ip_sub[0];
-        subnet = ip_sub[1];
-    }
-    else
-    {
-        ip = args;
-    }
+//    if (memchr('/', args, strlen(args)))
+//    {
+//        ip_sub = ft_strsplit(args, '/');
+//        ip = ip_sub[0];
+//        subnet = ip_sub[1];
+//    }
+//    else
+//    {
+//        ip = args;
+//    }
 
-	if ((ip_r = construct_ip(ip)) == NULL)
+	if ((ip_r = construct_ip(args)) == NULL)
 		return (-1);
 	if ((ip_n = construct_node(ip_list, ip_r)) == NULL)
 		return (-1);
