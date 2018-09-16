@@ -12,46 +12,23 @@ void			h_show_only_open_ports(t_job *job)
 	job->options.bitops.output_only_open_ports = TRUE;
 }
 
-int h_file(t_job * workload, char * args)
+int h_file(t_job *job, char *args)
 {
     int     r;
-    int     fd;
+    FILE	*fp;
     int     len;
     char *  opt;
-    char *  line;
+    char	buffer[1028];
 
-    if (args == NULL) return (1);
+    if (!args)
+    	return (FAILURE);
 
-    if ((fd = open(args, O_RDONLY)) < 0)
-        return (fd);
-
-    while ((r = get_next_line(fd, &line)) > 0)
-        /*
-         * TODO: debate using memory safe functions
-         * with less efficiency than str function
-         * with more efficiency
-         */
-        len = strlen(line);
-        if (memchr(line, '#', len) == line)
-            /* set option equal to the file header */
-            opt = line;
-	else
-            /* check if option requires parameters */
-            if (handle(opt, &LEX, NULL, workload, LEX_ENTRIES) == 1)
-	    {
-                /* if we do not see a (#) flag */
-            	if (memchr(line, '#', len) != line)
-                    /* handle the argument and check
-                     * for errors
-                     */
-                    if (handle(opt, &LEX, line, workload, LEX_ENTRIES) < 0)
-                        //FAILURE
-                        //print and exit
-                        return (-1);
-		else
-			/* we know we need an argument but we don't have one */
-			return (-1);
-	    }
+    if (!(fp = fopen(args, "r")))
+        return (FAILURE);
+    r = 1;
+    //TODO : add support for different files
+    while ((r = getline(&buffer, 16, fp)) > 0)
+         parse_ip(job->targets, buffer);
 
     if (line) free(line);
     close(fd);
