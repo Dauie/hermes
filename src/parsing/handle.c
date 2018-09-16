@@ -4,14 +4,14 @@
 int handle(char *opt, void *TAB, char *arg, t_job *workload)
 {
     int     i;
-    int     len;
+    size_t  len;
     char *  result;
 
     i = -1;
     result = NULL;
     len = strlen(opt);
     /* iterate TAB and look for the correct entry */
-    while (TAB[++i].name && result == NULL)
+    while (TAB[++i] != NULL && result == NULL)
         result = strnstr(opt, TAB[i].name, len);
     if (result)
     {

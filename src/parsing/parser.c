@@ -65,7 +65,6 @@ t_dtab_wopt g_dispatch_wopt[DTAB_WOPT_ENTRIES] = {
 		{ "-ttl", h_ip_ttl },
 		{ "--thread", h_thread_amt },
 		{ "--worker", h_worker },
-        { NULL, NULL }
 };
 
 
@@ -76,9 +75,6 @@ int parse_opts(t_job * job, int ac, char ** args)
 	 */
 
 	int     i;
-	int     e;
-	char	*opt;
-	int     iters;
 
 	i = 0;
 	/* iter arg count */
@@ -94,7 +90,7 @@ int parse_opts(t_job * job, int ac, char ** args)
 			} else {
 				args++;
 			}
-		} else if (h_ip(job->targets, *args) < 0)
+		} else if (h_ip(job->targets, *args) < 0) {
 				//FAILURE
 				return (-1);
 		}
@@ -102,18 +98,6 @@ int parse_opts(t_job * job, int ac, char ** args)
 
 	return (0);
 }
-
-//int			parse_opts(t_job *job, int ac, char **av)
-//{
-//	int		i;
-//
-//	i = 0;
-//	while (++i < ac) {
-//		while ()
-//	}
-//	return (0);
-//}
-
 
 t_job * parser(t_job * job, int ac, char ** args) // TODO : args
 {
@@ -136,23 +120,8 @@ t_job * parser(t_job * job, int ac, char ** args) // TODO : args
 	 *      processing
 	 */
 
-	if (parse_opts(&job, ac, args) < 0)
+	if (parse_opts(job, ac, args) < 0)
 		//FAILURE
 		return (NULL);
 	return (job);
 }
-
-/* TEST MAIN
-
-   int main(int ac, char **av)
-   {
-   int     i;
-   char ** ex;
-   t_job workload;
-
-   ex = parse_opts(workload, ac, av);
-   printf("%d\n", ex);
-   return (0);
-   }
-
-   END MAIN */
