@@ -1,7 +1,7 @@
 # include "../../incl/job.h"
 # include "../../incl/parser.h"
 
-int handle(char *opt, t_tab *TAB, char *arg, t_job *workload)
+int handle(char *opt, void *TAB, char *arg, t_job *workload)
 {
     int     i;
     int     len;
