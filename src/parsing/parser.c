@@ -5,7 +5,7 @@
 
 # define DTAB_ENTRIES 17
 
-t_dtab g_dispach[DTAB_ENTRIES] = {
+t_dtab g_dispatch[] = {
 		{ "--append-output", h_append_output },
 		{ "--badsum", h_bad_checksum },
 		{ "--open", h_show_only_open },
@@ -32,7 +32,7 @@ t_dtab g_dispach[DTAB_ENTRIES] = {
 
 # define DTAB_WOPT_ENTRIES 29
 
-t_dtab_wopt g_dispatch_wopt[DTAB_WOPT_ENTRIES] = {
+t_dtab_wopt g_dispatch_wopt[] = {
 
 		{ "--data", h_custom_payload_hex },
 		{ "--data-length", h_custom_random_payload },
@@ -64,61 +64,57 @@ t_dtab_wopt g_dispatch_wopt[DTAB_WOPT_ENTRIES] = {
 		{ "--source-port", h_spoof_srcport },
 		{ "-ttl", h_ip_ttl },
 		{ "--thread", h_thread_amt },
-		{ "--worker", h_worker },
+		{ "--worker", h_worker }
 };
 
 
-int parse_opts(t_job * job, int ac, char ** args)
+int			parse_opts(t_job * job, int ac, char ** args)
 {
-	/*
-	 *
-	 */
-
-	int     i;
+	int		i;
 
 	i = 0;
-	/* iter arg count */
-	while (++args && ++i < ac) {
-		//len = strlen(*args);
-		/* if we find a (-) flag at the start of the argument */
-
-		if (*args[0] == '-') {
-			if (handle(*args, g_dispatch_wopt, *(args + 1), job) < 0) {
-				if (handle(*args, g_dispach, NULL, job) < 0)
-					//FAILURE
-					return (-1);
-			} else {
-				args++;
+	while (++i < ac)
+	{
+		if (args[i][0] == '-')
+		{
+			if (dtab_handle(job, *args, g_dispatch) == FAILURE)
+			{
+				if (dtab_wopt_handle(job, args[i], args[i + 1], g_dispatch_wopt) == FAILURE)
+				{
+					dprintf(STDERR_FILENO, "hermese: invalid option %s", args[i]);
+					exit(EXIT_FAILURE);
+				}
+				i++;
 			}
-		} else if (h_ip(job->targets, *args) < 0) {
-				//FAILURE
-				return (-1);
 		}
+		else
+			parse_ip(job->targets, *args);
 	}
-
 	return (0);
 }
 
+
+/* parser() takes two parameters:
+**  @p job is a pointer to a struct of type
+**      job. job contains a struct of
+**      flags to be set.
+**
+**  @p args contains arguments passed to the
+**      program.
+**
+**  --------------------------------------------
+**
+**  the args are parsed into tuple-like options,
+**      delimited by a '-' in front of each flag
+**      argument, e.x. "-O" (os-detection)
+**
+**  the opts are then iterated and are passed
+**      to a dispatch table for verification and
+**      processing
+*/
 t_job * parser(t_job * job, int ac, char ** args) // TODO : args
 {
-	/* parser() takes two parameters:
-	 *  @p job is a pointer to a struct of type
-	 *      job. job contains a struct of
-	 *      flags to be set.
-	 *
-	 *  @p args contains arguments passed to the
-	 *      program.
-	 *
-	 *  --------------------------------------------
-	 *
-	 *  the args are parsed into tuple-like options,
-	 *      delimited by a '-' in front of each flag
-	 *      argument, e.x. "-O" (os-detection)
-	 *
-	 *  the opts are then iterated and are passed
-	 *      to a dispatch table for verification and
-	 *      processing
-	 */
+
 
 	if (parse_opts(job, ac, args) < 0)
 		//FAILURE

@@ -7,6 +7,8 @@
 **   Im positive that these defaults are product of years of research
 **   and trial and error.
 */
+# define IP_MAX 255
+
 # define PORT_MAX (65535)
 # define MAX_THREADS (256)
 # define MAX_HOSTGROUP (4096)

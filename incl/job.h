@@ -36,8 +36,8 @@ typedef struct			s_portrange
 
 typedef struct			s_worker
 {
-	t_ip4 				ip;
-	t_port				port;
+	uint32_t 			ip;
+	uint16_t			port;
 }						t_worker;
 
 typedef struct			s_targetlist

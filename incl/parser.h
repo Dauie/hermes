@@ -39,7 +39,8 @@ typedef struct	s_dtab
 //		{ "#IP", NULL }
 //};
 
-int				handle(char *opt, t_tab *TAB, char *arg, t_job *workload);
+uint8_t 		**split_range(char * ips);
+int 			parse_ip(t_targetlist *ip_list, char *args);
 int				parse_port(t_portlist **list, char *input);
 int				parse_time(uint32_t *opt_time, char *input);
 
