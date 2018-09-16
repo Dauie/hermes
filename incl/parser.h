@@ -25,13 +25,13 @@ typedef struct	s_dtab
 **	file parsing
 */
 
-# define LEX_ENTRIES 1
+//# define LEX_ENTRIES 1
+//
+//t_tab LEX[LEX_ENTRIES][] = {
+//		{ "#IP", NULL }
+//};
 
-t_tab LEX[LEX_ENTRIES][] = {
-		{ "#IP", NULL }
-};
-
-int handle(char *opt, t_tab *TAB, char *arg, t_job *workload)
+int handle(char *opt, t_tab *TAB, char *arg, t_job *workload);
 
 
 /*
