@@ -49,6 +49,7 @@ void *construct_ip(char ** ip)
 	uint32_t 	**ip_r;
 
 	if (ip == NULL) return (NULL);
+
     ip_a = 0;
     ip_z = 0;
     data = (t_node*)memalloc(sizeof(t_node));
@@ -95,9 +96,9 @@ void *construct_ip(char ** ip)
 		} else if (ip_a < ip_z) {
 			if ((data = (t_ip4range*)memalloc(sizeof(t_ip4range))) == NULL)
 				return (NULL);
-        	memcpy(&data, ip_z - ip_a + 1, sizeof(uint32_t));
-			memcpy(&data + sizeof(uint32_t), ip_a, sizeof(uint32_t));
-			memcpy(&data + sizeof(uint32_t) * 2, ip_z, sizeof(uint32_t));
+        	memcpy(data->range, ip_z - ip_a + 1, sizeof(uint32_t));
+			memcpy(data->start, ip_a, sizeof(uint32_t));
+			memcpy(data->end, ip_z, sizeof(uint32_t));
 			return (data);
 		} else {
 			if ((data = (t_ip4*)memalloc(sizeof(t_ip4))) == NULL)
@@ -116,7 +117,7 @@ void *construct_ip(char ** ip)
     return (NULL);
 }
 
-uint32_t ** split_range(char * ips)
+uint8_t ** split_range(char * ips)
 {
     /* split_range() takes one parameter:
      *  @p ips is a char range of two
@@ -145,7 +146,7 @@ uint32_t ** split_range(char * ips)
     char **     q;
     size_t      len;
 	/* IP Range */
-	uint32_t ** ip_r;
+	uint8_t ** ip_r;
 	char **     range;
 
     q = NULL;
@@ -162,7 +163,7 @@ uint32_t ** split_range(char * ips)
     }
 
     /* create a 2 * 4 sized table to hold up to two IPs*/
-    if ((ip_r = (uint32_t**)memalloc(sizeof(uint32_t * 4) * 2)) == NULL)
+    if ((ip_r = (uint8_t**)memalloc(sizeof(uint8_t * 4) * 2)) == NULL)
     	return (NULL);
     for (i = 0; q[i]; i++)
     {
@@ -178,16 +179,16 @@ uint32_t ** split_range(char * ips)
              * second row is individual parts of the IP and the second
              * number in the range
              */
-            if (sscanf(range[0], "%"SCNu32, &ip_r[0][i]) == NULL ||
-                sscanf(range[1], "%"SCNu32, &ip_r[1][i]) == NULL)
+            if (memcpy(&ip_r[0][i], convert(range[0]), sizeof(uint8_t)) == NULL ||
+                memcpy(&ip_r[1][i], convert(range[1]), sizeof(uint8_t)) == NULL)
                 return (NULL)
         }
         /* if not range */
         else
         {
             /* both rows are the same IP */
-            if (sscanf(q[i], "%"SCNu32, &ip_r[0][i]) == NULL ||
-                sscanf(q[i], "%"SCNu32, &ip_r[1][i]) == NULL)
+            if (memcpy(&ip_r[0][i], q[i], sizeof(uint8_t)) == NULL ||
+                memcpy(&ip_r[1][i], q[i], sizeof(uint8_t)) == NULL)
                 return (NULL)
         }
     }
@@ -243,22 +244,29 @@ int h_ip(t_targetlist *ip_list, char * args)
      */
 
     int         i;
-    char *      ip;
-	char **     ips;
+    char 		*ip;
+	uint32_t 	ip_r;
+	void 		*ip_n;
 	int         subnet;
+	char 		**ip_sub;
 
     if (args == NULL) return (1);
 
     if (memchr('/', args, strlen(args)))
     {
         ip_sub = ft_strsplit(args, '/');
-        ip = ips[0];
-        subnet = ips[1];
+        ip = ip_sub[0];
+        subnet = ip_sub[1];
     }
     else
     {
         ip = args;
     }
 
-    return (construct_node(ip_list, construct_ip(ip)));
+	if ((ip_r = construct_ip(ip)) == NULL)
+		return (-1);
+	if ((ip_n = construct_node(ip_list, ip_r)) == NULL)
+		return (-1);
+	listadd_head(ip_list, ip_n);
+    return (0);
 }
