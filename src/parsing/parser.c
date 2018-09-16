@@ -1,13 +1,13 @@
-# include "../../incl/job.h"
 # include "../../incl/parser.h"
 /*
 **	If something is commented out in DTABs, it is low priority.
 */
 
-# define DTAB_ENTRIES 16
+# define DTAB_ENTRIES 17
 
 t_dtab g_dispach[DTAB_ENTRIES] = {
 		{ "--append-output", h_append_output },
+		{ "--badsum", h_bad_checksum },
 		{ "--open", h_show_only_open },
 //		{ "--iflist", h_show_interfaces },
 //		{ "-O", h_os_detection },
@@ -33,11 +33,11 @@ t_dtab g_dispach[DTAB_ENTRIES] = {
 # define DTAB_WOPT_ENTRIES 29
 
 t_dtab_wopt g_dispatch_wopt[DTAB_WOPT_ENTRIES] = {
-		{ "--badsum", h_bad_checksum },
+
 		{ "--data", h_custom_payload_hex },
 		{ "--data-length", h_custom_random_payload },
 		{ "--data-string", h_custom_payload_ascii },
-		{ "--exclude", h_exclude_targes },
+		{ "--exclude", h_exclude_targets },
 		{ "--exclude-file", h_exclude_target_file },
 		{ "--exclude-ports", h_exclude_ports },
 		{ "-g", h_spoof_srcport},
@@ -47,6 +47,7 @@ t_dtab_wopt g_dispatch_wopt[DTAB_WOPT_ENTRIES] = {
 		{ "--max-rate", h_max_packet_rate },
 		{ "--max-retires", h_max_retries },
 		{ "--max-rtt-timeout", h_max_rtt_timeout },
+		{ "--max-scan-delay", h_max_scan_delay },
 		{ "--min-hostgroup", h_min_hostgroup },
 		{ "--min-rate", h_min_packet_rate },
 		{ "--min-rtt-timeout", h_min_rtt_timeout },

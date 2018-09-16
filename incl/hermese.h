@@ -14,6 +14,5 @@
 # include "bool.h"
 # include "../libhermese/incl/libhermese.h"
 
-# define PORT_MAX (65535)
 
 #endif

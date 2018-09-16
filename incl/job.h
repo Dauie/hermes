@@ -1,12 +1,13 @@
 #ifndef HERMESE_JOB_H
 # define HERMESE_JOB_H
 
-#include <stdint.h>
+# include <stdint.h>
+# include <stddef.h>
+# include <sys/time.h>
 
 typedef struct			s_node
 {
 	struct s_node		*next;
-	struct s_node		*prev;
 	void				*data;
 }						t_node;
 
@@ -72,18 +73,18 @@ typedef struct			s_disc_ops
 
 typedef struct			s_time_ops
 {
-	struct timeval		min_rtt_timeo;
-	struct timeval		init_rtt_timeo;
-	struct timeval		max_rtt_timeo;
-	struct timeval		host_timeo;
-	struct timeval		scan_delay;
-	struct timeval		max_scan_delay;
+	uint32_t			min_rtt_timeo;
+	uint32_t			init_rtt_timeo;
+	uint32_t			max_rtt_timeo;
+	uint32_t			host_timeo;
+	uint32_t			scan_delay;
+	uint32_t			max_scan_delay;
 }						t_time_ops;
 
 typedef struct			s_rate_ops
 {
-	float				min_packet_rate;
-	float				max_packet_rate;
+	uint32_t			min_packet_rate;
+	uint32_t			max_packet_rate;
 	uint32_t			max_retries;
 	uint32_t			min_parallelism;
 	uint32_t			max_parallelism;
