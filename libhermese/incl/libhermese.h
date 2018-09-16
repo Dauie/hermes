@@ -2,16 +2,12 @@
 #ifndef LIB_HERMESE_H
 # define LIB_HERMESE_H
 
-# include <memory.h>
-# include <stdint.h>
-# include <stdlib.h>
+#include <string.h>
 
-# ifndef fast_swap_ints
-# define fast_swap_ints(x, y) ((x ^= y),(y ^= x),(x ^= y))
-# endif
+
 
 #ifndef determine_type
-
+#endif
 /*
 **	Structs
 */
@@ -22,6 +18,12 @@ typedef struct			s_node
 }						t_node;
 
 /*TODO MAKE ALL THESE v*/
+/*
+**	Node Operation Function
+*/
+t_node				*new_node(void);
+void				set_node(t_node *node, void *data, size_t size);
+
 /*
 **	Character Manipulation Functions
 */
