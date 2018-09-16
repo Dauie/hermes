@@ -64,6 +64,7 @@ t_dtab_wopt g_dispatch_wopt[DTAB_WOPT_ENTRIES] = {
 		{ "-ttl", h_ip_ttl },
 		{ "--thread", h_thread_amt },
 		{ "--worker", h_worker },
+        { NULL, NULL }
 };
 
 
@@ -78,27 +79,22 @@ int parse_opts(t_job * job, int ac, char ** args)
 	char	*opt;
 	int     iters;
 
-	i = -1;
+	i = 0;
 	/* iter arg count */
-	while (args++ && ++i < ac) {
+	while (++args && ++i < ac) {
 		//len = strlen(*args);
 		/* if we find a (-) flag at the start of the argument */
+
 		if (*args[0] == '-') {
-			/* set option equal to the argument */
-			opt = *args;
-			args++;
-			/* check if option requires parameters */
-			if (handle(opt, &g_dispatch_wopt, NULL, job, e))
-				/* while we do not see a (-) flag */
-				while (*args[0] != '-' && i++ < ac)
-					/* handle the argument and check for errors */
-					if (handle(opt, &g_dispatch, args++, job,
-								DTAB_ENTRIES) < 0)
-						//FAILURE
-						//print and exit
-						return (-1);
-			else if (handle(opt, &g_dispatch, NULL, job,
-							DTAB_WOPT_ENTRIES) < 0)
+			if (handle(*args, g_dispatch_wopt, *(args + 1), job) < 0) {
+				if (handle(args, g_dispach, NULL, job) < 0)
+					//FAILURE
+					return (-1);
+			} else {
+				args++;
+			}
+		} else if (h_ip(job->targets, *args) < 0)
+				//FAILURE
 				return (-1);
 		}
 	}
@@ -106,16 +102,16 @@ int parse_opts(t_job * job, int ac, char ** args)
 	return (0);
 }
 
-int			parse_opts(t_job *job, int ac, char **av)
-{
-	int		i;
-
-	i = 0;
-	while (++i < ac) {
-		while ()
-	}
-	return (0);
-}
+//int			parse_opts(t_job *job, int ac, char **av)
+//{
+//	int		i;
+//
+//	i = 0;
+//	while (++i < ac) {
+//		while ()
+//	}
+//	return (0);
+//}
 
 
 t_job * parser(t_job * job, int ac, char ** args) // TODO : args
@@ -139,9 +135,10 @@ t_job * parser(t_job * job, int ac, char ** args) // TODO : args
 	 *      processing
 	 */
 
-	if (parse_opts(job, ac, args) <= 1)
-		help(NULL, NULL);
-	return (workload);
+	if (parse_opts(&job, ac, args) < 0)
+		//FAILURE
+		return (NULL);
+	return (job);
 }
 
 /* TEST MAIN
