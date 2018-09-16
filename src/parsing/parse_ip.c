@@ -24,7 +24,7 @@ void *construct_ip(char ** ip)
     uint32_t    ip_a;
     uint32_t    ip_z;
 	void		*data;
-	uint32_t 	**ip_r;
+	uint8_t 	**ip_r;
 
 	if (ip == NULL)
 		return (NULL);
@@ -218,7 +218,7 @@ int parse_ip(t_targetlist *ip_list, char *args)
     if (args == NULL)
     	return (FAILURE);
 
-	if (!(ip_r = construct_ip(args)))
+	if (!(ip_r = get_ip(args)))
 		return (FAILURE);
 	if (!(ip_n = construct_node(ip_r, sizeof(ip_r))))
 		return (FAILURE);

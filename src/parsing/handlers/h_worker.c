@@ -1,7 +1,4 @@
-#include <job.h>
-#include <hermese.h>
-#include <string.h>
-#include "../../incl/job.h"
+#include "../../incl/parser.h"
 
 t_worker *construct_worker(t_ip4 ip, t_port port) {
 	t_worker *worker;
@@ -17,10 +14,9 @@ t_worker *construct_worker(t_ip4 ip, t_port port) {
 
 void h_worker(t_job *job, char *input) {
 
-    t_ip4		*ip_n;
+	char 		*ip;
 	t_worker	*data;
-	char		**wlist;
-	t_port		*port_n;
+	char		**wlist; /* worker list */
 	t_node		*worker;
 
 	if (job && input) {
@@ -30,9 +26,9 @@ void h_worker(t_job *job, char *input) {
                 return ;
                  //FAILURE
 			if (!(data = construct_worker(
-						construct_port(*wlist),
-						construct_ip(ip)
-					)))
+							(t_ip4*)construct_ip(ip),
+							get_port(*wlist)
+						)))
 				//FAILURE
 				return;
 			if (!(worker = construct_node(data, sizeof(data))))
