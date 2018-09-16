@@ -4,12 +4,7 @@
 # include <stdint.h>
 # include <stddef.h>
 # include <sys/time.h>
-
-typedef struct			s_node
-{
-	struct s_node		*next;
-	void				*data;
-}						t_node;
+# include "../incl/hermese.h"
 
 typedef struct			s_ip4range
 {

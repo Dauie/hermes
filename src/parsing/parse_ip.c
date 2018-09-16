@@ -73,7 +73,7 @@ void *construct_ip(char ** ip)
 		} else if (ip_a < ip_z) {
 			if ((data = (t_ip4range*)memalloc(sizeof(t_ip4range))) == NULL)
 				return (NULL);
-        	memcpy(data->range, htonl(ip_z - ip_a + 1), sizeof(uint32_t));
+        	memcpy(((t_ip4range *)data)->range_size, htonl(ip_z - ip_a + 1), sizeof(uint32_t));
 			memcpy(data->start, htonl(ip_a), sizeof(uint32_t));
 			memcpy(data->end, htonl(ip_z), sizeof(uint32_t));
 			return (data);
@@ -89,7 +89,7 @@ void *construct_ip(char ** ip)
     return (NULL);
 }
 
-uint8_t ** split_range(char * ips)
+uint8_t **split_range(char * ips)
 {
     /* split_range() takes one parameter:
      *  @p ips is a char array of
@@ -125,13 +125,15 @@ uint8_t ** split_range(char * ips)
     q = (char**)NULL;
     range = (char**)NULL;
     len = strlen(ips);
-    if (memchr(ips, '.', len)) {
+    if (memchr(ips, '.', len))
+	{
 		if (!(q = ft_strplit(ips, '.')))
 			return (NULL);
 		/* create a 2 * 4 sized table to hold up to two IPs*/
-		if (!(ip_r = (uint8_t **) memalloc(sizeof(uint8_t * 4) * 2)))
+		if (!(ip_r = (uint8_t **) memalloc((sizeof(uint8_t) * 4) * 2)))
 			return (NULL);
-		for (i = 0; q[i]; i++) {
+		for (int i = 0; q[i]; i++)
+		{
 			/* if range */
 			if (memchr(ips, '-', len)) {
 				/* split range */
@@ -145,17 +147,16 @@ uint8_t ** split_range(char * ips)
 				 */
 				if (!memcpy(&ip_r[0][i], range[0], sizeof(uint8_t)) ||
 					!memcpy(&ip_r[1][i], range[1], sizeof(uint8_t)))
-					return (NULL)
+					return (NULL);
 			}
 				/* if not range */
 			else {
 				/* both rows are the same IP */
 				if (!memcpy(&ip_r[0][i], q[i], sizeof(uint8_t)) ||
 					!memcpy(&ip_r[1][i], q[i], sizeof(uint8_t)))
-					return (NULL)
+					return (NULL);
 			}
 		}
-
 		if (q)
 			free(q);
 		if (range)

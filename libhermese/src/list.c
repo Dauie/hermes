@@ -10,7 +10,7 @@ void			listadd_head(t_node **list, t_node *node)
 
 void			listadd_end(t_node **list, t_node *node)
 {
-	t_list		*tmp;
+	t_node		*tmp;
 
 	if (!list || !*list || !node)
 		return;
