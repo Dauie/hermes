@@ -1,5 +1,5 @@
-#include "../../../incl/parser.h"
-#include "../../../incl/defined.h"
+#include "../../incl/parser.h"
+#include "../../incl/defined.h"
 
 void			h_thread_amt(t_job *job, char *input)
 {

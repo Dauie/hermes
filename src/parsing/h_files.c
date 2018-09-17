@@ -1,6 +1,6 @@
-# include "../../../incl/job.h"
-# include "../../../incl/parser.h"
-# include "../../../libhermes/incl/bool.h"
+# include "../../incl/job.h"
+# include "../../incl/parser.h"
+# include "../../libhermes/incl/bool.h"
 
 void			h_append_output(t_job *job)
 {

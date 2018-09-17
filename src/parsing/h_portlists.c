@@ -1,5 +1,5 @@
-#include "../../../incl/job.h"
-#include "../../../incl/parser.h"
+#include "../../incl/job.h"
+#include "../../incl/parser.h"
 
 void 			h_ack_portlist(t_job *job, char *input)
 {

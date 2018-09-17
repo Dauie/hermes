@@ -1,5 +1,5 @@
-#include "../../../incl/job.h"
-#include "../../../libhermes/incl/bool.h"
+#include "../../incl/job.h"
+#include "../../libhermes/incl/bool.h"
 
 void			h_icmp_host_discovery(t_job *job)
 {
