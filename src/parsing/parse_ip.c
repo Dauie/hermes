@@ -35,9 +35,9 @@ int	get_subnet(uint32_t *subnet, char *cidr) {
 	if (!cidr)
 		return (FAILURE);
 	if ((cidr_m = atoi(cidr)) > 32)
-		return (FAILURE;
+		return (FAILURE);
 	if (cidr_m < 0)
-		return (FAILURE));
+		return (FAILURE);
 	while (cidr_m-- > 0) {
 		*subnet |= MSB;
 		*subnet >>= 1;
@@ -61,7 +61,7 @@ void set_ip4range(t_ip4range *data, uint32_t subnet, uint32_t ip) {
 t_ip4range *new_ip4range(void) {
 	t_ip4range *data;
 
-	if (!(data = (t_ip4range*))memalloc(sizeof(t_ip4range)))
+	if (!(data = (t_ip4range*)memalloc(sizeof(t_ip4range))))
 		return (NULL);
 	return (data);
 }
@@ -70,7 +70,7 @@ uint32_t 	parse_subnet(char *mask) {
 	uint32_t 	subnet;
 
 	subnet = 0;
-	if (!(mask || ip))
+	if (!mask)
 		return (FAILURE);
 	if (get_subnet(&subnet, mask) < 0)
 		return (FAILURE);
@@ -122,13 +122,11 @@ int handle_ip(t_targetlist *targets, char *args) {
 	uint32_t ip_addr;
 
 	mask = args;
-	if ((ip = strsep(mask, '/', 20))) {
-		if (subnet = parse_subnet(mask) < 0)
-			return (FAILURE);
+	if ((ip = strsep(&mask, "/"))) {
+		subnet = parse_subnet(mask);
 		add_ip4range(&targets->iprange, subnet, parse_ip(ip));
 	} else {
-		if (ip_addr = parse_ip(ip) < 0)
-			return (FAILURE);
+		ip_addr = parse_ip(ip);
 		add_ip4(&targets->ip, ip_addr);
 	}
 	return (SUCCESS);
@@ -161,8 +159,9 @@ int main(void) {
 				memcmp("exit", input, 4) == 0) {
 				break;
 		} else {
-			if ((error = parse_ip(&ip_list, input)) < 0)
+			if ((error = parse_ip(input)) < 0)
 				printf("parsing failed with %d\n", error);
+			add_ip4(&ip_list, error);
 		}
 		fflush(stdin);
 	}
