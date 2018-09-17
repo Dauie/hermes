@@ -1,9 +1,7 @@
-#ifndef HERMES_JOB_H
-# define HERMES_JOB_H
 #ifndef JOB_H
 # define JOB_H
 
-# include "hermese.h"
+# include "hermes.h"
 
 typedef struct			s_ip4range
 {

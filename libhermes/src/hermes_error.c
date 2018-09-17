@@ -12,7 +12,7 @@ int				hermes_error(int errcode, int fatal, int str_amt, ...)
 	strcnt = -1;
 	if (str_amt > 0)
 	{
-		va_start(ap, amt);
+		va_start(ap, str_amt);
 		while (++strcnt < str_amt)
 			i += sprintf(buff + i, " %s", va_arg(ap,
 					char *));

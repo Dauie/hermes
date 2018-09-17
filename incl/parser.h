@@ -2,7 +2,7 @@
 # define PARSER_H
 
 # include "job.h"
-# include "bool.h"
+# include "hermes.h"
 # include "defined.h"
 
 /*

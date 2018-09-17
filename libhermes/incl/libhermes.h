@@ -20,6 +20,7 @@ typedef struct			s_node
 	void				*data;
 }						t_node;
 
+
 /*
 **	Character Manipulation Functions
 */
@@ -40,6 +41,8 @@ void				*memalloc(size_t size);
 */
 void				listadd_end(t_node **list, t_node *node);
 void				listadd_head(t_node **list, t_node *node);
+t_node				*new_node(void);
+void				set_node(t_node *node, void *data, size_t size);
 
 
 /*

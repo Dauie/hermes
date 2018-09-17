@@ -53,7 +53,6 @@ int		parse_ip(t_node **ip_list, char *args) {
 	uint32_t	ip;
 	t_ip4		*data;
 	t_node		*node;
-	long		cidr_m;
 
 	if (args == NULL)
 		return (FAILURE);
@@ -63,13 +62,14 @@ int		parse_ip(t_node **ip_list, char *args) {
 		return (FAILURE);
 	if (get_ip(&ip, strsep(&args, "\n")) < 0)
 		return (FAILURE);
+
 	set_ip4(data, ip);
 	set_node(node, &data, sizeof(data));
 
 	#ifdef TESTING
 	#endif
 
-	listadd_head(ip_list, &node);
+	listadd_head(ip_list, node);
 	return (SUCCESS);
 }
 
