@@ -29,47 +29,108 @@ void	set_ip4(t_ip4 *data, uint32_t ip) {
 	memcpy(&data->addr, &ip, sizeof(uint32_t));
 }
 
-long	get_cidr(char *cidr) {
+int	get_subnet(uint32_t *subnet, char *cidr) {
 	int cidr_m;
-	long result;
 
-	result = 0;
 	if (!cidr)
 		return (FAILURE);
 	if ((cidr_m = atoi(cidr)) > 32)
-		return (FAILURE);
+		return (FAILURE;
 	if (cidr_m < 0)
-		return (FAILURE);
+		return (FAILURE));
 	while (cidr_m-- > 0) {
-		result |= 2147483648;
-		result >>= 1;
+		*subnet |= MSB;
+		*subnet >>= 1;
 	}
-	return (result);
+	return (SUCCESS);
 }
 
-int		parse_ip(t_node **ip_list, char *args) {
-	uint32_t	ip;
-	t_ip4		*data;
+void set_ip4range(t_ip4range *data, uint32_t subnet, uint32_t ip) {
+	uint32_t start;
+	uint32_t end;
+
+	/* TODO : these might need to be swapped*/
+	start = subnet | ip;
+	end = ~start;
+
+	data->range_size = subnet;
+	data->start = start;
+	data->end = end;
+}
+
+t_ip4range *new_ip4range(void) {
+	t_ip4range *data;
+
+	if (!(data = (t_ip4range*))memalloc(sizeof(t_ip4range)))
+		return (NULL);
+	return (data);
+}
+
+uint32_t 	parse_subnet(char *mask) {
+	uint32_t 	subnet;
+
+	subnet = 0;
+	if (!(mask || ip))
+		return (FAILURE);
+	if (get_subnet(&subnet, mask) < 0)
+		return (FAILURE);
+	return (subnet);
+}
+
+void add_ip4range(t_node ** ip_range, uint32_t subnet, uint32_t ip) {
 	t_node		*node;
+	t_ip4range 	*data;
+
+	if (!(data = new_ip4range()))
+		return;
+	if (!(node = new_node(sizeof(t_ip4range))))
+		return;
+	set_ip4range(data, subnet, ip);
+	set_node(node, data, sizeof(data));
+	listadd_head(ip_range, node);
+	return;
+}
+
+void add_ip4(t_node ** ip_list, uint32_t ip) {
+	t_ip4 	*data;
+	t_node 	*node;
+
+	if (!(data = new_ip4()))
+		return;
+	if (!(node = new_node(sizeof(t_ip4))))
+		return;
+	set_ip4(data, ip);
+	set_node(node, data, sizeof(data));
+	listadd_head(ip_list, node);
+	return;
+}
+
+uint32_t		parse_ip(char *args) {
+	uint32_t	ip;
 
 	if (args == NULL)
 		return (FAILURE);
-	if (!(data = new_ip4()))
-		return (FAILURE);
-	if (!(node = new_node(sizeof(t_ip4))))
-		return (FAILURE);
 	if (get_ip(&ip, strsep(&args, "\n")) < 0)
 		return (FAILURE);
+	return (ip);
+}
 
+int handle_ip(t_targetlist *targets, char *args) {
+	char *ip;
+	char *mask;
+	uint32_t subnet;
+	uint32_t ip_addr;
 
-	set_ip4(data, ip);
-	set_node(node, data, sizeof(data));
-
-	#ifdef TESTING
-	printf("sn %i\n", ((t_ip4*)node->data)->addr);
-	#endif
-
-	listadd_head(ip_list, node);
+	mask = args;
+	if ((ip = strsep(mask, '/', 20))) {
+		if (subnet = parse_subnet(mask) < 0)
+			return (FAILURE);
+		add_ip4range(&targets->iprange, subnet, parse_ip(ip));
+	} else {
+		if (ip_addr = parse_ip(ip) < 0)
+			return (FAILURE);
+		add_ip4(&targets->ip, ip_addr);
+	}
 	return (SUCCESS);
 }
 
