@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 #ifndef HERMES_PARSER_H
 # define HERMES_PARSER_H
 
@@ -10,6 +11,14 @@
 
 
 
+=======
+#ifndef PARSER_H
+# define PARSER_H
+
+# include "job.h"
+# include "bool.h"
+# include "defined.h"
+>>>>>>> 3abda96736a43c4df3d9db90f645af3a2c513d65
 
 /*
 **	Dispatch TABle
@@ -39,15 +48,13 @@ typedef struct	s_dtab
 //		{ "#IP", NULL }
 //};
 
-uint8_t 		**split_range(char * ips);
-int 			parse_ip(t_targetlist *ip_list, char *args);
 int				dtab_handle(t_job *job, char *opt, t_dtab *tab);
 int				dtab_wopt_handle(t_job *job, char *arg, char *opt, t_dtab_wopt *tab);
-int				get_port(char *port_str);
+uint16_t		get_port(char *port_str);
 int				parse_port(t_portlist **list, char *input);
 int				parse_time(uint32_t *opt_time, char *input);
 int				parse_opts(t_job * job, int ac, char ** args);
-int				parse_ip(t_targetlist *ip_list, char *args);
+int				parse_ip(t_node **ip_list, char *args);
 
 
 /*

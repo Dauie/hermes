@@ -1,73 +1,113 @@
-#include "../../incl/parser.h"
-#include "../../incl/defined.h"
+# include "../../incl/parser.h"
 
-int verify_ip(uint32_t *ptr, char *ip) {
-	if (!inet_pton(AF_INET, ptr, ip))
-		return (-1);
-	if (*ptr <= 0 || *ptr >= IP_MAX)
-		return (-1);
-	return (0);
-}
-
-t_ip4 *set_ip4(uint32_t ip) {
+t_ip4 *new_ip4(void) {
 	t_ip4 *data;
 
-	if (!ip)
-		return (NULL);
 	if (!(data = (t_ip4*)memalloc(sizeof(t_ip4))))
 		return (NULL);
-	data->addr = ip;
 	return (data);
 }
 
-uint32_t get_ip(char * ip_str)
-{
-    /* construct_ip() takes two parameters:
-     *
-     *  @p ip is the 2D char array with 1 or more
-     *      IPs
-     *
-     * -------------------------------------------
-     *
-     *  ip_a = start, ip_z = end
-     *
-     *  if end < start  : return an error message
-     *  if start < end  : create an ip range struct
-     *  if start == end : create a singleton ip struct
-     */
+int verify_ip(uint32_t *ip, char *ip_str) {
+	if (inet_pton(AF_INET, ip_str, ip) < 1)
+		return (0);
+	if (*ip <= 0 || *ip >= IP_MAX)
+		return (0);
+	return (1);
+}
 
-    uint32_t ip_addr;
-
+int get_ip(uint32_t *ip, char *ip_str) {
+	printf("%s\n", ip_str);
 	if (ip_str == NULL)
-		return ((uint32_t)NULL);
-	/* while looping through
-	 * ip addresses
-	 */
-	if (verify_ip(&ip_addr, ip_str))
-		return (ip_addr);
-    return ((uint32_t)NULL);
-}
-
-int parse_ip(t_targetlist *ip_list, char *args)
-{
-    /* h_ip() takes two parameters:
-     *  @p workload is a pointer to the
-     *      main job struct
-     *
-     *  @p args is a single IP to be
-     *      verified and sorted in the
-     *      IPlist
-     *
-     * --------------------------------
-     *
-     */
-
-	uint32_t 	ip;
-
-    if (args == NULL)
-    	return (FAILURE);
-	if (!(ip = set_ip4(get_ip(args))))
 		return (FAILURE);
-	listadd_head(ip_list, ip);
-    return (SUCCESS);
+	if (!verify_ip(ip, ip_str))
+		return (FAILURE);
+	return (SUCCESS);
 }
+
+void	set_ip4(t_ip4 *data, uint32_t ip, uint32_t cidr) {
+	memcpy(&data->addr, &ip, sizeof(uint32_t));
+	memcpy(&data->cidr, &cidr, sizeof(uint32_t));
+}
+
+long	get_cidr(char *cidr) {
+	int cidr_m;
+	long result;
+
+	result = 0;
+	if (!cidr)
+		return (FAILURE);
+	if ((cidr_m = atoi(cidr)) > 32)
+		return (FAILURE);
+	if (cidr_m < 0)
+		return (FAILURE);
+	while (cidr_m-- > 0) {
+		result |= 2147483648;
+		result >>= 1;
+	}
+	return (result);
+}
+
+int		parse_ip(t_node **ip_list, char *args) {
+	uint32_t	ip;
+	char 		*cidr;
+	t_ip4		*data;
+	t_node		*node;
+	long		cidr_m;
+
+	if (args == NULL)
+		return (FAILURE);
+	if (!(data = new_ip4()))
+		return (FAILURE);
+	if (!(node = new_node()))
+		return (FAILURE);
+	cidr_m = (uint32_t)NULL;
+	if ((cidr = memchr(args, '/', strlen(args))))
+			if (!(cidr_m = get_cidr(cidr)))
+				return (FAILURE);
+	if (get_ip(&ip, strsep(&args, "\n")) < 0)
+		return (FAILURE);
+	set_ip4(data, ip, (uint32_t)cidr_m);
+	set_node(node, data, sizeof(data));
+
+	#ifdef TESTING
+	#endif
+
+	listadd_head(ip_list, node);
+	return (SUCCESS);
+}
+
+#ifdef TESTING
+int main(void) {
+	int error;
+	t_node *head;
+	t_node *ip_list;
+	char input[20];
+
+	ip_list = new_node();
+	printf("debugging started > options:\n"
+			"<i.p.ad.dr> < test ip\n"
+			"display < displays IP list\n"
+			"quit/exit/ctrl+c < exits program\n");
+	while (1) {
+		printf("> ");
+		fgets(input, 20, stdin);
+		if (!memcmp("display", input, 7)) {
+			head = ip_list;
+			for (; ip_list->data; ip_list = ip_list->next)
+				printf("%i %i\n",
+					   ((t_ip4*)ip_list->data)->addr,
+					   ((t_ip4*)ip_list->data)->addr);
+			ip_list = head;
+		} else if (memcmp("quit", input, 4) == 0 ||
+				memcmp("exit", input, 4) == 0) {
+				break;
+		} else {
+			if ((error = parse_ip(&ip_list, input)) < 0)
+				printf("parsing failed with %d\n", error);
+		}
+		fflush(stdin);
+	}
+	return (1);
+}
+#endif
