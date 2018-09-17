@@ -15,7 +15,6 @@ typedef struct			s_ip4range
 typedef struct			s_ip4
 {
 	uint32_t			addr;
-	uint32_t 			cidr;
 }						t_ip4;
 
 typedef struct			s_port
@@ -40,7 +39,7 @@ typedef struct			s_targetlist
 	size_t				ip_count;
 	t_node				*ip;						/*t_node containing t_ip4 structs*/
 	size_t				iprange_count;
-	t_node				iprange;					/*t_node containing t_ip4range structs*/
+	t_node				*iprange;					/*t_node containing t_ip4range structs*/
 }						t_targetlist;
 
 typedef struct			s_portlist
