@@ -1,0 +1,65 @@
+In file included from parse_ip.c:1:
+In file included from ./../../incl/parser.h:4:
+./../../incl/job.h:46:2: error: unknown type name 't_node'
+        t_node                          *ip;                                            /*t_node containing t_ip4 structs*/
+        ^
+./../../incl/job.h:48:2: error: unknown type name 't_node'
+        t_node                          iprange;                                        /*t_node containing t_ip4range structs*/
+        ^
+./../../incl/job.h:54:2: error: unknown type name 't_node'
+        t_node                          *ports;
+        ^
+./../../incl/job.h:56:2: error: unknown type name 't_node'
+        t_node                          *port_range;
+        ^
+./../../incl/job.h:128:2: error: unknown type name 't_node'
+        t_node                          *worker_list; /* node pop. w/ worker type -> next worker */
+        ^
+./../../incl/job.h:135:2: error: unknown type name 'FILE'
+        FILE                            *resume_file;
+        ^
+./../../incl/job.h:136:2: error: unknown type name 'FILE'
+        FILE                            *xml_file;
+        ^
+./../../incl/job.h:137:2: error: unknown type name 'FILE'
+        FILE                            *norm_file;
+        ^
+In file included from parse_ip.c:1:
+./../../incl/parser.h:47:17: error: unknown type name 't_node'
+int                             parse_ip(t_node *ip_list, char *args);
+                                         ^
+parse_ip.c:15:25: error: implicit declaration of function 'memalloc' is invalid in C99 [-Werror,-Wimplicit-function-declaration]
+        if (!(data = (t_ip4 *) memalloc(sizeof(t_ip4))))
+                               ^
+parse_ip.c:15:15: error: cast to 't_ip4 *' (aka 'struct s_ip4 *') from smaller integer type 'int' [-Werror,-Wint-to-pointer-cast]
+        if (!(data = (t_ip4 *) memalloc(sizeof(t_ip4))))
+                     ^
+parse_ip.c:31:2: error: implicitly declaring library function 'memcpy' with type 'void *(void *, const void *, unsigned long)' [-Werror,-Wimplicit-function-declaration]
+        memcpy(&data->addr, &ip, sizeof(uint32_t));
+        ^
+parse_ip.c:31:2: note: include the header <string.h> or explicitly provide a declaration for 'memcpy'
+parse_ip.c:53:14: error: unknown type name 't_node'
+int parse_ip(t_node *ip_list, char *args) {
+             ^
+parse_ip.c:57:2: error: use of undeclared identifier 't_node'
+        t_node          *node;
+        ^
+parse_ip.c:57:11: error: use of undeclared identifier 'node'
+        t_node          *node;
+                         ^
+parse_ip.c:64:15: error: implicit declaration of function 'new_node' is invalid in C99 [-Werror,-Wimplicit-function-declaration]
+        if (!(node = new_node()))
+                     ^
+parse_ip.c:64:8: error: use of undeclared identifier 'node'
+        if (!(node = new_node()))
+              ^
+parse_ip.c:67:14: error: implicitly declaring library function 'memchr' with type 'void *(const void *, int, unsigned long)' [-Werror,-Wimplicit-function-declaration]
+        if ((cidr = memchr(args, '/', strlen(args))))
+                    ^
+parse_ip.c:67:14: note: include the header <string.h> or explicitly provide a declaration for 'memchr'
+parse_ip.c:67:32: error: implicitly declaring library function 'strlen' with type 'unsigned long (const char *)' [-Werror,-Wimplicit-function-declaration]
+        if ((cidr = memchr(args, '/', strlen(args))))
+                                      ^
+parse_ip.c:67:32: note: include the header <string.h> or explicitly provide a declaration for 'strlen'
+fatal error: too many errors emitted, stopping now [-ferror-limit=]
+20 errors generated.

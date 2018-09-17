@@ -14,6 +14,10 @@
 # define MAX_HOSTGROUP (4096)
 # define MIN_HOSTGROUP (1)
 
+# ifndef fast_swap_ints
+# define fast_swap_ints(x, y) ((x ^= y),(y ^= x),(x ^= y))
+# endif
+
 # define DEFAULT_TCP_PROBE_PORT 80
 # define DEFAULT_SCTP_PROBE_PORT 80
 # define DEFAULT_UDP_PROBE_PORT 40125

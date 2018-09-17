@@ -1,15 +1,9 @@
-#ifndef HERMESE_PARSER_H
-# define HERMESE_PARSER_H
+#ifndef PARSER_H
+# define PARSER_H
 
-# include "../libhermese/incl/libhermese.h"
 # include "job.h"
 # include "bool.h"
-# include <stdio.h>
-# include <stdlib.h>
-# include <sys/time.h>
-
-
-
+# include "defined.h"
 
 /*
 **	Dispatch TABle
@@ -45,7 +39,7 @@ uint16_t		get_port(char *port_str);
 int				parse_port(t_portlist **list, char *input);
 int				parse_time(uint32_t *opt_time, char *input);
 int				parse_opts(t_job * job, int ac, char ** args);
-int				parse_ip(t_node *ip_list, char *args);
+int				parse_ip(t_node **ip_list, char *args);
 
 
 /*

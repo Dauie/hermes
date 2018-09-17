@@ -1,10 +1,8 @@
-#ifndef HERMESE_JOB_H
-# define HERMESE_JOB_H
+#ifndef JOB_H
+# define JOB_H
 
-# include <stdint.h>
-# include <stddef.h>
-# include <sys/time.h>
-# include "../incl/hermese.h"
+
+# include "hermese.h"
 
 typedef struct			s_ip4range
 {
@@ -16,6 +14,7 @@ typedef struct			s_ip4range
 typedef struct			s_ip4
 {
 	uint32_t			addr;
+	uint32_t 			cidr;
 }						t_ip4;
 
 typedef struct			s_port

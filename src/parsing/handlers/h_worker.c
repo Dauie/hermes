@@ -1,49 +1,42 @@
 #include "../../incl/parser.h"
 
-t_worker *construct_worker(uint32_t ip, uint16_t port) {
+t_worker *new_worker(void) {
 	t_worker *worker;
 
-	worker = (t_worker*)memalloc(sizeof(t_worker));
-	if (ip != NULL && port) {
-		memmove(&worker->ip, &ip, sizeof(uint32_t));
-		memmove(&worker->port, &port, sizeof(uint16_t));
-		return (worker);
-	}
-	return (NULL);
+	if (!(worker = (t_worker*)memalloc(sizeof(t_worker))))
+		return (NULL);
+	return (worker);
 }
 
-void h_worker(t_job *job, char *input) {
+void set_worker(t_worker *data, uint32_t ip, uint16_t port) {
+	memcpy(&data->ip, &ip, sizeof(uint32_t));
+	memcpy(&data->port, &port, sizeof(uint16_t));
+}
 
-	char 		*ip;
-	uint32_t 	*ip_n;
+void h_worker(t_node *worker_list, char *input) {
+	uint32_t 	ip;
+	uint16_t 	port;
 	t_worker	*data;
+	t_node		*node;
 	char		**wlist; /* worker list */
-	t_node		*worker;
 
-
-	if (job && input) {
+	if (input) {
 		wlist = strsplit(input, ',');
 		while (wlist) {
-            if (!(ip = strsep(wlist, ":")))
-                return ;
-                 //FAILURE
-            if (!inet_pton(AF_INET, ip, &ip_n))
+			if (!(data = new_worker()))
+				return;
+			if (!(node = new_node()))
+				return;
+            if ((ip = get_ip(strsep(wlist, ":"))) < 0)
             	return;
-			if (!(data = construct_worker(
-							ip_n,
-							get_port(*wlist)
-						)))
-				//FAILURE
+			if ((port = get_port(wlist)) < 0)
 				return;
-			if (!(worker = (t_node*)memalloc(sizeof(t_node))))
-				return;
-			worker->data = data;
-			listadd_head(&job->worker_list, worker);
+			set_worker(&data, ip, port);
+			set_node(node, data, sizeof(data));
+			listadd_head(&worker_list, node);
             wlist++;
             if (data)
             	free(data);
         }
-        return;
     }
-    return;
 }
