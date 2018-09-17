@@ -90,7 +90,10 @@ int			parse_opts(t_job * job, int ac, char ** args)
 			}
 		}
 		else
+		{
 			parse_ip(job->targets, *args);
+		}
+
 	}
 	return (0);
 }

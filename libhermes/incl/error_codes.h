@@ -1,5 +1,5 @@
-#ifndef HERMES_ERROR_CODES_H
-#define HERMES_ERROR_CODES_H
+#ifndef ERROR_CODES_H
+#define ERROR_CODES_H
 
 typedef enum	s_exit_codes
 {

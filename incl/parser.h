@@ -1,24 +1,9 @@
-<<<<<<< HEAD
-#ifndef HERMES_PARSER_H
-# define HERMES_PARSER_H
-
-# include "../libhermes/incl/libhermes.h"
-# include "job.h"
-# include "../libhermes/incl/bool.h"
-# include <stdio.h>
-# include <stdlib.h>
-# include <sys/time.h>
-
-
-
-=======
 #ifndef PARSER_H
 # define PARSER_H
 
 # include "job.h"
 # include "bool.h"
 # include "defined.h"
->>>>>>> 3abda96736a43c4df3d9db90f645af3a2c513d65
 
 /*
 **	Dispatch TABle

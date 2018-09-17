@@ -1,18 +1,9 @@
-<<<<<<< HEAD
 #ifndef HERMES_JOB_H
 # define HERMES_JOB_H
-
-# include <stdint.h>
-# include <stddef.h>
-# include <sys/time.h>
-# include "../incl/hermes.h"
-=======
 #ifndef JOB_H
 # define JOB_H
 
-
 # include "hermese.h"
->>>>>>> 3abda96736a43c4df3d9db90f645af3a2c513d65
 
 typedef struct			s_ip4range
 {

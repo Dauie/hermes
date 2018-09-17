@@ -1,4 +1,5 @@
-#include "../../incl/parser.h"
+#include "../../incl/hermes.h"
+#include "../../incl/job.h"
 #include "../../incl/defined.h"
 
 static int		add_port(t_portlist *list, char *prt)
@@ -60,13 +61,8 @@ uint16_t		get_port(char *port_str)
 	int			port;
 
 	if ((port = atoi(port_str)) <= 0 || port > PORT_MAX)
-<<<<<<< HEAD
-		return (-1); /*hermes error fatal*/
-	return (port);
-=======
-		return (FAILURE); /*hermese error fatal*/
+		hermes_error(INPUT_ERROR, TRUE, 1, "port specified is not in range");
 	return ((uint16_t)port);
->>>>>>> 3abda96736a43c4df3d9db90f645af3a2c513d65
 }
 
 int				parse_port(t_portlist **list, char *input)
