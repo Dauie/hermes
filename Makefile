@@ -3,23 +3,30 @@ NAME = nmap
 
 CC = gcc
 
-SRCDIR = src
+SRC_DIR = src
 
 CFLAGS  = -Wall -Werror -Wextra
 
 INCL = -I incl
 
-LIBFT = ./libft/libftprintf.a
+LIBHERMES = ./libhermes
 
-SRC = traceroute.c send_recv_echo.c che
+SRC_DIR = src
+SRC_FILES = main.c worker_deamon.c
 
-SRCFILES = $(addprefix $(SRCDIR)/, $(SRC))
+PARSE_DIR = src/parsing
+PARSE_FILES = h_custom_payload.c h_files.c h_performace_opts.c h_portlists.c
+PARSE_FILES += h_host_discovery.c h_scan.c h_timeouts.c h_worker.c
+PARSE_FILES += handle.c parse_ip.c parse_ports.c parse_time.c parser.c
+
+SRC = $(addprefix $(SRC_DIR)/, $(SRC_FILES))
+SRC += $(addprefix $(PARSE_DIR)/, $(PARSE_FILES))
 
 RM = rm -fr
 
 $(NAME):
-		$(MAKE) -C ./libft/ re
-		$(CC) $(CFLAGS) $(INCL) $(SRCFILES) $(LIBFT) -o $(NAME)
+		$(MAKE) -C $(LIBHERMES) re
+		$(CC) $(CFLAGS) $(INCL) $(SRC) $(LIBHERMES) -o $(NAME)
 
 all: $(NAME)
 
