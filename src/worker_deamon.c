@@ -1,6 +1,6 @@
 
 
-#include "../incl/hermese.h"
+#include "../incl/hermes.h"
 
 typedef struct			s_daemon_session /* worker daemon session */
 {
@@ -19,7 +19,7 @@ static int				accept_wrapper(t_dsession *session)
 	if ((session->csock = accept(session->lsock,
 							(struct sockaddr*)&session->sin, &cslen)) == -1)
 		return (FAILURE);
-	/* ^ TODO add non-fatal hermese_error() call for max amount of connections */
+	/* ^ TODO add non-fatal hermes_error() call for max amount of connections */
 	return (SUCCESS);
 }
 
@@ -30,10 +30,7 @@ static int					daemon_loop(t_dsession *session)
 		if (accept_wrapper(session) == FAILURE)
 			continue;
 		if ((session->pid = fork()) < 0)
-		{
-			close(session->csock);
-			dprintf(STDERR_FILENO, "hermese: Error fork(). %s\n", strerror(errno));
-		}
+			hermes_error(INPUT_ERROR, TRUE, 2, "fork()", strerror(errno));
 		else if (session->pid > 0)
 			close(session->csock);
 		else
@@ -51,11 +48,7 @@ static void				setsockopt_wrapper(t_dsession *session)
 	opt = TRUE;
 	if (setsockopt(session->lsock, SOL_SOCKET, SO_REUSEADDR,
 				   (char *)&opt, sizeof(opt)) < 0)
-	{
-		/* TODO hermese_error() */
-		dprintf(STDERR_FILENO, "hermese: Error setsockopt(). %s", strerror(errno));
-		exit(FAILURE);
-	}
+		hermes_error(INPUT_ERROR, TRUE, 2, "setsockopt()", strerror(errno));
 }
 
 
@@ -65,41 +58,21 @@ static int				worker_daemon(int port)
 	struct protoent		*proto;
 
 	if (!(session = memalloc(sizeof(t_dsession))))
-	{
-		dprintf(STDERR_FILENO, "hermese: Error malloc(). %s\n", strerror(errno));
-		exit(EXIT_FAILURE);
-		/* TODO hermese_error() */
-	}
+		return (hermes_error(INPUT_ERROR, TRUE, 2, "malloc()", strerror(errno)));
 	session->run = TRUE;
 	/* TODO add signal handlers */
 	if ((proto = getprotobyname("tcp")) == NULL)
-	{
-		dprintf(STDERR_FILENO, "hermese: Error getprotobyname(). %s\n", strerror(errno));
-		exit(EXIT_FAILURE);
-		/* TODO hermese_error() */
-	}
+		hermes_error(INPUT_ERROR, TRUE, 2, "getprotobyname()", strerror(errno));
 	if ((session->lsock = socket(PF_INET, SOCK_STREAM, proto->p_proto)) == -1)
-	{
-		dprintf(STDERR_FILENO, "hermese: Error socket(). %s\n", strerror(errno));
-		exit(EXIT_FAILURE);
-		/*TODO hermese_error() */
-	}
+		hermes_error(INPUT_ERROR, TRUE, 2, "socket()", strerror(errno));
 	setsockopt_wrapper(session);
 	session->sin.sin_family = AF_INET;
 	session->sin.sin_port = htons(port);
 	session->sin.sin_addr.s_addr = htonl(INADDR_ANY);
 	if (bind(session->lsock, (const struct sockaddr *)&session->sin,
 			sizeof(session->sin)) < 0)
-	{
-		dprintf(STDERR_FILENO, "hermese: Error bind(). %s\n", strerror(errno));
-		exit(EXIT_FAILURE);
-		/*TODO hermese_error() */
-	}
+		hermes_error(INPUT_ERROR, TRUE, 2, "bind()", strerror(errno));
 	if (listen(session->lsock, 1) == -1)
-	{
-		dprintf(STDERR_FILENO, "hermese: Error listen(). %s\n", strerror(errno));
-		exit(EXIT_FAILURE);
-		/*TODO hermese_error() */
-	}
+		hermes_error(INPUT_ERROR, TRUE, 2, "listen()", strerror(errno));
 	return (daemon_loop(session));
 }

@@ -1,10 +1,10 @@
-#ifndef HERMESE_JOB_H
-# define HERMESE_JOB_H
+#ifndef HERMES_JOB_H
+# define HERMES_JOB_H
 
 # include <stdint.h>
 # include <stddef.h>
 # include <sys/time.h>
-# include "../incl/hermese.h"
+# include "../incl/hermes.h"
 
 typedef struct			s_ip4range
 {
@@ -88,7 +88,7 @@ typedef struct			s_optbitf
 	uint64_t			apnd_file: 1;
 }						t_optbitf;
 
-typedef struct __attribute__((__packed__))	s_ops
+typedef struct /*__attribute__((__packed__))*/	s_ops
 {
 	t_optbitf			bitops;
 	uint32_t			min_rtt_timeo;

@@ -1,4 +1,4 @@
-#include "../../incl/hermese.h"
+#include "../../incl/hermes.h"
 #include "../../incl/parser.h"
 
 /*
@@ -83,7 +83,7 @@ int			parse_opts(t_job * job, int ac, char ** args)
 			{
 				if (dtab_wopt_handle(job, args[i], args[i + 1], g_dispatch_wopt) == FAILURE)
 				{
-					dprintf(STDERR_FILENO, "hermese: invalid option %s", args[i]);
+					dprintf(STDERR_FILENO, "hermes: invalid option %s", args[i]);
 					exit(EXIT_FAILURE);
 				}
 				i++;

@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../incl/hermese.h"
+#include "../incl/hermes.h"
 #include "../incl/job.h"
 #include "../incl/parser.h"
 
@@ -21,7 +21,7 @@ int			 main(int ac, char **av)
 	if (ac < 2)
 		return (FAILURE); //h_help();
 	if (!(job = (t_job *)memalloc(sizeof(t_job))))
-		return (FAILURE); /* TODO hermese_error() */
+		hermes_error(errno, TRUE, 2, "malloc()", strerror(errno));
 	parse_opts(job, ac, av);
 	//sanity_check(job);
 }

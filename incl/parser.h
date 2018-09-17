@@ -1,9 +1,9 @@
-#ifndef HERMESE_PARSER_H
-# define HERMESE_PARSER_H
+#ifndef HERMES_PARSER_H
+# define HERMES_PARSER_H
 
-# include "../libhermese/incl/libhermese.h"
+# include "../libhermes/incl/libhermes.h"
 # include "job.h"
-# include "bool.h"
+# include "../libhermes/incl/bool.h"
 # include <stdio.h>
 # include <stdlib.h>
 # include <sys/time.h>

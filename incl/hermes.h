@@ -1,5 +1,5 @@
-#ifndef HERMESE_H
-# define HERMESE_H
+#ifndef HERMES_H
+# define HERMES_H
 
 # include <errno.h>
 # include <stdlib.h>
@@ -10,9 +10,7 @@
 # include <sys/time.h>
 # include <netdb.h>
 # include <netinet/ip_icmp.h>
-
-# include "bool.h"
-# include "../libhermese/incl/libhermese.h"
+# include "../libhermes/incl/libhermes.h"
 
 
 #endif
