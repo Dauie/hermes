@@ -1,4 +1,5 @@
-#include "../incl/libhermese.h"
+#include "../incl/libhermes.h"
+
 
 void			listadd_head(t_node **list, t_node *node)
 {
@@ -19,3 +20,5 @@ void			listadd_end(t_node **list, t_node *node)
 		tmp = tmp->next;
 	tmp->next = node;
 }
+
+

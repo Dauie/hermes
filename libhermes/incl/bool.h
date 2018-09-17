@@ -1,5 +1,5 @@
-#ifndef HERMESE_BOOL_H
-# define HERMESE_BOOL_H
+#ifndef HERMES_BOOL_H
+# define HERMES_BOOL_H
 
 # define TRUE 1
 # define FALSE 0

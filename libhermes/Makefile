@@ -6,11 +6,11 @@
 #    By: rlutt <rlutt@student.42.us.org>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2016/11/07 13:28:20 by rlutt             #+#    #+#              #
-#    Updated: 2018/08/27 14:06:17 by rlutt            ###   ########.fr        #
+#    Updated: 2018/09/16 15:21:56 by rlutt            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-NAME = libhermese.a
+NAME = libhermes.a
 
 CC = gcc
 
@@ -24,7 +24,7 @@ ARCHIVE = ar rc
 
 INDEX = ranlib
 
-HEADDR = incl/libhermese.h
+HEADDR = incl/libhermes.h
 
 FILES = list.c memory.c str_tbl.c
 

@@ -1,6 +1,7 @@
+#ifndef HERMES_JOB_H
+# define HERMES_JOB_H
 #ifndef JOB_H
 # define JOB_H
-
 
 # include "hermese.h"
 
@@ -86,7 +87,7 @@ typedef struct			s_optbitf
 	uint64_t			apnd_file: 1;
 }						t_optbitf;
 
-typedef struct __attribute__((__packed__))	s_ops
+typedef struct /*__attribute__((__packed__))*/	s_ops
 {
 	t_optbitf			bitops;
 	uint32_t			min_rtt_timeo;

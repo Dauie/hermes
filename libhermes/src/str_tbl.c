@@ -1,4 +1,4 @@
-#include "../incl/libhermese.h"
+#include "../incl/libhermes.h"
 
 void		tbldel(char ***tbl)
 {

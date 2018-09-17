@@ -1,5 +1,5 @@
-#ifndef HERMESE_OPS_DEFAULTS_H
-# define HERMESE_OPS_DEFAULTS_H
+#ifndef HERMES_DEFINES
+# define HERMES_DEFINES
 
 /*
 **   All of these default settings for timeing and rate are borrowed from

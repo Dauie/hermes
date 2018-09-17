@@ -1,5 +1,5 @@
 
-#include "../incl/libhermese.h"
+#include "../incl/libhermes.h"
 
 void		*memalloc(size_t size)
 {
