@@ -1,6 +1,6 @@
 #include "../../incl/hermes.h"
-#include "../../incl/job.h"
-#include "../../incl/defined.h"
+#include "../../incl/parser.h"
+
 
 static int		add_port(t_portlist *list, char *prt)
 {
@@ -14,12 +14,9 @@ static int		add_port(t_portlist *list, char *prt)
 	if (port > PORT_MAX || port <= 0)
 		return (hermes_error(INPUT_ERROR, TRUE, 1, "port specified is not in range"));
 
-	if (!(node = (t_node *)memalloc(sizeof(t_node))))
-		return (hermes_error(INPUT_ERROR, TRUE, 2, "malloc()", strerror(errno)));
-
+	node = new_node();
 	if (!(data = (t_port *)memalloc(sizeof(t_port))))
 		return (hermes_error(INPUT_ERROR, TRUE, 2, "malloc()", strerror(errno)));
-
 	data->port = (uint16_t)port;
 	node->data = data;
 	listadd_head(&list->ports, node);
@@ -29,62 +26,54 @@ static int		add_port(t_portlist *list, char *prt)
 
 static int		add_range(t_portlist *list, char **range)
 {
-	int			start;
-	int			end;
+	uint16_t	start;
+	uint16_t	end;
 	t_node		*node;
 	t_portrange	*data;
 
-	start = atoi(range[0]);
-	end = atoi(range[1]);
-	/*
-	** check to make sure port is in range.
-	*/
-	if (start > PORT_MAX || end > PORT_MAX || start <= 0 || end <= 0)
-		return (hermes_error(INPUT_ERROR, TRUE, 1, "port specified is not in range"));
-
-	if (!(node = (t_node *)memalloc(sizeof(t_node))))
-		return (hermes_error(INPUT_ERROR, TRUE, 2, "malloc()", strerror(errno)));
-
+	if (parse_port(&start, range[0]) == FAILURE)
+		hermes_error(INPUT_ERROR, TRUE, 1, "bad start to port range", range[0]);
+	if (parse_port(&end, range[1]) == FAILURE)
+		hermes_error(INPUT_ERROR, TRUE, 1, "bad end to port range", range[1]);
+	node = new_node();
 	if (!(data = (t_portrange *)memalloc(sizeof(t_portrange))))
-		return (hermes_error(INPUT_ERROR, TRUE, 2, "malloc()", strerror(errno)));
-
-	data->start = (uint16_t)start;
-	data->end = (uint16_t)end;
+		return (hermes_error(errno, TRUE, 2, "malloc()", strerror(errno)));
+	data->start = start;
+	data->end = end;
 	node->data = data;
 	listadd_head(&list->port_range, node);
 	list->range_count++;
 	return (SUCCESS);
 }
 
-uint16_t		get_port(char *port_str)
+int				parse_port(uint16_t *port, char *port_str)
 {
-	int			port;
+	int			ret;
 
-	if ((port = atoi(port_str)) <= 0 || port > PORT_MAX)
-		hermes_error(INPUT_ERROR, TRUE, 1, "port specified is not in range");
-	return ((uint16_t)port);
+	if ((ret = atoi(port_str)) <= 0 || ret > PORT_MAX)
+		return (FAILURE);
+	*port = (uint16_t)ret;
+	return (SUCCESS);
 }
 
-int				parse_port(t_portlist **list, char *input)
+int				handle_port(t_portlist *list, char *input)
 {
 	char		*port;
 	char		**port_range;
 
 	/* TODO: Make sure all portlists in job are free'd */
-	if (!(*list = memalloc(sizeof(t_portlist))))
-		return (hermes_error(INPUT_ERROR, TRUE, 2, "malloc()", strerror(errno)));
 	while ((port = strsep(&input, ",")) != NULL)
 	{
 		if (strchr(port, '-'))
 		{
 			if (!(port_range = strsplit(port, '-')))
-				return (hermes_error(INPUT_ERROR, TRUE, 1, "strsplit() failed"));
-			if (add_range(*list, port_range) == FAILURE)
+				return (hermes_error(INPUT_ERROR, TRUE, 1, "strsplit()"));
+			if (add_range(list, port_range) == FAILURE)
 				return (FAILURE);
 			tbldel(&port_range);
 		}
 		else
-			if (add_port(*list, port) == FAILURE)
+			if (add_port(list, port) == FAILURE)
 				return (FAILURE);
 	}
 	return (SUCCESS);

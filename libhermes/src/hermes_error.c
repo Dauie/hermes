@@ -17,7 +17,7 @@ int				hermes_error(int errcode, int fatal, int str_amt, ...)
 			i += sprintf(buff + i, " %s", va_arg(ap,
 					char *));
 		va_end(ap);
-		dprintf(STDERR_FILENO, "hermese: Error - %s.", buff);
+		dprintf(STDERR_FILENO, "hermese: Error -%s.\n", buff);
 	}
 	if (fatal == TRUE)
 		exit(errcode);

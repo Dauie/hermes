@@ -123,6 +123,546 @@ hermese/fast:
 	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/build
 .PHONY : hermese/fast
 
+libhermes/src/hermes_error.o: libhermes/src/hermes_error.c.o
+
+.PHONY : libhermes/src/hermes_error.o
+
+# target to build an object file
+libhermes/src/hermes_error.c.o:
+	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/libhermes/src/hermes_error.c.o
+.PHONY : libhermes/src/hermes_error.c.o
+
+libhermes/src/hermes_error.i: libhermes/src/hermes_error.c.i
+
+.PHONY : libhermes/src/hermes_error.i
+
+# target to preprocess a source file
+libhermes/src/hermes_error.c.i:
+	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/libhermes/src/hermes_error.c.i
+.PHONY : libhermes/src/hermes_error.c.i
+
+libhermes/src/hermes_error.s: libhermes/src/hermes_error.c.s
+
+.PHONY : libhermes/src/hermes_error.s
+
+# target to generate assembly for a file
+libhermes/src/hermes_error.c.s:
+	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/libhermes/src/hermes_error.c.s
+.PHONY : libhermes/src/hermes_error.c.s
+
+libhermes/src/list.o: libhermes/src/list.c.o
+
+.PHONY : libhermes/src/list.o
+
+# target to build an object file
+libhermes/src/list.c.o:
+	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/libhermes/src/list.c.o
+.PHONY : libhermes/src/list.c.o
+
+libhermes/src/list.i: libhermes/src/list.c.i
+
+.PHONY : libhermes/src/list.i
+
+# target to preprocess a source file
+libhermes/src/list.c.i:
+	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/libhermes/src/list.c.i
+.PHONY : libhermes/src/list.c.i
+
+libhermes/src/list.s: libhermes/src/list.c.s
+
+.PHONY : libhermes/src/list.s
+
+# target to generate assembly for a file
+libhermes/src/list.c.s:
+	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/libhermes/src/list.c.s
+.PHONY : libhermes/src/list.c.s
+
+libhermes/src/memory.o: libhermes/src/memory.c.o
+
+.PHONY : libhermes/src/memory.o
+
+# target to build an object file
+libhermes/src/memory.c.o:
+	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/libhermes/src/memory.c.o
+.PHONY : libhermes/src/memory.c.o
+
+libhermes/src/memory.i: libhermes/src/memory.c.i
+
+.PHONY : libhermes/src/memory.i
+
+# target to preprocess a source file
+libhermes/src/memory.c.i:
+	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/libhermes/src/memory.c.i
+.PHONY : libhermes/src/memory.c.i
+
+libhermes/src/memory.s: libhermes/src/memory.c.s
+
+.PHONY : libhermes/src/memory.s
+
+# target to generate assembly for a file
+libhermes/src/memory.c.s:
+	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/libhermes/src/memory.c.s
+.PHONY : libhermes/src/memory.c.s
+
+libhermes/src/str_tbl.o: libhermes/src/str_tbl.c.o
+
+.PHONY : libhermes/src/str_tbl.o
+
+# target to build an object file
+libhermes/src/str_tbl.c.o:
+	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/libhermes/src/str_tbl.c.o
+.PHONY : libhermes/src/str_tbl.c.o
+
+libhermes/src/str_tbl.i: libhermes/src/str_tbl.c.i
+
+.PHONY : libhermes/src/str_tbl.i
+
+# target to preprocess a source file
+libhermes/src/str_tbl.c.i:
+	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/libhermes/src/str_tbl.c.i
+.PHONY : libhermes/src/str_tbl.c.i
+
+libhermes/src/str_tbl.s: libhermes/src/str_tbl.c.s
+
+.PHONY : libhermes/src/str_tbl.s
+
+# target to generate assembly for a file
+libhermes/src/str_tbl.c.s:
+	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/libhermes/src/str_tbl.c.s
+.PHONY : libhermes/src/str_tbl.c.s
+
+src/main.o: src/main.c.o
+
+.PHONY : src/main.o
+
+# target to build an object file
+src/main.c.o:
+	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/src/main.c.o
+.PHONY : src/main.c.o
+
+src/main.i: src/main.c.i
+
+.PHONY : src/main.i
+
+# target to preprocess a source file
+src/main.c.i:
+	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/src/main.c.i
+.PHONY : src/main.c.i
+
+src/main.s: src/main.c.s
+
+.PHONY : src/main.s
+
+# target to generate assembly for a file
+src/main.c.s:
+	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/src/main.c.s
+.PHONY : src/main.c.s
+
+src/parsing/h_custom_payload.o: src/parsing/h_custom_payload.c.o
+
+.PHONY : src/parsing/h_custom_payload.o
+
+# target to build an object file
+src/parsing/h_custom_payload.c.o:
+	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/src/parsing/h_custom_payload.c.o
+.PHONY : src/parsing/h_custom_payload.c.o
+
+src/parsing/h_custom_payload.i: src/parsing/h_custom_payload.c.i
+
+.PHONY : src/parsing/h_custom_payload.i
+
+# target to preprocess a source file
+src/parsing/h_custom_payload.c.i:
+	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/src/parsing/h_custom_payload.c.i
+.PHONY : src/parsing/h_custom_payload.c.i
+
+src/parsing/h_custom_payload.s: src/parsing/h_custom_payload.c.s
+
+.PHONY : src/parsing/h_custom_payload.s
+
+# target to generate assembly for a file
+src/parsing/h_custom_payload.c.s:
+	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/src/parsing/h_custom_payload.c.s
+.PHONY : src/parsing/h_custom_payload.c.s
+
+src/parsing/h_files.o: src/parsing/h_files.c.o
+
+.PHONY : src/parsing/h_files.o
+
+# target to build an object file
+src/parsing/h_files.c.o:
+	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/src/parsing/h_files.c.o
+.PHONY : src/parsing/h_files.c.o
+
+src/parsing/h_files.i: src/parsing/h_files.c.i
+
+.PHONY : src/parsing/h_files.i
+
+# target to preprocess a source file
+src/parsing/h_files.c.i:
+	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/src/parsing/h_files.c.i
+.PHONY : src/parsing/h_files.c.i
+
+src/parsing/h_files.s: src/parsing/h_files.c.s
+
+.PHONY : src/parsing/h_files.s
+
+# target to generate assembly for a file
+src/parsing/h_files.c.s:
+	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/src/parsing/h_files.c.s
+.PHONY : src/parsing/h_files.c.s
+
+src/parsing/h_host_discovery.o: src/parsing/h_host_discovery.c.o
+
+.PHONY : src/parsing/h_host_discovery.o
+
+# target to build an object file
+src/parsing/h_host_discovery.c.o:
+	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/src/parsing/h_host_discovery.c.o
+.PHONY : src/parsing/h_host_discovery.c.o
+
+src/parsing/h_host_discovery.i: src/parsing/h_host_discovery.c.i
+
+.PHONY : src/parsing/h_host_discovery.i
+
+# target to preprocess a source file
+src/parsing/h_host_discovery.c.i:
+	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/src/parsing/h_host_discovery.c.i
+.PHONY : src/parsing/h_host_discovery.c.i
+
+src/parsing/h_host_discovery.s: src/parsing/h_host_discovery.c.s
+
+.PHONY : src/parsing/h_host_discovery.s
+
+# target to generate assembly for a file
+src/parsing/h_host_discovery.c.s:
+	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/src/parsing/h_host_discovery.c.s
+.PHONY : src/parsing/h_host_discovery.c.s
+
+src/parsing/h_output_ops.o: src/parsing/h_output_ops.c.o
+
+.PHONY : src/parsing/h_output_ops.o
+
+# target to build an object file
+src/parsing/h_output_ops.c.o:
+	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/src/parsing/h_output_ops.c.o
+.PHONY : src/parsing/h_output_ops.c.o
+
+src/parsing/h_output_ops.i: src/parsing/h_output_ops.c.i
+
+.PHONY : src/parsing/h_output_ops.i
+
+# target to preprocess a source file
+src/parsing/h_output_ops.c.i:
+	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/src/parsing/h_output_ops.c.i
+.PHONY : src/parsing/h_output_ops.c.i
+
+src/parsing/h_output_ops.s: src/parsing/h_output_ops.c.s
+
+.PHONY : src/parsing/h_output_ops.s
+
+# target to generate assembly for a file
+src/parsing/h_output_ops.c.s:
+	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/src/parsing/h_output_ops.c.s
+.PHONY : src/parsing/h_output_ops.c.s
+
+src/parsing/h_performace_opts.o: src/parsing/h_performace_opts.c.o
+
+.PHONY : src/parsing/h_performace_opts.o
+
+# target to build an object file
+src/parsing/h_performace_opts.c.o:
+	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/src/parsing/h_performace_opts.c.o
+.PHONY : src/parsing/h_performace_opts.c.o
+
+src/parsing/h_performace_opts.i: src/parsing/h_performace_opts.c.i
+
+.PHONY : src/parsing/h_performace_opts.i
+
+# target to preprocess a source file
+src/parsing/h_performace_opts.c.i:
+	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/src/parsing/h_performace_opts.c.i
+.PHONY : src/parsing/h_performace_opts.c.i
+
+src/parsing/h_performace_opts.s: src/parsing/h_performace_opts.c.s
+
+.PHONY : src/parsing/h_performace_opts.s
+
+# target to generate assembly for a file
+src/parsing/h_performace_opts.c.s:
+	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/src/parsing/h_performace_opts.c.s
+.PHONY : src/parsing/h_performace_opts.c.s
+
+src/parsing/h_portlists.o: src/parsing/h_portlists.c.o
+
+.PHONY : src/parsing/h_portlists.o
+
+# target to build an object file
+src/parsing/h_portlists.c.o:
+	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/src/parsing/h_portlists.c.o
+.PHONY : src/parsing/h_portlists.c.o
+
+src/parsing/h_portlists.i: src/parsing/h_portlists.c.i
+
+.PHONY : src/parsing/h_portlists.i
+
+# target to preprocess a source file
+src/parsing/h_portlists.c.i:
+	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/src/parsing/h_portlists.c.i
+.PHONY : src/parsing/h_portlists.c.i
+
+src/parsing/h_portlists.s: src/parsing/h_portlists.c.s
+
+.PHONY : src/parsing/h_portlists.s
+
+# target to generate assembly for a file
+src/parsing/h_portlists.c.s:
+	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/src/parsing/h_portlists.c.s
+.PHONY : src/parsing/h_portlists.c.s
+
+src/parsing/h_scan.o: src/parsing/h_scan.c.o
+
+.PHONY : src/parsing/h_scan.o
+
+# target to build an object file
+src/parsing/h_scan.c.o:
+	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/src/parsing/h_scan.c.o
+.PHONY : src/parsing/h_scan.c.o
+
+src/parsing/h_scan.i: src/parsing/h_scan.c.i
+
+.PHONY : src/parsing/h_scan.i
+
+# target to preprocess a source file
+src/parsing/h_scan.c.i:
+	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/src/parsing/h_scan.c.i
+.PHONY : src/parsing/h_scan.c.i
+
+src/parsing/h_scan.s: src/parsing/h_scan.c.s
+
+.PHONY : src/parsing/h_scan.s
+
+# target to generate assembly for a file
+src/parsing/h_scan.c.s:
+	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/src/parsing/h_scan.c.s
+.PHONY : src/parsing/h_scan.c.s
+
+src/parsing/h_timeouts.o: src/parsing/h_timeouts.c.o
+
+.PHONY : src/parsing/h_timeouts.o
+
+# target to build an object file
+src/parsing/h_timeouts.c.o:
+	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/src/parsing/h_timeouts.c.o
+.PHONY : src/parsing/h_timeouts.c.o
+
+src/parsing/h_timeouts.i: src/parsing/h_timeouts.c.i
+
+.PHONY : src/parsing/h_timeouts.i
+
+# target to preprocess a source file
+src/parsing/h_timeouts.c.i:
+	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/src/parsing/h_timeouts.c.i
+.PHONY : src/parsing/h_timeouts.c.i
+
+src/parsing/h_timeouts.s: src/parsing/h_timeouts.c.s
+
+.PHONY : src/parsing/h_timeouts.s
+
+# target to generate assembly for a file
+src/parsing/h_timeouts.c.s:
+	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/src/parsing/h_timeouts.c.s
+.PHONY : src/parsing/h_timeouts.c.s
+
+src/parsing/h_worker.o: src/parsing/h_worker.c.o
+
+.PHONY : src/parsing/h_worker.o
+
+# target to build an object file
+src/parsing/h_worker.c.o:
+	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/src/parsing/h_worker.c.o
+.PHONY : src/parsing/h_worker.c.o
+
+src/parsing/h_worker.i: src/parsing/h_worker.c.i
+
+.PHONY : src/parsing/h_worker.i
+
+# target to preprocess a source file
+src/parsing/h_worker.c.i:
+	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/src/parsing/h_worker.c.i
+.PHONY : src/parsing/h_worker.c.i
+
+src/parsing/h_worker.s: src/parsing/h_worker.c.s
+
+.PHONY : src/parsing/h_worker.s
+
+# target to generate assembly for a file
+src/parsing/h_worker.c.s:
+	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/src/parsing/h_worker.c.s
+.PHONY : src/parsing/h_worker.c.s
+
+src/parsing/parse_file.o: src/parsing/parse_file.c.o
+
+.PHONY : src/parsing/parse_file.o
+
+# target to build an object file
+src/parsing/parse_file.c.o:
+	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/src/parsing/parse_file.c.o
+.PHONY : src/parsing/parse_file.c.o
+
+src/parsing/parse_file.i: src/parsing/parse_file.c.i
+
+.PHONY : src/parsing/parse_file.i
+
+# target to preprocess a source file
+src/parsing/parse_file.c.i:
+	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/src/parsing/parse_file.c.i
+.PHONY : src/parsing/parse_file.c.i
+
+src/parsing/parse_file.s: src/parsing/parse_file.c.s
+
+.PHONY : src/parsing/parse_file.s
+
+# target to generate assembly for a file
+src/parsing/parse_file.c.s:
+	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/src/parsing/parse_file.c.s
+.PHONY : src/parsing/parse_file.c.s
+
+src/parsing/parse_ip.o: src/parsing/parse_ip.c.o
+
+.PHONY : src/parsing/parse_ip.o
+
+# target to build an object file
+src/parsing/parse_ip.c.o:
+	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/src/parsing/parse_ip.c.o
+.PHONY : src/parsing/parse_ip.c.o
+
+src/parsing/parse_ip.i: src/parsing/parse_ip.c.i
+
+.PHONY : src/parsing/parse_ip.i
+
+# target to preprocess a source file
+src/parsing/parse_ip.c.i:
+	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/src/parsing/parse_ip.c.i
+.PHONY : src/parsing/parse_ip.c.i
+
+src/parsing/parse_ip.s: src/parsing/parse_ip.c.s
+
+.PHONY : src/parsing/parse_ip.s
+
+# target to generate assembly for a file
+src/parsing/parse_ip.c.s:
+	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/src/parsing/parse_ip.c.s
+.PHONY : src/parsing/parse_ip.c.s
+
+src/parsing/parse_ports.o: src/parsing/parse_ports.c.o
+
+.PHONY : src/parsing/parse_ports.o
+
+# target to build an object file
+src/parsing/parse_ports.c.o:
+	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/src/parsing/parse_ports.c.o
+.PHONY : src/parsing/parse_ports.c.o
+
+src/parsing/parse_ports.i: src/parsing/parse_ports.c.i
+
+.PHONY : src/parsing/parse_ports.i
+
+# target to preprocess a source file
+src/parsing/parse_ports.c.i:
+	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/src/parsing/parse_ports.c.i
+.PHONY : src/parsing/parse_ports.c.i
+
+src/parsing/parse_ports.s: src/parsing/parse_ports.c.s
+
+.PHONY : src/parsing/parse_ports.s
+
+# target to generate assembly for a file
+src/parsing/parse_ports.c.s:
+	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/src/parsing/parse_ports.c.s
+.PHONY : src/parsing/parse_ports.c.s
+
+src/parsing/parse_time.o: src/parsing/parse_time.c.o
+
+.PHONY : src/parsing/parse_time.o
+
+# target to build an object file
+src/parsing/parse_time.c.o:
+	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/src/parsing/parse_time.c.o
+.PHONY : src/parsing/parse_time.c.o
+
+src/parsing/parse_time.i: src/parsing/parse_time.c.i
+
+.PHONY : src/parsing/parse_time.i
+
+# target to preprocess a source file
+src/parsing/parse_time.c.i:
+	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/src/parsing/parse_time.c.i
+.PHONY : src/parsing/parse_time.c.i
+
+src/parsing/parse_time.s: src/parsing/parse_time.c.s
+
+.PHONY : src/parsing/parse_time.s
+
+# target to generate assembly for a file
+src/parsing/parse_time.c.s:
+	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/src/parsing/parse_time.c.s
+.PHONY : src/parsing/parse_time.c.s
+
+src/parsing/parser.o: src/parsing/parser.c.o
+
+.PHONY : src/parsing/parser.o
+
+# target to build an object file
+src/parsing/parser.c.o:
+	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/src/parsing/parser.c.o
+.PHONY : src/parsing/parser.c.o
+
+src/parsing/parser.i: src/parsing/parser.c.i
+
+.PHONY : src/parsing/parser.i
+
+# target to preprocess a source file
+src/parsing/parser.c.i:
+	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/src/parsing/parser.c.i
+.PHONY : src/parsing/parser.c.i
+
+src/parsing/parser.s: src/parsing/parser.c.s
+
+.PHONY : src/parsing/parser.s
+
+# target to generate assembly for a file
+src/parsing/parser.c.s:
+	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/src/parsing/parser.c.s
+.PHONY : src/parsing/parser.c.s
+
+src/worker_deamon.o: src/worker_deamon.c.o
+
+.PHONY : src/worker_deamon.o
+
+# target to build an object file
+src/worker_deamon.c.o:
+	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/src/worker_deamon.c.o
+.PHONY : src/worker_deamon.c.o
+
+src/worker_deamon.i: src/worker_deamon.c.i
+
+.PHONY : src/worker_deamon.i
+
+# target to preprocess a source file
+src/worker_deamon.c.i:
+	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/src/worker_deamon.c.i
+.PHONY : src/worker_deamon.c.i
+
+src/worker_deamon.s: src/worker_deamon.c.s
+
+.PHONY : src/worker_deamon.s
+
+# target to generate assembly for a file
+src/worker_deamon.c.s:
+	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/src/worker_deamon.c.s
+.PHONY : src/worker_deamon.c.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -132,6 +672,66 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... hermese"
+	@echo "... libhermes/src/hermes_error.o"
+	@echo "... libhermes/src/hermes_error.i"
+	@echo "... libhermes/src/hermes_error.s"
+	@echo "... libhermes/src/list.o"
+	@echo "... libhermes/src/list.i"
+	@echo "... libhermes/src/list.s"
+	@echo "... libhermes/src/memory.o"
+	@echo "... libhermes/src/memory.i"
+	@echo "... libhermes/src/memory.s"
+	@echo "... libhermes/src/str_tbl.o"
+	@echo "... libhermes/src/str_tbl.i"
+	@echo "... libhermes/src/str_tbl.s"
+	@echo "... src/main.o"
+	@echo "... src/main.i"
+	@echo "... src/main.s"
+	@echo "... src/parsing/h_custom_payload.o"
+	@echo "... src/parsing/h_custom_payload.i"
+	@echo "... src/parsing/h_custom_payload.s"
+	@echo "... src/parsing/h_files.o"
+	@echo "... src/parsing/h_files.i"
+	@echo "... src/parsing/h_files.s"
+	@echo "... src/parsing/h_host_discovery.o"
+	@echo "... src/parsing/h_host_discovery.i"
+	@echo "... src/parsing/h_host_discovery.s"
+	@echo "... src/parsing/h_output_ops.o"
+	@echo "... src/parsing/h_output_ops.i"
+	@echo "... src/parsing/h_output_ops.s"
+	@echo "... src/parsing/h_performace_opts.o"
+	@echo "... src/parsing/h_performace_opts.i"
+	@echo "... src/parsing/h_performace_opts.s"
+	@echo "... src/parsing/h_portlists.o"
+	@echo "... src/parsing/h_portlists.i"
+	@echo "... src/parsing/h_portlists.s"
+	@echo "... src/parsing/h_scan.o"
+	@echo "... src/parsing/h_scan.i"
+	@echo "... src/parsing/h_scan.s"
+	@echo "... src/parsing/h_timeouts.o"
+	@echo "... src/parsing/h_timeouts.i"
+	@echo "... src/parsing/h_timeouts.s"
+	@echo "... src/parsing/h_worker.o"
+	@echo "... src/parsing/h_worker.i"
+	@echo "... src/parsing/h_worker.s"
+	@echo "... src/parsing/parse_file.o"
+	@echo "... src/parsing/parse_file.i"
+	@echo "... src/parsing/parse_file.s"
+	@echo "... src/parsing/parse_ip.o"
+	@echo "... src/parsing/parse_ip.i"
+	@echo "... src/parsing/parse_ip.s"
+	@echo "... src/parsing/parse_ports.o"
+	@echo "... src/parsing/parse_ports.i"
+	@echo "... src/parsing/parse_ports.s"
+	@echo "... src/parsing/parse_time.o"
+	@echo "... src/parsing/parse_time.i"
+	@echo "... src/parsing/parse_time.s"
+	@echo "... src/parsing/parser.o"
+	@echo "... src/parsing/parser.i"
+	@echo "... src/parsing/parser.s"
+	@echo "... src/worker_deamon.o"
+	@echo "... src/worker_deamon.i"
+	@echo "... src/worker_deamon.s"
 .PHONY : help
 
 

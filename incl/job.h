@@ -79,9 +79,10 @@ typedef struct			s_optbitf
 	uint64_t			custom_hex_payload: 1;
 	uint64_t			custom_ascii_payload: 1;
 	uint64_t			custom_rand_payload: 1;
+	uint64_t			custom_ip_ttl : 1;
 	uint64_t			output_xml: 1;
 	uint64_t			output_norm: 1;
-	uint64_t			output_only_open_ports: 1;
+	uint64_t			show_only_open_ports: 1;
 	uint64_t			apnd_file: 1;
 }						t_optbitf;
 
@@ -106,7 +107,7 @@ typedef struct /*__attribute__((__packed__))*/	s_ops
 	uint32_t			spoofed_srcaddr;
 	uint16_t			spoofed_srcport;
 	uint16_t			ip_ttl;
-	uint16_t			mtu;
+	uint16_t			fragment_mtu;
 	uint16_t			rpayload_len;
 	uint16_t			thread_count;
 	uint16_t			verbose_level; /* Default 0, verbose 1, very verbose 2 TODO: possibe enum */
@@ -115,14 +116,14 @@ typedef struct /*__attribute__((__packed__))*/	s_ops
 typedef struct			s_job
 {
 	t_ops				options;
-	t_targetlist		*targets;
-	t_targetlist		*exclude_targets;
+	t_targetlist		targets;
+	t_targetlist		exclude_targets;
 	t_node				*worker_list; /* node pop. w/ worker type -> next worker */
-	t_portlist			*scan_portlist;
-	t_portlist			*exclude_portlist;
-	t_portlist			*d_syn_portlist;
-	t_portlist			*d_ack_portlist;
-	t_portlist			*d_udp_portlist;
+	t_portlist			scan_portlist;
+	t_portlist			exclude_portlist;
+	t_portlist			d_syn_portlist;
+	t_portlist			d_ack_portlist;
+	t_portlist			d_udp_portlist;
 	void				*custom_payload;
 	FILE				*resume_file;
 	FILE				*xml_file;

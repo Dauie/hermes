@@ -5,14 +5,15 @@
 **	If something is commented out in DTABs, it is low priority.
 */
 
-# define DTAB_ENTRIES 17
+# define DTAB_ENTRIES 18
 
-t_dtab g_dispatch[] = {
+t_dtab g_disp[] = {
 		{ "--append-output", h_append_output },
 		{ "--badsum", h_bad_checksum },
-		{ "--open", h_show_only_open },
+		{ "--open", h_show_only_open_ports },
 //		{ "--iflist", h_show_interfaces },
 //		{ "-O", h_os_detection },
+		{ "-oN", h_norm_output},
 		{ "-PE", h_icmp_host_discovery },
 		{ "-Pn", h_skip_host_discovery },
 		{ "-PP", h_tstamp_host_discovery },
@@ -20,7 +21,7 @@ t_dtab g_dispatch[] = {
 		{ "-r", h_dont_randomize_ports },
 		{ "-sA", h_ack_scan },
 		{ "-sF", h_fin_scan },
-		{ "-sL", h_scan_list },
+		{ "-sL", h_list_scan },
 		{ "-sn", h_ping_scan },
 		{ "-sS", h_syn_scan },
 		{ "-sT", h_null_scan },
@@ -32,9 +33,9 @@ t_dtab g_dispatch[] = {
 //		{ "-vv", h_very_verbose_output },
 };
 
-# define DTAB_WOPT_ENTRIES 29
+# define DTAB_WOPT_ENTRIES 28
 
-t_dtab_wopt g_dispatch_wopt[] = {
+t_dtab_wopt g_disp_wopt[] = {
 
 		{ "--data", h_custom_payload_hex },
 		{ "--data-length", h_custom_random_payload },
@@ -44,7 +45,7 @@ t_dtab_wopt g_dispatch_wopt[] = {
 		{ "--exclude-ports", h_exclude_ports },
 		{ "-g", h_spoof_srcport},
 		{ "--host-timeout", h_host_timeout },
-		{ "-iL", h_ip_file },
+		{ "-iL", h_target_file },
 		{ "--max-hostgroup", h_max_hostgroup },
 		{ "--max-rate", h_max_packet_rate },
 		{ "--max-retires", h_max_retries },
@@ -53,8 +54,7 @@ t_dtab_wopt g_dispatch_wopt[] = {
 		{ "--min-hostgroup", h_min_hostgroup },
 		{ "--min-rate", h_min_packet_rate },
 		{ "--min-rtt-timeout", h_min_rtt_timeout },
-		{ "--mtu", h_fragment_mtu },
-		{ "-oN", h_norm_output},
+		{ "--fragment_mtu", h_fragment_mtu },
 //		{ "-oX", h_xml_output},
 		{ "-p", h_scan_portlist },
 		{ "-PA", h_ack_portlist },
@@ -64,36 +64,70 @@ t_dtab_wopt g_dispatch_wopt[] = {
 		{ "-S", h_spoof_srcip },
 		{ "--scan-delay", h_scan_delay },
 		{ "--source-port", h_spoof_srcport },
-		{ "-ttl", h_ip_ttl },
+		{ "-ttl", h_custom_ip_ttl },
 		{ "--thread", h_thread_amt },
-		{ "--worker", h_worker }
+		{ "--worker", h_worker },
 };
 
+int			dtab_loop(t_job *job, char *arg, t_dtab *tab)
+{
+	int		i;
+	size_t	len;
 
-int			parse_opts(t_job * job, int ac, char ** args)
+	i = -1;
+	len = strlen(arg);
+	/* iterate TAB and look for the correct entry */
+	while (++i < DTAB_ENTRIES)
+	{
+		if (strncmp(arg, tab->name, len) == 0)
+		{
+			tab[i].function(job);
+			return (SUCCESS);
+		}
+	}
+	return (FAILURE);
+}
+
+int			dtab_wopt_loop(t_job *job, char *arg, char *opt,
+							  t_dtab_wopt *tab)
+{
+	int		i;
+	size_t	len;
+
+	i = -1;
+	len = strlen(arg);
+	/* iterate TAB and look for the correct entry */
+	while (++i < DTAB_WOPT_ENTRIES)
+	{
+		if (strncmp(arg, tab->name, len) == 0)
+		{
+			tab[i].function(job, opt);
+			return (SUCCESS);
+		}
+	}
+	return (FAILURE);
+}
+
+int			parse_opts(t_job * job, int ac, char **args)
 {
 	int		i;
 
 	i = 0;
 	while (++i < ac)
 	{
-		if (args[i][0] == '-')
-		{
-			if (dtab_handle(job, *args, g_dispatch) == FAILURE)
+		if (args[i][0] == '-') {
+			if (dtab_loop(job, *args, g_disp) == FAILURE)
 			{
-				if (dtab_wopt_handle(job, args[i], args[i + 1], g_dispatch_wopt) == FAILURE)
-				{
-					dprintf(STDERR_FILENO, "hermes: invalid option %s", args[i]);
-					exit(EXIT_FAILURE);
-				}
-				i++;
+				if (dtab_wopt_loop(job, args[i], args[i + 1], g_disp_wopt) == FAILURE)
+					hermes_error(INPUT_ERROR, TRUE, 2, "invalid option", args[i]);
+				i++; 
 			}
 		}
 		else
 		{
-			parse_ip(job->targets, *args);
+			if (handle_ip(&job->targets, args[i]) < 0)
+				hermes_error(INPUT_ERROR, TRUE, 1, "issue parsing targets");
 		}
-
 	}
-	return (0);
+	return (SUCCESS);
 }

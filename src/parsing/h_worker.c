@@ -1,42 +1,40 @@
 #include "../../incl/parser.h"
 
-t_worker *new_worker(void) {
-	t_worker *worker;
+t_worker		*new_worker(void)
+{
+	t_worker	*worker;
 
 	if (!(worker = (t_worker*)memalloc(sizeof(t_worker))))
-		return (NULL);
+		hermes_error(errno, TRUE, 2, "malloc()", strerror(errno));
 	return (worker);
 }
 
-void set_worker(t_worker *data, uint32_t ip, uint16_t port) {
-	memcpy(&data->ip, &ip, sizeof(uint32_t));
-	memcpy(&data->port, &port, sizeof(uint16_t));
-}
-
-void h_worker(t_node *worker_list, char *input) {
-	uint32_t 	ip;
-	uint16_t 	port;
+void			h_worker(t_job *job, char *input)
+{
+	uint32_t	ip;
+	uint16_t	port;
 	t_worker	*data;
 	t_node		*node;
-	char		**wlist; /* worker list */
+	char		*worker;
+	char		*ip_str;
+	char		*port_str;
 
-	if (input) {
-		wlist = strsplit(input, ',');
-		while (wlist) {
-			if (!(data = new_worker()))
-				return;
-			if (!(node = new_node()))
-				return;
-            if ((ip = get_ip(strsep(wlist, ":"))) < 0)
-            	return;
-			if ((port = get_port(wlist)) < 0)
-				return;
-			set_worker(&data, ip, port);
-			set_node(node, data, sizeof(data));
-			listadd_head(&worker_list, node);
-            wlist++;
-            if (data)
-            	free(data);
-        }
-    }
+	if (input == NULL)
+		hermes_error(INPUT_ERROR, TRUE, 1, "no ip:port provided for worker");
+	while ((worker = strsep(&input, ",")))
+	{
+		port_str = worker;
+		if (!(ip_str = strsep(&port_str, ":")))
+			hermes_error(INPUT_ERROR, TRUE, 2, "no port specified for worker", worker);
+		if ((parse_ip(&ip, ip_str)) == FAILURE)
+			hermes_error(INPUT_ERROR, TRUE, 2, "bad ip provided for worker", ip_str);
+		if ((parse_port(&port, port_str)) == FAILURE)
+			hermes_error(INPUT_ERROR, TRUE, 2, "bad port provided for worker", port_str);
+		data = new_worker();
+		node = new_node();
+		data->ip = ip;
+		data->port = port;
+		node->data = data;
+		listadd_head(&job->worker_list, node);
+	}
 }

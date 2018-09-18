@@ -7,7 +7,9 @@
 **   Im positive that these defaults are product of years of research
 **   and trial and error.
 */
-# define IP_MAX 255
+
+# define TTL_MAX 256
+# define MTU_MAX 1500
 
 # define PORT_MAX (65535)
 # define MAX_THREADS (256)

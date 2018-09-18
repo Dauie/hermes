@@ -1,33 +1,33 @@
 #include "../incl/libhermes.h"
 #include "../../incl/job.h"
 
-t_node *new_node(size_t size) {
+t_node		*new_node(void)
+{
 	t_node	*node;
 
 	if (!(node = (t_node*)memalloc(sizeof(t_node))))
-		return (NULL);
-	if (!(node->data = memalloc(size)))
-		return (NULL);
+		hermes_error(errno, TRUE, 2, "malloc()", strerror(errno));
 	return (node);
-}
-
-void set_node(t_node *node, void *data, size_t size) {
-	memcpy(node->data, data, size);
 }
 
 void			listadd_head(t_node **list, t_node *node)
 {
-	if (!list || !*list || !node)
+	if (!list || !node)
 		return;
-	node->next = *list;
-	*list = node;
+	if (*list == NULL)
+		*list = node;
+	else
+	{
+		node->next = *list;
+		*list = node;
+	}
 }
 
 void			listadd_end(t_node **list, t_node *node)
 {
 	t_node		*tmp;
 
-	if (!list || !*list || !node)
+	if (!list || !node)
 		return;
 	tmp = *list;
 	while (tmp->next)

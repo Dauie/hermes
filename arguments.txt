@@ -78,7 +78,7 @@ OS DETECTION:
 **------------------------------------------------------------------------------
 
 FIREWALL/IDS EVASION AND SPOOFING:
-  -f; --mtu <val>: fragment packets (optionally w/given MTU)
+  -f; --fragment_mtu <val>: fragment packets (optionally w/given MTU)
   -D <decoy1,decoy2[,ME],...>: Cloak a scan with decoys
   -S <IP_Address>: Spoof source address
   -e <iface>: Use specified interface

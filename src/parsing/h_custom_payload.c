@@ -3,6 +3,8 @@
 void			h_custom_payload_hex(t_job *job, char *input)
 {
 	/* TODO implement it.*/
+	(void)job;
+	(void)input;
 	return ;
 }
 

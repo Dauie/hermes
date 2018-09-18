@@ -1,133 +1,118 @@
 # include "../../incl/parser.h"
 
-t_ip4 *new_ip4(void) {
-	t_ip4 *data;
+static t_ip4		*new_ip4(void)
+{
+	t_ip4			*data;
 
 	if (!(data = (t_ip4*)memalloc(sizeof(t_ip4))))
+	{
+		hermes_error(errno, TRUE, 2, "malloc()", strerror(errno));
 		return (NULL);
+	}
 	return (data);
 }
 
-int verify_ip(uint32_t *ip, char *ip_str) {
-	if (inet_pton(AF_INET, ip_str, ip) < 1)
-		return (hermes_error(INPUT_ERROR, TRUE, 2, "inet_pton()", strerror(errno)));
-	if (*ip > IP_MAX)
-		return (hermes_error(INPUT_ERROR, TRUE, 1, "IP out of range"));
-	return (1);
+static t_ip4range	*new_ip4range(void)
+{
+	t_ip4range		*data;
+
+	if (!(data = (t_ip4range*)memalloc(sizeof(t_ip4range))))
+	{
+		hermes_error(errno, TRUE, 2, "malloc()", strerror(errno));
+		return (NULL);
+	}
+	return (data);
 }
 
-int get_ip(uint32_t *ip, char *ip_str) {
-	printf("%s\n", ip_str);
-	if (ip_str == NULL)
-		return (FAILURE);
-	if (!verify_ip(ip, ip_str))
-		return (FAILURE);
-	return (SUCCESS);
+static void			set_ip4range(t_ip4range *data, uint32_t ip, uint32_t subn_m)
+{
+	uint32_t		wildcard;
+	uint32_t		netid;
+
+	/* TODO : these might need to be swapped*/
+	wildcard = ~subn_m;
+	netid = ip & subn_m;
+	data->range_size = htonl(wildcard) - 1;
+	data->start = ntohl(htonl(netid) + 1);
+	data->end = ntohl(ntohl(netid | wildcard) - 1);
 }
 
-void	set_ip4(t_ip4 *data, uint32_t ip) {
-	memcpy(&data->addr, &ip, sizeof(uint32_t));
-}
+static int			parse_cidr_mask(uint32_t *subn_m, char *cidr_str)
+{
+	int				cidr_m;
 
-int	get_subnet(uint32_t *subnet, char *cidr) {
-	int cidr_m;
-
-	if (!cidr)
-		return (FAILURE);
-	if ((cidr_m = atoi(cidr)) > 32)
-		return (FAILURE);
-	if (cidr_m < 0)
-		return (FAILURE);
-	while (cidr_m-- > 0) {
-		*subnet |= MSB;
-		*subnet >>= 1;
+	if (!cidr_str)
+		return (hermes_error(INPUT_ERROR, FALSE, 1, "no cidr mask provided"));
+	if ((cidr_m = atoi(cidr_str)) > 32 || cidr_m < 0)
+		return (hermes_error(INPUT_ERROR, FALSE, 2, "bad cidr mask:", cidr_str));
+	*subn_m = 0;
+	while (cidr_m-- > 0)
+	{
+		*subn_m |= 0xF;
+		*subn_m >>= 1;
 	}
 	return (SUCCESS);
 }
 
-void set_ip4range(t_ip4range *data, uint32_t subnet, uint32_t ip) {
-	uint32_t start;
-	uint32_t end;
-
-	/* TODO : these might need to be swapped*/
-	start = subnet | ip;
-	end = ~start;
-
-	data->range_size = subnet;
-	data->start = start;
-	data->end = end;
+int					parse_ip(uint32_t *ip, char *ip_str)
+{
+	if (inet_pton(AF_INET, ip_str, ip) <= 0)
+		return (hermes_error(INPUT_ERROR, FALSE, 2, "inet_pton()", strerror(errno)));
+	return (SUCCESS);
 }
 
-t_ip4range *new_ip4range(void) {
-	t_ip4range *data;
+static void			add_ip4range(t_node **ip_range, uint32_t ip, uint32_t subn_m)
+{
+	t_node			*node;
+	t_ip4range		*data;
 
-	if (!(data = (t_ip4range*)memalloc(sizeof(t_ip4range))))
-		return (NULL);
-	return (data);
-}
-
-uint32_t 	parse_subnet(char *mask) {
-	uint32_t 	subnet;
-
-	subnet = 0;
-	if (!mask)
-		return (FAILURE);
-	if (get_subnet(&subnet, mask) < 0)
-		return (FAILURE);
-	return (subnet);
-}
-
-void add_ip4range(t_node ** ip_range, uint32_t subnet, uint32_t ip) {
-	t_node		*node;
-	t_ip4range 	*data;
-
-	if (!(data = new_ip4range()))
-		return;
-	if (!(node = new_node(sizeof(t_ip4range))))
-		return;
-	set_ip4range(data, subnet, ip);
-	set_node(node, data, sizeof(data));
+	data = new_ip4range();
+	set_ip4range(data, ip, subn_m);
+	node = new_node();
+	node->data = data;
 	listadd_head(ip_range, node);
-	return;
+	return ;
 }
 
-void add_ip4(t_node ** ip_list, uint32_t ip) {
-	t_ip4 	*data;
-	t_node 	*node;
+static void			add_ip4(t_node **ip_list, uint32_t ip)
+{
+	t_ip4 			*data;
+	t_node			*node;
 
-	if (!(data = new_ip4()))
-		return;
-	if (!(node = new_node(sizeof(t_ip4))))
-		return;
-	set_ip4(data, ip);
-	set_node(node, data, sizeof(data));
+	data = new_ip4();
+	data->addr = ip;
+	node = new_node();
+	node->data = data;
 	listadd_head(ip_list, node);
-	return;
+	return ;
 }
 
-uint32_t		parse_ip(char *args) {
+int				handle_ip(t_targetlist *targets, char *arg)
+{
+	char		*ip_str;
+	char		*cidr_str;
 	uint32_t	ip;
+	uint32_t	subn_m;
 
-	if (args == NULL)
+	if (!arg)
 		return (FAILURE);
-	if (get_ip(&ip, strsep(&args, "\n")) < 0)
-		return (FAILURE);
-	return (ip);
-}
-
-int handle_ip(t_targetlist *targets, char *args) {
-	char *ip;
-	char *mask;
-	uint32_t subnet;
-	uint32_t ip_addr;
-
-	mask = args;
-	if ((ip = strsep(&mask, "/"))) {
-		subnet = parse_subnet(mask);
-		add_ip4range(&targets->iprange, subnet, parse_ip(ip));
-	} else {
-		ip_addr = parse_ip(ip);
-		add_ip4(&targets->ip, ip_addr);
+	cidr_str = arg;
+	ip_str = strsep(&cidr_str, "/");
+	if (cidr_str != NULL)
+	{
+		if (parse_ip(&ip, ip_str) < 0)
+			return (FAILURE);
+		if (parse_cidr_mask(&subn_m, cidr_str) < 0)
+			return (FAILURE);
+		add_ip4range(&targets->iprange, ip, subn_m);
+		targets->iprange_count++;
+	}
+	else
+	{
+		if (parse_ip(&ip, arg) < 0)
+			return (FAILURE);
+		add_ip4(&targets->ip, ip);
+		targets->ip_count++;
 	}
 	return (SUCCESS);
 }
