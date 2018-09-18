@@ -74,7 +74,7 @@ int					parse_ip(uint32_t *ip, char *ip_str)
 	return (SUCCESS);
 }
 
-static void			add_ip4range(t_node *ip_range, uint32_t ip, uint32_t subn_m)
+static void			add_ip4range(t_node **ip_range, uint32_t ip, uint32_t subn_m)
 {
 	t_node			*node;
 	t_ip4range		*data;
@@ -83,11 +83,11 @@ static void			add_ip4range(t_node *ip_range, uint32_t ip, uint32_t subn_m)
 	set_ip4range(data, ip, subn_m);
 	node = new_node();
 	node->data = data;
-	listadd_head(&ip_range, node);
+	listadd_head(ip_range, node);
 	return ;
 }
 
-static void			add_ip4(t_node *ip_list, uint32_t ip)
+static void			add_ip4(t_node **ip_list, uint32_t ip)
 {
 	t_ip4 			*data;
 	t_node			*node;
@@ -96,7 +96,7 @@ static void			add_ip4(t_node *ip_list, uint32_t ip)
 	data->addr = ip;
 	node = new_node();
 	node->data = data;
-	listadd_head(&ip_list, node);
+	listadd_head(ip_list, node);
 	return ;
 }
 
@@ -115,19 +115,20 @@ int				handle_ip(t_targetlist **targets, char *arg)
 	if (cidr_str != NULL)
 	{
 		printf("handle ! %i\n", ip);
-		if (parse_ip(&ip, ip_str) < 0)
+		if (parse_ip(&ip, strtrim(ip_str)) < 0)
 			return (FAILURE);
 		if (parse_cidr_mask(&subn_m, cidr_str) < 0)
 			return (FAILURE);
-		add_ip4range((*targets)->iprange, ip, subn_m);
+		/* TODO : iprange isn't being passed right */
+		add_ip4range(&(*targets)->iprange, ip, subn_m);
 		(*targets)->iprange_count++;
 	}
 	else
 	{
-		printf("handle %i\n", ip);
-		if (parse_ip(&ip, arg) < 0)
+		if (parse_ip(&ip, strtrim(arg)) < 0)
 			return (FAILURE);
-		add_ip4((*targets)->ip, ip);
+		/* TODO : ip isn't being passed right */
+		add_ip4(&(*targets)->ip, ip);
 		(*targets)->ip_count++;
 	}
 	printf("%i\n", ip);
@@ -154,18 +155,17 @@ int main(void) {
 			head = target_list->ip;
 			for (; target_list->ip; target_list->ip = target_list->ip->next) {
 				inet_ntop(AF_INET, &((t_ip4*)target_list->ip->data)->addr, p_ip, 16 * sizeof(char));
-				printf("%s %i\n", p_ip, ((t_ip4*)target_list->ip->data)->addr);
+				printf("address		:%s\n", p_ip);
 			}
 			target_list->ip = head;
 		} else if (!memcmp("display range", input, 13)) {
-			printf("%zu\n", target_list->iprange_count);
 			for (; target_list->iprange; target_list->iprange = target_list->iprange->next) {
 				inet_ntop(AF_INET, &((t_ip4range*)target_list->iprange->data)->range_size, p_ip, 16 * sizeof(char));
-				printf("%s %i\n", p_ip, ((t_ip4*)target_list->iprange->data)->addr);
+				printf("range size 	: %s\n", p_ip);
 				inet_ntop(AF_INET, &((t_ip4range*)target_list->iprange->data)->start, p_ip, 16 * sizeof(char));
-				printf("%s %i\n", p_ip, ((t_ip4*)target_list->iprange->data)->addr);
+				printf("start		:%s\n", p_ip);
 				inet_ntop(AF_INET, &((t_ip4range*)target_list->iprange->data)->end, p_ip, 16 * sizeof(char));
-				printf("%s %i\n", p_ip, ((t_ip4*)target_list->iprange->data)->addr);
+				printf("end			:%s\n", p_ip);
 			}
 			target_list->iprange = head;
 		} else if (memcmp("quit", input, 4) == 0 ||
@@ -174,7 +174,6 @@ int main(void) {
 		} else {
 			error = handle_ip(&target_list, input);
 			printf("parsing ended with %d\n", error);
-			printf("%zu\n", target_list->ip_count);
 		}
 		fflush(stdin);
 	}
