@@ -119,7 +119,6 @@ int				handle_ip(t_targetlist **targets, char *arg)
 			return (FAILURE);
 		if (parse_cidr_mask(&subn_m, cidr_str) < 0)
 			return (FAILURE);
-		/* TODO : iprange isn't being passed right */
 		add_ip4range(&(*targets)->iprange, ip, subn_m);
 		(*targets)->iprange_count++;
 	}
@@ -127,7 +126,6 @@ int				handle_ip(t_targetlist **targets, char *arg)
 	{
 		if (parse_ip(&ip, strtrim(arg)) < 0)
 			return (FAILURE);
-		/* TODO : ip isn't being passed right */
 		add_ip4(&(*targets)->ip, ip);
 		(*targets)->ip_count++;
 	}
