@@ -636,32 +636,32 @@ src/parsing/parser.c.s:
 	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/src/parsing/parser.c.s
 .PHONY : src/parsing/parser.c.s
 
-src/sanity_check.c.o: src/sanity_check.c.cpp.o
+src/sanity_check.o: src/sanity_check.c.o
 
-.PHONY : src/sanity_check.c.o
+.PHONY : src/sanity_check.o
 
 # target to build an object file
-src/sanity_check.c.cpp.o:
-	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/src/sanity_check.c.cpp.o
-.PHONY : src/sanity_check.c.cpp.o
+src/sanity_check.c.o:
+	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/src/sanity_check.c.o
+.PHONY : src/sanity_check.c.o
 
-src/sanity_check.c.i: src/sanity_check.c.cpp.i
+src/sanity_check.i: src/sanity_check.c.i
 
-.PHONY : src/sanity_check.c.i
+.PHONY : src/sanity_check.i
 
 # target to preprocess a source file
-src/sanity_check.c.cpp.i:
-	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/src/sanity_check.c.cpp.i
-.PHONY : src/sanity_check.c.cpp.i
+src/sanity_check.c.i:
+	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/src/sanity_check.c.i
+.PHONY : src/sanity_check.c.i
 
-src/sanity_check.c.s: src/sanity_check.c.cpp.s
+src/sanity_check.s: src/sanity_check.c.s
 
-.PHONY : src/sanity_check.c.s
+.PHONY : src/sanity_check.s
 
 # target to generate assembly for a file
-src/sanity_check.c.cpp.s:
-	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/src/sanity_check.c.cpp.s
-.PHONY : src/sanity_check.c.cpp.s
+src/sanity_check.c.s:
+	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/src/sanity_check.c.s
+.PHONY : src/sanity_check.c.s
 
 src/worker_deamon.o: src/worker_deamon.c.o
 
@@ -756,9 +756,9 @@ help:
 	@echo "... src/parsing/parser.o"
 	@echo "... src/parsing/parser.i"
 	@echo "... src/parsing/parser.s"
-	@echo "... src/sanity_check.c.o"
-	@echo "... src/sanity_check.c.i"
-	@echo "... src/sanity_check.c.s"
+	@echo "... src/sanity_check.o"
+	@echo "... src/sanity_check.i"
+	@echo "... src/sanity_check.s"
 	@echo "... src/worker_deamon.o"
 	@echo "... src/worker_deamon.i"
 	@echo "... src/worker_deamon.s"

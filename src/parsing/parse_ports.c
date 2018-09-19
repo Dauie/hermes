@@ -1,22 +1,49 @@
 #include "../../incl/hermes.h"
 #include "../../incl/parser.h"
 
+t_port			*new_port()
+{
+	t_port		*port;
 
-static int		add_port(t_portlist *list, char *prt)
+	if (!(port = (t_port *)memalloc(sizeof(t_port))))
+		hermes_error(INPUT_ERROR, TRUE, 2, "malloc()", strerror(errno));
+	return (port);
+}
+
+t_portrange		*new_portrange()
+{
+	t_portrange	*range;
+
+	if (!(range = (t_portrange *)memalloc(sizeof(t_portrange))))
+		hermes_error(errno, TRUE, 2, "malloc()", strerror(errno));
+	return (range);
+}
+
+int				parse_port(uint16_t *port, char *input)
+{
+	int			ret;
+
+	if (!input)
+		return (FAILURE);
+	if ((ret = atoi(input)) <= 0 || ret > PORT_MAX)
+		return (FAILURE);
+	*port = (uint16_t)ret;
+	return (SUCCESS);
+}
+
+
+static int		add_port(t_portlist *list, char *input)
 {
 	t_node		*node;
 	t_port		*data;
-	int			port;
+	uint16_t	port;
 	/*
 	** check to make sure port is in range.
 	*/
-	port = atoi(prt);
-	if (port > PORT_MAX || port <= 0)
-		return (hermes_error(INPUT_ERROR, TRUE, 1, "port specified is not in range"));
-
+	if (parse_port(&port, input) == FAILURE)
+		return (hermes_error(INPUT_ERROR, FALSE, 1, "bad port specified", input));
+	data = new_port();
 	node = new_node();
-	if (!(data = (t_port *)memalloc(sizeof(t_port))))
-		return (hermes_error(INPUT_ERROR, TRUE, 2, "malloc()", strerror(errno)));
 	data->port = (uint16_t)port;
 	node->data = data;
 	listadd_head(&list->ports, node);
@@ -32,12 +59,11 @@ static int		add_range(t_portlist *list, char **range)
 	t_portrange	*data;
 
 	if (parse_port(&start, range[0]) == FAILURE)
-		hermes_error(INPUT_ERROR, TRUE, 1, "bad start to port range", range[0]);
+		return (hermes_error(INPUT_ERROR, FALSE, 1, "bad start to port range", range[0]));
 	if (parse_port(&end, range[1]) == FAILURE)
-		hermes_error(INPUT_ERROR, TRUE, 1, "bad end to port range", range[1]);
+		return (hermes_error(INPUT_ERROR, FALSE, 1, "bad end to port range", range[1]));
 	node = new_node();
-	if (!(data = (t_portrange *)memalloc(sizeof(t_portrange))))
-		return (hermes_error(errno, TRUE, 2, "malloc()", strerror(errno)));
+	data = new_portrange();
 	data->start = start;
 	data->end = end;
 	node->data = data;
@@ -46,15 +72,6 @@ static int		add_range(t_portlist *list, char **range)
 	return (SUCCESS);
 }
 
-int				parse_port(uint16_t *port, char *port_str)
-{
-	int			ret;
-
-	if ((ret = atoi(port_str)) <= 0 || ret > PORT_MAX)
-		return (FAILURE);
-	*port = (uint16_t)ret;
-	return (SUCCESS);
-}
 
 int				handle_port(t_portlist *list, char *input)
 {

@@ -115,7 +115,7 @@ int				do_ip4range(t_targetlist *targets, char *ip_str, char *cidr_str)
 		return (FAILURE);
 	listadd_ip4range(&targets->iprange, ip, subn_m);
 	targets->iprange_count++;
-	targets->ip_count += ((t_ip4range*)targets->iprange->data)->range_size;
+	targets->total += ((t_ip4range*)targets->iprange->data)->range_size;
 	return (SUCCESS);
 }
 
@@ -127,6 +127,7 @@ int				do_ip4(t_targetlist *targets, char *input)
 		return (FAILURE);
 	listadd_ip4(&targets->ip, ip);
 	targets->ip_count++;
+	targets->total++;
 	return (SUCCESS);
 }
 

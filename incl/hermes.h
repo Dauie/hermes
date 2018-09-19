@@ -17,5 +17,9 @@
 # include <netinet/ip_icmp.h>
 
 # include "../libhermes/incl/libhermes.h"
+# include "job.h"
+
+int			sanity_check(t_job *job);
+
 
 #endif

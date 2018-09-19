@@ -1,7 +1,9 @@
 #ifndef JOB_H
 # define JOB_H
 
-# include "hermes.h"
+# include <stdint.h>
+# include <stddef.h>
+# include "../libhermes/incl/libhermes.h"
 
 typedef struct			s_ip4range
 {
@@ -32,12 +34,19 @@ typedef struct			s_worker
 	uint16_t			port;
 }						t_worker;
 
+typedef struct			s_workerlist
+{
+	size_t				worker_count;
+	t_node				*workers;					/*t_node list containing t_ip4 structs*/
+}						t_workerlist;
+
 typedef struct			s_targetlist
 {
+	size_t				total;
 	size_t				ip_count;
-	t_node				*ip;						/*t_node containing t_ip4 structs*/
 	size_t				iprange_count;
-	t_node				*iprange;					/*t_node containing t_ip4range structs*/
+	t_node				*ip;						/*t_node list containing t_ip4 structs*/
+	t_node				*iprange;					/*t_node list containing t_ip4range structs*/
 }						t_targetlist;
 
 typedef struct			s_portlist
@@ -106,11 +115,11 @@ typedef struct /*__attribute__((__packed__))*/	s_ops
 	uint32_t			max_hostgroup;
 	uint32_t			spoofed_srcaddr;
 	uint16_t			spoofed_srcport;
-	uint16_t			ip_ttl;
-	uint16_t			fragment_mtu;
 	uint16_t			rpayload_len;
-	uint16_t			thread_count;
-	uint16_t			verbose_level; /* Default 0, verbose 1, very verbose 2 TODO: possibe enum */
+	uint8_t				fragment_mtu;
+	uint8_t				ip_ttl;
+	uint8_t				thread_count;
+	uint8_t				verbose_level; /* Default 0, verbose 1, very verbose 2 TODO: possibe enum */
 }						t_ops;
 
 typedef struct			s_job
@@ -118,7 +127,7 @@ typedef struct			s_job
 	t_ops				options;
 	t_targetlist		targets;
 	t_targetlist		exclude_targets;
-	t_node				*worker_list; /* node pop. w/ worker type -> next worker */
+	t_workerlist		worker_list;
 	t_portlist			scan_portlist;
 	t_portlist			exclude_portlist;
 	t_portlist			d_syn_portlist;

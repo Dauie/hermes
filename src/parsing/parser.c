@@ -66,7 +66,8 @@ t_dtab_wopt g_disp_wopt[] = {
 		{ "--source-port", h_spoof_srcport },
 		{ "-ttl", h_custom_ip_ttl },
 		{ "--thread", h_thread_amt },
-		{ "--worker", h_worker },
+		{ "--workers", h_worker },
+		{ "--worker-file", h_worker_file }
 };
 
 int			dtab_loop(t_job *job, char *arg, t_dtab *tab)

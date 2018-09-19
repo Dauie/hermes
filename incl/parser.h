@@ -36,14 +36,16 @@ typedef struct	s_dtab
 int				dtab_loop(t_job *job, char *opt, t_dtab *tab);
 int				dtab_wopt_loop(t_job *job, char *arg, char *opt,
 								  t_dtab_wopt *tab);
-int				parse_port(uint16_t *port, char *port_str);
+int				parse_port(uint16_t *port, char *input);
 int				handle_port(t_portlist *list, char *input);
 int				parse_time(uint32_t *opt_time, char *input);
-int				parse_opts(t_job * job, int ac, char ** args);
-int				handle_ip(t_targetlist *targets, char *arg);
-int				parse_ip(uint32_t *ip, char *ip_str);
+int				parse_opts(t_job * job, int ac, char **args);
+int				handle_ip(t_targetlist *targets, char *input);
+int				parse_ip(uint32_t *ip, char *input);
+int				parse_worker(t_workerlist *workerlist, char *input);
+int				parse_worker_file(t_workerlist *list, char *filename);
 int				parse_ip_file(t_targetlist *list, char *filename);
-int				handle_ip(t_targetlist *targets, char *arg);
+
 
 /*
 **	boolean user options
@@ -97,5 +99,7 @@ void			h_syn_portlist(t_job *job, char *input);
 void			h_udp_portlist(t_job *job, char *input);
 void			h_thread_amt(t_job *job, char *input);
 void			h_worker(t_job *job, char *input);
+void			h_worker_file(t_job *job, char *input);
+
 
 #endif

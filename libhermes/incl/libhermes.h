@@ -2,7 +2,8 @@
 #ifndef LIB_HERMES_H
 # define LIB_HERMES_H
 
-# include <zconf.h>
+# include <sys/errno.h>
+//# include <zconf.h>
 # include <memory.h>
 # include <stdint.h>
 # include <stdlib.h>

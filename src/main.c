@@ -23,5 +23,5 @@ int			 main(int ac, char **av)
 	if (!(job = (t_job *)memalloc(sizeof(t_job))))
 		hermes_error(errno, TRUE, 2, "malloc()", strerror(errno));
 	parse_opts(job, ac, av);
-	//sanity_check(job);
+	sanity_check(job);
 }

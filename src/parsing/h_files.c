@@ -13,3 +13,9 @@ void			h_target_file(t_job *job, char *input)
 {
 	parse_ip_file(&job->targets, input);
 }
+
+void			h_worker_file(t_job *job, char *input)
+{
+	parse_worker_file(&job->worker_list, input);
+}
+

@@ -3,12 +3,12 @@
 void		tbldel(char ***tbl)
 {
 	char	**tmp;
+	int		i;
 
+	i = -1;
 	tmp = *tbl;
-	while (tmp) {
-		free(tmp);
-		tmp++;
-	}
+	while (tmp[++i])
+		free(tmp[i]);
 	free(*tbl);
 }
 
@@ -61,7 +61,7 @@ char 				**strsplit(const char *str, char delim)
 	if (str == NULL || delim == 0)
 		return (0);
 	wcnt = (int)cntwrds((char *)str, delim);
-	if (!(ret = (char**)malloc((sizeof(char*) * (wcnt + 1)))))
+	if (!(ret = (char**)memalloc((sizeof(char*) * (wcnt + 1)))))
 		return (0);
 	j = -1;
 	i = 0;
