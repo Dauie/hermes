@@ -48,10 +48,10 @@ RM = /Applications/CLion.app/Contents/bin/cmake/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /nfs/2016/r/rlutt/code/hermese
+CMAKE_SOURCE_DIR = /nfs/2017/s/scollet/ft_nmap
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /nfs/2016/r/rlutt/code/hermese/cmake-build-debug
+CMAKE_BINARY_DIR = /nfs/2017/s/scollet/ft_nmap/cmake-build-debug
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -80,9 +80,9 @@ rebuild_cache/fast: rebuild_cache
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /nfs/2016/r/rlutt/code/hermese/cmake-build-debug/CMakeFiles /nfs/2016/r/rlutt/code/hermese/cmake-build-debug/CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start /nfs/2017/s/scollet/ft_nmap/cmake-build-debug/CMakeFiles /nfs/2017/s/scollet/ft_nmap/cmake-build-debug/CMakeFiles/progress.marks
 	$(MAKE) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /nfs/2016/r/rlutt/code/hermese/cmake-build-debug/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /nfs/2017/s/scollet/ft_nmap/cmake-build-debug/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
@@ -111,17 +111,17 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named hermese
+# Target rules for targets named ft_nmap
 
 # Build rule for target.
-hermese: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 hermese
-.PHONY : hermese
+ft_nmap: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 ft_nmap
+.PHONY : ft_nmap
 
 # fast build rule for target.
-hermese/fast:
-	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/build
-.PHONY : hermese/fast
+ft_nmap/fast:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/build
+.PHONY : ft_nmap/fast
 
 libhermes/src/hermes_error.o: libhermes/src/hermes_error.c.o
 
@@ -129,7 +129,7 @@ libhermes/src/hermes_error.o: libhermes/src/hermes_error.c.o
 
 # target to build an object file
 libhermes/src/hermes_error.c.o:
-	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/libhermes/src/hermes_error.c.o
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/libhermes/src/hermes_error.c.o
 .PHONY : libhermes/src/hermes_error.c.o
 
 libhermes/src/hermes_error.i: libhermes/src/hermes_error.c.i
@@ -138,7 +138,7 @@ libhermes/src/hermes_error.i: libhermes/src/hermes_error.c.i
 
 # target to preprocess a source file
 libhermes/src/hermes_error.c.i:
-	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/libhermes/src/hermes_error.c.i
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/libhermes/src/hermes_error.c.i
 .PHONY : libhermes/src/hermes_error.c.i
 
 libhermes/src/hermes_error.s: libhermes/src/hermes_error.c.s
@@ -147,7 +147,7 @@ libhermes/src/hermes_error.s: libhermes/src/hermes_error.c.s
 
 # target to generate assembly for a file
 libhermes/src/hermes_error.c.s:
-	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/libhermes/src/hermes_error.c.s
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/libhermes/src/hermes_error.c.s
 .PHONY : libhermes/src/hermes_error.c.s
 
 libhermes/src/list.o: libhermes/src/list.c.o
@@ -156,7 +156,7 @@ libhermes/src/list.o: libhermes/src/list.c.o
 
 # target to build an object file
 libhermes/src/list.c.o:
-	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/libhermes/src/list.c.o
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/libhermes/src/list.c.o
 .PHONY : libhermes/src/list.c.o
 
 libhermes/src/list.i: libhermes/src/list.c.i
@@ -165,7 +165,7 @@ libhermes/src/list.i: libhermes/src/list.c.i
 
 # target to preprocess a source file
 libhermes/src/list.c.i:
-	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/libhermes/src/list.c.i
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/libhermes/src/list.c.i
 .PHONY : libhermes/src/list.c.i
 
 libhermes/src/list.s: libhermes/src/list.c.s
@@ -174,7 +174,7 @@ libhermes/src/list.s: libhermes/src/list.c.s
 
 # target to generate assembly for a file
 libhermes/src/list.c.s:
-	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/libhermes/src/list.c.s
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/libhermes/src/list.c.s
 .PHONY : libhermes/src/list.c.s
 
 libhermes/src/memory.o: libhermes/src/memory.c.o
@@ -183,7 +183,7 @@ libhermes/src/memory.o: libhermes/src/memory.c.o
 
 # target to build an object file
 libhermes/src/memory.c.o:
-	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/libhermes/src/memory.c.o
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/libhermes/src/memory.c.o
 .PHONY : libhermes/src/memory.c.o
 
 libhermes/src/memory.i: libhermes/src/memory.c.i
@@ -192,7 +192,7 @@ libhermes/src/memory.i: libhermes/src/memory.c.i
 
 # target to preprocess a source file
 libhermes/src/memory.c.i:
-	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/libhermes/src/memory.c.i
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/libhermes/src/memory.c.i
 .PHONY : libhermes/src/memory.c.i
 
 libhermes/src/memory.s: libhermes/src/memory.c.s
@@ -201,7 +201,7 @@ libhermes/src/memory.s: libhermes/src/memory.c.s
 
 # target to generate assembly for a file
 libhermes/src/memory.c.s:
-	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/libhermes/src/memory.c.s
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/libhermes/src/memory.c.s
 .PHONY : libhermes/src/memory.c.s
 
 libhermes/src/str_tbl.o: libhermes/src/str_tbl.c.o
@@ -210,7 +210,7 @@ libhermes/src/str_tbl.o: libhermes/src/str_tbl.c.o
 
 # target to build an object file
 libhermes/src/str_tbl.c.o:
-	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/libhermes/src/str_tbl.c.o
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/libhermes/src/str_tbl.c.o
 .PHONY : libhermes/src/str_tbl.c.o
 
 libhermes/src/str_tbl.i: libhermes/src/str_tbl.c.i
@@ -219,7 +219,7 @@ libhermes/src/str_tbl.i: libhermes/src/str_tbl.c.i
 
 # target to preprocess a source file
 libhermes/src/str_tbl.c.i:
-	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/libhermes/src/str_tbl.c.i
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/libhermes/src/str_tbl.c.i
 .PHONY : libhermes/src/str_tbl.c.i
 
 libhermes/src/str_tbl.s: libhermes/src/str_tbl.c.s
@@ -228,8 +228,35 @@ libhermes/src/str_tbl.s: libhermes/src/str_tbl.c.s
 
 # target to generate assembly for a file
 libhermes/src/str_tbl.c.s:
-	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/libhermes/src/str_tbl.c.s
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/libhermes/src/str_tbl.c.s
 .PHONY : libhermes/src/str_tbl.c.s
+
+src/exclude.o: src/exclude.c.o
+
+.PHONY : src/exclude.o
+
+# target to build an object file
+src/exclude.c.o:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/exclude.c.o
+.PHONY : src/exclude.c.o
+
+src/exclude.i: src/exclude.c.i
+
+.PHONY : src/exclude.i
+
+# target to preprocess a source file
+src/exclude.c.i:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/exclude.c.i
+.PHONY : src/exclude.c.i
+
+src/exclude.s: src/exclude.c.s
+
+.PHONY : src/exclude.s
+
+# target to generate assembly for a file
+src/exclude.c.s:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/exclude.c.s
+.PHONY : src/exclude.c.s
 
 src/main.o: src/main.c.o
 
@@ -237,7 +264,7 @@ src/main.o: src/main.c.o
 
 # target to build an object file
 src/main.c.o:
-	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/src/main.c.o
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/main.c.o
 .PHONY : src/main.c.o
 
 src/main.i: src/main.c.i
@@ -246,7 +273,7 @@ src/main.i: src/main.c.i
 
 # target to preprocess a source file
 src/main.c.i:
-	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/src/main.c.i
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/main.c.i
 .PHONY : src/main.c.i
 
 src/main.s: src/main.c.s
@@ -255,7 +282,7 @@ src/main.s: src/main.c.s
 
 # target to generate assembly for a file
 src/main.c.s:
-	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/src/main.c.s
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/main.c.s
 .PHONY : src/main.c.s
 
 src/parsing/h_custom_payload.o: src/parsing/h_custom_payload.c.o
@@ -264,7 +291,7 @@ src/parsing/h_custom_payload.o: src/parsing/h_custom_payload.c.o
 
 # target to build an object file
 src/parsing/h_custom_payload.c.o:
-	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/src/parsing/h_custom_payload.c.o
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/parsing/h_custom_payload.c.o
 .PHONY : src/parsing/h_custom_payload.c.o
 
 src/parsing/h_custom_payload.i: src/parsing/h_custom_payload.c.i
@@ -273,7 +300,7 @@ src/parsing/h_custom_payload.i: src/parsing/h_custom_payload.c.i
 
 # target to preprocess a source file
 src/parsing/h_custom_payload.c.i:
-	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/src/parsing/h_custom_payload.c.i
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/parsing/h_custom_payload.c.i
 .PHONY : src/parsing/h_custom_payload.c.i
 
 src/parsing/h_custom_payload.s: src/parsing/h_custom_payload.c.s
@@ -282,7 +309,7 @@ src/parsing/h_custom_payload.s: src/parsing/h_custom_payload.c.s
 
 # target to generate assembly for a file
 src/parsing/h_custom_payload.c.s:
-	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/src/parsing/h_custom_payload.c.s
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/parsing/h_custom_payload.c.s
 .PHONY : src/parsing/h_custom_payload.c.s
 
 src/parsing/h_files.o: src/parsing/h_files.c.o
@@ -291,7 +318,7 @@ src/parsing/h_files.o: src/parsing/h_files.c.o
 
 # target to build an object file
 src/parsing/h_files.c.o:
-	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/src/parsing/h_files.c.o
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/parsing/h_files.c.o
 .PHONY : src/parsing/h_files.c.o
 
 src/parsing/h_files.i: src/parsing/h_files.c.i
@@ -300,7 +327,7 @@ src/parsing/h_files.i: src/parsing/h_files.c.i
 
 # target to preprocess a source file
 src/parsing/h_files.c.i:
-	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/src/parsing/h_files.c.i
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/parsing/h_files.c.i
 .PHONY : src/parsing/h_files.c.i
 
 src/parsing/h_files.s: src/parsing/h_files.c.s
@@ -309,7 +336,7 @@ src/parsing/h_files.s: src/parsing/h_files.c.s
 
 # target to generate assembly for a file
 src/parsing/h_files.c.s:
-	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/src/parsing/h_files.c.s
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/parsing/h_files.c.s
 .PHONY : src/parsing/h_files.c.s
 
 src/parsing/h_host_discovery.o: src/parsing/h_host_discovery.c.o
@@ -318,7 +345,7 @@ src/parsing/h_host_discovery.o: src/parsing/h_host_discovery.c.o
 
 # target to build an object file
 src/parsing/h_host_discovery.c.o:
-	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/src/parsing/h_host_discovery.c.o
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/parsing/h_host_discovery.c.o
 .PHONY : src/parsing/h_host_discovery.c.o
 
 src/parsing/h_host_discovery.i: src/parsing/h_host_discovery.c.i
@@ -327,7 +354,7 @@ src/parsing/h_host_discovery.i: src/parsing/h_host_discovery.c.i
 
 # target to preprocess a source file
 src/parsing/h_host_discovery.c.i:
-	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/src/parsing/h_host_discovery.c.i
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/parsing/h_host_discovery.c.i
 .PHONY : src/parsing/h_host_discovery.c.i
 
 src/parsing/h_host_discovery.s: src/parsing/h_host_discovery.c.s
@@ -336,7 +363,7 @@ src/parsing/h_host_discovery.s: src/parsing/h_host_discovery.c.s
 
 # target to generate assembly for a file
 src/parsing/h_host_discovery.c.s:
-	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/src/parsing/h_host_discovery.c.s
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/parsing/h_host_discovery.c.s
 .PHONY : src/parsing/h_host_discovery.c.s
 
 src/parsing/h_output_ops.o: src/parsing/h_output_ops.c.o
@@ -345,7 +372,7 @@ src/parsing/h_output_ops.o: src/parsing/h_output_ops.c.o
 
 # target to build an object file
 src/parsing/h_output_ops.c.o:
-	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/src/parsing/h_output_ops.c.o
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/parsing/h_output_ops.c.o
 .PHONY : src/parsing/h_output_ops.c.o
 
 src/parsing/h_output_ops.i: src/parsing/h_output_ops.c.i
@@ -354,7 +381,7 @@ src/parsing/h_output_ops.i: src/parsing/h_output_ops.c.i
 
 # target to preprocess a source file
 src/parsing/h_output_ops.c.i:
-	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/src/parsing/h_output_ops.c.i
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/parsing/h_output_ops.c.i
 .PHONY : src/parsing/h_output_ops.c.i
 
 src/parsing/h_output_ops.s: src/parsing/h_output_ops.c.s
@@ -363,7 +390,7 @@ src/parsing/h_output_ops.s: src/parsing/h_output_ops.c.s
 
 # target to generate assembly for a file
 src/parsing/h_output_ops.c.s:
-	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/src/parsing/h_output_ops.c.s
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/parsing/h_output_ops.c.s
 .PHONY : src/parsing/h_output_ops.c.s
 
 src/parsing/h_performace_opts.o: src/parsing/h_performace_opts.c.o
@@ -372,7 +399,7 @@ src/parsing/h_performace_opts.o: src/parsing/h_performace_opts.c.o
 
 # target to build an object file
 src/parsing/h_performace_opts.c.o:
-	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/src/parsing/h_performace_opts.c.o
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/parsing/h_performace_opts.c.o
 .PHONY : src/parsing/h_performace_opts.c.o
 
 src/parsing/h_performace_opts.i: src/parsing/h_performace_opts.c.i
@@ -381,7 +408,7 @@ src/parsing/h_performace_opts.i: src/parsing/h_performace_opts.c.i
 
 # target to preprocess a source file
 src/parsing/h_performace_opts.c.i:
-	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/src/parsing/h_performace_opts.c.i
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/parsing/h_performace_opts.c.i
 .PHONY : src/parsing/h_performace_opts.c.i
 
 src/parsing/h_performace_opts.s: src/parsing/h_performace_opts.c.s
@@ -390,7 +417,7 @@ src/parsing/h_performace_opts.s: src/parsing/h_performace_opts.c.s
 
 # target to generate assembly for a file
 src/parsing/h_performace_opts.c.s:
-	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/src/parsing/h_performace_opts.c.s
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/parsing/h_performace_opts.c.s
 .PHONY : src/parsing/h_performace_opts.c.s
 
 src/parsing/h_portlists.o: src/parsing/h_portlists.c.o
@@ -399,7 +426,7 @@ src/parsing/h_portlists.o: src/parsing/h_portlists.c.o
 
 # target to build an object file
 src/parsing/h_portlists.c.o:
-	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/src/parsing/h_portlists.c.o
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/parsing/h_portlists.c.o
 .PHONY : src/parsing/h_portlists.c.o
 
 src/parsing/h_portlists.i: src/parsing/h_portlists.c.i
@@ -408,7 +435,7 @@ src/parsing/h_portlists.i: src/parsing/h_portlists.c.i
 
 # target to preprocess a source file
 src/parsing/h_portlists.c.i:
-	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/src/parsing/h_portlists.c.i
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/parsing/h_portlists.c.i
 .PHONY : src/parsing/h_portlists.c.i
 
 src/parsing/h_portlists.s: src/parsing/h_portlists.c.s
@@ -417,7 +444,7 @@ src/parsing/h_portlists.s: src/parsing/h_portlists.c.s
 
 # target to generate assembly for a file
 src/parsing/h_portlists.c.s:
-	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/src/parsing/h_portlists.c.s
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/parsing/h_portlists.c.s
 .PHONY : src/parsing/h_portlists.c.s
 
 src/parsing/h_scan.o: src/parsing/h_scan.c.o
@@ -426,7 +453,7 @@ src/parsing/h_scan.o: src/parsing/h_scan.c.o
 
 # target to build an object file
 src/parsing/h_scan.c.o:
-	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/src/parsing/h_scan.c.o
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/parsing/h_scan.c.o
 .PHONY : src/parsing/h_scan.c.o
 
 src/parsing/h_scan.i: src/parsing/h_scan.c.i
@@ -435,7 +462,7 @@ src/parsing/h_scan.i: src/parsing/h_scan.c.i
 
 # target to preprocess a source file
 src/parsing/h_scan.c.i:
-	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/src/parsing/h_scan.c.i
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/parsing/h_scan.c.i
 .PHONY : src/parsing/h_scan.c.i
 
 src/parsing/h_scan.s: src/parsing/h_scan.c.s
@@ -444,7 +471,7 @@ src/parsing/h_scan.s: src/parsing/h_scan.c.s
 
 # target to generate assembly for a file
 src/parsing/h_scan.c.s:
-	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/src/parsing/h_scan.c.s
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/parsing/h_scan.c.s
 .PHONY : src/parsing/h_scan.c.s
 
 src/parsing/h_timeouts.o: src/parsing/h_timeouts.c.o
@@ -453,7 +480,7 @@ src/parsing/h_timeouts.o: src/parsing/h_timeouts.c.o
 
 # target to build an object file
 src/parsing/h_timeouts.c.o:
-	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/src/parsing/h_timeouts.c.o
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/parsing/h_timeouts.c.o
 .PHONY : src/parsing/h_timeouts.c.o
 
 src/parsing/h_timeouts.i: src/parsing/h_timeouts.c.i
@@ -462,7 +489,7 @@ src/parsing/h_timeouts.i: src/parsing/h_timeouts.c.i
 
 # target to preprocess a source file
 src/parsing/h_timeouts.c.i:
-	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/src/parsing/h_timeouts.c.i
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/parsing/h_timeouts.c.i
 .PHONY : src/parsing/h_timeouts.c.i
 
 src/parsing/h_timeouts.s: src/parsing/h_timeouts.c.s
@@ -471,7 +498,7 @@ src/parsing/h_timeouts.s: src/parsing/h_timeouts.c.s
 
 # target to generate assembly for a file
 src/parsing/h_timeouts.c.s:
-	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/src/parsing/h_timeouts.c.s
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/parsing/h_timeouts.c.s
 .PHONY : src/parsing/h_timeouts.c.s
 
 src/parsing/h_worker.o: src/parsing/h_worker.c.o
@@ -480,7 +507,7 @@ src/parsing/h_worker.o: src/parsing/h_worker.c.o
 
 # target to build an object file
 src/parsing/h_worker.c.o:
-	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/src/parsing/h_worker.c.o
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/parsing/h_worker.c.o
 .PHONY : src/parsing/h_worker.c.o
 
 src/parsing/h_worker.i: src/parsing/h_worker.c.i
@@ -489,7 +516,7 @@ src/parsing/h_worker.i: src/parsing/h_worker.c.i
 
 # target to preprocess a source file
 src/parsing/h_worker.c.i:
-	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/src/parsing/h_worker.c.i
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/parsing/h_worker.c.i
 .PHONY : src/parsing/h_worker.c.i
 
 src/parsing/h_worker.s: src/parsing/h_worker.c.s
@@ -498,7 +525,7 @@ src/parsing/h_worker.s: src/parsing/h_worker.c.s
 
 # target to generate assembly for a file
 src/parsing/h_worker.c.s:
-	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/src/parsing/h_worker.c.s
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/parsing/h_worker.c.s
 .PHONY : src/parsing/h_worker.c.s
 
 src/parsing/parse_file.o: src/parsing/parse_file.c.o
@@ -507,7 +534,7 @@ src/parsing/parse_file.o: src/parsing/parse_file.c.o
 
 # target to build an object file
 src/parsing/parse_file.c.o:
-	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/src/parsing/parse_file.c.o
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/parsing/parse_file.c.o
 .PHONY : src/parsing/parse_file.c.o
 
 src/parsing/parse_file.i: src/parsing/parse_file.c.i
@@ -516,7 +543,7 @@ src/parsing/parse_file.i: src/parsing/parse_file.c.i
 
 # target to preprocess a source file
 src/parsing/parse_file.c.i:
-	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/src/parsing/parse_file.c.i
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/parsing/parse_file.c.i
 .PHONY : src/parsing/parse_file.c.i
 
 src/parsing/parse_file.s: src/parsing/parse_file.c.s
@@ -525,7 +552,7 @@ src/parsing/parse_file.s: src/parsing/parse_file.c.s
 
 # target to generate assembly for a file
 src/parsing/parse_file.c.s:
-	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/src/parsing/parse_file.c.s
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/parsing/parse_file.c.s
 .PHONY : src/parsing/parse_file.c.s
 
 src/parsing/parse_ip.o: src/parsing/parse_ip.c.o
@@ -534,7 +561,7 @@ src/parsing/parse_ip.o: src/parsing/parse_ip.c.o
 
 # target to build an object file
 src/parsing/parse_ip.c.o:
-	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/src/parsing/parse_ip.c.o
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/parsing/parse_ip.c.o
 .PHONY : src/parsing/parse_ip.c.o
 
 src/parsing/parse_ip.i: src/parsing/parse_ip.c.i
@@ -543,7 +570,7 @@ src/parsing/parse_ip.i: src/parsing/parse_ip.c.i
 
 # target to preprocess a source file
 src/parsing/parse_ip.c.i:
-	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/src/parsing/parse_ip.c.i
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/parsing/parse_ip.c.i
 .PHONY : src/parsing/parse_ip.c.i
 
 src/parsing/parse_ip.s: src/parsing/parse_ip.c.s
@@ -552,7 +579,7 @@ src/parsing/parse_ip.s: src/parsing/parse_ip.c.s
 
 # target to generate assembly for a file
 src/parsing/parse_ip.c.s:
-	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/src/parsing/parse_ip.c.s
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/parsing/parse_ip.c.s
 .PHONY : src/parsing/parse_ip.c.s
 
 src/parsing/parse_ports.o: src/parsing/parse_ports.c.o
@@ -561,7 +588,7 @@ src/parsing/parse_ports.o: src/parsing/parse_ports.c.o
 
 # target to build an object file
 src/parsing/parse_ports.c.o:
-	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/src/parsing/parse_ports.c.o
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/parsing/parse_ports.c.o
 .PHONY : src/parsing/parse_ports.c.o
 
 src/parsing/parse_ports.i: src/parsing/parse_ports.c.i
@@ -570,7 +597,7 @@ src/parsing/parse_ports.i: src/parsing/parse_ports.c.i
 
 # target to preprocess a source file
 src/parsing/parse_ports.c.i:
-	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/src/parsing/parse_ports.c.i
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/parsing/parse_ports.c.i
 .PHONY : src/parsing/parse_ports.c.i
 
 src/parsing/parse_ports.s: src/parsing/parse_ports.c.s
@@ -579,7 +606,7 @@ src/parsing/parse_ports.s: src/parsing/parse_ports.c.s
 
 # target to generate assembly for a file
 src/parsing/parse_ports.c.s:
-	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/src/parsing/parse_ports.c.s
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/parsing/parse_ports.c.s
 .PHONY : src/parsing/parse_ports.c.s
 
 src/parsing/parse_time.o: src/parsing/parse_time.c.o
@@ -588,7 +615,7 @@ src/parsing/parse_time.o: src/parsing/parse_time.c.o
 
 # target to build an object file
 src/parsing/parse_time.c.o:
-	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/src/parsing/parse_time.c.o
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/parsing/parse_time.c.o
 .PHONY : src/parsing/parse_time.c.o
 
 src/parsing/parse_time.i: src/parsing/parse_time.c.i
@@ -597,7 +624,7 @@ src/parsing/parse_time.i: src/parsing/parse_time.c.i
 
 # target to preprocess a source file
 src/parsing/parse_time.c.i:
-	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/src/parsing/parse_time.c.i
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/parsing/parse_time.c.i
 .PHONY : src/parsing/parse_time.c.i
 
 src/parsing/parse_time.s: src/parsing/parse_time.c.s
@@ -606,7 +633,7 @@ src/parsing/parse_time.s: src/parsing/parse_time.c.s
 
 # target to generate assembly for a file
 src/parsing/parse_time.c.s:
-	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/src/parsing/parse_time.c.s
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/parsing/parse_time.c.s
 .PHONY : src/parsing/parse_time.c.s
 
 src/parsing/parser.o: src/parsing/parser.c.o
@@ -615,7 +642,7 @@ src/parsing/parser.o: src/parsing/parser.c.o
 
 # target to build an object file
 src/parsing/parser.c.o:
-	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/src/parsing/parser.c.o
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/parsing/parser.c.o
 .PHONY : src/parsing/parser.c.o
 
 src/parsing/parser.i: src/parsing/parser.c.i
@@ -624,7 +651,7 @@ src/parsing/parser.i: src/parsing/parser.c.i
 
 # target to preprocess a source file
 src/parsing/parser.c.i:
-	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/src/parsing/parser.c.i
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/parsing/parser.c.i
 .PHONY : src/parsing/parser.c.i
 
 src/parsing/parser.s: src/parsing/parser.c.s
@@ -633,7 +660,7 @@ src/parsing/parser.s: src/parsing/parser.c.s
 
 # target to generate assembly for a file
 src/parsing/parser.c.s:
-	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/src/parsing/parser.c.s
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/parsing/parser.c.s
 .PHONY : src/parsing/parser.c.s
 
 src/sanity_check.c.o: src/sanity_check.c.cpp.o
@@ -642,7 +669,7 @@ src/sanity_check.c.o: src/sanity_check.c.cpp.o
 
 # target to build an object file
 src/sanity_check.c.cpp.o:
-	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/src/sanity_check.c.cpp.o
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/sanity_check.c.cpp.o
 .PHONY : src/sanity_check.c.cpp.o
 
 src/sanity_check.c.i: src/sanity_check.c.cpp.i
@@ -651,7 +678,7 @@ src/sanity_check.c.i: src/sanity_check.c.cpp.i
 
 # target to preprocess a source file
 src/sanity_check.c.cpp.i:
-	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/src/sanity_check.c.cpp.i
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/sanity_check.c.cpp.i
 .PHONY : src/sanity_check.c.cpp.i
 
 src/sanity_check.c.s: src/sanity_check.c.cpp.s
@@ -660,7 +687,7 @@ src/sanity_check.c.s: src/sanity_check.c.cpp.s
 
 # target to generate assembly for a file
 src/sanity_check.c.cpp.s:
-	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/src/sanity_check.c.cpp.s
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/sanity_check.c.cpp.s
 .PHONY : src/sanity_check.c.cpp.s
 
 src/worker_deamon.o: src/worker_deamon.c.o
@@ -669,7 +696,7 @@ src/worker_deamon.o: src/worker_deamon.c.o
 
 # target to build an object file
 src/worker_deamon.c.o:
-	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/src/worker_deamon.c.o
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/worker_deamon.c.o
 .PHONY : src/worker_deamon.c.o
 
 src/worker_deamon.i: src/worker_deamon.c.i
@@ -678,7 +705,7 @@ src/worker_deamon.i: src/worker_deamon.c.i
 
 # target to preprocess a source file
 src/worker_deamon.c.i:
-	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/src/worker_deamon.c.i
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/worker_deamon.c.i
 .PHONY : src/worker_deamon.c.i
 
 src/worker_deamon.s: src/worker_deamon.c.s
@@ -687,7 +714,7 @@ src/worker_deamon.s: src/worker_deamon.c.s
 
 # target to generate assembly for a file
 src/worker_deamon.c.s:
-	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/src/worker_deamon.c.s
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/worker_deamon.c.s
 .PHONY : src/worker_deamon.c.s
 
 # Help Target
@@ -698,7 +725,7 @@ help:
 	@echo "... depend"
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
-	@echo "... hermese"
+	@echo "... ft_nmap"
 	@echo "... libhermes/src/hermes_error.o"
 	@echo "... libhermes/src/hermes_error.i"
 	@echo "... libhermes/src/hermes_error.s"
@@ -711,6 +738,9 @@ help:
 	@echo "... libhermes/src/str_tbl.o"
 	@echo "... libhermes/src/str_tbl.i"
 	@echo "... libhermes/src/str_tbl.s"
+	@echo "... src/exclude.o"
+	@echo "... src/exclude.i"
+	@echo "... src/exclude.s"
 	@echo "... src/main.o"
 	@echo "... src/main.i"
 	@echo "... src/main.s"

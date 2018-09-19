@@ -6,7 +6,7 @@
 
 ### TARGET SPECIFICATION
  - [x] Struct representation
- - [ ] Can pass hostnames, IP addresses, networks, etc.
+ - [x] Can pass hostnames, IP addresses, networks, etc.
  - [ ] File input (-iL <filename>)
     - [ ] specify hypen (-) as filename to read from stdin
  - [ ] Exclude hosts (--exclude <host1\[,host2]\[,host3],...>)
