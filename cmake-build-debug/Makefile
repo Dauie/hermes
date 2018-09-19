@@ -636,6 +636,33 @@ src/parsing/parser.c.s:
 	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/src/parsing/parser.c.s
 .PHONY : src/parsing/parser.c.s
 
+src/sanity_check.c.o: src/sanity_check.c.cpp.o
+
+.PHONY : src/sanity_check.c.o
+
+# target to build an object file
+src/sanity_check.c.cpp.o:
+	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/src/sanity_check.c.cpp.o
+.PHONY : src/sanity_check.c.cpp.o
+
+src/sanity_check.c.i: src/sanity_check.c.cpp.i
+
+.PHONY : src/sanity_check.c.i
+
+# target to preprocess a source file
+src/sanity_check.c.cpp.i:
+	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/src/sanity_check.c.cpp.i
+.PHONY : src/sanity_check.c.cpp.i
+
+src/sanity_check.c.s: src/sanity_check.c.cpp.s
+
+.PHONY : src/sanity_check.c.s
+
+# target to generate assembly for a file
+src/sanity_check.c.cpp.s:
+	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/src/sanity_check.c.cpp.s
+.PHONY : src/sanity_check.c.cpp.s
+
 src/worker_deamon.o: src/worker_deamon.c.o
 
 .PHONY : src/worker_deamon.o
@@ -729,6 +756,9 @@ help:
 	@echo "... src/parsing/parser.o"
 	@echo "... src/parsing/parser.i"
 	@echo "... src/parsing/parser.s"
+	@echo "... src/sanity_check.c.o"
+	@echo "... src/sanity_check.c.i"
+	@echo "... src/sanity_check.c.s"
 	@echo "... src/worker_deamon.o"
 	@echo "... src/worker_deamon.i"
 	@echo "... src/worker_deamon.s"

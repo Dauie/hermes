@@ -54,7 +54,7 @@ t_dtab_wopt g_disp_wopt[] = {
 		{ "--min-hostgroup", h_min_hostgroup },
 		{ "--min-rate", h_min_packet_rate },
 		{ "--min-rtt-timeout", h_min_rtt_timeout },
-		{ "--fragment_mtu", h_fragment_mtu },
+		{ "--fragment-mtu", h_fragment_mtu },
 //		{ "-oX", h_xml_output},
 		{ "-p", h_scan_portlist },
 		{ "-PA", h_ack_portlist },
@@ -79,7 +79,7 @@ int			dtab_loop(t_job *job, char *arg, t_dtab *tab)
 	/* iterate TAB and look for the correct entry */
 	while (++i < DTAB_ENTRIES)
 	{
-		if (strncmp(arg, tab->name, len) == 0)
+		if (strncmp(arg, tab[i].name, len) == 0)
 		{
 			tab[i].function(job);
 			return (SUCCESS);
@@ -99,7 +99,7 @@ int			dtab_wopt_loop(t_job *job, char *arg, char *opt,
 	/* iterate TAB and look for the correct entry */
 	while (++i < DTAB_WOPT_ENTRIES)
 	{
-		if (strncmp(arg, tab->name, len) == 0)
+		if (strncmp(arg, tab[i].name, len) == 0)
 		{
 			tab[i].function(job, opt);
 			return (SUCCESS);
@@ -116,7 +116,7 @@ int			parse_opts(t_job * job, int ac, char **args)
 	while (++i < ac)
 	{
 		if (args[i][0] == '-') {
-			if (dtab_loop(job, *args, g_disp) == FAILURE)
+			if (dtab_loop(job, args[i], g_disp) == FAILURE)
 			{
 				if (dtab_wopt_loop(job, args[i], args[i + 1], g_disp_wopt) == FAILURE)
 					hermes_error(INPUT_ERROR, TRUE, 2, "invalid option", args[i]);

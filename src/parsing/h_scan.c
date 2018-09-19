@@ -51,6 +51,8 @@ void			h_custom_ip_ttl(t_job *job, char *input)
 {
 	int			ttl;
 
+	if (!input)
+		hermes_error(INPUT_ERROR, TRUE, 1, "-ttl not specified");
 	if ((ttl = atoi(input)) <= 0 || ttl > TTL_MAX)
 		hermes_error(INPUT_ERROR, TRUE, 1, "bad ttl specified");
 	job->options.ip_ttl = (uint16_t)ttl;
@@ -61,8 +63,10 @@ void			h_fragment_mtu(t_job *job, char *input)
 {
 	int			mtu;
 
+	if (!input)
+		hermes_error(INPUT_ERROR, TRUE, 1, "--fragment-mtu not specified");
 	if ((mtu = atoi(input)) <= 0 || mtu > MTU_MAX)
-		hermes_error(INPUT_ERROR, TRUE, 1, "bad fragment_mtu specified");
+		hermes_error(INPUT_ERROR, TRUE, 1, "bad fragment-mtu specified");
 	job->options.fragment_mtu = (uint16_t)mtu;
 	job->options.bitops.fragment_pkts = TRUE;
 }
@@ -91,6 +95,8 @@ void			h_spoof_srcport(t_job *job, char *input)
 
 void			h_exclude_targets(t_job *job, char *input)
 {
+	if (!input)
+		hermes_error(INPUT_ERROR, TRUE, 1, "--exclude-targets not specified");
 	if (handle_ip(&job->exclude_targets, input) == FAILURE)
 		hermes_error(INPUT_ERROR, TRUE, 1, "bad exclude target ip(s)");
 }

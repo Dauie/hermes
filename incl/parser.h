@@ -42,8 +42,8 @@ int				parse_time(uint32_t *opt_time, char *input);
 int				parse_opts(t_job * job, int ac, char ** args);
 int				handle_ip(t_targetlist *targets, char *arg);
 int				parse_ip(uint32_t *ip, char *ip_str);
-int				parse_ip_file(t_targetlist *list, char *args);
-
+int				parse_ip_file(t_targetlist *list, char *filename);
+int				handle_ip(t_targetlist *targets, char *arg);
 
 /*
 **	boolean user options
