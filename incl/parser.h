@@ -47,6 +47,9 @@ int				parse_worker_file(t_workerlist *list, char *filename);
 int				parse_ip_file(t_targetlist *list, char *filename);
 
 
+static t_ip4range	*new_ip4range(void);
+static void			set_ip4range(t_ip4range *data, uint32_t ip, uint32_t subn_m);
+
 /*
 **	boolean user options
 */

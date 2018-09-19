@@ -18,6 +18,7 @@
 typedef struct			s_node
 {
 	struct s_node		*next;
+    struct s_node       *prev;
 	void				*data;
 }						t_node;
 
@@ -42,6 +43,7 @@ void				*memalloc(size_t size);
 */
 void				listadd_end(t_node **list, t_node *node);
 void				listadd_head(t_node **list, t_node *node);
+void				list_remove(t_node **node);
 t_node				*new_node(void);
 
 
