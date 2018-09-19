@@ -45,6 +45,9 @@ int				parse_ip(uint32_t *ip, char *ip_str);
 int				parse_ip_file(t_targetlist *list, char *filename);
 int				handle_ip(t_targetlist *targets, char *arg);
 
+static t_ip4range	*new_ip4range(void);
+static void			set_ip4range(t_ip4range *data, uint32_t ip, uint32_t subn_m);
+
 /*
 **	boolean user options
 */

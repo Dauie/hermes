@@ -1,7 +1,19 @@
-#include "../incl/hermes.h"
 #include "../incl/job.h"
+#include "../incl/hermes.h"
+#include "../incl/parser.h"
 
-int    ex_ips(t_node **in, t_node **ex)
+
+void	split_range(t_node **include, uint32_t start, uint32_t end)
+{
+	*include = new_node();
+	(*include)->data = new_ip4range();
+	((t_ip4range*)(*include)->data)->start = end - start;
+	((t_ip4range*)(*include)->data)->start = start;
+	((t_ip4range*)(*include)->data)->start = end;
+
+}
+
+int		ex_ips(t_node **in, t_node **ex)
 {
 	t_node  *head_in;
 	t_node  *head_ex;
@@ -23,8 +35,9 @@ int    ex_ips(t_node **in, t_node **ex)
 	return (0);
 }
 
-int    ex_ipranges(t_node **in, t_node **ex)
+int		ex_ipranges(t_node **in, t_node **ex)
 {
+	t_node		*tmp;
 	t_ip4range	*dat_in;
 	t_ip4range	*dat_ex;
 	t_node		*head_in;
@@ -40,19 +53,23 @@ int    ex_ipranges(t_node **in, t_node **ex)
 			dat_ex = (*ex)->data;
 			if (!(dat_in->start > dat_ex->end || dat_in->end < dat_ex->start))
 			{
+				tmp = *in;
+				list_remove(in);
 				if (dat_in->start <= dat_ex->start)
 				{
 					if (dat_in->end <= dat_ex->end)
-						split_range(dat_ex->start - dat_in->start);
+						split_range(&tmp, dat_in->start, dat_ex->start);
 					else if (dat_in->end >= dat_ex->end)
-						split_range(dat_in->end - dat_ex->end);
+					{
+						split_range(&tmp, dat_ex->end, dat_in->end);
+						split_range(&tmp, dat_in->start, dat_ex->start)
+					}
 				}
 				else if (dat_in->start >= dat_ex->start)
 				{
 					if (dat_in->end >= dat_ex->end)
-						split_range(dat_in->end - dat_ex->end);
+						split_range(in, dat_ex->end, dat_in->end);
 				}
-				list_remove(in);
 			}
 			*ex = (*ex)->next;
 		}
@@ -63,7 +80,7 @@ int    ex_ipranges(t_node **in, t_node **ex)
 	return (0);
 }
 
-int        do_exclusions(t_targetlist **include, t_targetlist **exclude)
+int		do_exclusions(t_targetlist **include, t_targetlist **exclude)
 {
 	if (!*include || !*exclude)
 		return (0);
