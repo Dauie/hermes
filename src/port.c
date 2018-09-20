@@ -67,12 +67,12 @@ int				portrange_cmp(void *prt_left, void *prt_right)
 	right = prt_right;
 	if (left->start == right->start)
 	{
-		if (left->end == right->end)
-			return (0);
+		if (left->end < right->end)
+			return (-1);
 		if (left->end > right->end)
 			return (1);
 		else
-			return (-1);
+			return (0);
 	}
 	else if (left->start > right->start)
 		return (1);

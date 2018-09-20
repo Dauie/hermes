@@ -31,12 +31,12 @@ int				ip4_cmp(void *ip_left, void *ip_right)
 
 	left = ip_left;
 	right = ip_right;
-	if (left->addr == right->addr)
-		return (0);
+	if (left->addr < right->addr)
+		return (-1);
 	else if (left->addr > right->addr)
 		return (1);
 	else
-		return (-1);
+		return (0);
 }
 
 void			ip4_del(t_node **node)
@@ -73,12 +73,12 @@ int				ip4range_cmp(void *ipr_left, void *ipr_right)
 	right = ipr_right;
 	if (left->start == right->start)
 	{
-		if (left->end == right->end)
-			return (0);
+		if (left->end < right->end)
+			return (-1);
 		if (left->end > right->end)
 			return (1);
 		else
-			return (-1);
+			return (0);
 	}
 	else if (left->start > right->start)
 		return (1);

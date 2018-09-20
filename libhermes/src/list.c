@@ -17,25 +17,30 @@ t_node			*bst_search(t_node **tree, void *data, int (*cmp)(void *, void *))
 	cur = *tree;
 	while (cur)
 	{
-		if (cmp(cur->data, data) == 0)
-			return (cur);
 		if (cmp(cur->data, data) < 0)
 			cur = cur->left;
 		else if (cmp(cur->data, data) > 0)
 			cur = cur->right;
+		else
+			return (cur);
 	}
 	return (NULL);
 }
 
 
-void			bst_add(t_node **tree, t_node **node,
+int				bst_add(t_node **tree, t_node **node,
 						int (*cmp)(void *, void *), void (*del)(t_node **))
 {
-	t_node 		*cur;
+	t_node		*cur;
 	t_node		*prnt;
 
 	if (!tree || !node || !*node)
-		return ;
+		return (FAILURE);
+	if (!*tree)
+	{
+		*tree = *node;
+		return (SUCCESS);
+	}
 	prnt = cur = *tree;
 	while (cur)
 	{
@@ -45,18 +50,17 @@ void			bst_add(t_node **tree, t_node **node,
 		else if (cmp(cur->data, (*node)->data) > 0)
 			cur = cur->right;
 		/* Keep duplicate nodes from being added*/
-		else if (cmp(cur->data, (*node)->data) == 0)
+		else
 		{
 			del(node);
-			return ;
+			return (FAILURE);
 		}
 	}
-	if (!prnt)
-		*tree = *node;
-	else if (cmp(prnt->data, (*node)->data) < 0)
+	if (cmp(prnt->data, (*node)->data) < 0)
 		prnt->left = *node;
-	else if (cmp(prnt->data, (*node)->data) > 0)
+	else
 		prnt->right = *node;
+	return (SUCCESS);
 }
 
 t_node			*bst_rm_search(t_node **tree, t_node **parent,
@@ -69,15 +73,15 @@ t_node			*bst_rm_search(t_node **tree, t_node **parent,
 	while (cur)
 	{
 		prnt = cur;
-		if (cmp(cur->data, data) == 0)
-		{
-			*parent = prnt;
-			return (cur);
-		}
 		if (cmp(cur->data, data) < 0)
 			cur = cur->left;
 		else if (cmp(cur->data, data) > 0)
 			cur = cur->right;
+		else
+		{
+			*parent = prnt;
+			return (cur);
+		}
 	}
 	*parent = NULL;
 	return (NULL);

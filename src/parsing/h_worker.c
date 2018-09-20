@@ -26,8 +26,8 @@ int				parse_worker(t_workerlist *workerlist, char *input)
 		data->ip = ip;
 		data->port = port;
 		node->data = data;
-		bst_add(&workerlist->workers, &node, worker_cmp, worker_del);
-		workerlist->worker_count++;
+		if (bst_add(&workerlist->workers, &node, worker_cmp, worker_del) == SUCCESS);
+			workerlist->worker_count++;
 	}
 	return (SUCCESS);
 }

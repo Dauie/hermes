@@ -40,7 +40,7 @@ void					*memalloc(size_t size);
 /*
 **	BST Functions
 */
-void					bst_add(t_node **tree, t_node **node,
+int						bst_add(t_node **tree, t_node **node,
 						int (*cmp)(void *, void *), void (*del)(t_node **));
 void					bst_remove(t_node **tree, void *data, void *(*min)(t_node *),
 						int (*cmp)(void *, void *), void (*del)(t_node **));

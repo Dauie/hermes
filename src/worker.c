@@ -16,12 +16,12 @@ int				worker_cmp(void *wrk_left, void *wrk_right)
 
 	left = wrk_left;
 	right = wrk_right;
-	if (left->ip == right->ip)
-		return (0);
+	if (left->ip < right->ip)
+		return (-1);
 	else if (left->ip > right->ip)
 		return (1);
 	else
-		return (-1);
+		return (0);
 }
 
 void			worker_del(t_node **node)

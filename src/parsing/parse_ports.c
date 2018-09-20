@@ -22,14 +22,17 @@ static int		add_port(t_portlist *list, char *input)
 	** check to make sure port is in range.
 	*/
 	if (parse_port(&port, input) == FAILURE)
-		return (hermes_error(INPUT_ERROR, FALSE, 1, "bad port specified", input));
+		return (hermes_error(FAILURE, FALSE, 1, "bad port specified", input));
 	data = new_port();
 	node = new_node();
 	data->port = (uint16_t)port;
 	node->data = data;
-	bst_add(&list->ports, &node, port_cmp, port_del);
-	list->port_count++;
-	return (SUCCESS);
+	if (bst_add(&list->ports, &node, port_cmp, port_del) == SUCCESS)
+	{
+		list->port_count++;
+		return (SUCCESS);
+	}
+	return (FAILURE);
 }
 
 static int		add_range(t_portlist *list, char **range)
@@ -40,17 +43,20 @@ static int		add_range(t_portlist *list, char **range)
 	t_portrange	*data;
 
 	if (parse_port(&start, range[0]) == FAILURE)
-		return (hermes_error(INPUT_ERROR, FALSE, 1, "bad start to port range", range[0]));
+		return (hermes_error(FAILURE, FALSE, 1, "bad start to port range", range[0]));
 	if (parse_port(&end, range[1]) == FAILURE)
-		return (hermes_error(INPUT_ERROR, FALSE, 1, "bad end to port range", range[1]));
+		return (hermes_error(FAILURE, FALSE, 1, "bad end to port range", range[1]));
 	node = new_node();
 	data = new_portrange();
 	data->start = start;
 	data->end = end;
 	node->data = data;
-	bst_add(&list->port_range, &node, portrange_cmp, portrange_del);
-	list->range_count++;
-	return (SUCCESS);
+	if (bst_add(&list->port_range, &node, portrange_cmp, portrange_del) == SUCCESS)
+	{
+		list->range_count++;
+		return (SUCCESS);
+	}
+	return (FAILURE);
 }
 
 int				handle_port(t_portlist *list, char *input)
