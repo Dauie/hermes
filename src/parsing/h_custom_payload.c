@@ -23,8 +23,7 @@ void			h_custom_random_payload(t_job *job, char *input)
 	/* TODO check len for a sane amount (MAX_IP_DATA_LEN) */
 	if (!(payload = (uint8_t *)memalloc((size_t)len)))
 		hermes_error(errno, TRUE, 2, "malloc()", strerror(errno));
-	if (fread(payload, sizeof(uint8_t), (size_t)len, devrand) < len)
-		hermes_error(errno, TRUE, 2, "fread()", strerror(errno));
+	fread(payload, sizeof(uint8_t), (size_t)len, devrand);
 	job->options.bitops.custom_rand_payload = TRUE;
 	job->custom_payload = payload;
 }

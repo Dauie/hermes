@@ -1,14 +1,5 @@
 #include "../../incl/parser.h"
 
-t_worker		*new_worker(void)
-{
-	t_worker	*worker;
-
-	if (!(worker = (t_worker*)memalloc(sizeof(t_worker))))
-		hermes_error(errno, TRUE, 2, "malloc()", strerror(errno));
-	return (worker);
-}
-
 int				parse_worker(t_workerlist *workerlist, char *input)
 {
 	char		*worker;
@@ -35,7 +26,7 @@ int				parse_worker(t_workerlist *workerlist, char *input)
 		data->ip = ip;
 		data->port = port;
 		node->data = data;
-		listadd_head(&workerlist->workers, node);
+		bst_add(&workerlist->workers, &node, worker_cmp, worker_del);
 		workerlist->worker_count++;
 	}
 	return (SUCCESS);

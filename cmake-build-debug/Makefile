@@ -231,6 +231,60 @@ libhermes/src/str_tbl.c.s:
 	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/libhermes/src/str_tbl.c.s
 .PHONY : libhermes/src/str_tbl.c.s
 
+src/exclude.o: src/exclude.c.o
+
+.PHONY : src/exclude.o
+
+# target to build an object file
+src/exclude.c.o:
+	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/src/exclude.c.o
+.PHONY : src/exclude.c.o
+
+src/exclude.i: src/exclude.c.i
+
+.PHONY : src/exclude.i
+
+# target to preprocess a source file
+src/exclude.c.i:
+	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/src/exclude.c.i
+.PHONY : src/exclude.c.i
+
+src/exclude.s: src/exclude.c.s
+
+.PHONY : src/exclude.s
+
+# target to generate assembly for a file
+src/exclude.c.s:
+	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/src/exclude.c.s
+.PHONY : src/exclude.c.s
+
+src/ip4.o: src/ip4.c.o
+
+.PHONY : src/ip4.o
+
+# target to build an object file
+src/ip4.c.o:
+	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/src/ip4.c.o
+.PHONY : src/ip4.c.o
+
+src/ip4.i: src/ip4.c.i
+
+.PHONY : src/ip4.i
+
+# target to preprocess a source file
+src/ip4.c.i:
+	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/src/ip4.c.i
+.PHONY : src/ip4.c.i
+
+src/ip4.s: src/ip4.c.s
+
+.PHONY : src/ip4.s
+
+# target to generate assembly for a file
+src/ip4.c.s:
+	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/src/ip4.c.s
+.PHONY : src/ip4.c.s
+
 src/main.o: src/main.c.o
 
 .PHONY : src/main.o
@@ -636,6 +690,33 @@ src/parsing/parser.c.s:
 	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/src/parsing/parser.c.s
 .PHONY : src/parsing/parser.c.s
 
+src/port.o: src/port.c.o
+
+.PHONY : src/port.o
+
+# target to build an object file
+src/port.c.o:
+	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/src/port.c.o
+.PHONY : src/port.c.o
+
+src/port.i: src/port.c.i
+
+.PHONY : src/port.i
+
+# target to preprocess a source file
+src/port.c.i:
+	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/src/port.c.i
+.PHONY : src/port.c.i
+
+src/port.s: src/port.c.s
+
+.PHONY : src/port.s
+
+# target to generate assembly for a file
+src/port.c.s:
+	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/src/port.c.s
+.PHONY : src/port.c.s
+
 src/sanity_check.o: src/sanity_check.c.o
 
 .PHONY : src/sanity_check.o
@@ -662,6 +743,33 @@ src/sanity_check.s: src/sanity_check.c.s
 src/sanity_check.c.s:
 	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/src/sanity_check.c.s
 .PHONY : src/sanity_check.c.s
+
+src/worker.o: src/worker.c.o
+
+.PHONY : src/worker.o
+
+# target to build an object file
+src/worker.c.o:
+	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/src/worker.c.o
+.PHONY : src/worker.c.o
+
+src/worker.i: src/worker.c.i
+
+.PHONY : src/worker.i
+
+# target to preprocess a source file
+src/worker.c.i:
+	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/src/worker.c.i
+.PHONY : src/worker.c.i
+
+src/worker.s: src/worker.c.s
+
+.PHONY : src/worker.s
+
+# target to generate assembly for a file
+src/worker.c.s:
+	$(MAKE) -f CMakeFiles/hermese.dir/build.make CMakeFiles/hermese.dir/src/worker.c.s
+.PHONY : src/worker.c.s
 
 src/worker_deamon.o: src/worker_deamon.c.o
 
@@ -711,6 +819,12 @@ help:
 	@echo "... libhermes/src/str_tbl.o"
 	@echo "... libhermes/src/str_tbl.i"
 	@echo "... libhermes/src/str_tbl.s"
+	@echo "... src/exclude.o"
+	@echo "... src/exclude.i"
+	@echo "... src/exclude.s"
+	@echo "... src/ip4.o"
+	@echo "... src/ip4.i"
+	@echo "... src/ip4.s"
 	@echo "... src/main.o"
 	@echo "... src/main.i"
 	@echo "... src/main.s"
@@ -756,9 +870,15 @@ help:
 	@echo "... src/parsing/parser.o"
 	@echo "... src/parsing/parser.i"
 	@echo "... src/parsing/parser.s"
+	@echo "... src/port.o"
+	@echo "... src/port.i"
+	@echo "... src/port.s"
 	@echo "... src/sanity_check.o"
 	@echo "... src/sanity_check.i"
 	@echo "... src/sanity_check.s"
+	@echo "... src/worker.o"
+	@echo "... src/worker.i"
+	@echo "... src/worker.s"
 	@echo "... src/worker_deamon.o"
 	@echo "... src/worker_deamon.i"
 	@echo "... src/worker_deamon.s"

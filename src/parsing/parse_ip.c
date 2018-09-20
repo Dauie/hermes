@@ -13,30 +13,6 @@ t_targetlist	*new_target_list(void)
 }
 #endif
 
-static t_ip4		*new_ip4(void)
-{
-	t_ip4			*data;
-
-	if (!(data = (t_ip4*)memalloc(sizeof(t_ip4))))
-	{
-		hermes_error(errno, TRUE, 2, "malloc()", strerror(errno));
-		return (NULL);
-	}
-	return (data);
-}
-
-static t_ip4range	*new_ip4range(void)
-{
-	t_ip4range		*data;
-
-	if (!(data = (t_ip4range*)memalloc(sizeof(t_ip4range))))
-	{
-		hermes_error(errno, TRUE, 2, "malloc()", strerror(errno));
-		return (NULL);
-	}
-	return (data);
-}
-
 static void			set_ip4range(t_ip4range *data, uint32_t ip, uint32_t subn_m)
 {
 	uint32_t		wildcard;
@@ -78,7 +54,8 @@ int					parse_ip(uint32_t *ip, char *ip_str)
 	return (SUCCESS);
 }
 
-static void			listadd_ip4range(t_node **ip_range, uint32_t ip, uint32_t subn_m)
+static void			bstadd_ip4range(t_node **ip_range, uint32_t ip,
+									   uint32_t subn_m)
 {
 	t_node			*node;
 	t_ip4range		*data;
@@ -87,11 +64,11 @@ static void			listadd_ip4range(t_node **ip_range, uint32_t ip, uint32_t subn_m)
 	set_ip4range(data, ip, subn_m);
 	node = new_node();
 	node->data = data;
-	listadd_head(ip_range, node);
+	bst_add(ip_range, &node, ip4range_cmp, ip4range_del);
 	return ;
 }
 
-static void			listadd_ip4(t_node **ip_list, uint32_t ip)
+static void			bstadd_ip4(t_node **ip_list, uint32_t ip)
 {
 	t_ip4 			*data;
 	t_node			*node;
@@ -100,7 +77,7 @@ static void			listadd_ip4(t_node **ip_list, uint32_t ip)
 	data->addr = ip;
 	node = new_node();
 	node->data = data;
-	listadd_head(ip_list, node);
+	bst_add(ip_list, &node, ip4_cmp, ip4_del);
 	return ;
 }
 
@@ -113,7 +90,7 @@ int				do_ip4range(t_targetlist *targets, char *ip_str, char *cidr_str)
 		return (FAILURE);
 	if (parse_cidr_mask(&subn_m, cidr_str) < 0)
 		return (FAILURE);
-	listadd_ip4range(&targets->iprange, ip, subn_m);
+	bstadd_ip4range(&targets->iprange, ip, subn_m);
 	targets->iprange_count++;
 	targets->total += ((t_ip4range*)targets->iprange->data)->range_size;
 	return (SUCCESS);
@@ -125,7 +102,7 @@ int				do_ip4(t_targetlist *targets, char *input)
 
 	if (parse_ip(&ip, input) < 0)
 		return (FAILURE);
-	listadd_ip4(&targets->ip, ip);
+	bstadd_ip4(&targets->ip, ip);
 	targets->ip_count++;
 	targets->total++;
 	return (SUCCESS);
@@ -144,8 +121,10 @@ int				handle_ip(t_targetlist *targets, char *input)
 		cidr_str = section;
 		ip_str = strsep(&cidr_str, "/");
 		if (cidr_str != NULL)
+		{
 			if (do_ip4range(targets, ip_str, cidr_str) == FAILURE)
 				return (FAILURE);
+		}
 		else
 			if (do_ip4(targets, section) == FAILURE)
 				return (FAILURE);

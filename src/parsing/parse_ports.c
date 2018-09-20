@@ -1,24 +1,6 @@
 #include "../../incl/hermes.h"
 #include "../../incl/parser.h"
 
-t_port			*new_port()
-{
-	t_port		*port;
-
-	if (!(port = (t_port *)memalloc(sizeof(t_port))))
-		hermes_error(INPUT_ERROR, TRUE, 2, "malloc()", strerror(errno));
-	return (port);
-}
-
-t_portrange		*new_portrange()
-{
-	t_portrange	*range;
-
-	if (!(range = (t_portrange *)memalloc(sizeof(t_portrange))))
-		hermes_error(errno, TRUE, 2, "malloc()", strerror(errno));
-	return (range);
-}
-
 int				parse_port(uint16_t *port, char *input)
 {
 	int			ret;
@@ -30,7 +12,6 @@ int				parse_port(uint16_t *port, char *input)
 	*port = (uint16_t)ret;
 	return (SUCCESS);
 }
-
 
 static int		add_port(t_portlist *list, char *input)
 {
@@ -46,7 +27,7 @@ static int		add_port(t_portlist *list, char *input)
 	node = new_node();
 	data->port = (uint16_t)port;
 	node->data = data;
-	listadd_head(&list->ports, node);
+	bst_add(&list->ports, &node, port_cmp, port_del);
 	list->port_count++;
 	return (SUCCESS);
 }
@@ -67,11 +48,10 @@ static int		add_range(t_portlist *list, char **range)
 	data->start = start;
 	data->end = end;
 	node->data = data;
-	listadd_head(&list->port_range, node);
+	bst_add(&list->port_range, &node, portrange_cmp, portrange_del);
 	list->range_count++;
 	return (SUCCESS);
 }
-
 
 int				handle_port(t_portlist *list, char *input)
 {

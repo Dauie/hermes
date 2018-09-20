@@ -3,7 +3,6 @@
 # define LIB_HERMES_H
 
 # include <sys/errno.h>
-//# include <zconf.h>
 # include <memory.h>
 # include <stdint.h>
 # include <stdlib.h>
@@ -17,8 +16,8 @@
 */
 typedef struct			s_node
 {
-	struct s_node		*next;
-    struct s_node       *prev;
+	struct s_node		*left;
+	struct s_node		*right;
 	void				*data;
 }						t_node;
 
@@ -26,30 +25,32 @@ typedef struct			s_node
 /*
 **	Character Manipulation Functions
 */
-size_t				cntwrds(char *str, char c);
-char				**strsplit(const char *str, char delim);
-char				*strsub(char const *s, int start, size_t len);
-void				tbldel(char ***tbl);
+size_t					cntwrds(char *str, char c);
+char					**strsplit(const char *str, char delim);
+char					*strsub(char const *s, int start, size_t len);
+void					tbldel(char ***tbl);
 
 
 /*
 **	Memory Helper Functions
 */
-void				*memalloc(size_t size);
+void					*memalloc(size_t size);
 
 
 /*
-**	List Functions
+**	BST Functions
 */
-void				listadd_end(t_node **list, t_node *node);
-void				listadd_head(t_node **list, t_node *node);
-void				list_remove(t_node **node);
-t_node				*new_node(void);
+void					bst_add(t_node **tree, t_node **node,
+						int (*cmp)(void *, void *), void (*del)(t_node **));
+void					bst_remove(t_node **tree, void *data, void *(*min)(t_node *),
+						int (*cmp)(void *, void *), void (*del)(t_node **));
+t_node					*bst_search(t_node **tree, void *data, int (*cmp)(void *, void *));
+t_node					*new_node(void);
 
 
 /*
 **	Error Management Functions
 */
-int				hermes_error(int errcode, int fatal, int str_amt, ...);
+int						hermes_error(int errcode, int fatal, int str_amt, ...);
 
 #endif //hermes_hermes_H
