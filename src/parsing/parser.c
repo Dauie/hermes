@@ -41,7 +41,7 @@ t_dtab_wopt g_disp_wopt[] = {
 		{ "--data-length", h_custom_random_payload },
 		{ "--data-string", h_custom_payload_ascii },
 		{ "--exclude", h_exclude_targets },
-		{ "--exclude-file", h_exclude_target_file },
+		{ "--excludefile", h_exclude_target_file },
 		{ "--exclude-ports", h_exclude_ports },
 		{ "-g", h_spoof_srcport},
 		{ "--host-timeout", h_host_timeout },

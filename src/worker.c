@@ -24,18 +24,6 @@ int				worker_cmp(void *wrk_left, void *wrk_right)
 		return (0);
 }
 
-void			worker_del(t_node **node)
-{
-	t_worker	*del;
-
-	if (!node || !*node)
-		return ;
-	del = (*node)->data;
-	if (del)
-		free(del);
-	free(*node);
-}
-
 void			*worker_min(t_node *tree)
 {
 	t_worker	*save;

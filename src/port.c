@@ -33,18 +33,6 @@ int				port_cmp(void *prt_left, void *prt_right)
 		return (-1);
 }
 
-void			port_del(t_node **node)
-{
-	t_port		*del;
-
-	if (!node || !*node)
-		return ;
-	del = (*node)->data;
-	if (del)
-		free(del);
-	free(*node);
-}
-
 void			*port_min(t_node *tree)
 {
 	t_port		*save;
@@ -78,18 +66,6 @@ int				portrange_cmp(void *prt_left, void *prt_right)
 		return (1);
 	else
 		return (-1);
-}
-
-void			portrange_del(t_node **node)
-{
-	t_portrange	*del;
-
-	if (!node || !*node)
-		return ;
-	del = (*node)->data;
-	if (del)
-		free(del);
-	free(*node);
 }
 
 void			*portrange_min(t_node *tree)

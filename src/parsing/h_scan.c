@@ -55,7 +55,7 @@ void			h_custom_ip_ttl(t_job *job, char *input)
 		hermes_error(INPUT_ERROR, TRUE, 1, "-ttl not specified");
 	if ((ttl = atoi(input)) <= 0 || ttl > TTL_MAX)
 		hermes_error(INPUT_ERROR, TRUE, 1, "bad ttl specified");
-	job->options.ip_ttl = (uint16_t)ttl;
+	job->options.ip_ttl = (uint8_t)ttl;
 	job->options.bitops.custom_ip_ttl = TRUE;
 }
 
@@ -67,7 +67,7 @@ void			h_fragment_mtu(t_job *job, char *input)
 		hermes_error(INPUT_ERROR, TRUE, 1, "--fragment-mtu not specified");
 	if ((mtu = atoi(input)) <= 0 || mtu > MTU_MAX)
 		hermes_error(INPUT_ERROR, TRUE, 1, "bad fragment-mtu specified");
-	job->options.fragment_mtu = (uint16_t)mtu;
+	job->options.fragment_mtu = (uint8_t)mtu;
 	job->options.bitops.fragment_pkts = TRUE;
 }
 

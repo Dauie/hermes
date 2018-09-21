@@ -7,7 +7,7 @@ void			h_thread_amt(t_job *job, char *input)
 
 	if ((threads = atoi(input)) <= 0 || threads > MAX_THREADS)
 		hermes_error(INPUT_ERROR, TRUE, 1, "bad thread amount");
-	job->options.thread_count = (uint16_t)threads;
+	job->options.thread_count = (uint8_t)threads;
 }
 
 void			h_max_hostgroup(t_job *job, char *input)

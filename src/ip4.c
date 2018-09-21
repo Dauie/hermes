@@ -39,18 +39,6 @@ int				ip4_cmp(void *ip_left, void *ip_right)
 		return (0);
 }
 
-void			ip4_del(t_node **node)
-{
-	t_ip4		*del;
-
-	if (!node || !*node)
-		return ;
-	del = (*node)->data;
-	if (del)
-		free(del);
-	free(*node);
-}
-
 void			*ip4_min(t_node *tree)
 {
 	t_ip4		*save;
@@ -86,17 +74,7 @@ int				ip4range_cmp(void *ipr_left, void *ipr_right)
 		return (-1);
 }
 
-void			ip4range_del(t_node **node)
-{
-	t_ip4range	*del;
 
-	if (!node || !*node)
-		return ;
-	del = (*node)->data;
-	if (del)
-		free(del);
-	free(*node);
-}
 
 void			*ip4range_min(t_node *tree)
 {

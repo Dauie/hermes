@@ -27,7 +27,7 @@ static int		add_port(t_portlist *list, char *input)
 	node = new_node();
 	data->port = (uint16_t)port;
 	node->data = data;
-	if (bst_add(&list->ports, &node, port_cmp, port_del) == SUCCESS)
+	if (add_node(&list->ports, &node, port_cmp) == SUCCESS)
 	{
 		list->port_count++;
 		return (SUCCESS);
@@ -51,7 +51,7 @@ static int		add_range(t_portlist *list, char **range)
 	data->start = start;
 	data->end = end;
 	node->data = data;
-	if (bst_add(&list->port_range, &node, portrange_cmp, portrange_del) == SUCCESS)
+	if (add_node(&list->port_range, &node, portrange_cmp) == SUCCESS)
 	{
 		list->range_count++;
 		return (SUCCESS);

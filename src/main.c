@@ -24,4 +24,5 @@ int			 main(int ac, char **av)
 		hermes_error(errno, TRUE, 2, "malloc()", strerror(errno));
 	parse_opts(job, ac, av);
 	sanity_check(job);
+	return (SUCCESS);
 }

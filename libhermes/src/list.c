@@ -10,6 +10,19 @@ t_node			*new_node(void)
 	return (node);
 }
 
+void			del_node(t_node **node)
+{
+	if (!node || !*node)
+		return ;
+	if ((*node)->data)
+	{
+		free((*node)->data);
+		(*node)->data = NULL;
+	}
+	free(*node);
+	*node = NULL;
+}
+
 t_node			*bst_search(t_node **tree, void *data, int (*cmp)(void *, void *))
 {
 	t_node		*cur;
@@ -28,13 +41,13 @@ t_node			*bst_search(t_node **tree, void *data, int (*cmp)(void *, void *))
 }
 
 
-int				bst_add(t_node **tree, t_node **node,
-						int (*cmp)(void *, void *), void (*del)(t_node **))
+int				add_node(t_node **tree, t_node **node,
+							int (*cmp)(void *, void *))
 {
 	t_node		*cur;
 	t_node		*prnt;
 
-	if (!tree || !node || !*node)
+	if (!node)
 		return (FAILURE);
 	if (!*tree)
 	{
@@ -52,7 +65,7 @@ int				bst_add(t_node **tree, t_node **node,
 		/* Keep duplicate nodes from being added*/
 		else
 		{
-			del(node);
+			del_node(node);
 			return (FAILURE);
 		}
 	}
@@ -63,7 +76,7 @@ int				bst_add(t_node **tree, t_node **node,
 	return (SUCCESS);
 }
 
-t_node			*bst_rm_search(t_node **tree, t_node **parent,
+static t_node			*bst_rm_search(t_node **tree, t_node **parent,
 								void *data, int (*cmp)(void *, void *))
 {
 	t_node		*cur;
@@ -88,48 +101,57 @@ t_node			*bst_rm_search(t_node **tree, t_node **parent,
 }
 
 
-void			bst_remove(t_node **tree, void *data, void *(*min)(t_node *),
-					int (*cmp)(void *, void *), void (*del)(t_node **))
+int			remove_node(t_node **tree, void *data, void *(*min)(t_node *),
+						int (*cmp)(void *, void *))
 {
-	t_node		*cur;
+	t_node		*curr;
 	t_node		*prnt;
 	t_node		*chld;
 	void		*save;
 
-	cur = bst_rm_search(tree, &prnt, data, cmp);
-	if (!cur)
-		return ;
-	if (!cur->left && !cur->right)
+	prnt = NULL;
+	if (!(curr = bst_rm_search(tree, &prnt, data, cmp)))
+		return (FAILURE);
+	if (!curr->left && !curr->right)
 	{
-		if (cur != *tree)
+		if (curr != *tree)
 		{
-			if (prnt->left == cur)
+			if (prnt->left == curr)
 				prnt->left = NULL;
 			else
 				prnt->right = NULL;
 		}
 		else
 			*tree = NULL;
-		del(&cur);
+		del_node(&curr);
 	}
-	else if (cur->left && cur->right)
+	else if (curr->left && curr->right)
 	{
-		save = min(cur->right);
-		bst_remove(tree, save, min, cmp, del);
-		cur->data = save;
+		save = min(curr->right);
+		remove_node(&curr, save, min, cmp);
+		curr->data = save;
 	}
 	else
 	{
-		chld = cur->left ? cur->left : cur->right;
-		if (cur != *tree)
+		chld = curr->left ? curr->left : curr->right;
+		if (curr != *tree)
 		{
-			if (cur == prnt->left)
+			if (curr == prnt->left)
 				prnt->left = chld;
 			else
 				prnt->right = chld;
 		}
 		else
 			*tree = chld;
-		del(&cur);
+		del_node(&curr);
+	}
+	return (SUCCESS);
+}
+
+void		delete_tree(t_node **tree)
+{
+	if (tree && *tree)
+	{
+
 	}
 }
