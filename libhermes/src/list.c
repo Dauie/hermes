@@ -41,14 +41,13 @@ t_node			*bst_search(t_node **tree, void *data, int (*cmp)(void *, void *))
 }
 
 
-int				add_node(t_node **tree, t_node **node,
-							int (*cmp)(void *, void *))
+int				add_node(t_node **tree, t_node **node, int (*cmp)(void *, void *))
 {
 	t_node		*cur;
 	t_node		*prnt;
+	int			ret;
 
-	if (!node)
-		return (FAILURE);
+	prnt = NULL;
 	if (!*tree)
 	{
 		*tree = *node;
@@ -58,9 +57,10 @@ int				add_node(t_node **tree, t_node **node,
 	while (cur)
 	{
 		prnt = cur;
-		if (cmp(cur->data, (*node)->data) < 0)
+		ret = cmp(cur->data, node);
+		if (ret < 0)
 			cur = cur->left;
-		else if (cmp(cur->data, (*node)->data) > 0)
+		else if (ret > 0)
 			cur = cur->right;
 		/* Keep duplicate nodes from being added*/
 		else
@@ -72,12 +72,12 @@ int				add_node(t_node **tree, t_node **node,
 	if (cmp(prnt->data, (*node)->data) < 0)
 		prnt->left = *node;
 	else
-		prnt->right = *node;
+		prnt->right = (*node)->data;
 	return (SUCCESS);
 }
 
 static t_node			*bst_rm_search(t_node **tree, t_node **parent,
-								void *data, int (*cmp)(void *, void *))
+										void *data, int (*cmp)(void *, void *))
 {
 	t_node		*cur;
 	t_node		*prnt;
@@ -102,7 +102,7 @@ static t_node			*bst_rm_search(t_node **tree, t_node **parent,
 
 
 int			remove_node(t_node **tree, void *data, void *(*min)(t_node *),
-						int (*cmp)(void *, void *))
+						   int (*cmp)(void *, void *))
 {
 	t_node		*curr;
 	t_node		*prnt;
@@ -148,10 +148,68 @@ int			remove_node(t_node **tree, void *data, void *(*min)(t_node *),
 	return (SUCCESS);
 }
 
-void		delete_tree(t_node **tree)
-{
-	if (tree && *tree)
-	{
 
-	}
-}
+//int			remove_node(t_node **tree, void *data, void *(*min)(t_node *),
+//						int (*cmp)(void *, void *))
+//{
+//	t_node		*parent;
+//	t_node		*child;
+//	t_node		*node;
+//	void		*save;
+//
+//	node = *tree;
+//	parent = NULL;
+//	while (node && cmp(node->data, data) != 0)
+//	{
+//		parent = node;
+//		if (cmp(node->data, data) < 0)
+//			node = node->left;
+//		else if (cmp(node->data, data) > 0)
+//			node = node->right;
+//	}
+//	if (!node)
+//		return (FAILURE);
+//	if (node == *tree)
+//	{
+//		del_node(tree);
+//		return (SUCCESS);
+//	}
+//	if (!node->left && !node->right)
+//	{
+//		if (parent->left == node)
+//			parent->left = NULL;
+//		else
+//			parent->right = NULL;
+//		del_node(&node);
+//	}
+//	else if (node->left && node->right)
+//	{
+//		save = min(node->right);
+//		remove_node(&node, save, min, cmp);
+//		node->data = save;
+//	}
+//	else
+//	{
+//		child = node->left ? node->left : node->right;
+//		if (node != *tree)
+//		{
+//			if (node == parent->left)
+//				parent->left = child;
+//			else
+//				parent->right = child;
+//		}
+//		else
+//			*tree = child;
+//		del_node(&node);
+//	}
+//	return (SUCCESS);
+//}
+
+
+//void		delete_tree(t_node **tree)
+//{
+//	if (tree && *tree)
+//	{
+//
+//	}
+//}
