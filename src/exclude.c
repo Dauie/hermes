@@ -13,6 +13,18 @@
 //
 //}
 
+void exclude_ip4range(t_targetlist *list, t_node **targets, t_node *exclude)
+{
+	if (!exclude)
+		return ;
+	if (exclude->left)
+		exclude_ip4range(list, targets, exclude->left);
+	if (overlap((*targets)->data, exclude->data))
+	{
+
+	}
+}
+
 void 	exclude_ip4(t_targetlist *list, t_node **targets, t_node *exclude)
 {
 	if (!exclude)
