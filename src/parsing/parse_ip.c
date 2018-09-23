@@ -64,7 +64,7 @@ static int			bstadd_ip4range(t_node **ip_range, uint32_t ip,
 	set_ip4range(data, ip, subn_m);
 	node = new_node();
 	node->data = data;
-	return (add_node(ip_range, &node, ip4range_cmp));
+	return (add_node(ip_range, &node, ip4rng_cmp));
 }
 
 static int			bstadd_ip4(t_node **ip_list, uint32_t ip)

@@ -3,15 +3,7 @@
 #include "../incl/parser.h"
 
 
-//void	split_range(t_node **include, uint32_t start, uint32_t end)
-//{
-//	*include = new_node();
-//	(*include)->data = new_ip4range();
-//	((t_ip4range*)(*include)->data)->start = end - start;
-//	((t_ip4range*)(*include)->data)->start = start;
-//	((t_ip4range*)(*include)->data)->start = end;
-//
-//}
+
 
 void 	exclude_ip4(t_targetlist *list, t_node **targets, t_node *exclude)
 {
@@ -28,15 +20,51 @@ void 	exclude_ip4(t_targetlist *list, t_node **targets, t_node *exclude)
 		exclude_ip4(list, targets, exclude->right);
 }
 
+t_node		*range_conflicts(t_targetlist *list, t_node **targets, void *data)
+{
+	t_node	*curr;
+
+	curr = *targets;
+
+	return (NULL);
+}
+
+void		exclude_ip4range(t_targetlist *list, t_node **targets, t_node *exclude)
+{
+	t_node	*conflict;
+
+	if (!exclude)
+		return ;
+	if (exclude->left)
+		exclude_ip4range(list, targets, exclude->left);
+	if ((conflict = tree_search(targets, exclude->data, ip4rng_overlap_cmp)))
+	{
+		printf("got eem");
+	}
+	if (exclude->right)
+		exclude_ip4range(list, targets, exclude->right);
+}
+
+
+void	split_range(t_node **include, uint32_t start, uint32_t end)
+{
+	*include = new_node();
+	(*include)->data = new_ip4range();
+	((t_ip4range*)(*include)->data)->start = end - start;
+	((t_ip4range*)(*include)->data)->start = start;
+	((t_ip4range*)(*include)->data)->start = end;
+
+}
+
+
 int		do_exclusions( t_targetlist *targets, t_targetlist *exclude)
 {
 	if (!targets || !exclude)
 		return (0);
 	if (targets->ip && exclude->ip)
 		exclude_ip4(targets, &targets->ip, exclude->ip);
-//	if ((*targets)->iprange && (*exclude)->iprange)
-//		if (ex_ipranges(&(*targets)->iprange, &(*exclude)->iprange) < 0)
-//			return (hermes_error(INPUT_ERROR, FALSE, 1, "IP exclusion"));
+	if (targets->iprange && exclude->iprange)
+		exclude_ip4range(targets, &targets->iprange, exclude->iprange);
 	return (0);
 }
 
@@ -84,5 +112,3 @@ int		do_exclusions( t_targetlist *targets, t_targetlist *exclude)
 //	*in = head_in;
 //	return (0);
 //}
-
-

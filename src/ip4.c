@@ -51,8 +51,8 @@ void			*ip4_min(t_node *tree)
 	memcpy(save, tree->data, sizeof(t_ip4));
 	return (save);
 }
-
-int				ip4range_cmp(void *ipr_left, void *ipr_right)
+/* TODO ip comparison need to be done byte by byte, instead of a full 32bit int*/
+int				ip4rng_cmp(void *ipr_left, void *ipr_right)
 {
 	t_ip4range	*left;
 	t_ip4range	*right;
@@ -74,9 +74,7 @@ int				ip4range_cmp(void *ipr_left, void *ipr_right)
 		return (-1);
 }
 
-
-
-void			*ip4range_min(t_node *tree)
+void			*ip4rng_min(t_node *tree)
 {
 	t_ip4range	*save;
 
@@ -87,4 +85,19 @@ void			*ip4range_min(t_node *tree)
 		tree = tree->left;
 	memcpy(save, tree->data, sizeof(t_ip4range));
 	return (save);
+}
+
+int				ip4rng_overlap_cmp(void *prt_left, void *prt_right)
+{
+	t_ip4range	*left;
+	t_ip4range	*right;
+
+	left = prt_left;
+	right = prt_right;
+	if (left->start >= right->start && left->start <= right->end)
+		return (0);
+	else if (left->end >= right->start && left->end <= right->end)
+		return (0);
+	else
+		return (-1);
 }
