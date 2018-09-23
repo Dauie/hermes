@@ -40,6 +40,17 @@ t_node			*bst_search(t_node **tree, void *data, int (*cmp)(void *, void *))
 	return (NULL);
 }
 
+t_node			*tree_search(t_node **tree, void *data, int (*cmp)(void *, void *))
+{
+	if ((*tree)->left)
+		return (tree_search(&(*tree)->left, data, cmp));
+	if (cmp((*tree)->data, data) == 0)
+		return (*tree);
+	if ((*tree)->right)
+		return (tree_search(&(*tree)->left, data, cmp));
+	return (NULL);
+}
+
 int		add_node(t_node **root, t_node **node, int (*cmp)(void *, void *))
 {
 	int ret;
@@ -72,7 +83,8 @@ int		add_node(t_node **root, t_node **node, int (*cmp)(void *, void *))
 	return (SUCCESS);
 }
 
-void search_key(t_node **curr, t_node **parent, void *key, int (*cmp)(void *, void *))
+void remove_search_key(t_node **curr, t_node **parent, void *key,
+					   int (*cmp)(void *, void *))
 {
 	while (curr != NULL && cmp((*curr)->data, key) != 0)
 	{
@@ -91,7 +103,7 @@ int			remove_node(t_node **root, void *key, int (*cmp)(void *, void *), void *(*
 	t_node *child;
 	void	*successor;
 
-	search_key(&curr, &parent, key, cmp);
+	remove_search_key(&curr, &parent, key, cmp);
 	if (curr == NULL)
 		return (FAILURE);
 	if (curr->left == NULL && curr->right == NULL)
@@ -129,8 +141,6 @@ int			remove_node(t_node **root, void *key, int (*cmp)(void *, void *), void *(*
 	}
 	return (SUCCESS);
 }
-
-
 
 #ifdef TESTING
 typedef struct  s_data {
@@ -210,68 +220,3 @@ int     main(void)
 	return (0);
 }
 #endif
-
-//int			remove_node(t_node **tree, void *data, void *(*min)(t_node *),
-//						int (*cmp)(void *, void *))
-//{
-//	t_node		*parent;
-//	t_node		*child;
-//	t_node		*node;
-//	void		*save;
-//
-//	node = *tree;
-//	parent = NULL;
-//	while (node && cmp(node->data, data) != 0)
-//	{
-//		parent = node;
-//		if (cmp(node->data, data) < 0)
-//			node = node->left;
-//		else if (cmp(node->data, data) > 0)
-//			node = node->right;
-//	}
-//	if (!node)
-//		return (FAILURE);
-//	if (node == *tree)
-//	{
-//		del_node(tree);
-//		return (SUCCESS);
-//	}
-//	if (!node->left && !node->right)
-//	{
-//		if (parent->left == node)
-//			parent->left = NULL;
-//		else
-//			parent->right = NULL;
-//		del_node(&node);
-//	}
-//	else if (node->left && node->right)
-//	{
-//		save = min(node->right);
-//		remove_node(&node, save, min, cmp);
-//		node->data = save;
-//	}
-//	else
-//	{
-//		child = node->left ? node->left : node->right;
-//		if (node != *tree)
-//		{
-//			if (node == parent->left)
-//				parent->left = child;
-//			else
-//				parent->right = child;
-//		}
-//		else
-//			*tree = child;
-//		del_node(&node);
-//	}
-//	return (SUCCESS);
-//}
-
-
-//void		delete_tree(t_node **tree)
-//{
-//	if (tree && *tree)
-//	{
-//
-//	}
-//}

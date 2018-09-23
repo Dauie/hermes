@@ -46,7 +46,7 @@ void			*port_min(t_node *tree)
 	return (save);
 }
 
-int				portrange_cmp(void *prt_left, void *prt_right)
+int				portrng_cmp(void *prt_left, void *prt_right)
 {
 	t_portrange	*left;
 	t_portrange	*right;
@@ -57,7 +57,7 @@ int				portrange_cmp(void *prt_left, void *prt_right)
 	{
 		if (left->end < right->end)
 			return (-1);
-		if (left->end > right->end)
+		else if (left->end > right->end)
 			return (1);
 		else
 			return (0);
@@ -68,7 +68,23 @@ int				portrange_cmp(void *prt_left, void *prt_right)
 		return (-1);
 }
 
-void			*portrange_min(t_node *tree)
+int				portrng_overlap_cmp(void *prt_left, void *prt_right)
+{
+	t_portrange	*left;
+	t_portrange	*right;
+
+	left = prt_left;
+	right = prt_right;
+	if (left->start >= right->start && left->start <= right->end)
+		return (0);
+	else if (left->end >= right->start && left->end <= right->end)
+		return (0);
+	else
+		return (-1);
+
+}
+
+void			*portrng_min(t_node *tree)
 {
 	t_portrange	*save;
 

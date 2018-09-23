@@ -51,7 +51,7 @@ static int		add_range(t_portlist *list, char **range)
 	data->start = start;
 	data->end = end;
 	node->data = data;
-	if (add_node(&list->port_range, &node, portrange_cmp) == SUCCESS)
+	if (add_node(&list->port_range, &node, portrng_cmp) == SUCCESS)
 	{
 		list->range_count++;
 		return (SUCCESS);
