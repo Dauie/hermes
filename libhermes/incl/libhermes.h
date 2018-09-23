@@ -42,9 +42,7 @@ void					*memalloc(size_t size);
 */
 int						add_node(t_node **tree, t_node **node,
 									int (*cmp)(void *, void *));
-int						remove_node(t_node **tree, void *data,
-									   void *(*min)(t_node *),
-									   int (*cmp)(void *, void *));
+int						remove_node(t_node **root, void *key, int (*cmp)(void *, void *), void *(*min)(t_node *));
 t_node					*bst_search(t_node **tree, void *data, int (*cmp)(void *, void *));
 t_node					*new_node(void);
 

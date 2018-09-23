@@ -26,7 +26,7 @@ int				parse_worker(t_workerlist *workerlist, char *input)
 		data->ip = ip;
 		data->port = port;
 		node->data = data;
-		if (add_node(&workerlist->workers, &node, worker_cmp) == SUCCESS);
+		if (add_node(&workerlist->workers, &node, worker_cmp) == SUCCESS)
 			workerlist->worker_count++;
 	}
 	return (SUCCESS);

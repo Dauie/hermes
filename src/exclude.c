@@ -13,16 +13,19 @@
 //
 //}
 
-void 	exclude_ip4(size_t *ipcount, t_node **targets, t_node *exclude)
+void 	exclude_ip4(t_targetlist *list, t_node **targets, t_node *exclude)
 {
 	if (!exclude)
 		return ;
 	if (exclude->left)
-		exclude_ip4(ipcount, targets, exclude->left);
-	if (remove_node(targets, exclude->data, ip4_min, ip4_cmp) == SUCCESS)
-		(*ipcount)--;
+		exclude_ip4(list, targets, exclude->left);
+	if (remove_node(targets, exclude->data, ip4_cmp, ip4_min) == SUCCESS)
+	{
+		list->ip_count--;
+		list->total--;
+	}
 	if (exclude->right)
-		exclude_ip4(ipcount, targets, exclude->right);
+		exclude_ip4(list, targets, exclude->right);
 }
 
 int		do_exclusions( t_targetlist *targets, t_targetlist *exclude)
@@ -30,7 +33,7 @@ int		do_exclusions( t_targetlist *targets, t_targetlist *exclude)
 	if (!targets || !exclude)
 		return (0);
 	if (targets->ip && exclude->ip)
-		exclude_ip4(&targets->ip_count, &targets->ip, exclude->ip);
+		exclude_ip4(targets, &targets->ip, exclude->ip);
 //	if ((*targets)->iprange && (*exclude)->iprange)
 //		if (ex_ipranges(&(*targets)->iprange, &(*exclude)->iprange) < 0)
 //			return (hermes_error(INPUT_ERROR, FALSE, 1, "IP exclusion"));
