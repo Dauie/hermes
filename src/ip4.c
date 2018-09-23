@@ -26,18 +26,28 @@ t_ip4range		*new_ip4range(void)
 
 int				ip4_cmp(void *ip_left, void *ip_right)
 {
-	//t_ip4		*left;
-	//t_ip4		*right;
-    uint32_t l;
-    uint32_t r;
+    int         shift;
+    t_ip4		*left;
+	t_ip4		*right;
 
-	//left = ip_left;
-	//right = ip_right;
-    l = htonl(((t_ip4*)ip_left)->addr);
-    r = htonl(((t_ip4*)ip_right)->addr);
-	if (l < r)
+	left = ip_left;
+	right = ip_right;
+
+
+
+	shift = -1;
+	while (++shift < 32)
+    {
+	    if ((~((left->addr >> shift) - 1) ^ 1) !=
+	        (~((right->addr >> shift) - 1) ^ 1))
+	        return ((~(left->addr - 1) ^ 1) ? 1 : -1);
+    }
+    return (0);
+
+
+	if (left->addr < right->addr)
 		return (-1);
-	else if (l > r)
+	else if (left->addr > right->addr)
 		return (1);
 	else
 		return (0);
