@@ -26,7 +26,7 @@ INDEX = ranlib
 
 HEADDR = incl/libhermes.h
 
-FILES = list.c memory.c str_tbl.c hermes_error.c
+FILES = list.c memory.c str_tbl.c hermes_error.c conversions.c
 
 SRC_DIR = src
 

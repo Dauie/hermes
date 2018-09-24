@@ -1,8 +1,6 @@
 #include "../incl/job.h"
 #include "../incl/hermes.h"
 
-int test_cmp(uint32_t l, uint32_t r);
-
 t_ip4			*new_ip4(void)
 {
 	t_ip4		*data;
@@ -29,7 +27,6 @@ t_ip4range		*new_ip4range(void)
 
 int ip4_cmp(uint32_t l, uint32_t r)
 {
-	int ret;
 	int shift;
 
 	shift = 0xFF;
@@ -99,25 +96,10 @@ int				ip4rng_overlap_cmp(void *prt_left, void *prt_right)
 
 	left = prt_left;
 	right = prt_right;
-	if (test_cmp(left->start, right->start) <= 0 && test_cmp(left->end, right->end) >= 0)
+	if (ip4_cmp(left->start, right->start) <= 0 && ip4_cmp(left->end, right->end) >= 0)
 		return (0);
-	else if (test_cmp(left->end, right->start) >= 0 && test_cmp(left->end, right->end) <= 0)
+	else if (ip4_cmp(left->end, right->start) >= 0 && ip4_cmp(left->end, right->end) <= 0)
 		return (0);
 	else
 		return (-1);
 }
-
-//int main(void)
-//{
-//	t_targetlist	*list;
-//	uint32_t		left_addr;
-//	uint32_t		right_addr;
-//	t_node			*targets;
-//	t_node			*exclude;
-//
-//	left_addr = 2570;
-//	right_addr = 16779968;
-//	exclude_ip4range();
-//    return (0);
-//}
-//#endif

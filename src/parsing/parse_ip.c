@@ -1,17 +1,5 @@
-# include "../../incl/parser.h"
 # include "limits.h"
-#ifdef TESTING
-t_targetlist		*new_target_list(void);
-
-t_targetlist	*new_target_list(void)
-{
-	t_targetlist *tlist;
-
-	if (!(tlist = (t_targetlist*)memalloc(sizeof(t_targetlist))))
-		hermes_error(errno, TRUE, 2, "malloc()", strerror(errno));
-	return (tlist);
-}
-#endif
+# include "../../incl/hermes.h"
 
 static void			set_ip4range(t_ip4range *data, uint32_t ip, uint32_t subn_m)
 {
@@ -135,47 +123,18 @@ int				handle_ip(t_targetlist *targets, char *input)
 }
 
 #ifdef TESTING
-int main(void) {
-	int 	error;
-	t_node 	*head;
-	char 	p_ip[16];
-	t_targetlist 	*target_list;
-	char 	input[20];
+t_targetlist		*new_target_list(void);
 
-	target_list = new_target_list();
-	printf("debugging started > options:\n"
-			"<i.p.ad.dr> < test ip\n"
-			"display < displays IP list\n"
-			"quit/exit/ctrl+c < exits program\n");
-	while (1) {
-		printf("> ");
-		fgets(input, 20, stdin);
-		if (!memcmp("display ip", input, 10)) {
-			head = target_list->ip;
-			for (; target_list->ip; target_list->ip = target_list->ip->next) {
-				inet_ntop(AF_INET, &((t_ip4*)target_list->ip->data)->addr, p_ip, 16 * sizeof(char));
-				printf("address		:%s\n", p_ip);
-			}
-			target_list->ip = head;
-		} else if (!memcmp("display range", input, 13)) {
-			for (; target_list->iprange; target_list->iprange = target_list->iprange->next) {
-				inet_ntop(AF_INET, &((t_ip4range*)target_list->iprange->data)->range_size, p_ip, 16 * sizeof(char));
-				printf("range size 	: %s\n", p_ip);
-				inet_ntop(AF_INET, &((t_ip4range*)target_list->iprange->data)->start, p_ip, 16 * sizeof(char));
-				printf("start		:%s\n", p_ip);
-				inet_ntop(AF_INET, &((t_ip4range*)target_list->iprange->data)->end, p_ip, 16 * sizeof(char));
-				printf("end			:%s\n", p_ip);
-			}
-			target_list->iprange = head;
-		} else if (memcmp("quit", input, 4) == 0 ||
-			memcmp("exit", input, 4) == 0) {
-			break;
-		} else {
-			error = handle_ip(&target_list, input);
-			printf("parsing ended with %d\n", error);
-		}
-		fflush(stdin);
-	}
-	return (1);
+t_targetlist	*new_target_list(void)
+{
+	t_targetlist *tlist;
+
+	if (!(tlist = (t_targetlist*)memalloc(sizeof(t_targetlist))))
+		hermes_error(errno, TRUE, 2, "malloc()", strerror(errno));
+	return (tlist);
+}
+
+int main(void) {
+	return (0);
 }
 #endif
