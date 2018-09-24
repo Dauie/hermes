@@ -17,11 +17,13 @@ void 	exclude_ip4(t_targetlist *list, t_node **targets, t_node *exclude)
 		exclude_ip4(list, targets, exclude->right);
 }
 
-t_node		*range_conflicts(t_targetlist *list, t_node **targets, void *data)
+t_node		*ip4range_conflict(t_targetlist *list, t_node **targets, void *data)
 {
-	t_node	*curr;
+	t_ip4range	*curr;
+	t_ip4range *confl;
 
-	curr = *targets;
+	curr = (*targets)->data;
+	confl = data;
 
 	return (NULL);
 }
@@ -36,7 +38,8 @@ void		exclude_ip4range(t_targetlist *list, t_node **targets, t_node *exclude)
 		exclude_ip4range(list, targets, exclude->left);
 	if ((conflict = tree_search(targets, exclude->data, ip4rng_overlap_cmp)))
 	{
-		printf("%d\n", ((t_ip4range*)(conflict)->data)->range_size);
+		printf("%d\n", ((t_ip4range *) (conflict)->data)->range_size);
+		ip4range_conflict(list, targets, exclude);
 	}
 	if (exclude->right)
 		exclude_ip4range(list, targets, exclude->right);
