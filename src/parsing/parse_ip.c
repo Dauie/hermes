@@ -121,20 +121,3 @@ int				handle_ip(t_targetlist *targets, char *input)
 	}
 	return (SUCCESS);
 }
-
-#ifdef TESTING
-t_targetlist		*new_target_list(void);
-
-t_targetlist	*new_target_list(void)
-{
-	t_targetlist *tlist;
-
-	if (!(tlist = (t_targetlist*)memalloc(sizeof(t_targetlist))))
-		hermes_error(errno, TRUE, 2, "malloc()", strerror(errno));
-	return (tlist);
-}
-
-int main(void) {
-	return (0);
-}
-#endif

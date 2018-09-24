@@ -51,10 +51,10 @@ void    manager(t_job *job)
 }
 
 #ifdef TESTING
-void    prompt(char *output, char *input)
+void    prompt(char *output, char *input, int buflen)
 {
     printf("%s", output);
-    fgets(input, (int)strlen(input), stdin);
+    fgets(input, buflen, stdin);
 }
 
 int main(void)
@@ -64,44 +64,40 @@ int main(void)
     t_node      *worker;
     char        input[20];
 
+    ip = NULL;
     job = NULL;
     while (TRUE)
     {
-        ip = NULL;
-        prompt("\n> ", input);
+        prompt("> ", input, 20);
         if (!memcmp("connect", input, 7))
         {
             manager(job);
         }
-        else if (!memcmp("add", input, 3))
+        else if (!memcmp("add", input, 4))
         {
             worker = new_node();
             worker->data = new_worker();
-            if (add_node(&job->worker_list.workers, &worker, worker_cmp) < 0)
+            if (add_node(&job.worker_list->workers, &worker, worker_cmp) < 0)
                 hermes_error(INPUT_ERROR, TRUE, 2, "adding worker", strerror(errno));
-            prompt("\nip > ", input);
+            prompt("\nip > ", input, 20);
             if (parse_ip(&WORKER(worker)->ip, input) < 0)
                 hermes_error(INPUT_ERROR, TRUE, 2, "parsing ip", strerror(errno));
-            prompt("\nport > ", input);
+            prompt("\nport > ", input, 20);
             if (parse_port(&WORKER(worker)->port, input) < 0)
                 hermes_error(INPUT_ERROR, TRUE, 2, "parsing port", strerror(errno));
         }
         else if (!memcmp("del", input, 3))
         {
-            prompt("\nip > ", input);
+            prompt("\nip > ", input, 20);
             if (parse_ip(ip, input) < 0)
                 hermes_error(INPUT_ERROR, TRUE, 2, "parsing ip", strerror(errno));
             if (remove_node(&job->worker_list.workers, ip, worker_cmp, worker_min) < 0)
                 hermes_error(INPUT_ERROR, TRUE, 2, "removing worker", strerror(errno));
         }
-        else if (memcmp("quit", input, 4) == 0 ||
-                 memcmp("exit", input, 4) == 0)
+        else if (!memcmp("quit", input, 4) ||
+                 !memcmp("exit", input, 4))
         {
             break;
-        }
-        else
-        {
-            printf("command not recognized");
         }
         fflush(stdin);
     }

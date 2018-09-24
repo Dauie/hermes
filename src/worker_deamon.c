@@ -97,6 +97,5 @@ int main(void)
     w_port = 255;
     if (worker_daemon(w_port) < 0)
         hermes_error(INPUT_ERROR, TRUE, 2, "worker_daemon()", strerror(errno));
-
 }
 #endif
