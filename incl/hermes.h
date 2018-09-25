@@ -17,7 +17,7 @@
 # include <netinet/ip_icmp.h>
 
 # include "../libhermes/incl/libhermes.h"
-# include "job.h"
+# include "parser.h"
 
 int				sanity_check(t_job *job);
 
@@ -27,8 +27,7 @@ t_port			*new_port(void);
 t_portrange		*new_portrange(void);
 t_worker		*new_worker(void);
 
-
-int				ip4_cmp(void *ip_left, void *ip_right);
+int				ip4_cmp(void *left, void *right);
 void			*ip4_min(t_node *tree);
 int				ip4rng_cmp(void *ipr_left, void *ipr_right);
 int				ip4rng_overlap_cmp(void *prt_left, void *prt_right);

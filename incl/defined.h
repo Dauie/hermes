@@ -10,6 +10,7 @@
 
 # define TTL_MAX 256
 # define MTU_MAX 1500
+# define BUFF_SIZE 1028
 # define PORT_MAX (65535)
 # define MAX_PKT_DATA (65535 - 20 - 20)
 # define MAX_THREADS (256)

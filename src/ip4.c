@@ -100,25 +100,10 @@ int				ip4rng_overlap_cmp(void *prt_left, void *prt_right)
 
 	left = prt_left;
 	right = prt_right;
-	if (ip4_cmp(&left->start, &right->start) <= 0 && ip4_cmp(&left->end, &right->end) >= 0)
-		return (0);
-	else if (ip4_cmp(&left->end, &right->start) >= 0 && ip4_cmp(&left->end, &right->end) <= 0)
+	if (ip4_cmp(left->start, right->start) <= 0 && ip4_cmp(left->end, right->end) >= 0)
+		return (0);/*TODO check logic*/
+	else if (ip4_cmp(left->end, right->start) >= 0 && ip4_cmp(left->start, right->end) <= 0)
 		return (0);
 	else
 		return (-1);
 }
-
-//int main(void)
-//{
-//	t_targetlist	*list;
-//	uint32_t		left_addr;
-//	uint32_t		right_addr;
-//	t_node			*targets;
-//	t_node			*exclude;
-//
-//	left_addr = 2570;
-//	right_addr = 16779968;
-//	exclude_ip4range();
-//    return (0);
-//}
-//#endif

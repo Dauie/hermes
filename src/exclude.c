@@ -2,7 +2,7 @@
 #include "../incl/hermes.h"
 #include "../incl/parser.h"
 
-void 	exclude_ip4(t_targetlist *list, t_node **targets, t_node *exclude)
+void	exclude_ip4(t_targetlist *list, t_node **targets, t_node *exclude)
 {
 	if (!exclude)
 		return ;
@@ -17,20 +17,19 @@ void 	exclude_ip4(t_targetlist *list, t_node **targets, t_node *exclude)
 		exclude_ip4(list, targets, exclude->right);
 }
 
-t_node		*ip4range_conflict(t_targetlist *list, t_node **targets, void *data)
+void	split_range(t_ip4range *target, t_ip4range  *exclude,
+					t_ip4range **left, t_ip4range **right)
 {
-	t_ip4range	*curr;
-	t_ip4range *confl;
-
-	curr = (*targets)->data;
-	confl = data;
-
-	return (NULL);
+	
+	return ;
 }
 
 void		exclude_ip4range(t_targetlist *list, t_node **targets, t_node *exclude)
 {
 	t_node	*conflict;
+	t_ip4range *range;
+	t_ip4range *left;
+	t_ip4range *right;
 
 	if (!exclude)
 		return ;
@@ -38,24 +37,15 @@ void		exclude_ip4range(t_targetlist *list, t_node **targets, t_node *exclude)
 		exclude_ip4range(list, targets, exclude->left);
 	if ((conflict = tree_search(targets, exclude->data, ip4rng_overlap_cmp)))
 	{
-		printf("%d\n", ((t_ip4range *) (conflict)->data)->range_size);
-		ip4range_conflict(list, targets, exclude);
+		range = new_ip4range();
+		memcpy(range, conflict->data);
+		remove_node(targets, range, ip4rng_cmp, ip4rng_min);
+		split_range(range, exclude->data, &left, &right);
+		printf("%d\n", ((t_ip4range*)(conflict)->data)->range_size);
 	}
 	if (exclude->right)
 		exclude_ip4range(list, targets, exclude->right);
 }
-
-
-void	split_range(t_node **include, uint32_t start, uint32_t end)
-{
-	*include = new_node();
-	(*include)->data = new_ip4range();
-	((t_ip4range*)(*include)->data)->start = end - start;
-	((t_ip4range*)(*include)->data)->start = start;
-	((t_ip4range*)(*include)->data)->start = end;
-
-}
-
 
 int		do_exclusions( t_targetlist *targets, t_targetlist *exclude)
 {

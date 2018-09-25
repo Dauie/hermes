@@ -36,3 +36,4 @@ void			*worker_min(t_node *tree)
 	memcpy(save, tree->data, sizeof(t_worker));
 	return (save);
 }
+

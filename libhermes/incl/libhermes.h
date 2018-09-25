@@ -25,6 +25,7 @@ typedef struct			s_node
 /*
 **	Character Manipulation Functions
 */
+char                    *itoa(int n);
 size_t					cntwrds(char *str, char c);
 char					**strsplit(const char *str, char delim);
 char					*strsub(char const *s, int start, size_t len);

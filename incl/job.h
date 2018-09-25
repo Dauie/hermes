@@ -32,6 +32,7 @@ typedef struct			s_worker
 {
 	uint32_t 			ip;
 	uint16_t			port;
+	int 				sock;
 }						t_worker;
 
 typedef struct			s_workerlist
