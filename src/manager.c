@@ -57,15 +57,53 @@ void    prompt(char *output, char *input, int buflen)
     fgets(input, buflen, stdin);
 }
 
+static int	skip(int size, const char *s)
+{
+	while (s[size] == ' ' || s[size] == '\n' ||
+			s[size] == '\t' || s[size] == '\0')
+		size--;
+	return (size);
+}
+
+char		*strtrim(const char *s)
+{
+	int		size;
+	char	*ret;
+
+	if (!s)
+		return (0);
+	while (*s == ' ' || *s == '\n' || *s == '\t' || *s == '\0' || *s == '\r')
+	{
+		if (s == 0 || *s == 0)
+		{
+			if (!(ret = (char*)memalloc(sizeof(char))))
+				return (0);
+			*ret = 0;
+			return (ret);
+		}
+		s++;
+	}
+	size = (strlen(s));
+	size = skip(size, s);
+	size++;
+	if (!(ret = (char*)malloc(sizeof(char) * (size + 1))))
+		return (0);
+	strncpy(ret, s, size);
+	ret[size] = 0;
+	return (ret);
+	free(ret);
+}
+
 int main(void)
 {
-    uint32_t    *ip;
+    uint32_t    ip;
     t_job       *job;
     t_node      *worker;
     char        input[20];
 
     ip = NULL;
-    job = NULL;
+    job = (t_job*)memalloc(sizeof(t_job));
+    job->worker_list = *(t_workerlist*)memalloc(sizeof(t_workerlist));
     while (TRUE)
     {
         prompt("> ", input, 20);
@@ -73,23 +111,23 @@ int main(void)
         {
             manager(job);
         }
-        else if (!memcmp("add", input, 4))
+        else if (!memcmp("add", input, 3))
         {
             worker = new_node();
             worker->data = new_worker();
-            if (add_node(&job.worker_list->workers, &worker, worker_cmp) < 0)
-                hermes_error(INPUT_ERROR, TRUE, 2, "adding worker", strerror(errno));
-            prompt("\nip > ", input, 20);
-            if (parse_ip(&WORKER(worker)->ip, input) < 0)
+            prompt("ip > ", input, 20);
+            if (parse_ip(&WORKER(worker)->ip, strtrim(input)) < 0)
                 hermes_error(INPUT_ERROR, TRUE, 2, "parsing ip", strerror(errno));
-            prompt("\nport > ", input, 20);
-            if (parse_port(&WORKER(worker)->port, input) < 0)
+            prompt("port > ", input, 20);
+            if (parse_port(&WORKER(worker)->port, strtrim(input)) < 0)
                 hermes_error(INPUT_ERROR, TRUE, 2, "parsing port", strerror(errno));
+            if (add_node(&(job->worker_list.workers), &worker, worker_cmp) < 0)
+                hermes_error(INPUT_ERROR, TRUE, 2, "adding worker", strerror(errno));
         }
         else if (!memcmp("del", input, 3))
         {
-            prompt("\nip > ", input, 20);
-            if (parse_ip(ip, input) < 0)
+            prompt("ip > ", input, 20);
+            if (parse_ip(&ip, strtrim(input)) < 0)
                 hermes_error(INPUT_ERROR, TRUE, 2, "parsing ip", strerror(errno));
             if (remove_node(&job->worker_list.workers, ip, worker_cmp, worker_min) < 0)
                 hermes_error(INPUT_ERROR, TRUE, 2, "removing worker", strerror(errno));
