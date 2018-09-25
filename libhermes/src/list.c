@@ -142,6 +142,7 @@ int			remove_node(t_node **root, void *key, int (*cmp)(void *, void *), void *(*
 	return (SUCCESS);
 }
 
+
 #ifdef TESTING
 typedef struct  s_data {
 	int         value;
