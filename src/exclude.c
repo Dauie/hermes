@@ -26,6 +26,7 @@ void	split_range(t_ip4range *target, t_ip4range  *exclude,
 	if (ip4_cmp(&exclude->start, &target->start) > 0 &&
 			ip4_cmp(&exclude->end, &target->end) < 0)
 	{
+		ip4_add(&exclude->start, 1);
 		*l = new_ip4range();
 		*r = new_ip4range();
 		(*r)->start = exclude->end + 1;

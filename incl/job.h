@@ -17,6 +17,14 @@ typedef struct			s_ip4
 	uint32_t			addr;
 }						t_ip4;
 
+typedef struct			s_ip4bytes
+{
+	uint8_t				b1;
+	uint8_t				b2;
+	uint8_t				b3;
+	uint8_t				b4;
+}						t_ip4bytes;
+
 typedef struct			s_port
 {
 	uint16_t			port;

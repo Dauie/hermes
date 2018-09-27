@@ -27,6 +27,7 @@ t_port			*new_port(void);
 t_portrange		*new_portrange(void);
 t_worker		*new_worker(void);
 
+void			ip4_add(uint32_t *ip, int increase);
 int				ip4_cmp(void *left, void *right);
 void			*ip4_min(t_node *tree);
 int				ip4rng_cmp(void *ipr_left, void *ipr_right);

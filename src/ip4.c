@@ -45,7 +45,7 @@ int			ip4_cmp(void *left, void *right)
 	return (0);
 }
 
-int				ip4_diff(uint32_t left, uint32_t  right)
+int				ip4_diff(uint32_t left, uint32_t right)
 {
 	int diff;
 
@@ -54,14 +54,21 @@ int				ip4_diff(uint32_t left, uint32_t  right)
 	return (diff);
 }
 
-void			ip4_add(t_ip4 *ip, int increase)
+void			ip4_add(uint32_t *ip, int increase)
 {
+	t_ip4bytes	*b;
+
+	if (increase > )
+	b = (t_ip4bytes *)ip;
+
 
 }
 
-void			ip4_subtract(t_ip4 *ip, int decrease)
+void			ip4_subtract(uint32_t *ip, int decrease)
 {
+	t_ip4bytes	*b;
 
+	b = (t_ip4bytes *)ip;
 }
 
 void			*ip4_min(t_node *tree)
@@ -76,7 +83,7 @@ void			*ip4_min(t_node *tree)
 	memcpy(save, tree->data, sizeof(t_ip4));
 	return (save);
 }
-/* TODO ip comparison need to be done byte by byte, instead of a full 32bit int*/
+
 int				ip4rng_cmp(void *ipr_left, void *ipr_right)
 {
 	t_ip4range	*left;
