@@ -58,7 +58,7 @@ void			ip4_add(uint32_t *ip, int increase)
 {
 	t_ip4bytes	*b;
 
-	if (increase > )
+	if (increase > 0);
 	b = (t_ip4bytes *)ip;
 
 

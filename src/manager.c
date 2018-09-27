@@ -7,33 +7,55 @@
 
 void    set_hints(struct addrinfo *hints)
 {
-    hints->ai_family = AF_INET;
-    hints->ai_socktype = SOCK_STREAM;
-    hints->ai_flags = 0;
-    hints->ai_protocol = 0;
+    hints->sin_family = AF_INET;
+    hints->sin_socktype = SOCK_STREAM;
+    hints->sin_flags = 0;
+    hints->sin_protocol = 0;
 }
 
 int     connect_workers(t_node *w, size_t n)
 {
+    struct sockaddr_in  *res;
+    struct sockaddr_in  hints;
+    struct protoent		*proto;
     char                ip[INET_ADDRSTRLEN];
-    struct addrinfo     *res;
-    struct addrinfo     hints;
 
     if (!w)
         return (0);
     res = NULL;
     memset(&hints, 0, sizeof(struct addrinfo));
     set_hints(&hints);
+    printf("%d\n", n);
+    if (!(proto = getprotobyname("tcp")))
+        hermes_error(INPUT_ERROR, TRUE, 2, "getprotobyname()", strerror(errno));
     if (n > 0 && WORKER(w))
     {
         // TODO : itoa hermeslib
         // not sure if want to return error or keep trying for all workers
-        if (inet_ntop(AF_INET, &WORKER(w)->ip, ip, sizeof(ip)) > 0)
-            if (getaddrinfo(ip, itoa(WORKER(w)->port), &hints, &res) >= 0)
-                if ((WORKER(w)->sock = socket(res->ai_family, res->ai_socktype, res->ai_protocol)) >= 0)
-                    if (connect(WORKER(w)->sock, res->ai_addr, res->ai_addrlen) >= 0)
-                        if (bind(WORKER(w)->sock, res->ai_addr, res->ai_addrlen) < 0)
-                            close(WORKER(w)->sock);
+        if (inet_ntop(AF_INET, &WORKER(w)->ip, &ip, sizeof(ip)) > 0) {
+            if (getaddrinfo(ip, htons(WORKER(w)->port), &hints, &res) >= 0) {
+                if ((WORKER(w)->sock = socket(PF_INET, SOCK_STREAM, proto->p_proto)) >= 0) {
+                    if (setsockopt(session->lsock, SOL_SOCKET, SO_REUSEADDR, (char *)&opt, sizeof(opt)) >= 0) {
+                        if (connect(WORKER(w)->sock, res->sin_addr, res->sin_addrlen) >= 0) {
+                            if (bind(WORKER(w)->sock, &res->sin_addr, sizeof(res->sin_addrlen)) < 0) {
+                                close(WORKER(w)->sock);
+                                return (hermes_error(INPUT_ERROR, FALSE, 2, "bind()", strerror(errno)));
+                            }
+                        } else {
+                            return (hermes_error(INPUT_ERROR, FALSE, 2, "connect()", strerror(errno)));
+                        }
+                    } else {
+                        hermes_error(INPUT_ERROR, TRUE, 2, "setsockopt()", strerror(errno));
+                    }
+                } else {
+                    return (hermes_error(INPUT_ERROR, FALSE, 2, "socket()", strerror(errno)));
+                }
+            } else {
+                return (hermes_error(INPUT_ERROR, FALSE, 2, "getaddrinfo()", strerror(errno)));
+            }
+        } else {
+            return (hermes_error(INPUT_ERROR, FALSE, 2, "inet conversion", strerror(errno)));
+        }
         freeaddrinfo(res);
         if (w->left)
             return (connect_workers(w->left, n - 1));
@@ -43,10 +65,10 @@ int     connect_workers(t_node *w, size_t n)
     return (SUCCESS);
 }
 
-void    manager(t_job *job)
+int    manager(t_job *job)
 {
     if (connect_workers(job->worker_list.workers, job->worker_list.worker_count) < 0)
-        hermes_error(INPUT_ERROR, TRUE, 2, "connect_workers()", strerror(errno));
+        return (hermes_error(INPUT_ERROR, FALSE, 2, "connect_workers()", strerror(errno)));
     // TODO : do things
 }
 
@@ -123,6 +145,7 @@ int main(void)
                 hermes_error(INPUT_ERROR, TRUE, 2, "parsing port", strerror(errno));
             if (add_node(&(job->worker_list.workers), &worker, worker_cmp) < 0)
                 hermes_error(INPUT_ERROR, TRUE, 2, "adding worker", strerror(errno));
+            job->worker_list.worker_count++;
         }
         else if (!memcmp("del", input, 3))
         {
@@ -131,6 +154,7 @@ int main(void)
                 hermes_error(INPUT_ERROR, TRUE, 2, "parsing ip", strerror(errno));
             if (remove_node(&job->worker_list.workers, ip, worker_cmp, worker_min) < 0)
                 hermes_error(INPUT_ERROR, TRUE, 2, "removing worker", strerror(errno));
+            job->worker_list.worker_count--;
         }
         else if (!memcmp("quit", input, 4) ||
                  !memcmp("exit", input, 4))

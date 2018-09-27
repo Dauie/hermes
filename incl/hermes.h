@@ -43,6 +43,6 @@ void			*worker_min(t_node *tree);
 int				do_exclusions(t_targetlist *targets, t_targetlist *exclude);
 
 
-int						worker_daemon(int port);
+static int						worker_daemon(int port);
 
 #endif
