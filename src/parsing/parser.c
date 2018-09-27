@@ -10,6 +10,7 @@
 t_dtab g_disp[] = {
 		{ "--append-output", h_append_output },
 		{ "--badsum", h_bad_checksum },
+
 		{ "--open", h_show_only_open_ports },
 //		{ "--iflist", h_show_interfaces },
 //		{ "-O", h_os_detection },
@@ -37,6 +38,7 @@ t_dtab g_disp[] = {
 
 t_dtab_wopt g_disp_wopt[] = {
 
+		{ "--daemon", h_daemon},
 		{ "--data", h_custom_payload_hex },
 		{ "--data-length", h_custom_random_payload },
 		{ "--data-string", h_custom_payload_ascii },
@@ -66,6 +68,7 @@ t_dtab_wopt g_disp_wopt[] = {
 		{ "--source-port", h_spoof_srcport },
 		{ "-ttl", h_custom_ip_ttl },
 		{ "--thread", h_thread_amt },
+
 		{ "--worker", h_worker },
 		{ "--worker-file", h_worker_file }
 };

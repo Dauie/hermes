@@ -71,6 +71,7 @@ void			h_xmas_scan(t_job *job);
 **	user options with specification
 */
 void			h_ack_portlist(t_job *job, char *input); /*done*/
+void			h_daemon(t_job *job, char *input);
 void			h_custom_payload_hex(t_job *job, char *input);
 void			h_custom_random_payload(t_job *job, char *input); /*done*/
 void			h_custom_payload_ascii(t_job *job, char *input); /*done*/

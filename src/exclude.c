@@ -18,10 +18,39 @@ void	exclude_ip4(t_targetlist *list, t_node **targets, t_node *exclude)
 }
 
 void	split_range(t_ip4range *target, t_ip4range  *exclude,
-					t_ip4range **left, t_ip4range **right)
+					t_ip4range **l, t_ip4range **r)
 {
-	
-	return ;
+	*l = NULL;
+	*r = NULL;
+
+	if (ip4_cmp(&exclude->start, &target->start) > 0 &&
+			ip4_cmp(&exclude->end, &target->end) < 0)
+	{
+		*l = new_ip4range();
+		*r = new_ip4range();
+		(*r)->start = exclude->end + 1;
+		(*r)->end = target->end;
+		(*r)->range_size = (*r)->start - (*r)->end;
+		(*l)->start = target->start;
+		(*l)->end = exclude->start - 1;
+		(*l)->range_size = (*l)->start - (*l)->end;
+	}
+	else if (ip4_cmp(&exclude->end, &target->start) >= 0 &&
+			ip4_cmp(&exclude->end, &target->end) < 0)
+	{
+		*r = new_ip4range();
+		(*r)->start = exclude->end + 1;
+		(*r)->end = target->end;
+		(*r)->range_size = (*r)->start - (*r)->end;
+	}
+	else if (ip4_cmp(&exclude->start, &target->end) <= 0 &&
+			 ip4_cmp(&exclude->end, &target->end) > 0)
+	{
+		*l = new_ip4range();
+		(*l)->start = target->start;
+		(*l)->end = exclude->start - 1;
+		(*l)->range_size = (*l)->start - (*l)->end;
+	}
 }
 
 void		exclude_ip4range(t_targetlist *list, t_node **targets, t_node *exclude)
@@ -38,7 +67,7 @@ void		exclude_ip4range(t_targetlist *list, t_node **targets, t_node *exclude)
 	if ((conflict = tree_search(targets, exclude->data, ip4rng_overlap_cmp)))
 	{
 		range = new_ip4range();
-		memcpy(range, conflict->data);
+		memcpy(range, conflict->data, sizeof(t_ip4range));
 		remove_node(targets, range, ip4rng_cmp, ip4rng_min);
 		split_range(range, exclude->data, &left, &right);
 		printf("%d\n", ((t_ip4range*)(conflict)->data)->range_size);

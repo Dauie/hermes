@@ -14,6 +14,8 @@ void                    worker_loop(int csock)
 {
     char buffer[BUFF_SIZE];
 
+	(void)csock;
+	(void)buffer;
 //    while (TRUE)
 //    {
 //        if (recvfrom(csock, buffer, BUFF_SIZE, 0) < 0)
@@ -64,7 +66,7 @@ static void				setsockopt_wrapper(t_dsession *session)
 }
 
 
-static int				worker_daemon(int port)
+int						worker_daemon(int port)
 {
 	t_dsession			*session;
 	struct protoent		*proto;

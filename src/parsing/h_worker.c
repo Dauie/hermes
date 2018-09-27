@@ -1,4 +1,5 @@
 #include "../../incl/parser.h"
+#include "../../incl/hermes.h"
 
 int				parse_worker(t_workerlist *workerlist, char *input)
 {
@@ -37,3 +38,12 @@ void			h_worker(t_job *job, char *input)
 	parse_worker(&job->worker_list, input);
 }
 
+void			h_daemon(t_job *job, char *input)
+{
+	uint16_t port;
+
+	(void)job;
+	if (parse_port(&port, input) == FAILURE)
+		hermes_error(INPUT_ERROR, TRUE, 1, "bad port given for daemon");
+	worker_daemon(port);
+}

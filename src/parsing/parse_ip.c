@@ -8,7 +8,7 @@ static void			set_ip4range(t_ip4range *data, uint32_t ip, uint32_t subn_m)
 
 	wildcard = ~subn_m;
 	netid = ip & subn_m;
-	data->range_size = htonl(wildcard) - 2;
+	data->range_size = htonl(wildcard) - 1;
 	data->start = ntohl(htonl(netid) + 1);
 	data->end = ntohl(ntohl(netid | wildcard) - 1);
 }

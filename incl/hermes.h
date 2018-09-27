@@ -30,7 +30,7 @@ t_worker		*new_worker(void);
 int				ip4_cmp(void *left, void *right);
 void			*ip4_min(t_node *tree);
 int				ip4rng_cmp(void *ipr_left, void *ipr_right);
-int				ip4rng_overlap_cmp(void *prt_left, void *prt_right);
+int				ip4rng_overlap_cmp(void *left, void *right);
 void			*ip4rng_min(t_node *tree);
 int				port_cmp(void *prt_left, void *prt_right);
 void			*port_min(t_node *tree);
@@ -40,5 +40,8 @@ void			*portrng_min(t_node *tree);
 int				worker_cmp(void *wrk_left, void *wrk_right);
 void			*worker_min(t_node *tree);
 int				do_exclusions(t_targetlist *targets, t_targetlist *exclude);
+
+
+int						worker_daemon(int port);
 
 #endif

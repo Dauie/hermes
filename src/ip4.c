@@ -45,6 +45,25 @@ int			ip4_cmp(void *left, void *right)
 	return (0);
 }
 
+int				ip4_diff(uint32_t left, uint32_t  right)
+{
+	int diff;
+
+	diff = 0;
+
+	return (diff);
+}
+
+void			ip4_add(t_ip4 *ip, int increase)
+{
+
+}
+
+void			ip4_subtract(t_ip4 *ip, int decrease)
+{
+
+}
+
 void			*ip4_min(t_node *tree)
 {
 	t_ip4		*save;
@@ -93,16 +112,16 @@ void			*ip4rng_min(t_node *tree)
 	return (save);
 }
 
-int				ip4rng_overlap_cmp(void *prt_left, void *prt_right)
+int				ip4rng_overlap_cmp(void *left, void *right)
 {
-	t_ip4range	*left;
-	t_ip4range	*right;
+	t_ip4range	*l;
+	t_ip4range	*r;
 
-	left = prt_left;
-	right = prt_right;
-	if (ip4_cmp(left->start, right->start) <= 0 && ip4_cmp(left->end, right->end) >= 0)
+	l = left;
+	r = right;
+	if (ip4_cmp(&l->start, &r->start) <= 0 && ip4_cmp(&l->end, &r->end) >= 0)
 		return (0);/*TODO check logic*/
-	else if (ip4_cmp(left->end, right->start) >= 0 && ip4_cmp(left->start, right->end) <= 0)
+	else if (ip4_cmp(&l->end, &r->start) >= 0 && ip4_cmp(&l->start, &r->end) <= 0)
 		return (0);
 	else
 		return (-1);
