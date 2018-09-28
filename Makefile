@@ -12,7 +12,7 @@ INCL = -I incl
 LIBHERMES = ./libhermes/
 
 SRC_DIR = src
-SRC_FILES = main.c worker_deamon.c ip4.c port.c worker.c sanity_check.c exclude.c
+SRC_FILES = main.c worker_daemon.c ip4.c port.c worker.c sanity_check.c exclude.c
 
 PARSE_DIR = src/parsing
 PARSE_FILES = h_custom_payload.c h_files.c h_performace_opts.c h_portlists.c

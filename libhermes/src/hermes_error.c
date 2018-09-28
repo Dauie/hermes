@@ -1,4 +1,5 @@
-#include <zconf.h>
+#include <stdarg.h>
+#include <unistd.h>
 # include "../incl/libhermes.h"
 
 int				hermes_error(int errcode, int fatal, int str_amt, ...)
@@ -10,9 +11,9 @@ int				hermes_error(int errcode, int fatal, int str_amt, ...)
 
 	i = 0;
 	strcnt = -1;
+	va_start(ap, str_amt);
 	if (str_amt > 0)
 	{
-		va_start(ap, str_amt);
 		while (++strcnt < str_amt)
 			i += sprintf(buff + i, " %s", va_arg(ap,
 					char *));

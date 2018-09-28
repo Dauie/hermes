@@ -10,17 +10,17 @@ typedef struct			s_daemon_session /* worker daemon session */
 	struct sockaddr_in	sin;
 }						t_dsession;
 
-void                    worker_loop(int csock)
-{
-    char buffer[BUFF_SIZE];
-    printf("Connected\n");
-//    while (TRUE)
-//    {
-//        if (recvfrom(csock, buffer, BUFF_SIZE, 0) < 0)
-//            hermes_error(INPUT_ERROR, TRUE, 2, "worker loop recv()", strerror(errno));
-//
-//    }
-}
+//void                    worker_loop(int csock)
+//{
+//    char buffer[BUFF_SIZE];
+//    printf("Connected\n");
+////    while (TRUE)
+////    {
+////        if (recvfrom(csock, buffer, BUFF_SIZE, 0) < 0)
+////            hermes_error(INPUT_ERROR, TRUE, 2, "worker loop recv()", strerror(errno));
+////
+////    }
+//}
 
 static int				accept_wrapper(t_dsession *session)
 {
@@ -47,7 +47,7 @@ static int					daemon_loop(t_dsession *session)
 		else
 		{
 			close(session->lsock);
-			worker_loop(session->csock);
+//			worker_loop(session->csock);
 		}
 	}
 	return (SUCCESS);
@@ -64,7 +64,7 @@ static void				setsockopt_wrapper(t_dsession *session)
 }
 
 
-static int				worker_daemon(int port)
+int						worker_daemon(int port)
 {
 	t_dsession			*session;
 	struct protoent		*proto;

@@ -9,7 +9,6 @@ int				parse_worker(t_workerlist *workerlist, char *input)
 	uint32_t	ip;
 	uint16_t	port;
 	t_worker	*data;
-	t_node		*node;
 
 	if (input == NULL)
 		hermes_error(INPUT_ERROR, TRUE, 1, "no ip:port provided for worker");
@@ -23,11 +22,9 @@ int				parse_worker(t_workerlist *workerlist, char *input)
 		if ((parse_port(&port, port_str)) == FAILURE)
 			return (hermes_error(INPUT_ERROR, FALSE, 3, "bad port provided for worker", ip_str, port_str));
 		data = new_worker();
-		node = new_node();
 		data->ip = ip;
 		data->port = port;
-		node->data = data;
-		if (add_node(&workerlist->workers, &node, worker_cmp) == SUCCESS)
+		if (add_node(&workerlist->workers, (void **)&data, worker_cmp) == SUCCESS)
 			workerlist->worker_count++;
 	}
 	return (SUCCESS);

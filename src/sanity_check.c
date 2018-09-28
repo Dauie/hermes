@@ -12,6 +12,7 @@ int			sanity_check(t_job *job)
 		job->options.init_rtt_timeo = DEF_INIT_RTT_TIMEOUT;
 	if (job->options.max_retries == 0)
 		job->options.max_retries = DEF_MAX_RETRIES;
-	do_exclusions(&job->targets, &job->exclude_targets);
+	do_target_exclusions(&job->targets, &job->exclude_targets);
+	do_port_exclusions()
 	return (SUCCESS);
 }

@@ -44,42 +44,45 @@ t_node			*tree_search(t_node **tree, void *data, int (*cmp)(void *, void *))
 {
 	if ((*tree)->left)
 		return (tree_search(&(*tree)->left, data, cmp));
-	if (cmp((*tree)->data, data) == 0)
+	if (cmp(data, (*tree)->data) == 0)
 		return (*tree);
 	if ((*tree)->right)
 		return (tree_search(&(*tree)->left, data, cmp));
 	return (NULL);
 }
 
-int		add_node(t_node **root, t_node **node, int (*cmp)(void *, void *))
+int		add_node(t_node **root, void **data, int (*cmp)(void *, void *))
 {
 	int ret;
+	t_node *node;
 	t_node *curr = *root;
 	t_node *parent = NULL;
 
+	node = new_node();
+	node->data = *data;
 	if (*root == NULL)
 	{
-		*root = *node;
+		*root = node;
 		return (SUCCESS);
 	}
 	while (curr != NULL)
 	{
 		parent = curr;
-		ret = cmp((*node)->data, curr->data);
+		ret = cmp(data, curr->data);
 		if (ret < 0)
 			curr = curr->left;
 		else if (ret > 0)
 			curr = curr->right;
 		else
 		{
-			del_node(node);
+			del_node(&node);
 			return (FAILURE);
 		}
 	}
-	if (cmp((*node)->data, parent->data) < 0)
-		parent->left = *node;
+	if (cmp(data, parent->data) < 0)
+		parent->left = node;
 	else
-		parent->right = *node;
+		parent->right = node;
 	return (SUCCESS);
 }
 

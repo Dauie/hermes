@@ -45,30 +45,101 @@ int			ip4_cmp(void *left, void *right)
 	return (0);
 }
 
-int				ip4_diff(uint32_t left, uint32_t right)
+uint32_t			ip4_diff(uint32_t left, uint32_t right)
 {
-	int diff;
+	uint32_t		diff;
+	long long		ret;
+	t_ip4bytes		*l;
+	t_ip4bytes		*r;
 
 	diff = 0;
-
+	l = (t_ip4bytes *)&left;
+	r = (t_ip4bytes *)&right;
+	ret = l->b1 - r->b1;
+	if (ret < 0)
+		ret *= -1;
+	diff += ret * (255 * 255 * 255);
+	ret = l->b2 - r->b2;
+	if (ret < 0)
+		ret *= -1;
+	diff += ret * (255 * 255);
+	ret = l->b3 - r->b3;
+	if (ret < 0)
+		ret *= -1;
+	diff += ret * 255;
+	ret = l->b4 - r->b4;
+	if (ret < 0)
+		ret *= -1;
+	diff += ret;
 	return (diff);
 }
 
-void			ip4_add(uint32_t *ip, int increase)
+/*TODO: do this without looping, its quick and dirty right now*/
+uint32_t		ip4_increment(uint32_t ip, int increase)
 {
-	t_ip4bytes	*b;
+	t_ip4bytes *b;
 
-	if (increase > 0);
-	b = (t_ip4bytes *)ip;
-
-
+	b = (t_ip4bytes *)&ip;
+	while (increase--)
+	{
+		if (b->b4 < 255)
+			b->b4 += 1;
+		else
+		{
+			b->b4 = 0;
+			if (b->b3 < 255)
+				b->b3 += 1;
+			else
+			{
+				b->b3 = 0;
+				if (b->b2 < 255)
+					b->b2 += 1;
+				else
+				{
+					b->b2 = 0;
+					if (b->b1 < 255)
+						b->b1 += 1;
+					else
+						b->b1 = 0;
+				}
+			}
+		}
+	}
+	return (ip);
 }
 
-void			ip4_subtract(uint32_t *ip, int decrease)
+/*TODO: do this without looping, its quick and dirty right now*/
+uint32_t			ip4_decrement(uint32_t ip, int decrease)
 {
-	t_ip4bytes	*b;
+	t_ip4bytes *b;
 
-	b = (t_ip4bytes *)ip;
+	b = (t_ip4bytes *)&ip;
+	while (decrease--)
+	{
+		if (b->b4 > 0)
+			b->b4 -= 1;
+		else
+		{
+			b->b4 = 255;
+			if (b->b3 > 0)
+				b->b3 -= 1;
+			else
+			{
+				b->b3 = 255;
+				if (b->b2 > 0)
+					b->b2 -= 1;
+				else
+				{
+					b->b2 = 255;
+					if (b->b1 > 0)
+						b->b1 -= 1;
+					else
+						b->b1 = 0;
+				}
+			}
+		}
+	}
+	return (ip);
 }
 
 void			*ip4_min(t_node *tree)
@@ -119,6 +190,7 @@ void			*ip4rng_min(t_node *tree)
 	return (save);
 }
 
+/*TODO replace if statements with whats in split range*/
 int				ip4rng_overlap_cmp(void *left, void *right)
 {
 	t_ip4range	*l;
@@ -126,9 +198,14 @@ int				ip4rng_overlap_cmp(void *left, void *right)
 
 	l = left;
 	r = right;
-	if (ip4_cmp(&l->start, &r->start) <= 0 && ip4_cmp(&l->end, &r->end) >= 0)
-		return (0);/*TODO check logic*/
-	else if (ip4_cmp(&l->end, &r->start) >= 0 && ip4_cmp(&l->start, &r->end) <= 0)
+	if (ip4_cmp(&l->start, &r->start) > 0 &&
+		ip4_cmp(&l->end, &r->end) < 0)
+		return (0);
+	else if (ip4_cmp(&l->end, &r->start) >= 0 &&
+			 ip4_cmp(&l->end, &r->end) < 0)
+		return (0);
+	else if (ip4_cmp(&l->start, &r->start) >= 0 &&
+			 ip4_cmp(&l->start, &r->end) > 0)
 		return (0);
 	else
 		return (-1);

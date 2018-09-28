@@ -8,9 +8,18 @@ static void			set_ip4range(t_ip4range *data, uint32_t ip, uint32_t subn_m)
 
 	wildcard = ~subn_m;
 	netid = ip & subn_m;
-	data->range_size = htonl(wildcard) - 1;
-	data->start = ntohl(htonl(netid) + 1);
-	data->end = ntohl(ntohl(netid | wildcard) - 1);
+	if (subn_m != 0xFFFFFFFF)
+	{
+		data->size = htonl(wildcard) - 1;
+		data->start = ntohl(htonl(netid) + 1);
+		data->end = ntohl(ntohl(netid | wildcard) - 1);
+	}
+	else
+	{
+		data->size = 1;
+		data->start = netid;
+		data->end = data->start;
+	}
 }
 
 static int			parse_cidr_mask(uint32_t *subn_m, char *cidr_str)
@@ -45,26 +54,20 @@ int					parse_ip(uint32_t *ip, char *ip_str)
 static int			bstadd_ip4range(t_node **ip_range, uint32_t ip,
 									   uint32_t subn_m)
 {
-	t_node			*node;
 	t_ip4range		*data;
 
 	data = new_ip4range();
 	set_ip4range(data, ip, subn_m);
-	node = new_node();
-	node->data = data;
-	return (add_node(ip_range, &node, ip4rng_cmp));
+	return (add_node(ip_range, (void **)&data, ip4rng_cmp));
 }
 
 static int			bstadd_ip4(t_node **ip_list, uint32_t ip)
 {
 	t_ip4 			*data;
-	t_node			*node;
 
 	data = new_ip4();
 	data->addr = ip;
-	node = new_node();
-	node->data = data;
-	return (add_node(ip_list, &node, ip4_cmp));
+	return (add_node(ip_list, (void **)&data, ip4_cmp));
 }
 
 int				do_ip4range(t_targetlist *targets, char *ip_str, char *cidr_str)
@@ -79,7 +82,7 @@ int				do_ip4range(t_targetlist *targets, char *ip_str, char *cidr_str)
 	if (bstadd_ip4range(&targets->iprange, ip, subn_m) == SUCCESS)
 	{
 		targets->iprange_count++;
-		targets->total += ((t_ip4range*)targets->iprange->data)->range_size;
+		targets->total += ((t_ip4range*)targets->iprange->data)->size;
 	}
 	return (SUCCESS);
 }
