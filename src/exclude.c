@@ -160,7 +160,7 @@ static void		exclude_portrange(t_portlist *list, t_node **targets, t_node *exclu
 	if ((conflict = tree_search(targets, exclude->data, portrng_overlap_cmp)))
 	{
 		range = new_portrange();
-		memcpy(range, conflict->data, sizeof(t_ip4range));
+		memcpy(range, conflict->data, sizeof(t_portrange));
 		remove_node(targets, conflict->data, portrng_cmp, portrng_min);
 		rm = split_portrange(range, exclude->data, &left, &right);
 		if (left)

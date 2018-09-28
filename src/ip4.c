@@ -75,7 +75,7 @@ uint32_t			ip4_diff(uint32_t left, uint32_t right)
 }
 
 /*TODO: do this without looping, its quick and dirty right now*/
-uint32_t		ip4_increment(uint32_t ip, int increase)
+uint32_t		ip4_increment(uint32_t ip, uint32_t increase)
 {
 	t_ip4bytes *b;
 

@@ -10,17 +10,17 @@ typedef struct			s_daemon_session /* worker daemon session */
 	struct sockaddr_in	sin;
 }						t_dsession;
 
-//void                    worker_loop(int csock)
-//{
-//    char buffer[BUFF_SIZE];
-//    printf("Connected\n");
-////    while (TRUE)
-////    {
-////        if (recvfrom(csock, buffer, BUFF_SIZE, 0) < 0)
-////            hermes_error(INPUT_ERROR, TRUE, 2, "worker loop recv()", strerror(errno));
-////
-////    }
-//}
+void                    worker_loop(int csock)
+{
+    char buffer[BUFF_SIZE];
+    printf("Connected\n");
+//    while (TRUE)
+//    {
+//        if (recvfrom(csock, buffer, BUFF_SIZE, 0) < 0)
+//            hermes_error(INPUT_ERROR, TRUE, 2, "worker loop recv()", strerror(errno));
+//
+//    }
+}
 
 static int				accept_wrapper(t_dsession *session)
 {
@@ -44,6 +44,7 @@ static int					daemon_loop(t_dsession *session)
 			hermes_error(INPUT_ERROR, TRUE, 2, "fork()", strerror(errno));
 		else if (session->pid > 0)
 			close(session->csock);
+		/*TODO: add wait() to protect from zombie children*/
 		else
 		{
 			close(session->lsock);

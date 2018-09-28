@@ -125,12 +125,12 @@ typedef struct /*__attribute__((__packed__))*/	s_ops
 	uint32_t			min_hostgroup;
 	uint32_t			max_hostgroup;
 	uint32_t			spoofed_srcaddr;
-	uint16_t			spoofed_srcport;
-	uint16_t			rpayload_len;
-	uint8_t				fragment_mtu;
-	uint8_t				ip_ttl;
-	uint8_t				thread_count;
-	uint8_t				verbose_level; /* Default 0, verbose 1, very verbose 2 TODO: possibe enum */
+	uint32_t			spoofed_srcport: 16;
+	uint32_t			rpayload_len: 16;
+	uint32_t			fragment_mtu: 8;
+	uint32_t			ip_ttl: 8;
+	uint32_t			thread_count: 8;
+	uint32_t			verbose_level: 8; /* Default 0, verbose 1, very verbose 2 TODO: possibe enum */
 }						t_ops;
 
 typedef struct			s_job

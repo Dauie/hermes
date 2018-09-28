@@ -22,7 +22,7 @@
 t_ip4			*new_ip4(void);
 int				ip4_cmp(void *left, void *right);
 void			*ip4_min(t_node *tree);
-uint32_t		ip4_increment(uint32_t ip, int increase);
+uint32_t		ip4_increment(uint32_t ip, uint32_t increase);
 uint32_t		ip4_decrement(uint32_t ip, int decrease);
 uint32_t		ip4_diff(uint32_t left, uint32_t right);
 
@@ -47,6 +47,7 @@ void			*worker_min(t_node *tree);
 int				sanity_check(t_job *job);
 int				do_target_exclusions(t_targetlist *targets,
 										t_targetlist *exclude);
+int				do_port_exclusions(t_portlist *target, t_portlist *exclude);
 int				worker_daemon(int port);
 
 #endif

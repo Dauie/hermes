@@ -10,7 +10,6 @@
 t_dtab g_disp[] = {
 		{ "--append-output", h_append_output },
 		{ "--badsum", h_bad_checksum },
-
 		{ "--open", h_show_only_open_ports },
 //		{ "--iflist", h_show_interfaces },
 //		{ "-O", h_os_detection },
