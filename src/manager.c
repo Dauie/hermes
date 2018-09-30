@@ -38,11 +38,10 @@ int					manager(t_job *job)
 	{
 		connect_workers(&job->worker_list.workers, &job->worker_list.worker_count,
 						&job->worker_list.workers, proto->p_proto);
-		if (job->worker_list.worker_count == 0)
-			return (hermes_error(FAILURE, FALSE, 1, "could not connect to any workers!"));
+		printf("connected to %zu workers.\n", job->worker_list.worker_count);
 		/*TODO divide work, and distribute to workers*/
 	}
-	/* Divide work amongst thread count, spawn threads*/
+	/* Divide work amongst thread count, send jobs to workersspawn threads*/
 	// TODO : do things
 	return (0);
 }
