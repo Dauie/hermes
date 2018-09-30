@@ -3,6 +3,7 @@
 
 # include <stdint.h>
 # include <stddef.h>
+#include <netinet/in.h>
 # include "../libhermes/incl/libhermes.h"
 
 typedef struct			s_ip4range
@@ -39,8 +40,7 @@ typedef struct			s_portrange
 
 typedef struct			s_worker
 {
-	uint32_t 			ip;
-	uint16_t			port;
+	struct sockaddr_in	sin;
 	int 				sock;
 }						t_worker;
 

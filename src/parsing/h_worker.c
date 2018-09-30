@@ -16,14 +16,15 @@ int				parse_worker(t_workerlist *workerlist, char *input)
 	{
 		port_str = worker;
 		if (!(ip_str = strsep(&port_str, ":")))
-			return (hermes_error(INPUT_ERROR, FALSE, 2, "no port specified for worker", worker));
+			return (hermes_error(INPUT_ERROR, FALSE, 2, "no port specified for worker:", worker));
 		if ((parse_ip(&ip, ip_str)) == FAILURE)
-			return (hermes_error(INPUT_ERROR, FALSE, 2, "bad ip provided for worker", ip_str));
+			return (hermes_error(INPUT_ERROR, FALSE, 2, "bad ip provided for worker:", ip_str));
 		if ((parse_port(&port, port_str)) == FAILURE)
-			return (hermes_error(INPUT_ERROR, FALSE, 3, "bad port provided for worker", ip_str, port_str));
+			return (hermes_error(INPUT_ERROR, FALSE, 3, "bad port provided for worker:", ip_str, port_str));
 		data = new_worker();
-		data->ip = ip;
-		data->port = port;
+		data->sin.sin_addr.s_addr = ip;
+		data->sin.sin_port = htons(port);
+		data->sin.sin_family = AF_INET;
 		if (add_node(&workerlist->workers, (void **)&data, worker_cmp) == SUCCESS)
 			workerlist->worker_count++;
 	}
@@ -32,6 +33,8 @@ int				parse_worker(t_workerlist *workerlist, char *input)
 
 void			h_worker(t_job *job, char *input)
 {
+	if (!input)
+		hermes_error(INPUT_ERROR, TRUE, 1, "no workers specified");
 	parse_worker(&job->worker_list, input);
 }
 
@@ -40,7 +43,9 @@ void			h_daemon(t_job *job, char *input)
 	uint16_t port;
 
 	(void)job;
+	if (!input)
+		hermes_error(INPUT_ERROR, TRUE, 1, "no port specified for daemon");
 	if (parse_port(&port, input) == FAILURE)
-		hermes_error(INPUT_ERROR, TRUE, 1, "bad port given for daemon");
+		hermes_error(INPUT_ERROR, TRUE, 2, "bad port given for daemon:", input);
 	worker_daemon(port);
 }

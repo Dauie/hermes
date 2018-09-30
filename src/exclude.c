@@ -2,6 +2,8 @@
 #include "../incl/hermes.h"
 #include "../incl/parser.h"
 
+/*TODO need to exclude single IPs from ranges*/
+
 void	exclude_ip4(t_targetlist *list, t_node **targets, t_node *exclude)
 {
 	if (!exclude)
@@ -55,6 +57,25 @@ int		split_ip4range(t_ip4range *target, t_ip4range *exclude,
 	return (0);
 }
 
+static void		correct_targetlist_totals(t_targetlist *list, t_ip4range *exclude,
+											t_ip4range *left, t_ip4range *right)
+{
+	t_ip4range		*tmp;
+
+
+	if (left && right)
+	{
+		list->total -= exclude->size - (left->size + right->size);
+		list->iprange_count += 1;
+	}
+	else
+	{
+		tmp = left ? left : right;
+		list->total -= exclude->size - tmp->size;
+		list->total -= 1;
+	}
+}
+
 /*TODO: handle totals after split/removal */
 void		exclude_ip4range(t_targetlist *list, t_node **targets, t_node *exclude)
 {
@@ -62,7 +83,6 @@ void		exclude_ip4range(t_targetlist *list, t_node **targets, t_node *exclude)
 	t_ip4range *range;
 	t_ip4range *left;
 	t_ip4range *right;
-	long		rm;
 
 	if (!exclude)
 		return ;
@@ -73,7 +93,9 @@ void		exclude_ip4range(t_targetlist *list, t_node **targets, t_node *exclude)
 		range = new_ip4range();
 		memcpy(range, conflict->data, sizeof(t_ip4range));
 		remove_node(targets, conflict->data, ip4rng_cmp, ip4rng_min);
-		rm = split_ip4range(range, exclude->data, &left, &right);
+		split_ip4range(range, exclude->data, &left, &right);
+		correct_targetlist_totals(list, range, left, right);
+		free(range);
 		if (left)
 			add_node(targets, (void **)&left, ip4rng_cmp);
 		if (right)
@@ -145,13 +167,31 @@ static void exclude_ports(t_portlist *list, t_node **target, t_node *exclude)
 		exclude_ports(list, target, exclude->right);
 }
 
+static void		correct_portrange_totals(t_portlist *list, t_portrange *exclude,
+		t_portrange *left, t_portrange *right)
+{
+	t_portrange		*tmp;
+
+
+	if (left && right)
+	{
+		list->total -= exclude->size - (left->size + right->size);
+		list->range_count += 1;
+	}
+	else
+	{
+		tmp = left ? left : right;
+		list->total -= exclude->size - tmp->size;
+		list->total -= 1;
+	}
+}
+
 static void		exclude_portrange(t_portlist *list, t_node **targets, t_node *exclude)
 {
 	t_node		*conflict;
 	t_portrange	*range;
 	t_portrange	*left;
 	t_portrange	*right;
-	long		rm;
 
 	if (!exclude)
 		return ;
@@ -162,7 +202,9 @@ static void		exclude_portrange(t_portlist *list, t_node **targets, t_node *exclu
 		range = new_portrange();
 		memcpy(range, conflict->data, sizeof(t_portrange));
 		remove_node(targets, conflict->data, portrng_cmp, portrng_min);
-		rm = split_portrange(range, exclude->data, &left, &right);
+		split_portrange(range, exclude->data, &left, &right);
+		correct_portrange_totals(list, range, left, right);
+		free(range);
 		if (left)
 			add_node(targets, (void **)&left, portrng_cmp);
 		if (right)

@@ -1,3 +1,4 @@
+#include <hermes.h>
 #include "../incl/job.h"
 
 t_worker		*new_worker(void)
@@ -16,12 +17,7 @@ int				worker_cmp(void *wrk_left, void *wrk_right)
 
 	left = wrk_left;
 	right = wrk_right;
-	if (left->ip < right->ip)
-		return (-1);
-	else if (left->ip > right->ip)
-		return (1);
-	else
-		return (0);
+	return (ip4_cmp(&left->sin.sin_addr, &right->sin.sin_addr));
 }
 
 void			*worker_min(t_node *tree)
