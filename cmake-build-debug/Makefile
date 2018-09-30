@@ -258,6 +258,33 @@ libhermes/src/str_tbl.c.s:
 	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/libhermes/src/str_tbl.c.s
 .PHONY : libhermes/src/str_tbl.c.s
 
+src/divide_work.o: src/divide_work.c.o
+
+.PHONY : src/divide_work.o
+
+# target to build an object file
+src/divide_work.c.o:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/src/divide_work.c.o
+.PHONY : src/divide_work.c.o
+
+src/divide_work.i: src/divide_work.c.i
+
+.PHONY : src/divide_work.i
+
+# target to preprocess a source file
+src/divide_work.c.i:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/src/divide_work.c.i
+.PHONY : src/divide_work.c.i
+
+src/divide_work.s: src/divide_work.c.s
+
+.PHONY : src/divide_work.s
+
+# target to generate assembly for a file
+src/divide_work.c.s:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/src/divide_work.c.s
+.PHONY : src/divide_work.c.s
+
 src/exclude.o: src/exclude.c.o
 
 .PHONY : src/exclude.o
@@ -876,6 +903,9 @@ help:
 	@echo "... libhermes/src/str_tbl.o"
 	@echo "... libhermes/src/str_tbl.i"
 	@echo "... libhermes/src/str_tbl.s"
+	@echo "... src/divide_work.o"
+	@echo "... src/divide_work.i"
+	@echo "... src/divide_work.s"
 	@echo "... src/exclude.o"
 	@echo "... src/exclude.i"
 	@echo "... src/exclude.s"

@@ -20,7 +20,7 @@ int				connect_workers(t_node **workers, size_t *worker_count,
 	if (connect(worker->sock, (const struct sockaddr *)&worker->sin,
 				sizeof(worker->sin)) == -1)
 	{
-		hermes_error(FAILURE, FALSE, 2, "error connecting to worker", inet_ntoa(worker->sin.sin_addr));
+		hermes_error(FAILURE, FALSE, 2, "error connecting to worker:", inet_ntoa(worker->sin.sin_addr));
 		remove_node(rm_tree, worker, worker_cmp, worker_min);
 		*worker_count -= 1;
 	}
@@ -39,10 +39,8 @@ int					manager(t_job *job)
 		connect_workers(&job->worker_list.workers, &job->worker_list.worker_count,
 						&job->worker_list.workers, proto->p_proto);
 		printf("connected to %zu workers.\n", job->worker_list.worker_count);
-		/*TODO divide work, and distribute to workers*/
 	}
-	/* Divide work amongst thread count, send jobs to workersspawn threads*/
-	// TODO : do things
+	/*TODO: Divide work amongst thread count, send jobs to workersspawn threads*/
 	return (0);
 }
 

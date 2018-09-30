@@ -198,8 +198,8 @@ int				ip4rng_overlap_cmp(void *left, void *right)
 
 	l = left;
 	r = right;
-	if (ip4_cmp(&l->start, &r->start) > 0 &&
-		ip4_cmp(&l->end, &r->end) < 0)
+	if (ip4_cmp(&l->start, &r->start) >= 0 &&
+		ip4_cmp(&l->end, &r->end) <= 0)
 		return (0);
 	else if (ip4_cmp(&l->end, &r->start) >= 0 &&
 			 ip4_cmp(&l->end, &r->end) < 0)
