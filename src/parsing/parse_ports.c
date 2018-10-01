@@ -17,9 +17,7 @@ static int		add_port(t_portlist *list, char *input)
 {
 	t_port		*data;
 	uint16_t	port;
-	/*
-	** check to make sure port is in range.
-	*/
+
 	if (parse_port(&port, input) == FAILURE)
 		return (hermes_error(FAILURE, FALSE, 1, "bad port specified", input));
 	data = new_port();

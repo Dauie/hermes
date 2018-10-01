@@ -37,6 +37,7 @@ void			*port_min(t_node *tree);
 
 t_portrange		*new_portrange(void);
 int				portrng_cmp(void *prt_left, void *prt_right);
+int				port_prtrng_overlap_cmp(void *port, void *prtrng);
 int				portrng_overlap_cmp(void *prt_left, void *prt_right);
 void			*portrng_min(t_node *tree);
 

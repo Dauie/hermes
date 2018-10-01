@@ -68,6 +68,18 @@ int				portrng_cmp(void *prt_left, void *prt_right)
 		return (-1);
 }
 
+int				port_prtrng_overlap_cmp(void *port, void *prtrng)
+{
+	t_port		*p;
+	t_portrange *pr;
+
+	p = port;
+	pr = prtrng;
+	if (p->port >= pr->start && p->port <= pr->end)
+		return (0);
+	return (-1);
+}
+
 int				portrng_overlap_cmp(void *prt_left, void *prt_right)
 {
 	t_portrange	*left;

@@ -4,19 +4,19 @@
 
 /*TODO need to exclude single IPs from ranges*/
 
-void	exclude_ip4(t_targetlist *list, t_node **targets, t_node *exclude)
+void	exclude_ip4_ip4(t_targetlist *list, t_node **targets, t_node *exclude)
 {
 	if (!exclude)
 		return ;
 	if (exclude->left)
-		exclude_ip4(list, targets, exclude->left);
+		exclude_ip4_ip4(list, targets, exclude->left);
 	if (remove_node(targets, exclude->data, ip4_cmp, ip4_min) == SUCCESS)
 	{
 		list->ip_count--;
 		list->total--;
 	}
 	if (exclude->right)
-		exclude_ip4(list, targets, exclude->right);
+		exclude_ip4_ip4(list, targets, exclude->right);
 }
 
 /* Fills 'left' and 'right' with different halves of the range.
@@ -76,8 +76,40 @@ static void		correct_targetlist_totals(t_targetlist *list, t_ip4range *exclude,
 	}
 }
 
-/*TODO: handle totals after split/removal */
-void		exclude_ip4range(t_targetlist *list, t_node **targets, t_node *exclude)
+static void		exclude_ip4_ip4rng(t_targetlist *list, t_node **targets, t_node *exclude)
+{
+	t_node		*conflict;
+	t_ip4range	*range;
+	t_ip4range	tmp;
+	t_ip4range	*left;
+	t_ip4range	*right;
+
+	if (!exclude)
+		return ;
+	if (exclude->left)
+		exclude_ip4_ip4rng(list, targets, exclude->left);
+	if ((conflict = tree_search(targets, exclude->data, port_prtrng_overlap_cmp)))
+	{
+		tmp.start = ((t_portrange*)exclude->data)->start;
+		tmp.end = tmp.start;
+		tmp.size = 1;
+		range = new_ip4range();
+		memcpy(range, conflict->data, sizeof(t_portrange));
+		remove_node(targets, conflict->data, portrng_cmp, portrng_min);
+		split_ip4range(range, &tmp, &left, &right);
+		correct_targetlist_totals(list, range, left, right);
+		free(range);
+		if (left)
+			add_node(targets, (void **)&left, ip4rng_cmp);
+		if (right)
+			add_node(targets, (void **)&right, ip4rng_cmp);
+	}
+	if (exclude->right)
+		exclude_ip4_ip4rng(list, targets, exclude->right);
+}
+
+void		exclude_ip4rng_ip4rng(t_targetlist *list, t_node **targets,
+								  t_node *exclude)
 {
 	t_node	*conflict;
 	t_ip4range *range;
@@ -87,7 +119,7 @@ void		exclude_ip4range(t_targetlist *list, t_node **targets, t_node *exclude)
 	if (!exclude)
 		return ;
 	if (exclude->left)
-		exclude_ip4range(list, targets, exclude->left);
+		exclude_ip4rng_ip4rng(list, targets, exclude->left);
 	if ((conflict = tree_search(targets, exclude->data, ip4rng_overlap_cmp)))
 	{
 		range = new_ip4range();
@@ -102,7 +134,7 @@ void		exclude_ip4range(t_targetlist *list, t_node **targets, t_node *exclude)
 			add_node(targets, (void **)&right, ip4rng_cmp);
 	}
 	if (exclude->right)
-		exclude_ip4range(list, targets, exclude->right);
+		exclude_ip4rng_ip4rng(list, targets, exclude->right);
 }
 
 int		do_target_exclusions(t_targetlist *targets, t_targetlist *exclude)
@@ -110,9 +142,9 @@ int		do_target_exclusions(t_targetlist *targets, t_targetlist *exclude)
 	if (!targets || !exclude)
 		return (FAILURE);
 	if (targets->ip && exclude->ip)
-		exclude_ip4(targets, &targets->ip, exclude->ip);
+		exclude_ip4_ip4(targets, &targets->ip, exclude->ip);
 	if (targets->iprange && exclude->iprange)
-		exclude_ip4range(targets, &targets->iprange, exclude->iprange);
+		exclude_ip4rng_ip4rng(targets, &targets->iprange, exclude->iprange);
 	return (SUCCESS);
 }
 
@@ -152,19 +184,20 @@ static long split_portrange(t_portrange *target, t_portrange *exclude,
 	return (0);
 }
 
-static void exclude_ports(t_portlist *list, t_node **target, t_node *exclude)
+static void exclude_port_port(t_portlist *list, t_node **target,
+							  t_node *exclude)
 {
 	if (!exclude)
 		return ;
 	if (exclude->left)
-		exclude_ports(list, target, exclude->left);
+		exclude_port_port(list, target, exclude->left);
 	if (remove_node(target, exclude->data, port_cmp, port_min) == SUCCESS)
 	{
 		list->port_count--;
 		list->total--;
 	}
 	if (exclude->right)
-		exclude_ports(list, target, exclude->right);
+		exclude_port_port(list, target, exclude->right);
 }
 
 static void		correct_portrange_totals(t_portlist *list, t_portrange *exclude,
@@ -186,7 +219,40 @@ static void		correct_portrange_totals(t_portlist *list, t_portrange *exclude,
 	}
 }
 
-static void		exclude_portrange(t_portlist *list, t_node **targets, t_node *exclude)
+static void		exclude_port_prtrng(t_portlist *list, t_node **targets, t_node *exclude)
+{
+	t_node		*conflict;
+	t_portrange	*range;
+	t_portrange	tmp;
+	t_portrange	*left;
+	t_portrange	*right;
+
+	if (!exclude)
+		return ;
+	if (exclude->left)
+		exclude_port_prtrng(list, targets, exclude->left);
+	if ((conflict = tree_search(targets, exclude->data, port_prtrng_overlap_cmp)))
+	{
+		tmp.start = ((t_portrange*)exclude->data)->start;
+		tmp.end = tmp.start;
+		tmp.size = 1;
+		range = new_portrange();
+		memcpy(range, conflict->data, sizeof(t_portrange));
+		remove_node(targets, conflict->data, portrng_cmp, portrng_min);
+		split_portrange(range, &tmp, &left, &right);
+		correct_portrange_totals(list, range, left, right);
+		free(range);
+		if (left)
+			add_node(targets, (void **)&left, portrng_cmp);
+		if (right)
+			add_node(targets, (void **)&right, portrng_cmp);
+	}
+	if (exclude->right)
+		exclude_port_prtrng(list, targets, exclude->right);
+}
+
+static void		exclude_prtrng_prtrng(t_portlist *list, t_node **targets,
+										 t_node *exclude)
 {
 	t_node		*conflict;
 	t_portrange	*range;
@@ -196,7 +262,7 @@ static void		exclude_portrange(t_portlist *list, t_node **targets, t_node *exclu
 	if (!exclude)
 		return ;
 	if (exclude->left)
-		exclude_portrange(list, targets, exclude->left);
+		exclude_prtrng_prtrng(list, targets, exclude->left);
 	if ((conflict = tree_search(targets, exclude->data, portrng_overlap_cmp)))
 	{
 		range = new_portrange();
@@ -211,7 +277,7 @@ static void		exclude_portrange(t_portlist *list, t_node **targets, t_node *exclu
 			add_node(targets, (void **)&right, portrng_cmp);
 	}
 	if (exclude->right)
-		exclude_portrange(list, targets, exclude->right);
+		exclude_prtrng_prtrng(list, targets, exclude->right);
 }
 
 int		do_port_exclusions(t_portlist *target, t_portlist *exclude)
@@ -219,9 +285,12 @@ int		do_port_exclusions(t_portlist *target, t_portlist *exclude)
 	if (!target || !exclude)
 		return (FAILURE);
 	if (target->ports && exclude->ports)
-		exclude_ports(target, &target->ports, exclude->ports);
+		exclude_port_port(target, &target->ports, exclude->ports);
 	if (target->port_range && exclude->port_range)
-		exclude_portrange(target, &target->port_range, exclude->port_range);
+		exclude_prtrng_prtrng(target, &target->port_range, exclude->port_range);
+	if (target->port_range && exclude->ports)
+		exclude_port_prtrng(target, &target->port_range, exclude->ports);
+
 	return (SUCCESS);
 }
 
