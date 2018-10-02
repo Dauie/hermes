@@ -123,6 +123,1653 @@ hermes/fast:
 	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/build
 .PHONY : hermes/fast
 
+flatcc/external/grisu3/grisu3_test.o: flatcc/external/grisu3/grisu3_test.c.o
+
+.PHONY : flatcc/external/grisu3/grisu3_test.o
+
+# target to build an object file
+flatcc/external/grisu3/grisu3_test.c.o:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/external/grisu3/grisu3_test.c.o
+.PHONY : flatcc/external/grisu3/grisu3_test.c.o
+
+flatcc/external/grisu3/grisu3_test.i: flatcc/external/grisu3/grisu3_test.c.i
+
+.PHONY : flatcc/external/grisu3/grisu3_test.i
+
+# target to preprocess a source file
+flatcc/external/grisu3/grisu3_test.c.i:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/external/grisu3/grisu3_test.c.i
+.PHONY : flatcc/external/grisu3/grisu3_test.c.i
+
+flatcc/external/grisu3/grisu3_test.s: flatcc/external/grisu3/grisu3_test.c.s
+
+.PHONY : flatcc/external/grisu3/grisu3_test.s
+
+# target to generate assembly for a file
+flatcc/external/grisu3/grisu3_test.c.s:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/external/grisu3/grisu3_test.c.s
+.PHONY : flatcc/external/grisu3/grisu3_test.c.s
+
+flatcc/external/grisu3/grisu3_test_dblcnv.o: flatcc/external/grisu3/grisu3_test_dblcnv.c.o
+
+.PHONY : flatcc/external/grisu3/grisu3_test_dblcnv.o
+
+# target to build an object file
+flatcc/external/grisu3/grisu3_test_dblcnv.c.o:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/external/grisu3/grisu3_test_dblcnv.c.o
+.PHONY : flatcc/external/grisu3/grisu3_test_dblcnv.c.o
+
+flatcc/external/grisu3/grisu3_test_dblcnv.i: flatcc/external/grisu3/grisu3_test_dblcnv.c.i
+
+.PHONY : flatcc/external/grisu3/grisu3_test_dblcnv.i
+
+# target to preprocess a source file
+flatcc/external/grisu3/grisu3_test_dblcnv.c.i:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/external/grisu3/grisu3_test_dblcnv.c.i
+.PHONY : flatcc/external/grisu3/grisu3_test_dblcnv.c.i
+
+flatcc/external/grisu3/grisu3_test_dblcnv.s: flatcc/external/grisu3/grisu3_test_dblcnv.c.s
+
+.PHONY : flatcc/external/grisu3/grisu3_test_dblcnv.s
+
+# target to generate assembly for a file
+flatcc/external/grisu3/grisu3_test_dblcnv.c.s:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/external/grisu3/grisu3_test_dblcnv.c.s
+.PHONY : flatcc/external/grisu3/grisu3_test_dblcnv.c.s
+
+flatcc/external/hash/PMurHash.o: flatcc/external/hash/PMurHash.c.o
+
+.PHONY : flatcc/external/hash/PMurHash.o
+
+# target to build an object file
+flatcc/external/hash/PMurHash.c.o:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/external/hash/PMurHash.c.o
+.PHONY : flatcc/external/hash/PMurHash.c.o
+
+flatcc/external/hash/PMurHash.i: flatcc/external/hash/PMurHash.c.i
+
+.PHONY : flatcc/external/hash/PMurHash.i
+
+# target to preprocess a source file
+flatcc/external/hash/PMurHash.c.i:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/external/hash/PMurHash.c.i
+.PHONY : flatcc/external/hash/PMurHash.c.i
+
+flatcc/external/hash/PMurHash.s: flatcc/external/hash/PMurHash.c.s
+
+.PHONY : flatcc/external/hash/PMurHash.s
+
+# target to generate assembly for a file
+flatcc/external/hash/PMurHash.c.s:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/external/hash/PMurHash.c.s
+.PHONY : flatcc/external/hash/PMurHash.c.s
+
+flatcc/external/hash/cmetrohash64.o: flatcc/external/hash/cmetrohash64.c.o
+
+.PHONY : flatcc/external/hash/cmetrohash64.o
+
+# target to build an object file
+flatcc/external/hash/cmetrohash64.c.o:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/external/hash/cmetrohash64.c.o
+.PHONY : flatcc/external/hash/cmetrohash64.c.o
+
+flatcc/external/hash/cmetrohash64.i: flatcc/external/hash/cmetrohash64.c.i
+
+.PHONY : flatcc/external/hash/cmetrohash64.i
+
+# target to preprocess a source file
+flatcc/external/hash/cmetrohash64.c.i:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/external/hash/cmetrohash64.c.i
+.PHONY : flatcc/external/hash/cmetrohash64.c.i
+
+flatcc/external/hash/cmetrohash64.s: flatcc/external/hash/cmetrohash64.c.s
+
+.PHONY : flatcc/external/hash/cmetrohash64.s
+
+# target to generate assembly for a file
+flatcc/external/hash/cmetrohash64.c.s:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/external/hash/cmetrohash64.c.s
+.PHONY : flatcc/external/hash/cmetrohash64.c.s
+
+flatcc/external/hash/hash_test.o: flatcc/external/hash/hash_test.c.o
+
+.PHONY : flatcc/external/hash/hash_test.o
+
+# target to build an object file
+flatcc/external/hash/hash_test.c.o:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/external/hash/hash_test.c.o
+.PHONY : flatcc/external/hash/hash_test.c.o
+
+flatcc/external/hash/hash_test.i: flatcc/external/hash/hash_test.c.i
+
+.PHONY : flatcc/external/hash/hash_test.i
+
+# target to preprocess a source file
+flatcc/external/hash/hash_test.c.i:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/external/hash/hash_test.c.i
+.PHONY : flatcc/external/hash/hash_test.c.i
+
+flatcc/external/hash/hash_test.s: flatcc/external/hash/hash_test.c.s
+
+.PHONY : flatcc/external/hash/hash_test.s
+
+# target to generate assembly for a file
+flatcc/external/hash/hash_test.c.s:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/external/hash/hash_test.c.s
+.PHONY : flatcc/external/hash/hash_test.c.s
+
+flatcc/external/hash/ht32.o: flatcc/external/hash/ht32.c.o
+
+.PHONY : flatcc/external/hash/ht32.o
+
+# target to build an object file
+flatcc/external/hash/ht32.c.o:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/external/hash/ht32.c.o
+.PHONY : flatcc/external/hash/ht32.c.o
+
+flatcc/external/hash/ht32.i: flatcc/external/hash/ht32.c.i
+
+.PHONY : flatcc/external/hash/ht32.i
+
+# target to preprocess a source file
+flatcc/external/hash/ht32.c.i:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/external/hash/ht32.c.i
+.PHONY : flatcc/external/hash/ht32.c.i
+
+flatcc/external/hash/ht32.s: flatcc/external/hash/ht32.c.s
+
+.PHONY : flatcc/external/hash/ht32.s
+
+# target to generate assembly for a file
+flatcc/external/hash/ht32.c.s:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/external/hash/ht32.c.s
+.PHONY : flatcc/external/hash/ht32.c.s
+
+flatcc/external/hash/ht32rh.o: flatcc/external/hash/ht32rh.c.o
+
+.PHONY : flatcc/external/hash/ht32rh.o
+
+# target to build an object file
+flatcc/external/hash/ht32rh.c.o:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/external/hash/ht32rh.c.o
+.PHONY : flatcc/external/hash/ht32rh.c.o
+
+flatcc/external/hash/ht32rh.i: flatcc/external/hash/ht32rh.c.i
+
+.PHONY : flatcc/external/hash/ht32rh.i
+
+# target to preprocess a source file
+flatcc/external/hash/ht32rh.c.i:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/external/hash/ht32rh.c.i
+.PHONY : flatcc/external/hash/ht32rh.c.i
+
+flatcc/external/hash/ht32rh.s: flatcc/external/hash/ht32rh.c.s
+
+.PHONY : flatcc/external/hash/ht32rh.s
+
+# target to generate assembly for a file
+flatcc/external/hash/ht32rh.c.s:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/external/hash/ht32rh.c.s
+.PHONY : flatcc/external/hash/ht32rh.c.s
+
+flatcc/external/hash/ht64.o: flatcc/external/hash/ht64.c.o
+
+.PHONY : flatcc/external/hash/ht64.o
+
+# target to build an object file
+flatcc/external/hash/ht64.c.o:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/external/hash/ht64.c.o
+.PHONY : flatcc/external/hash/ht64.c.o
+
+flatcc/external/hash/ht64.i: flatcc/external/hash/ht64.c.i
+
+.PHONY : flatcc/external/hash/ht64.i
+
+# target to preprocess a source file
+flatcc/external/hash/ht64.c.i:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/external/hash/ht64.c.i
+.PHONY : flatcc/external/hash/ht64.c.i
+
+flatcc/external/hash/ht64.s: flatcc/external/hash/ht64.c.s
+
+.PHONY : flatcc/external/hash/ht64.s
+
+# target to generate assembly for a file
+flatcc/external/hash/ht64.c.s:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/external/hash/ht64.c.s
+.PHONY : flatcc/external/hash/ht64.c.s
+
+flatcc/external/hash/ht64rh.o: flatcc/external/hash/ht64rh.c.o
+
+.PHONY : flatcc/external/hash/ht64rh.o
+
+# target to build an object file
+flatcc/external/hash/ht64rh.c.o:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/external/hash/ht64rh.c.o
+.PHONY : flatcc/external/hash/ht64rh.c.o
+
+flatcc/external/hash/ht64rh.i: flatcc/external/hash/ht64rh.c.i
+
+.PHONY : flatcc/external/hash/ht64rh.i
+
+# target to preprocess a source file
+flatcc/external/hash/ht64rh.c.i:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/external/hash/ht64rh.c.i
+.PHONY : flatcc/external/hash/ht64rh.c.i
+
+flatcc/external/hash/ht64rh.s: flatcc/external/hash/ht64rh.c.s
+
+.PHONY : flatcc/external/hash/ht64rh.s
+
+# target to generate assembly for a file
+flatcc/external/hash/ht64rh.c.s:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/external/hash/ht64rh.c.s
+.PHONY : flatcc/external/hash/ht64rh.c.s
+
+flatcc/external/hash/load_test.o: flatcc/external/hash/load_test.c.o
+
+.PHONY : flatcc/external/hash/load_test.o
+
+# target to build an object file
+flatcc/external/hash/load_test.c.o:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/external/hash/load_test.c.o
+.PHONY : flatcc/external/hash/load_test.c.o
+
+flatcc/external/hash/load_test.i: flatcc/external/hash/load_test.c.i
+
+.PHONY : flatcc/external/hash/load_test.i
+
+# target to preprocess a source file
+flatcc/external/hash/load_test.c.i:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/external/hash/load_test.c.i
+.PHONY : flatcc/external/hash/load_test.c.i
+
+flatcc/external/hash/load_test.s: flatcc/external/hash/load_test.c.s
+
+.PHONY : flatcc/external/hash/load_test.s
+
+# target to generate assembly for a file
+flatcc/external/hash/load_test.c.s:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/external/hash/load_test.c.s
+.PHONY : flatcc/external/hash/load_test.c.s
+
+flatcc/external/hash/ptr_set.o: flatcc/external/hash/ptr_set.c.o
+
+.PHONY : flatcc/external/hash/ptr_set.o
+
+# target to build an object file
+flatcc/external/hash/ptr_set.c.o:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/external/hash/ptr_set.c.o
+.PHONY : flatcc/external/hash/ptr_set.c.o
+
+flatcc/external/hash/ptr_set.i: flatcc/external/hash/ptr_set.c.i
+
+.PHONY : flatcc/external/hash/ptr_set.i
+
+# target to preprocess a source file
+flatcc/external/hash/ptr_set.c.i:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/external/hash/ptr_set.c.i
+.PHONY : flatcc/external/hash/ptr_set.c.i
+
+flatcc/external/hash/ptr_set.s: flatcc/external/hash/ptr_set.c.s
+
+.PHONY : flatcc/external/hash/ptr_set.s
+
+# target to generate assembly for a file
+flatcc/external/hash/ptr_set.c.s:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/external/hash/ptr_set.c.s
+.PHONY : flatcc/external/hash/ptr_set.c.s
+
+flatcc/external/hash/str_set.o: flatcc/external/hash/str_set.c.o
+
+.PHONY : flatcc/external/hash/str_set.o
+
+# target to build an object file
+flatcc/external/hash/str_set.c.o:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/external/hash/str_set.c.o
+.PHONY : flatcc/external/hash/str_set.c.o
+
+flatcc/external/hash/str_set.i: flatcc/external/hash/str_set.c.i
+
+.PHONY : flatcc/external/hash/str_set.i
+
+# target to preprocess a source file
+flatcc/external/hash/str_set.c.i:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/external/hash/str_set.c.i
+.PHONY : flatcc/external/hash/str_set.c.i
+
+flatcc/external/hash/str_set.s: flatcc/external/hash/str_set.c.s
+
+.PHONY : flatcc/external/hash/str_set.s
+
+# target to generate assembly for a file
+flatcc/external/hash/str_set.c.s:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/external/hash/str_set.c.s
+.PHONY : flatcc/external/hash/str_set.c.s
+
+flatcc/external/hash/token_map.o: flatcc/external/hash/token_map.c.o
+
+.PHONY : flatcc/external/hash/token_map.o
+
+# target to build an object file
+flatcc/external/hash/token_map.c.o:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/external/hash/token_map.c.o
+.PHONY : flatcc/external/hash/token_map.c.o
+
+flatcc/external/hash/token_map.i: flatcc/external/hash/token_map.c.i
+
+.PHONY : flatcc/external/hash/token_map.i
+
+# target to preprocess a source file
+flatcc/external/hash/token_map.c.i:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/external/hash/token_map.c.i
+.PHONY : flatcc/external/hash/token_map.c.i
+
+flatcc/external/hash/token_map.s: flatcc/external/hash/token_map.c.s
+
+.PHONY : flatcc/external/hash/token_map.s
+
+# target to generate assembly for a file
+flatcc/external/hash/token_map.c.s:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/external/hash/token_map.c.s
+.PHONY : flatcc/external/hash/token_map.c.s
+
+flatcc/external/lex/luthor.o: flatcc/external/lex/luthor.c.o
+
+.PHONY : flatcc/external/lex/luthor.o
+
+# target to build an object file
+flatcc/external/lex/luthor.c.o:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/external/lex/luthor.c.o
+.PHONY : flatcc/external/lex/luthor.c.o
+
+flatcc/external/lex/luthor.i: flatcc/external/lex/luthor.c.i
+
+.PHONY : flatcc/external/lex/luthor.i
+
+# target to preprocess a source file
+flatcc/external/lex/luthor.c.i:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/external/lex/luthor.c.i
+.PHONY : flatcc/external/lex/luthor.c.i
+
+flatcc/external/lex/luthor.s: flatcc/external/lex/luthor.c.s
+
+.PHONY : flatcc/external/lex/luthor.s
+
+# target to generate assembly for a file
+flatcc/external/lex/luthor.c.s:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/external/lex/luthor.c.s
+.PHONY : flatcc/external/lex/luthor.c.s
+
+flatcc/samples/bugreport/myissue.o: flatcc/samples/bugreport/myissue.c.o
+
+.PHONY : flatcc/samples/bugreport/myissue.o
+
+# target to build an object file
+flatcc/samples/bugreport/myissue.c.o:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/samples/bugreport/myissue.c.o
+.PHONY : flatcc/samples/bugreport/myissue.c.o
+
+flatcc/samples/bugreport/myissue.i: flatcc/samples/bugreport/myissue.c.i
+
+.PHONY : flatcc/samples/bugreport/myissue.i
+
+# target to preprocess a source file
+flatcc/samples/bugreport/myissue.c.i:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/samples/bugreport/myissue.c.i
+.PHONY : flatcc/samples/bugreport/myissue.c.i
+
+flatcc/samples/bugreport/myissue.s: flatcc/samples/bugreport/myissue.c.s
+
+.PHONY : flatcc/samples/bugreport/myissue.s
+
+# target to generate assembly for a file
+flatcc/samples/bugreport/myissue.c.s:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/samples/bugreport/myissue.c.s
+.PHONY : flatcc/samples/bugreport/myissue.c.s
+
+flatcc/samples/monster/monster.o: flatcc/samples/monster/monster.c.o
+
+.PHONY : flatcc/samples/monster/monster.o
+
+# target to build an object file
+flatcc/samples/monster/monster.c.o:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/samples/monster/monster.c.o
+.PHONY : flatcc/samples/monster/monster.c.o
+
+flatcc/samples/monster/monster.i: flatcc/samples/monster/monster.c.i
+
+.PHONY : flatcc/samples/monster/monster.i
+
+# target to preprocess a source file
+flatcc/samples/monster/monster.c.i:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/samples/monster/monster.c.i
+.PHONY : flatcc/samples/monster/monster.c.i
+
+flatcc/samples/monster/monster.s: flatcc/samples/monster/monster.c.s
+
+.PHONY : flatcc/samples/monster/monster.s
+
+# target to generate assembly for a file
+flatcc/samples/monster/monster.c.s:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/samples/monster/monster.c.s
+.PHONY : flatcc/samples/monster/monster.c.s
+
+flatcc/samples/reflection/bfbs2json.o: flatcc/samples/reflection/bfbs2json.c.o
+
+.PHONY : flatcc/samples/reflection/bfbs2json.o
+
+# target to build an object file
+flatcc/samples/reflection/bfbs2json.c.o:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/samples/reflection/bfbs2json.c.o
+.PHONY : flatcc/samples/reflection/bfbs2json.c.o
+
+flatcc/samples/reflection/bfbs2json.i: flatcc/samples/reflection/bfbs2json.c.i
+
+.PHONY : flatcc/samples/reflection/bfbs2json.i
+
+# target to preprocess a source file
+flatcc/samples/reflection/bfbs2json.c.i:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/samples/reflection/bfbs2json.c.i
+.PHONY : flatcc/samples/reflection/bfbs2json.c.i
+
+flatcc/samples/reflection/bfbs2json.s: flatcc/samples/reflection/bfbs2json.c.s
+
+.PHONY : flatcc/samples/reflection/bfbs2json.s
+
+# target to generate assembly for a file
+flatcc/samples/reflection/bfbs2json.c.s:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/samples/reflection/bfbs2json.c.s
+.PHONY : flatcc/samples/reflection/bfbs2json.c.s
+
+flatcc/src/cli/flatcc_cli.o: flatcc/src/cli/flatcc_cli.c.o
+
+.PHONY : flatcc/src/cli/flatcc_cli.o
+
+# target to build an object file
+flatcc/src/cli/flatcc_cli.c.o:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/src/cli/flatcc_cli.c.o
+.PHONY : flatcc/src/cli/flatcc_cli.c.o
+
+flatcc/src/cli/flatcc_cli.i: flatcc/src/cli/flatcc_cli.c.i
+
+.PHONY : flatcc/src/cli/flatcc_cli.i
+
+# target to preprocess a source file
+flatcc/src/cli/flatcc_cli.c.i:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/src/cli/flatcc_cli.c.i
+.PHONY : flatcc/src/cli/flatcc_cli.c.i
+
+flatcc/src/cli/flatcc_cli.s: flatcc/src/cli/flatcc_cli.c.s
+
+.PHONY : flatcc/src/cli/flatcc_cli.s
+
+# target to generate assembly for a file
+flatcc/src/cli/flatcc_cli.c.s:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/src/cli/flatcc_cli.c.s
+.PHONY : flatcc/src/cli/flatcc_cli.c.s
+
+flatcc/src/compiler/codegen_c.o: flatcc/src/compiler/codegen_c.c.o
+
+.PHONY : flatcc/src/compiler/codegen_c.o
+
+# target to build an object file
+flatcc/src/compiler/codegen_c.c.o:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/src/compiler/codegen_c.c.o
+.PHONY : flatcc/src/compiler/codegen_c.c.o
+
+flatcc/src/compiler/codegen_c.i: flatcc/src/compiler/codegen_c.c.i
+
+.PHONY : flatcc/src/compiler/codegen_c.i
+
+# target to preprocess a source file
+flatcc/src/compiler/codegen_c.c.i:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/src/compiler/codegen_c.c.i
+.PHONY : flatcc/src/compiler/codegen_c.c.i
+
+flatcc/src/compiler/codegen_c.s: flatcc/src/compiler/codegen_c.c.s
+
+.PHONY : flatcc/src/compiler/codegen_c.s
+
+# target to generate assembly for a file
+flatcc/src/compiler/codegen_c.c.s:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/src/compiler/codegen_c.c.s
+.PHONY : flatcc/src/compiler/codegen_c.c.s
+
+flatcc/src/compiler/codegen_c_builder.o: flatcc/src/compiler/codegen_c_builder.c.o
+
+.PHONY : flatcc/src/compiler/codegen_c_builder.o
+
+# target to build an object file
+flatcc/src/compiler/codegen_c_builder.c.o:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/src/compiler/codegen_c_builder.c.o
+.PHONY : flatcc/src/compiler/codegen_c_builder.c.o
+
+flatcc/src/compiler/codegen_c_builder.i: flatcc/src/compiler/codegen_c_builder.c.i
+
+.PHONY : flatcc/src/compiler/codegen_c_builder.i
+
+# target to preprocess a source file
+flatcc/src/compiler/codegen_c_builder.c.i:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/src/compiler/codegen_c_builder.c.i
+.PHONY : flatcc/src/compiler/codegen_c_builder.c.i
+
+flatcc/src/compiler/codegen_c_builder.s: flatcc/src/compiler/codegen_c_builder.c.s
+
+.PHONY : flatcc/src/compiler/codegen_c_builder.s
+
+# target to generate assembly for a file
+flatcc/src/compiler/codegen_c_builder.c.s:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/src/compiler/codegen_c_builder.c.s
+.PHONY : flatcc/src/compiler/codegen_c_builder.c.s
+
+flatcc/src/compiler/codegen_c_json_parser.o: flatcc/src/compiler/codegen_c_json_parser.c.o
+
+.PHONY : flatcc/src/compiler/codegen_c_json_parser.o
+
+# target to build an object file
+flatcc/src/compiler/codegen_c_json_parser.c.o:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/src/compiler/codegen_c_json_parser.c.o
+.PHONY : flatcc/src/compiler/codegen_c_json_parser.c.o
+
+flatcc/src/compiler/codegen_c_json_parser.i: flatcc/src/compiler/codegen_c_json_parser.c.i
+
+.PHONY : flatcc/src/compiler/codegen_c_json_parser.i
+
+# target to preprocess a source file
+flatcc/src/compiler/codegen_c_json_parser.c.i:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/src/compiler/codegen_c_json_parser.c.i
+.PHONY : flatcc/src/compiler/codegen_c_json_parser.c.i
+
+flatcc/src/compiler/codegen_c_json_parser.s: flatcc/src/compiler/codegen_c_json_parser.c.s
+
+.PHONY : flatcc/src/compiler/codegen_c_json_parser.s
+
+# target to generate assembly for a file
+flatcc/src/compiler/codegen_c_json_parser.c.s:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/src/compiler/codegen_c_json_parser.c.s
+.PHONY : flatcc/src/compiler/codegen_c_json_parser.c.s
+
+flatcc/src/compiler/codegen_c_json_printer.o: flatcc/src/compiler/codegen_c_json_printer.c.o
+
+.PHONY : flatcc/src/compiler/codegen_c_json_printer.o
+
+# target to build an object file
+flatcc/src/compiler/codegen_c_json_printer.c.o:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/src/compiler/codegen_c_json_printer.c.o
+.PHONY : flatcc/src/compiler/codegen_c_json_printer.c.o
+
+flatcc/src/compiler/codegen_c_json_printer.i: flatcc/src/compiler/codegen_c_json_printer.c.i
+
+.PHONY : flatcc/src/compiler/codegen_c_json_printer.i
+
+# target to preprocess a source file
+flatcc/src/compiler/codegen_c_json_printer.c.i:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/src/compiler/codegen_c_json_printer.c.i
+.PHONY : flatcc/src/compiler/codegen_c_json_printer.c.i
+
+flatcc/src/compiler/codegen_c_json_printer.s: flatcc/src/compiler/codegen_c_json_printer.c.s
+
+.PHONY : flatcc/src/compiler/codegen_c_json_printer.s
+
+# target to generate assembly for a file
+flatcc/src/compiler/codegen_c_json_printer.c.s:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/src/compiler/codegen_c_json_printer.c.s
+.PHONY : flatcc/src/compiler/codegen_c_json_printer.c.s
+
+flatcc/src/compiler/codegen_c_reader.o: flatcc/src/compiler/codegen_c_reader.c.o
+
+.PHONY : flatcc/src/compiler/codegen_c_reader.o
+
+# target to build an object file
+flatcc/src/compiler/codegen_c_reader.c.o:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/src/compiler/codegen_c_reader.c.o
+.PHONY : flatcc/src/compiler/codegen_c_reader.c.o
+
+flatcc/src/compiler/codegen_c_reader.i: flatcc/src/compiler/codegen_c_reader.c.i
+
+.PHONY : flatcc/src/compiler/codegen_c_reader.i
+
+# target to preprocess a source file
+flatcc/src/compiler/codegen_c_reader.c.i:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/src/compiler/codegen_c_reader.c.i
+.PHONY : flatcc/src/compiler/codegen_c_reader.c.i
+
+flatcc/src/compiler/codegen_c_reader.s: flatcc/src/compiler/codegen_c_reader.c.s
+
+.PHONY : flatcc/src/compiler/codegen_c_reader.s
+
+# target to generate assembly for a file
+flatcc/src/compiler/codegen_c_reader.c.s:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/src/compiler/codegen_c_reader.c.s
+.PHONY : flatcc/src/compiler/codegen_c_reader.c.s
+
+flatcc/src/compiler/codegen_c_sort.o: flatcc/src/compiler/codegen_c_sort.c.o
+
+.PHONY : flatcc/src/compiler/codegen_c_sort.o
+
+# target to build an object file
+flatcc/src/compiler/codegen_c_sort.c.o:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/src/compiler/codegen_c_sort.c.o
+.PHONY : flatcc/src/compiler/codegen_c_sort.c.o
+
+flatcc/src/compiler/codegen_c_sort.i: flatcc/src/compiler/codegen_c_sort.c.i
+
+.PHONY : flatcc/src/compiler/codegen_c_sort.i
+
+# target to preprocess a source file
+flatcc/src/compiler/codegen_c_sort.c.i:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/src/compiler/codegen_c_sort.c.i
+.PHONY : flatcc/src/compiler/codegen_c_sort.c.i
+
+flatcc/src/compiler/codegen_c_sort.s: flatcc/src/compiler/codegen_c_sort.c.s
+
+.PHONY : flatcc/src/compiler/codegen_c_sort.s
+
+# target to generate assembly for a file
+flatcc/src/compiler/codegen_c_sort.c.s:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/src/compiler/codegen_c_sort.c.s
+.PHONY : flatcc/src/compiler/codegen_c_sort.c.s
+
+flatcc/src/compiler/codegen_c_verifier.o: flatcc/src/compiler/codegen_c_verifier.c.o
+
+.PHONY : flatcc/src/compiler/codegen_c_verifier.o
+
+# target to build an object file
+flatcc/src/compiler/codegen_c_verifier.c.o:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/src/compiler/codegen_c_verifier.c.o
+.PHONY : flatcc/src/compiler/codegen_c_verifier.c.o
+
+flatcc/src/compiler/codegen_c_verifier.i: flatcc/src/compiler/codegen_c_verifier.c.i
+
+.PHONY : flatcc/src/compiler/codegen_c_verifier.i
+
+# target to preprocess a source file
+flatcc/src/compiler/codegen_c_verifier.c.i:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/src/compiler/codegen_c_verifier.c.i
+.PHONY : flatcc/src/compiler/codegen_c_verifier.c.i
+
+flatcc/src/compiler/codegen_c_verifier.s: flatcc/src/compiler/codegen_c_verifier.c.s
+
+.PHONY : flatcc/src/compiler/codegen_c_verifier.s
+
+# target to generate assembly for a file
+flatcc/src/compiler/codegen_c_verifier.c.s:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/src/compiler/codegen_c_verifier.c.s
+.PHONY : flatcc/src/compiler/codegen_c_verifier.c.s
+
+flatcc/src/compiler/codegen_schema.o: flatcc/src/compiler/codegen_schema.c.o
+
+.PHONY : flatcc/src/compiler/codegen_schema.o
+
+# target to build an object file
+flatcc/src/compiler/codegen_schema.c.o:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/src/compiler/codegen_schema.c.o
+.PHONY : flatcc/src/compiler/codegen_schema.c.o
+
+flatcc/src/compiler/codegen_schema.i: flatcc/src/compiler/codegen_schema.c.i
+
+.PHONY : flatcc/src/compiler/codegen_schema.i
+
+# target to preprocess a source file
+flatcc/src/compiler/codegen_schema.c.i:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/src/compiler/codegen_schema.c.i
+.PHONY : flatcc/src/compiler/codegen_schema.c.i
+
+flatcc/src/compiler/codegen_schema.s: flatcc/src/compiler/codegen_schema.c.s
+
+.PHONY : flatcc/src/compiler/codegen_schema.s
+
+# target to generate assembly for a file
+flatcc/src/compiler/codegen_schema.c.s:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/src/compiler/codegen_schema.c.s
+.PHONY : flatcc/src/compiler/codegen_schema.c.s
+
+flatcc/src/compiler/coerce.o: flatcc/src/compiler/coerce.c.o
+
+.PHONY : flatcc/src/compiler/coerce.o
+
+# target to build an object file
+flatcc/src/compiler/coerce.c.o:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/src/compiler/coerce.c.o
+.PHONY : flatcc/src/compiler/coerce.c.o
+
+flatcc/src/compiler/coerce.i: flatcc/src/compiler/coerce.c.i
+
+.PHONY : flatcc/src/compiler/coerce.i
+
+# target to preprocess a source file
+flatcc/src/compiler/coerce.c.i:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/src/compiler/coerce.c.i
+.PHONY : flatcc/src/compiler/coerce.c.i
+
+flatcc/src/compiler/coerce.s: flatcc/src/compiler/coerce.c.s
+
+.PHONY : flatcc/src/compiler/coerce.s
+
+# target to generate assembly for a file
+flatcc/src/compiler/coerce.c.s:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/src/compiler/coerce.c.s
+.PHONY : flatcc/src/compiler/coerce.c.s
+
+flatcc/src/compiler/fileio.o: flatcc/src/compiler/fileio.c.o
+
+.PHONY : flatcc/src/compiler/fileio.o
+
+# target to build an object file
+flatcc/src/compiler/fileio.c.o:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/src/compiler/fileio.c.o
+.PHONY : flatcc/src/compiler/fileio.c.o
+
+flatcc/src/compiler/fileio.i: flatcc/src/compiler/fileio.c.i
+
+.PHONY : flatcc/src/compiler/fileio.i
+
+# target to preprocess a source file
+flatcc/src/compiler/fileio.c.i:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/src/compiler/fileio.c.i
+.PHONY : flatcc/src/compiler/fileio.c.i
+
+flatcc/src/compiler/fileio.s: flatcc/src/compiler/fileio.c.s
+
+.PHONY : flatcc/src/compiler/fileio.s
+
+# target to generate assembly for a file
+flatcc/src/compiler/fileio.c.s:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/src/compiler/fileio.c.s
+.PHONY : flatcc/src/compiler/fileio.c.s
+
+flatcc/src/compiler/flatcc.o: flatcc/src/compiler/flatcc.c.o
+
+.PHONY : flatcc/src/compiler/flatcc.o
+
+# target to build an object file
+flatcc/src/compiler/flatcc.c.o:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/src/compiler/flatcc.c.o
+.PHONY : flatcc/src/compiler/flatcc.c.o
+
+flatcc/src/compiler/flatcc.i: flatcc/src/compiler/flatcc.c.i
+
+.PHONY : flatcc/src/compiler/flatcc.i
+
+# target to preprocess a source file
+flatcc/src/compiler/flatcc.c.i:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/src/compiler/flatcc.c.i
+.PHONY : flatcc/src/compiler/flatcc.c.i
+
+flatcc/src/compiler/flatcc.s: flatcc/src/compiler/flatcc.c.s
+
+.PHONY : flatcc/src/compiler/flatcc.s
+
+# target to generate assembly for a file
+flatcc/src/compiler/flatcc.c.s:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/src/compiler/flatcc.c.s
+.PHONY : flatcc/src/compiler/flatcc.c.s
+
+flatcc/src/compiler/hash_tables/name_table.o: flatcc/src/compiler/hash_tables/name_table.c.o
+
+.PHONY : flatcc/src/compiler/hash_tables/name_table.o
+
+# target to build an object file
+flatcc/src/compiler/hash_tables/name_table.c.o:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/src/compiler/hash_tables/name_table.c.o
+.PHONY : flatcc/src/compiler/hash_tables/name_table.c.o
+
+flatcc/src/compiler/hash_tables/name_table.i: flatcc/src/compiler/hash_tables/name_table.c.i
+
+.PHONY : flatcc/src/compiler/hash_tables/name_table.i
+
+# target to preprocess a source file
+flatcc/src/compiler/hash_tables/name_table.c.i:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/src/compiler/hash_tables/name_table.c.i
+.PHONY : flatcc/src/compiler/hash_tables/name_table.c.i
+
+flatcc/src/compiler/hash_tables/name_table.s: flatcc/src/compiler/hash_tables/name_table.c.s
+
+.PHONY : flatcc/src/compiler/hash_tables/name_table.s
+
+# target to generate assembly for a file
+flatcc/src/compiler/hash_tables/name_table.c.s:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/src/compiler/hash_tables/name_table.c.s
+.PHONY : flatcc/src/compiler/hash_tables/name_table.c.s
+
+flatcc/src/compiler/hash_tables/schema_table.o: flatcc/src/compiler/hash_tables/schema_table.c.o
+
+.PHONY : flatcc/src/compiler/hash_tables/schema_table.o
+
+# target to build an object file
+flatcc/src/compiler/hash_tables/schema_table.c.o:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/src/compiler/hash_tables/schema_table.c.o
+.PHONY : flatcc/src/compiler/hash_tables/schema_table.c.o
+
+flatcc/src/compiler/hash_tables/schema_table.i: flatcc/src/compiler/hash_tables/schema_table.c.i
+
+.PHONY : flatcc/src/compiler/hash_tables/schema_table.i
+
+# target to preprocess a source file
+flatcc/src/compiler/hash_tables/schema_table.c.i:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/src/compiler/hash_tables/schema_table.c.i
+.PHONY : flatcc/src/compiler/hash_tables/schema_table.c.i
+
+flatcc/src/compiler/hash_tables/schema_table.s: flatcc/src/compiler/hash_tables/schema_table.c.s
+
+.PHONY : flatcc/src/compiler/hash_tables/schema_table.s
+
+# target to generate assembly for a file
+flatcc/src/compiler/hash_tables/schema_table.c.s:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/src/compiler/hash_tables/schema_table.c.s
+.PHONY : flatcc/src/compiler/hash_tables/schema_table.c.s
+
+flatcc/src/compiler/hash_tables/scope_table.o: flatcc/src/compiler/hash_tables/scope_table.c.o
+
+.PHONY : flatcc/src/compiler/hash_tables/scope_table.o
+
+# target to build an object file
+flatcc/src/compiler/hash_tables/scope_table.c.o:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/src/compiler/hash_tables/scope_table.c.o
+.PHONY : flatcc/src/compiler/hash_tables/scope_table.c.o
+
+flatcc/src/compiler/hash_tables/scope_table.i: flatcc/src/compiler/hash_tables/scope_table.c.i
+
+.PHONY : flatcc/src/compiler/hash_tables/scope_table.i
+
+# target to preprocess a source file
+flatcc/src/compiler/hash_tables/scope_table.c.i:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/src/compiler/hash_tables/scope_table.c.i
+.PHONY : flatcc/src/compiler/hash_tables/scope_table.c.i
+
+flatcc/src/compiler/hash_tables/scope_table.s: flatcc/src/compiler/hash_tables/scope_table.c.s
+
+.PHONY : flatcc/src/compiler/hash_tables/scope_table.s
+
+# target to generate assembly for a file
+flatcc/src/compiler/hash_tables/scope_table.c.s:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/src/compiler/hash_tables/scope_table.c.s
+.PHONY : flatcc/src/compiler/hash_tables/scope_table.c.s
+
+flatcc/src/compiler/hash_tables/symbol_table.o: flatcc/src/compiler/hash_tables/symbol_table.c.o
+
+.PHONY : flatcc/src/compiler/hash_tables/symbol_table.o
+
+# target to build an object file
+flatcc/src/compiler/hash_tables/symbol_table.c.o:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/src/compiler/hash_tables/symbol_table.c.o
+.PHONY : flatcc/src/compiler/hash_tables/symbol_table.c.o
+
+flatcc/src/compiler/hash_tables/symbol_table.i: flatcc/src/compiler/hash_tables/symbol_table.c.i
+
+.PHONY : flatcc/src/compiler/hash_tables/symbol_table.i
+
+# target to preprocess a source file
+flatcc/src/compiler/hash_tables/symbol_table.c.i:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/src/compiler/hash_tables/symbol_table.c.i
+.PHONY : flatcc/src/compiler/hash_tables/symbol_table.c.i
+
+flatcc/src/compiler/hash_tables/symbol_table.s: flatcc/src/compiler/hash_tables/symbol_table.c.s
+
+.PHONY : flatcc/src/compiler/hash_tables/symbol_table.s
+
+# target to generate assembly for a file
+flatcc/src/compiler/hash_tables/symbol_table.c.s:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/src/compiler/hash_tables/symbol_table.c.s
+.PHONY : flatcc/src/compiler/hash_tables/symbol_table.c.s
+
+flatcc/src/compiler/hash_tables/value_set.o: flatcc/src/compiler/hash_tables/value_set.c.o
+
+.PHONY : flatcc/src/compiler/hash_tables/value_set.o
+
+# target to build an object file
+flatcc/src/compiler/hash_tables/value_set.c.o:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/src/compiler/hash_tables/value_set.c.o
+.PHONY : flatcc/src/compiler/hash_tables/value_set.c.o
+
+flatcc/src/compiler/hash_tables/value_set.i: flatcc/src/compiler/hash_tables/value_set.c.i
+
+.PHONY : flatcc/src/compiler/hash_tables/value_set.i
+
+# target to preprocess a source file
+flatcc/src/compiler/hash_tables/value_set.c.i:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/src/compiler/hash_tables/value_set.c.i
+.PHONY : flatcc/src/compiler/hash_tables/value_set.c.i
+
+flatcc/src/compiler/hash_tables/value_set.s: flatcc/src/compiler/hash_tables/value_set.c.s
+
+.PHONY : flatcc/src/compiler/hash_tables/value_set.s
+
+# target to generate assembly for a file
+flatcc/src/compiler/hash_tables/value_set.c.s:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/src/compiler/hash_tables/value_set.c.s
+.PHONY : flatcc/src/compiler/hash_tables/value_set.c.s
+
+flatcc/src/compiler/parser.o: flatcc/src/compiler/parser.c.o
+
+.PHONY : flatcc/src/compiler/parser.o
+
+# target to build an object file
+flatcc/src/compiler/parser.c.o:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/src/compiler/parser.c.o
+.PHONY : flatcc/src/compiler/parser.c.o
+
+flatcc/src/compiler/parser.i: flatcc/src/compiler/parser.c.i
+
+.PHONY : flatcc/src/compiler/parser.i
+
+# target to preprocess a source file
+flatcc/src/compiler/parser.c.i:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/src/compiler/parser.c.i
+.PHONY : flatcc/src/compiler/parser.c.i
+
+flatcc/src/compiler/parser.s: flatcc/src/compiler/parser.c.s
+
+.PHONY : flatcc/src/compiler/parser.s
+
+# target to generate assembly for a file
+flatcc/src/compiler/parser.c.s:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/src/compiler/parser.c.s
+.PHONY : flatcc/src/compiler/parser.c.s
+
+flatcc/src/compiler/semantics.o: flatcc/src/compiler/semantics.c.o
+
+.PHONY : flatcc/src/compiler/semantics.o
+
+# target to build an object file
+flatcc/src/compiler/semantics.c.o:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/src/compiler/semantics.c.o
+.PHONY : flatcc/src/compiler/semantics.c.o
+
+flatcc/src/compiler/semantics.i: flatcc/src/compiler/semantics.c.i
+
+.PHONY : flatcc/src/compiler/semantics.i
+
+# target to preprocess a source file
+flatcc/src/compiler/semantics.c.i:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/src/compiler/semantics.c.i
+.PHONY : flatcc/src/compiler/semantics.c.i
+
+flatcc/src/compiler/semantics.s: flatcc/src/compiler/semantics.c.s
+
+.PHONY : flatcc/src/compiler/semantics.s
+
+# target to generate assembly for a file
+flatcc/src/compiler/semantics.c.s:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/src/compiler/semantics.c.s
+.PHONY : flatcc/src/compiler/semantics.c.s
+
+flatcc/src/runtime/builder.o: flatcc/src/runtime/builder.c.o
+
+.PHONY : flatcc/src/runtime/builder.o
+
+# target to build an object file
+flatcc/src/runtime/builder.c.o:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/src/runtime/builder.c.o
+.PHONY : flatcc/src/runtime/builder.c.o
+
+flatcc/src/runtime/builder.i: flatcc/src/runtime/builder.c.i
+
+.PHONY : flatcc/src/runtime/builder.i
+
+# target to preprocess a source file
+flatcc/src/runtime/builder.c.i:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/src/runtime/builder.c.i
+.PHONY : flatcc/src/runtime/builder.c.i
+
+flatcc/src/runtime/builder.s: flatcc/src/runtime/builder.c.s
+
+.PHONY : flatcc/src/runtime/builder.s
+
+# target to generate assembly for a file
+flatcc/src/runtime/builder.c.s:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/src/runtime/builder.c.s
+.PHONY : flatcc/src/runtime/builder.c.s
+
+flatcc/src/runtime/emitter.o: flatcc/src/runtime/emitter.c.o
+
+.PHONY : flatcc/src/runtime/emitter.o
+
+# target to build an object file
+flatcc/src/runtime/emitter.c.o:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/src/runtime/emitter.c.o
+.PHONY : flatcc/src/runtime/emitter.c.o
+
+flatcc/src/runtime/emitter.i: flatcc/src/runtime/emitter.c.i
+
+.PHONY : flatcc/src/runtime/emitter.i
+
+# target to preprocess a source file
+flatcc/src/runtime/emitter.c.i:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/src/runtime/emitter.c.i
+.PHONY : flatcc/src/runtime/emitter.c.i
+
+flatcc/src/runtime/emitter.s: flatcc/src/runtime/emitter.c.s
+
+.PHONY : flatcc/src/runtime/emitter.s
+
+# target to generate assembly for a file
+flatcc/src/runtime/emitter.c.s:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/src/runtime/emitter.c.s
+.PHONY : flatcc/src/runtime/emitter.c.s
+
+flatcc/src/runtime/json_parser.o: flatcc/src/runtime/json_parser.c.o
+
+.PHONY : flatcc/src/runtime/json_parser.o
+
+# target to build an object file
+flatcc/src/runtime/json_parser.c.o:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/src/runtime/json_parser.c.o
+.PHONY : flatcc/src/runtime/json_parser.c.o
+
+flatcc/src/runtime/json_parser.i: flatcc/src/runtime/json_parser.c.i
+
+.PHONY : flatcc/src/runtime/json_parser.i
+
+# target to preprocess a source file
+flatcc/src/runtime/json_parser.c.i:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/src/runtime/json_parser.c.i
+.PHONY : flatcc/src/runtime/json_parser.c.i
+
+flatcc/src/runtime/json_parser.s: flatcc/src/runtime/json_parser.c.s
+
+.PHONY : flatcc/src/runtime/json_parser.s
+
+# target to generate assembly for a file
+flatcc/src/runtime/json_parser.c.s:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/src/runtime/json_parser.c.s
+.PHONY : flatcc/src/runtime/json_parser.c.s
+
+flatcc/src/runtime/json_printer.o: flatcc/src/runtime/json_printer.c.o
+
+.PHONY : flatcc/src/runtime/json_printer.o
+
+# target to build an object file
+flatcc/src/runtime/json_printer.c.o:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/src/runtime/json_printer.c.o
+.PHONY : flatcc/src/runtime/json_printer.c.o
+
+flatcc/src/runtime/json_printer.i: flatcc/src/runtime/json_printer.c.i
+
+.PHONY : flatcc/src/runtime/json_printer.i
+
+# target to preprocess a source file
+flatcc/src/runtime/json_printer.c.i:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/src/runtime/json_printer.c.i
+.PHONY : flatcc/src/runtime/json_printer.c.i
+
+flatcc/src/runtime/json_printer.s: flatcc/src/runtime/json_printer.c.s
+
+.PHONY : flatcc/src/runtime/json_printer.s
+
+# target to generate assembly for a file
+flatcc/src/runtime/json_printer.c.s:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/src/runtime/json_printer.c.s
+.PHONY : flatcc/src/runtime/json_printer.c.s
+
+flatcc/src/runtime/refmap.o: flatcc/src/runtime/refmap.c.o
+
+.PHONY : flatcc/src/runtime/refmap.o
+
+# target to build an object file
+flatcc/src/runtime/refmap.c.o:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/src/runtime/refmap.c.o
+.PHONY : flatcc/src/runtime/refmap.c.o
+
+flatcc/src/runtime/refmap.i: flatcc/src/runtime/refmap.c.i
+
+.PHONY : flatcc/src/runtime/refmap.i
+
+# target to preprocess a source file
+flatcc/src/runtime/refmap.c.i:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/src/runtime/refmap.c.i
+.PHONY : flatcc/src/runtime/refmap.c.i
+
+flatcc/src/runtime/refmap.s: flatcc/src/runtime/refmap.c.s
+
+.PHONY : flatcc/src/runtime/refmap.s
+
+# target to generate assembly for a file
+flatcc/src/runtime/refmap.c.s:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/src/runtime/refmap.c.s
+.PHONY : flatcc/src/runtime/refmap.c.s
+
+flatcc/src/runtime/verifier.o: flatcc/src/runtime/verifier.c.o
+
+.PHONY : flatcc/src/runtime/verifier.o
+
+# target to build an object file
+flatcc/src/runtime/verifier.c.o:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/src/runtime/verifier.c.o
+.PHONY : flatcc/src/runtime/verifier.c.o
+
+flatcc/src/runtime/verifier.i: flatcc/src/runtime/verifier.c.i
+
+.PHONY : flatcc/src/runtime/verifier.i
+
+# target to preprocess a source file
+flatcc/src/runtime/verifier.c.i:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/src/runtime/verifier.c.i
+.PHONY : flatcc/src/runtime/verifier.c.i
+
+flatcc/src/runtime/verifier.s: flatcc/src/runtime/verifier.c.s
+
+.PHONY : flatcc/src/runtime/verifier.s
+
+# target to generate assembly for a file
+flatcc/src/runtime/verifier.c.s:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/src/runtime/verifier.c.s
+.PHONY : flatcc/src/runtime/verifier.c.s
+
+flatcc/test/benchmark/benchflatc/benchflatc.o: flatcc/test/benchmark/benchflatc/benchflatc.cpp.o
+
+.PHONY : flatcc/test/benchmark/benchflatc/benchflatc.o
+
+# target to build an object file
+flatcc/test/benchmark/benchflatc/benchflatc.cpp.o:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/test/benchmark/benchflatc/benchflatc.cpp.o
+.PHONY : flatcc/test/benchmark/benchflatc/benchflatc.cpp.o
+
+flatcc/test/benchmark/benchflatc/benchflatc.i: flatcc/test/benchmark/benchflatc/benchflatc.cpp.i
+
+.PHONY : flatcc/test/benchmark/benchflatc/benchflatc.i
+
+# target to preprocess a source file
+flatcc/test/benchmark/benchflatc/benchflatc.cpp.i:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/test/benchmark/benchflatc/benchflatc.cpp.i
+.PHONY : flatcc/test/benchmark/benchflatc/benchflatc.cpp.i
+
+flatcc/test/benchmark/benchflatc/benchflatc.s: flatcc/test/benchmark/benchflatc/benchflatc.cpp.s
+
+.PHONY : flatcc/test/benchmark/benchflatc/benchflatc.s
+
+# target to generate assembly for a file
+flatcc/test/benchmark/benchflatc/benchflatc.cpp.s:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/test/benchmark/benchflatc/benchflatc.cpp.s
+.PHONY : flatcc/test/benchmark/benchflatc/benchflatc.cpp.s
+
+flatcc/test/benchmark/benchflatcc/benchflatcc.o: flatcc/test/benchmark/benchflatcc/benchflatcc.c.o
+
+.PHONY : flatcc/test/benchmark/benchflatcc/benchflatcc.o
+
+# target to build an object file
+flatcc/test/benchmark/benchflatcc/benchflatcc.c.o:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/test/benchmark/benchflatcc/benchflatcc.c.o
+.PHONY : flatcc/test/benchmark/benchflatcc/benchflatcc.c.o
+
+flatcc/test/benchmark/benchflatcc/benchflatcc.i: flatcc/test/benchmark/benchflatcc/benchflatcc.c.i
+
+.PHONY : flatcc/test/benchmark/benchflatcc/benchflatcc.i
+
+# target to preprocess a source file
+flatcc/test/benchmark/benchflatcc/benchflatcc.c.i:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/test/benchmark/benchflatcc/benchflatcc.c.i
+.PHONY : flatcc/test/benchmark/benchflatcc/benchflatcc.c.i
+
+flatcc/test/benchmark/benchflatcc/benchflatcc.s: flatcc/test/benchmark/benchflatcc/benchflatcc.c.s
+
+.PHONY : flatcc/test/benchmark/benchflatcc/benchflatcc.s
+
+# target to generate assembly for a file
+flatcc/test/benchmark/benchflatcc/benchflatcc.c.s:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/test/benchmark/benchflatcc/benchflatcc.c.s
+.PHONY : flatcc/test/benchmark/benchflatcc/benchflatcc.c.s
+
+flatcc/test/benchmark/benchflatccjson/benchflatccjson.o: flatcc/test/benchmark/benchflatccjson/benchflatccjson.c.o
+
+.PHONY : flatcc/test/benchmark/benchflatccjson/benchflatccjson.o
+
+# target to build an object file
+flatcc/test/benchmark/benchflatccjson/benchflatccjson.c.o:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/test/benchmark/benchflatccjson/benchflatccjson.c.o
+.PHONY : flatcc/test/benchmark/benchflatccjson/benchflatccjson.c.o
+
+flatcc/test/benchmark/benchflatccjson/benchflatccjson.i: flatcc/test/benchmark/benchflatccjson/benchflatccjson.c.i
+
+.PHONY : flatcc/test/benchmark/benchflatccjson/benchflatccjson.i
+
+# target to preprocess a source file
+flatcc/test/benchmark/benchflatccjson/benchflatccjson.c.i:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/test/benchmark/benchflatccjson/benchflatccjson.c.i
+.PHONY : flatcc/test/benchmark/benchflatccjson/benchflatccjson.c.i
+
+flatcc/test/benchmark/benchflatccjson/benchflatccjson.s: flatcc/test/benchmark/benchflatccjson/benchflatccjson.c.s
+
+.PHONY : flatcc/test/benchmark/benchflatccjson/benchflatccjson.s
+
+# target to generate assembly for a file
+flatcc/test/benchmark/benchflatccjson/benchflatccjson.c.s:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/test/benchmark/benchflatccjson/benchflatccjson.c.s
+.PHONY : flatcc/test/benchmark/benchflatccjson/benchflatccjson.c.s
+
+flatcc/test/benchmark/benchraw/benchraw.o: flatcc/test/benchmark/benchraw/benchraw.c.o
+
+.PHONY : flatcc/test/benchmark/benchraw/benchraw.o
+
+# target to build an object file
+flatcc/test/benchmark/benchraw/benchraw.c.o:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/test/benchmark/benchraw/benchraw.c.o
+.PHONY : flatcc/test/benchmark/benchraw/benchraw.c.o
+
+flatcc/test/benchmark/benchraw/benchraw.i: flatcc/test/benchmark/benchraw/benchraw.c.i
+
+.PHONY : flatcc/test/benchmark/benchraw/benchraw.i
+
+# target to preprocess a source file
+flatcc/test/benchmark/benchraw/benchraw.c.i:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/test/benchmark/benchraw/benchraw.c.i
+.PHONY : flatcc/test/benchmark/benchraw/benchraw.c.i
+
+flatcc/test/benchmark/benchraw/benchraw.s: flatcc/test/benchmark/benchraw/benchraw.c.s
+
+.PHONY : flatcc/test/benchmark/benchraw/benchraw.s
+
+# target to generate assembly for a file
+flatcc/test/benchmark/benchraw/benchraw.c.s:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/test/benchmark/benchraw/benchraw.c.s
+.PHONY : flatcc/test/benchmark/benchraw/benchraw.c.s
+
+flatcc/test/cgen_test/cgen_test.o: flatcc/test/cgen_test/cgen_test.c.o
+
+.PHONY : flatcc/test/cgen_test/cgen_test.o
+
+# target to build an object file
+flatcc/test/cgen_test/cgen_test.c.o:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/test/cgen_test/cgen_test.c.o
+.PHONY : flatcc/test/cgen_test/cgen_test.c.o
+
+flatcc/test/cgen_test/cgen_test.i: flatcc/test/cgen_test/cgen_test.c.i
+
+.PHONY : flatcc/test/cgen_test/cgen_test.i
+
+# target to preprocess a source file
+flatcc/test/cgen_test/cgen_test.c.i:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/test/cgen_test/cgen_test.c.i
+.PHONY : flatcc/test/cgen_test/cgen_test.c.i
+
+flatcc/test/cgen_test/cgen_test.s: flatcc/test/cgen_test/cgen_test.c.s
+
+.PHONY : flatcc/test/cgen_test/cgen_test.s
+
+# target to generate assembly for a file
+flatcc/test/cgen_test/cgen_test.c.s:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/test/cgen_test/cgen_test.c.s
+.PHONY : flatcc/test/cgen_test/cgen_test.c.s
+
+flatcc/test/emit_test/emit_test.o: flatcc/test/emit_test/emit_test.c.o
+
+.PHONY : flatcc/test/emit_test/emit_test.o
+
+# target to build an object file
+flatcc/test/emit_test/emit_test.c.o:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/test/emit_test/emit_test.c.o
+.PHONY : flatcc/test/emit_test/emit_test.c.o
+
+flatcc/test/emit_test/emit_test.i: flatcc/test/emit_test/emit_test.c.i
+
+.PHONY : flatcc/test/emit_test/emit_test.i
+
+# target to preprocess a source file
+flatcc/test/emit_test/emit_test.c.i:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/test/emit_test/emit_test.c.i
+.PHONY : flatcc/test/emit_test/emit_test.c.i
+
+flatcc/test/emit_test/emit_test.s: flatcc/test/emit_test/emit_test.c.s
+
+.PHONY : flatcc/test/emit_test/emit_test.s
+
+# target to generate assembly for a file
+flatcc/test/emit_test/emit_test.c.s:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/test/emit_test/emit_test.c.s
+.PHONY : flatcc/test/emit_test/emit_test.c.s
+
+flatcc/test/flatc_compat/flatc_compat.o: flatcc/test/flatc_compat/flatc_compat.c.o
+
+.PHONY : flatcc/test/flatc_compat/flatc_compat.o
+
+# target to build an object file
+flatcc/test/flatc_compat/flatc_compat.c.o:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/test/flatc_compat/flatc_compat.c.o
+.PHONY : flatcc/test/flatc_compat/flatc_compat.c.o
+
+flatcc/test/flatc_compat/flatc_compat.i: flatcc/test/flatc_compat/flatc_compat.c.i
+
+.PHONY : flatcc/test/flatc_compat/flatc_compat.i
+
+# target to preprocess a source file
+flatcc/test/flatc_compat/flatc_compat.c.i:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/test/flatc_compat/flatc_compat.c.i
+.PHONY : flatcc/test/flatc_compat/flatc_compat.c.i
+
+flatcc/test/flatc_compat/flatc_compat.s: flatcc/test/flatc_compat/flatc_compat.c.s
+
+.PHONY : flatcc/test/flatc_compat/flatc_compat.s
+
+# target to generate assembly for a file
+flatcc/test/flatc_compat/flatc_compat.c.s:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/test/flatc_compat/flatc_compat.c.s
+.PHONY : flatcc/test/flatc_compat/flatc_compat.c.s
+
+flatcc/test/json_test/flatcc_golden.o: flatcc/test/json_test/flatcc_golden.c.o
+
+.PHONY : flatcc/test/json_test/flatcc_golden.o
+
+# target to build an object file
+flatcc/test/json_test/flatcc_golden.c.o:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/test/json_test/flatcc_golden.c.o
+.PHONY : flatcc/test/json_test/flatcc_golden.c.o
+
+flatcc/test/json_test/flatcc_golden.i: flatcc/test/json_test/flatcc_golden.c.i
+
+.PHONY : flatcc/test/json_test/flatcc_golden.i
+
+# target to preprocess a source file
+flatcc/test/json_test/flatcc_golden.c.i:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/test/json_test/flatcc_golden.c.i
+.PHONY : flatcc/test/json_test/flatcc_golden.c.i
+
+flatcc/test/json_test/flatcc_golden.s: flatcc/test/json_test/flatcc_golden.c.s
+
+.PHONY : flatcc/test/json_test/flatcc_golden.s
+
+# target to generate assembly for a file
+flatcc/test/json_test/flatcc_golden.c.s:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/test/json_test/flatcc_golden.c.s
+.PHONY : flatcc/test/json_test/flatcc_golden.c.s
+
+flatcc/test/json_test/test_basic_parse.o: flatcc/test/json_test/test_basic_parse.c.o
+
+.PHONY : flatcc/test/json_test/test_basic_parse.o
+
+# target to build an object file
+flatcc/test/json_test/test_basic_parse.c.o:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/test/json_test/test_basic_parse.c.o
+.PHONY : flatcc/test/json_test/test_basic_parse.c.o
+
+flatcc/test/json_test/test_basic_parse.i: flatcc/test/json_test/test_basic_parse.c.i
+
+.PHONY : flatcc/test/json_test/test_basic_parse.i
+
+# target to preprocess a source file
+flatcc/test/json_test/test_basic_parse.c.i:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/test/json_test/test_basic_parse.c.i
+.PHONY : flatcc/test/json_test/test_basic_parse.c.i
+
+flatcc/test/json_test/test_basic_parse.s: flatcc/test/json_test/test_basic_parse.c.s
+
+.PHONY : flatcc/test/json_test/test_basic_parse.s
+
+# target to generate assembly for a file
+flatcc/test/json_test/test_basic_parse.c.s:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/test/json_test/test_basic_parse.c.s
+.PHONY : flatcc/test/json_test/test_basic_parse.c.s
+
+flatcc/test/json_test/test_json.o: flatcc/test/json_test/test_json.c.o
+
+.PHONY : flatcc/test/json_test/test_json.o
+
+# target to build an object file
+flatcc/test/json_test/test_json.c.o:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/test/json_test/test_json.c.o
+.PHONY : flatcc/test/json_test/test_json.c.o
+
+flatcc/test/json_test/test_json.i: flatcc/test/json_test/test_json.c.i
+
+.PHONY : flatcc/test/json_test/test_json.i
+
+# target to preprocess a source file
+flatcc/test/json_test/test_json.c.i:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/test/json_test/test_json.c.i
+.PHONY : flatcc/test/json_test/test_json.c.i
+
+flatcc/test/json_test/test_json.s: flatcc/test/json_test/test_json.c.s
+
+.PHONY : flatcc/test/json_test/test_json.s
+
+# target to generate assembly for a file
+flatcc/test/json_test/test_json.c.s:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/test/json_test/test_json.c.s
+.PHONY : flatcc/test/json_test/test_json.c.s
+
+flatcc/test/json_test/test_json_parser.o: flatcc/test/json_test/test_json_parser.c.o
+
+.PHONY : flatcc/test/json_test/test_json_parser.o
+
+# target to build an object file
+flatcc/test/json_test/test_json_parser.c.o:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/test/json_test/test_json_parser.c.o
+.PHONY : flatcc/test/json_test/test_json_parser.c.o
+
+flatcc/test/json_test/test_json_parser.i: flatcc/test/json_test/test_json_parser.c.i
+
+.PHONY : flatcc/test/json_test/test_json_parser.i
+
+# target to preprocess a source file
+flatcc/test/json_test/test_json_parser.c.i:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/test/json_test/test_json_parser.c.i
+.PHONY : flatcc/test/json_test/test_json_parser.c.i
+
+flatcc/test/json_test/test_json_parser.s: flatcc/test/json_test/test_json_parser.c.s
+
+.PHONY : flatcc/test/json_test/test_json_parser.s
+
+# target to generate assembly for a file
+flatcc/test/json_test/test_json_parser.c.s:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/test/json_test/test_json_parser.c.s
+.PHONY : flatcc/test/json_test/test_json_parser.c.s
+
+flatcc/test/json_test/test_json_printer.o: flatcc/test/json_test/test_json_printer.c.o
+
+.PHONY : flatcc/test/json_test/test_json_printer.o
+
+# target to build an object file
+flatcc/test/json_test/test_json_printer.c.o:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/test/json_test/test_json_printer.c.o
+.PHONY : flatcc/test/json_test/test_json_printer.c.o
+
+flatcc/test/json_test/test_json_printer.i: flatcc/test/json_test/test_json_printer.c.i
+
+.PHONY : flatcc/test/json_test/test_json_printer.i
+
+# target to preprocess a source file
+flatcc/test/json_test/test_json_printer.c.i:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/test/json_test/test_json_printer.c.i
+.PHONY : flatcc/test/json_test/test_json_printer.c.i
+
+flatcc/test/json_test/test_json_printer.s: flatcc/test/json_test/test_json_printer.c.s
+
+.PHONY : flatcc/test/json_test/test_json_printer.s
+
+# target to generate assembly for a file
+flatcc/test/json_test/test_json_printer.c.s:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/test/json_test/test_json_printer.c.s
+.PHONY : flatcc/test/json_test/test_json_printer.c.s
+
+flatcc/test/load_test/load_test.o: flatcc/test/load_test/load_test.c.o
+
+.PHONY : flatcc/test/load_test/load_test.o
+
+# target to build an object file
+flatcc/test/load_test/load_test.c.o:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/test/load_test/load_test.c.o
+.PHONY : flatcc/test/load_test/load_test.c.o
+
+flatcc/test/load_test/load_test.i: flatcc/test/load_test/load_test.c.i
+
+.PHONY : flatcc/test/load_test/load_test.i
+
+# target to preprocess a source file
+flatcc/test/load_test/load_test.c.i:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/test/load_test/load_test.c.i
+.PHONY : flatcc/test/load_test/load_test.c.i
+
+flatcc/test/load_test/load_test.s: flatcc/test/load_test/load_test.c.s
+
+.PHONY : flatcc/test/load_test/load_test.s
+
+# target to generate assembly for a file
+flatcc/test/load_test/load_test.c.s:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/test/load_test/load_test.c.s
+.PHONY : flatcc/test/load_test/load_test.c.s
+
+flatcc/test/monster_test/monster_test.o: flatcc/test/monster_test/monster_test.c.o
+
+.PHONY : flatcc/test/monster_test/monster_test.o
+
+# target to build an object file
+flatcc/test/monster_test/monster_test.c.o:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/test/monster_test/monster_test.c.o
+.PHONY : flatcc/test/monster_test/monster_test.c.o
+
+flatcc/test/monster_test/monster_test.i: flatcc/test/monster_test/monster_test.c.i
+
+.PHONY : flatcc/test/monster_test/monster_test.i
+
+# target to preprocess a source file
+flatcc/test/monster_test/monster_test.c.i:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/test/monster_test/monster_test.c.i
+.PHONY : flatcc/test/monster_test/monster_test.c.i
+
+flatcc/test/monster_test/monster_test.s: flatcc/test/monster_test/monster_test.c.s
+
+.PHONY : flatcc/test/monster_test/monster_test.s
+
+# target to generate assembly for a file
+flatcc/test/monster_test/monster_test.c.s:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/test/monster_test/monster_test.c.s
+.PHONY : flatcc/test/monster_test/monster_test.c.s
+
+flatcc/test/monster_test_concat/monster_test_concat.o: flatcc/test/monster_test_concat/monster_test_concat.c.o
+
+.PHONY : flatcc/test/monster_test_concat/monster_test_concat.o
+
+# target to build an object file
+flatcc/test/monster_test_concat/monster_test_concat.c.o:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/test/monster_test_concat/monster_test_concat.c.o
+.PHONY : flatcc/test/monster_test_concat/monster_test_concat.c.o
+
+flatcc/test/monster_test_concat/monster_test_concat.i: flatcc/test/monster_test_concat/monster_test_concat.c.i
+
+.PHONY : flatcc/test/monster_test_concat/monster_test_concat.i
+
+# target to preprocess a source file
+flatcc/test/monster_test_concat/monster_test_concat.c.i:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/test/monster_test_concat/monster_test_concat.c.i
+.PHONY : flatcc/test/monster_test_concat/monster_test_concat.c.i
+
+flatcc/test/monster_test_concat/monster_test_concat.s: flatcc/test/monster_test_concat/monster_test_concat.c.s
+
+.PHONY : flatcc/test/monster_test_concat/monster_test_concat.s
+
+# target to generate assembly for a file
+flatcc/test/monster_test_concat/monster_test_concat.c.s:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/test/monster_test_concat/monster_test_concat.c.s
+.PHONY : flatcc/test/monster_test_concat/monster_test_concat.c.s
+
+flatcc/test/monster_test_cpp/monster_test.o: flatcc/test/monster_test_cpp/monster_test.cpp.o
+
+.PHONY : flatcc/test/monster_test_cpp/monster_test.o
+
+# target to build an object file
+flatcc/test/monster_test_cpp/monster_test.cpp.o:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/test/monster_test_cpp/monster_test.cpp.o
+.PHONY : flatcc/test/monster_test_cpp/monster_test.cpp.o
+
+flatcc/test/monster_test_cpp/monster_test.i: flatcc/test/monster_test_cpp/monster_test.cpp.i
+
+.PHONY : flatcc/test/monster_test_cpp/monster_test.i
+
+# target to preprocess a source file
+flatcc/test/monster_test_cpp/monster_test.cpp.i:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/test/monster_test_cpp/monster_test.cpp.i
+.PHONY : flatcc/test/monster_test_cpp/monster_test.cpp.i
+
+flatcc/test/monster_test_cpp/monster_test.s: flatcc/test/monster_test_cpp/monster_test.cpp.s
+
+.PHONY : flatcc/test/monster_test_cpp/monster_test.s
+
+# target to generate assembly for a file
+flatcc/test/monster_test_cpp/monster_test.cpp.s:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/test/monster_test_cpp/monster_test.cpp.s
+.PHONY : flatcc/test/monster_test_cpp/monster_test.cpp.s
+
+flatcc/test/monster_test_prefix/monster_test_prefix.o: flatcc/test/monster_test_prefix/monster_test_prefix.c.o
+
+.PHONY : flatcc/test/monster_test_prefix/monster_test_prefix.o
+
+# target to build an object file
+flatcc/test/monster_test_prefix/monster_test_prefix.c.o:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/test/monster_test_prefix/monster_test_prefix.c.o
+.PHONY : flatcc/test/monster_test_prefix/monster_test_prefix.c.o
+
+flatcc/test/monster_test_prefix/monster_test_prefix.i: flatcc/test/monster_test_prefix/monster_test_prefix.c.i
+
+.PHONY : flatcc/test/monster_test_prefix/monster_test_prefix.i
+
+# target to preprocess a source file
+flatcc/test/monster_test_prefix/monster_test_prefix.c.i:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/test/monster_test_prefix/monster_test_prefix.c.i
+.PHONY : flatcc/test/monster_test_prefix/monster_test_prefix.c.i
+
+flatcc/test/monster_test_prefix/monster_test_prefix.s: flatcc/test/monster_test_prefix/monster_test_prefix.c.s
+
+.PHONY : flatcc/test/monster_test_prefix/monster_test_prefix.s
+
+# target to generate assembly for a file
+flatcc/test/monster_test_prefix/monster_test_prefix.c.s:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/test/monster_test_prefix/monster_test_prefix.c.s
+.PHONY : flatcc/test/monster_test_prefix/monster_test_prefix.c.s
+
+flatcc/test/monster_test_solo/monster_test_solo.o: flatcc/test/monster_test_solo/monster_test_solo.c.o
+
+.PHONY : flatcc/test/monster_test_solo/monster_test_solo.o
+
+# target to build an object file
+flatcc/test/monster_test_solo/monster_test_solo.c.o:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/test/monster_test_solo/monster_test_solo.c.o
+.PHONY : flatcc/test/monster_test_solo/monster_test_solo.c.o
+
+flatcc/test/monster_test_solo/monster_test_solo.i: flatcc/test/monster_test_solo/monster_test_solo.c.i
+
+.PHONY : flatcc/test/monster_test_solo/monster_test_solo.i
+
+# target to preprocess a source file
+flatcc/test/monster_test_solo/monster_test_solo.c.i:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/test/monster_test_solo/monster_test_solo.c.i
+.PHONY : flatcc/test/monster_test_solo/monster_test_solo.c.i
+
+flatcc/test/monster_test_solo/monster_test_solo.s: flatcc/test/monster_test_solo/monster_test_solo.c.s
+
+.PHONY : flatcc/test/monster_test_solo/monster_test_solo.s
+
+# target to generate assembly for a file
+flatcc/test/monster_test_solo/monster_test_solo.c.s:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/test/monster_test_solo/monster_test_solo.c.s
+.PHONY : flatcc/test/monster_test_solo/monster_test_solo.c.s
+
+flatcc/test/reflection_test/reflection_test.o: flatcc/test/reflection_test/reflection_test.c.o
+
+.PHONY : flatcc/test/reflection_test/reflection_test.o
+
+# target to build an object file
+flatcc/test/reflection_test/reflection_test.c.o:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/test/reflection_test/reflection_test.c.o
+.PHONY : flatcc/test/reflection_test/reflection_test.c.o
+
+flatcc/test/reflection_test/reflection_test.i: flatcc/test/reflection_test/reflection_test.c.i
+
+.PHONY : flatcc/test/reflection_test/reflection_test.i
+
+# target to preprocess a source file
+flatcc/test/reflection_test/reflection_test.c.i:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/test/reflection_test/reflection_test.c.i
+.PHONY : flatcc/test/reflection_test/reflection_test.c.i
+
+flatcc/test/reflection_test/reflection_test.s: flatcc/test/reflection_test/reflection_test.c.s
+
+.PHONY : flatcc/test/reflection_test/reflection_test.s
+
+# target to generate assembly for a file
+flatcc/test/reflection_test/reflection_test.c.s:
+	$(MAKE) -f CMakeFiles/hermes.dir/build.make CMakeFiles/hermes.dir/flatcc/test/reflection_test/reflection_test.c.s
+.PHONY : flatcc/test/reflection_test/reflection_test.c.s
+
 libhermes/src/conversions.o: libhermes/src/conversions.c.o
 
 .PHONY : libhermes/src/conversions.o
@@ -888,6 +2535,189 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... edit_cache"
 	@echo "... hermes"
+	@echo "... flatcc/external/grisu3/grisu3_test.o"
+	@echo "... flatcc/external/grisu3/grisu3_test.i"
+	@echo "... flatcc/external/grisu3/grisu3_test.s"
+	@echo "... flatcc/external/grisu3/grisu3_test_dblcnv.o"
+	@echo "... flatcc/external/grisu3/grisu3_test_dblcnv.i"
+	@echo "... flatcc/external/grisu3/grisu3_test_dblcnv.s"
+	@echo "... flatcc/external/hash/PMurHash.o"
+	@echo "... flatcc/external/hash/PMurHash.i"
+	@echo "... flatcc/external/hash/PMurHash.s"
+	@echo "... flatcc/external/hash/cmetrohash64.o"
+	@echo "... flatcc/external/hash/cmetrohash64.i"
+	@echo "... flatcc/external/hash/cmetrohash64.s"
+	@echo "... flatcc/external/hash/hash_test.o"
+	@echo "... flatcc/external/hash/hash_test.i"
+	@echo "... flatcc/external/hash/hash_test.s"
+	@echo "... flatcc/external/hash/ht32.o"
+	@echo "... flatcc/external/hash/ht32.i"
+	@echo "... flatcc/external/hash/ht32.s"
+	@echo "... flatcc/external/hash/ht32rh.o"
+	@echo "... flatcc/external/hash/ht32rh.i"
+	@echo "... flatcc/external/hash/ht32rh.s"
+	@echo "... flatcc/external/hash/ht64.o"
+	@echo "... flatcc/external/hash/ht64.i"
+	@echo "... flatcc/external/hash/ht64.s"
+	@echo "... flatcc/external/hash/ht64rh.o"
+	@echo "... flatcc/external/hash/ht64rh.i"
+	@echo "... flatcc/external/hash/ht64rh.s"
+	@echo "... flatcc/external/hash/load_test.o"
+	@echo "... flatcc/external/hash/load_test.i"
+	@echo "... flatcc/external/hash/load_test.s"
+	@echo "... flatcc/external/hash/ptr_set.o"
+	@echo "... flatcc/external/hash/ptr_set.i"
+	@echo "... flatcc/external/hash/ptr_set.s"
+	@echo "... flatcc/external/hash/str_set.o"
+	@echo "... flatcc/external/hash/str_set.i"
+	@echo "... flatcc/external/hash/str_set.s"
+	@echo "... flatcc/external/hash/token_map.o"
+	@echo "... flatcc/external/hash/token_map.i"
+	@echo "... flatcc/external/hash/token_map.s"
+	@echo "... flatcc/external/lex/luthor.o"
+	@echo "... flatcc/external/lex/luthor.i"
+	@echo "... flatcc/external/lex/luthor.s"
+	@echo "... flatcc/samples/bugreport/myissue.o"
+	@echo "... flatcc/samples/bugreport/myissue.i"
+	@echo "... flatcc/samples/bugreport/myissue.s"
+	@echo "... flatcc/samples/monster/monster.o"
+	@echo "... flatcc/samples/monster/monster.i"
+	@echo "... flatcc/samples/monster/monster.s"
+	@echo "... flatcc/samples/reflection/bfbs2json.o"
+	@echo "... flatcc/samples/reflection/bfbs2json.i"
+	@echo "... flatcc/samples/reflection/bfbs2json.s"
+	@echo "... flatcc/src/cli/flatcc_cli.o"
+	@echo "... flatcc/src/cli/flatcc_cli.i"
+	@echo "... flatcc/src/cli/flatcc_cli.s"
+	@echo "... flatcc/src/compiler/codegen_c.o"
+	@echo "... flatcc/src/compiler/codegen_c.i"
+	@echo "... flatcc/src/compiler/codegen_c.s"
+	@echo "... flatcc/src/compiler/codegen_c_builder.o"
+	@echo "... flatcc/src/compiler/codegen_c_builder.i"
+	@echo "... flatcc/src/compiler/codegen_c_builder.s"
+	@echo "... flatcc/src/compiler/codegen_c_json_parser.o"
+	@echo "... flatcc/src/compiler/codegen_c_json_parser.i"
+	@echo "... flatcc/src/compiler/codegen_c_json_parser.s"
+	@echo "... flatcc/src/compiler/codegen_c_json_printer.o"
+	@echo "... flatcc/src/compiler/codegen_c_json_printer.i"
+	@echo "... flatcc/src/compiler/codegen_c_json_printer.s"
+	@echo "... flatcc/src/compiler/codegen_c_reader.o"
+	@echo "... flatcc/src/compiler/codegen_c_reader.i"
+	@echo "... flatcc/src/compiler/codegen_c_reader.s"
+	@echo "... flatcc/src/compiler/codegen_c_sort.o"
+	@echo "... flatcc/src/compiler/codegen_c_sort.i"
+	@echo "... flatcc/src/compiler/codegen_c_sort.s"
+	@echo "... flatcc/src/compiler/codegen_c_verifier.o"
+	@echo "... flatcc/src/compiler/codegen_c_verifier.i"
+	@echo "... flatcc/src/compiler/codegen_c_verifier.s"
+	@echo "... flatcc/src/compiler/codegen_schema.o"
+	@echo "... flatcc/src/compiler/codegen_schema.i"
+	@echo "... flatcc/src/compiler/codegen_schema.s"
+	@echo "... flatcc/src/compiler/coerce.o"
+	@echo "... flatcc/src/compiler/coerce.i"
+	@echo "... flatcc/src/compiler/coerce.s"
+	@echo "... flatcc/src/compiler/fileio.o"
+	@echo "... flatcc/src/compiler/fileio.i"
+	@echo "... flatcc/src/compiler/fileio.s"
+	@echo "... flatcc/src/compiler/flatcc.o"
+	@echo "... flatcc/src/compiler/flatcc.i"
+	@echo "... flatcc/src/compiler/flatcc.s"
+	@echo "... flatcc/src/compiler/hash_tables/name_table.o"
+	@echo "... flatcc/src/compiler/hash_tables/name_table.i"
+	@echo "... flatcc/src/compiler/hash_tables/name_table.s"
+	@echo "... flatcc/src/compiler/hash_tables/schema_table.o"
+	@echo "... flatcc/src/compiler/hash_tables/schema_table.i"
+	@echo "... flatcc/src/compiler/hash_tables/schema_table.s"
+	@echo "... flatcc/src/compiler/hash_tables/scope_table.o"
+	@echo "... flatcc/src/compiler/hash_tables/scope_table.i"
+	@echo "... flatcc/src/compiler/hash_tables/scope_table.s"
+	@echo "... flatcc/src/compiler/hash_tables/symbol_table.o"
+	@echo "... flatcc/src/compiler/hash_tables/symbol_table.i"
+	@echo "... flatcc/src/compiler/hash_tables/symbol_table.s"
+	@echo "... flatcc/src/compiler/hash_tables/value_set.o"
+	@echo "... flatcc/src/compiler/hash_tables/value_set.i"
+	@echo "... flatcc/src/compiler/hash_tables/value_set.s"
+	@echo "... flatcc/src/compiler/parser.o"
+	@echo "... flatcc/src/compiler/parser.i"
+	@echo "... flatcc/src/compiler/parser.s"
+	@echo "... flatcc/src/compiler/semantics.o"
+	@echo "... flatcc/src/compiler/semantics.i"
+	@echo "... flatcc/src/compiler/semantics.s"
+	@echo "... flatcc/src/runtime/builder.o"
+	@echo "... flatcc/src/runtime/builder.i"
+	@echo "... flatcc/src/runtime/builder.s"
+	@echo "... flatcc/src/runtime/emitter.o"
+	@echo "... flatcc/src/runtime/emitter.i"
+	@echo "... flatcc/src/runtime/emitter.s"
+	@echo "... flatcc/src/runtime/json_parser.o"
+	@echo "... flatcc/src/runtime/json_parser.i"
+	@echo "... flatcc/src/runtime/json_parser.s"
+	@echo "... flatcc/src/runtime/json_printer.o"
+	@echo "... flatcc/src/runtime/json_printer.i"
+	@echo "... flatcc/src/runtime/json_printer.s"
+	@echo "... flatcc/src/runtime/refmap.o"
+	@echo "... flatcc/src/runtime/refmap.i"
+	@echo "... flatcc/src/runtime/refmap.s"
+	@echo "... flatcc/src/runtime/verifier.o"
+	@echo "... flatcc/src/runtime/verifier.i"
+	@echo "... flatcc/src/runtime/verifier.s"
+	@echo "... flatcc/test/benchmark/benchflatc/benchflatc.o"
+	@echo "... flatcc/test/benchmark/benchflatc/benchflatc.i"
+	@echo "... flatcc/test/benchmark/benchflatc/benchflatc.s"
+	@echo "... flatcc/test/benchmark/benchflatcc/benchflatcc.o"
+	@echo "... flatcc/test/benchmark/benchflatcc/benchflatcc.i"
+	@echo "... flatcc/test/benchmark/benchflatcc/benchflatcc.s"
+	@echo "... flatcc/test/benchmark/benchflatccjson/benchflatccjson.o"
+	@echo "... flatcc/test/benchmark/benchflatccjson/benchflatccjson.i"
+	@echo "... flatcc/test/benchmark/benchflatccjson/benchflatccjson.s"
+	@echo "... flatcc/test/benchmark/benchraw/benchraw.o"
+	@echo "... flatcc/test/benchmark/benchraw/benchraw.i"
+	@echo "... flatcc/test/benchmark/benchraw/benchraw.s"
+	@echo "... flatcc/test/cgen_test/cgen_test.o"
+	@echo "... flatcc/test/cgen_test/cgen_test.i"
+	@echo "... flatcc/test/cgen_test/cgen_test.s"
+	@echo "... flatcc/test/emit_test/emit_test.o"
+	@echo "... flatcc/test/emit_test/emit_test.i"
+	@echo "... flatcc/test/emit_test/emit_test.s"
+	@echo "... flatcc/test/flatc_compat/flatc_compat.o"
+	@echo "... flatcc/test/flatc_compat/flatc_compat.i"
+	@echo "... flatcc/test/flatc_compat/flatc_compat.s"
+	@echo "... flatcc/test/json_test/flatcc_golden.o"
+	@echo "... flatcc/test/json_test/flatcc_golden.i"
+	@echo "... flatcc/test/json_test/flatcc_golden.s"
+	@echo "... flatcc/test/json_test/test_basic_parse.o"
+	@echo "... flatcc/test/json_test/test_basic_parse.i"
+	@echo "... flatcc/test/json_test/test_basic_parse.s"
+	@echo "... flatcc/test/json_test/test_json.o"
+	@echo "... flatcc/test/json_test/test_json.i"
+	@echo "... flatcc/test/json_test/test_json.s"
+	@echo "... flatcc/test/json_test/test_json_parser.o"
+	@echo "... flatcc/test/json_test/test_json_parser.i"
+	@echo "... flatcc/test/json_test/test_json_parser.s"
+	@echo "... flatcc/test/json_test/test_json_printer.o"
+	@echo "... flatcc/test/json_test/test_json_printer.i"
+	@echo "... flatcc/test/json_test/test_json_printer.s"
+	@echo "... flatcc/test/load_test/load_test.o"
+	@echo "... flatcc/test/load_test/load_test.i"
+	@echo "... flatcc/test/load_test/load_test.s"
+	@echo "... flatcc/test/monster_test/monster_test.o"
+	@echo "... flatcc/test/monster_test/monster_test.i"
+	@echo "... flatcc/test/monster_test/monster_test.s"
+	@echo "... flatcc/test/monster_test_concat/monster_test_concat.o"
+	@echo "... flatcc/test/monster_test_concat/monster_test_concat.i"
+	@echo "... flatcc/test/monster_test_concat/monster_test_concat.s"
+	@echo "... flatcc/test/monster_test_cpp/monster_test.o"
+	@echo "... flatcc/test/monster_test_cpp/monster_test.i"
+	@echo "... flatcc/test/monster_test_cpp/monster_test.s"
+	@echo "... flatcc/test/monster_test_prefix/monster_test_prefix.o"
+	@echo "... flatcc/test/monster_test_prefix/monster_test_prefix.i"
+	@echo "... flatcc/test/monster_test_prefix/monster_test_prefix.s"
+	@echo "... flatcc/test/monster_test_solo/monster_test_solo.o"
+	@echo "... flatcc/test/monster_test_solo/monster_test_solo.i"
+	@echo "... flatcc/test/monster_test_solo/monster_test_solo.s"
+	@echo "... flatcc/test/reflection_test/reflection_test.o"
+	@echo "... flatcc/test/reflection_test/reflection_test.i"
+	@echo "... flatcc/test/reflection_test/reflection_test.s"
 	@echo "... libhermes/src/conversions.o"
 	@echo "... libhermes/src/conversions.i"
 	@echo "... libhermes/src/conversions.s"

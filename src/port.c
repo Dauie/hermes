@@ -9,11 +9,11 @@ t_port			*new_port()
 	return (port);
 }
 
-t_portrange		*new_portrange()
+t_prtrng		*new_portrange()
 {
-	t_portrange	*range;
+	t_prtrng	*range;
 
-	if (!(range = (t_portrange *)memalloc(sizeof(t_portrange))))
+	if (!(range = (t_prtrng *)memalloc(sizeof(t_prtrng))))
 		hermes_error(errno, TRUE, 2, "malloc()", strerror(errno));
 	return (range);
 }
@@ -48,8 +48,8 @@ void			*port_min(t_node *tree)
 
 int				portrng_cmp(void *prt_left, void *prt_right)
 {
-	t_portrange	*left;
-	t_portrange	*right;
+	t_prtrng	*left;
+	t_prtrng	*right;
 
 	left = prt_left;
 	right = prt_right;
@@ -71,7 +71,7 @@ int				portrng_cmp(void *prt_left, void *prt_right)
 int				port_prtrng_overlap_cmp(void *port, void *prtrng)
 {
 	t_port		*p;
-	t_portrange *pr;
+	t_prtrng *pr;
 
 	p = port;
 	pr = prtrng;
@@ -82,8 +82,8 @@ int				port_prtrng_overlap_cmp(void *port, void *prtrng)
 
 int				portrng_overlap_cmp(void *prt_left, void *prt_right)
 {
-	t_portrange	*left;
-	t_portrange	*right;
+	t_prtrng	*left;
+	t_prtrng	*right;
 
 	left = prt_left;
 	right = prt_right;
@@ -98,13 +98,13 @@ int				portrng_overlap_cmp(void *prt_left, void *prt_right)
 
 void			*portrng_min(t_node *tree)
 {
-	t_portrange	*save;
+	t_prtrng	*save;
 
 	if (!tree)
 		return (NULL);
 	save = new_portrange();
 	while (tree->left)
 		tree = tree->left;
-	memcpy(save, tree->data, sizeof(t_ip4range));
+	memcpy(save, tree->data, sizeof(t_ip4rng));
 	return (save);
 }

@@ -6,12 +6,12 @@
 #include <netinet/in.h>
 # include "../libhermes/incl/libhermes.h"
 
-typedef struct			s_ip4range
+typedef struct			s_ip4rng
 {
 	uint32_t			size;
 	uint32_t			start;
 	uint32_t			end;
-}						t_ip4range;
+}						t_ip4rng;
 
 typedef struct			s_ip4
 {
@@ -31,12 +31,12 @@ typedef struct			s_port
 	uint16_t			port;
 }						t_port;
 
-typedef struct			s_portrange
+typedef struct			s_prtrng
 {
 	uint16_t			size;
 	uint16_t			start;
 	uint16_t 			end;
-}						t_portrange;
+}						t_prtrng;
 
 typedef struct			s_worker
 {
@@ -46,26 +46,26 @@ typedef struct			s_worker
 
 typedef struct			s_workerlist
 {
-	size_t				worker_count;
-	t_node				*workers;					/*t_node list containing t_ip4 structs*/
+	size_t				wrkr_cnt;
+	t_node				*wrkrs;					/*t_node list containing t_ip4 structs*/
 }						t_workerlist;
 
 typedef struct			s_targetlist
 {
 	size_t				total;
-	size_t				ip_count;
-	size_t				iprange_count;
-	t_node				*ip;						/*t_node list containing t_ip4 structs*/
-	t_node				*iprange;					/*t_node list containing t_ip4range structs*/
+	size_t				ip_cnt;
+	size_t				rng_cnt;
+	t_node				*ip;					/*t_node list containing t_ip4 structs*/
+	t_node				*iprng;					/*t_node list containing t_ip4rng structs*/
 }						t_targetlist;
 
 typedef struct			s_portlist
 {
 	uint16_t			total;
-	uint16_t			port_count;
+	uint16_t			port_cnt;
+	uint16_t			rng_cnt;
 	t_node				*ports;
-	uint16_t			range_count;
-	t_node				*port_range;
+	t_node				*prt_rng;
 }						t_portlist;
 
 typedef struct			s_optbitf
@@ -106,7 +106,7 @@ typedef struct			s_optbitf
 	uint64_t			apnd_file: 1;
 }						t_optbitf;
 
-typedef struct /*__attribute__((__packed__))*/	s_ops
+typedef struct			s_ops
 {
 	t_optbitf			bitops;
 	uint32_t			min_rtt_timeo;
@@ -120,17 +120,17 @@ typedef struct /*__attribute__((__packed__))*/	s_ops
 	uint32_t			min_packet_rate;
 	uint32_t			max_packet_rate;
 	uint32_t			max_retries;
-	uint32_t			min_parallelism;
-	uint32_t			max_parallelism;
+	uint32_t			min_parallel;
+	uint32_t			max_parallel;
 	uint32_t			min_hostgroup;
 	uint32_t			max_hostgroup;
 	uint32_t			spoofed_srcaddr;
-	uint32_t			spoofed_srcport: 16;
-	uint32_t			rpayload_len: 16;
-	uint32_t			fragment_mtu: 8;
-	uint32_t			ip_ttl: 8;
-	uint32_t			thread_count: 8;
-	uint32_t			verbose_level: 8; /* Default 0, verbose 1, very verbose 2 TODO: possibe enum */
+	uint16_t			spoofed_srcport;
+	uint16_t			rpayload_len;
+	uint8_t				fragment_mtu;
+	uint8_t				ip_ttl;
+	uint8_t				thread_count;
+	uint8_t				verbose_level; /* Default 0, verbose 1, very verbose 2 TODO: possibe enum */
 }						t_ops;
 
 typedef struct			s_job
@@ -138,12 +138,12 @@ typedef struct			s_job
 	t_ops				options;
 	t_targetlist		targets;
 	t_targetlist		exclude_targets;
+	t_portlist			ports;
+	t_portlist			exclude_ports;
+	t_portlist			syn_ports;
+	t_portlist			ack_ports;
+	t_portlist			udp_ports;
 	t_workerlist		worker_list;
-	t_portlist			scan_portlist;
-	t_portlist			exclude_portlist;
-	t_portlist			d_syn_portlist;
-	t_portlist			d_ack_portlist;
-	t_portlist			d_udp_portlist;
 	void				*custom_payload;
 	FILE				*resume_file;
 	FILE				*xml_file;

@@ -13,6 +13,6 @@ int			sanity_check(t_job *job)
 	if (job->options.max_retries == 0)
 		job->options.max_retries = DEF_MAX_RETRIES;
 	do_target_exclusions(&job->targets, &job->exclude_targets);
-	do_port_exclusions(&job->scan_portlist, &job->exclude_portlist);
+	do_port_exclusions(&job->ports, &job->exclude_ports);
 	return (SUCCESS);
 }

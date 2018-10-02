@@ -1,0 +1,63 @@
+
+namespace Hermes.Job;
+
+table Ip4rng {
+  size: uint32;
+  start: uint32;
+  end: uint32;
+}
+
+table Prtrng {
+  size: uint16;
+  start: uint16;
+  end: uint16;
+}
+
+table Targetlist {
+  total: uint32;
+  ip_cnt: uint32;
+  rng_cnt: uint32;
+  ip: [uint32];
+  iprng: [Ip4rng];
+}
+
+table Portlist {
+  total: uint16;
+  ip_cnt: uint16;
+  rng_cnt: uint16;
+  port: [uint16];
+  prtrng: [Prtrng];
+}
+
+struct Ops {
+  bitops: uint64;
+  min_rtt_timeo: uint32;
+  init_rtt_timeo: uint32;
+  max_rtt_timeo: uint32;
+  host_timeo: uint32;
+  scan_delay: uint32;
+  max_scan_delay: uint32;
+  min_packet_rate: uint32;
+  max_packet_rate: uint32;
+  max_retries: uint32;
+  min_parallel: uint32;
+  max_parallel: uint32;
+  min_hostgroup: uint32;
+  max_hostgroup: uint32;
+  spoofed_srcaddr: uint32;
+  spoofed_srcport: uint16;
+  rpayload_len: uint16;
+  fragment_mtu: uint8;
+  ip_ttl: uint8;
+  thread_count: uint8;
+  verbose_level: uint8;
+}
+
+table job {
+  ops: Ops;
+  targets: Targetlist;
+  ports: Portlist;
+  syn_ports: Portlist;
+  ack_ports: Portlist;
+  udp_ports: Portlist;
+}

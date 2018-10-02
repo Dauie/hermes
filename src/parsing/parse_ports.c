@@ -24,7 +24,7 @@ static int		add_port(t_portlist *list, char *input)
 	data->port = (uint16_t)port;
 	if (add_node(&list->ports, (void **)&data, port_cmp) == SUCCESS)
 	{
-		list->port_count++;
+		list->port_cnt++;
 		return (SUCCESS);
 	}
 	return (FAILURE);
@@ -34,7 +34,7 @@ static int		add_range(t_portlist *list, char **range)
 {
 	uint16_t	start;
 	uint16_t	end;
-	t_portrange	*data;
+	t_prtrng	*data;
 
 	if (parse_port(&start, range[0]) == FAILURE)
 		return (hermes_error(FAILURE, FALSE, 1, "bad start to port range", range[0]));
@@ -43,9 +43,9 @@ static int		add_range(t_portlist *list, char **range)
 	data = new_portrange();
 	data->start = start;
 	data->end = end;
-	if (add_node(&list->port_range, (void**)&data, portrng_cmp) == SUCCESS)
+	if (add_node(&list->prt_rng, (void**)&data, portrng_cmp) == SUCCESS)
 	{
-		list->range_count++;
+		list->rng_cnt++;
 		return (SUCCESS);
 	}
 	return (FAILURE);

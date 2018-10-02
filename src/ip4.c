@@ -13,11 +13,11 @@ t_ip4			*new_ip4(void)
 	return (data);
 }
 
-t_ip4range		*new_ip4range(void)
+t_ip4rng		*new_ip4range(void)
 {
-	t_ip4range	*data;
+	t_ip4rng	*data;
 
-	if (!(data = (t_ip4range*)memalloc(sizeof(t_ip4range))))
+	if (!(data = (t_ip4rng*)memalloc(sizeof(t_ip4rng))))
 	{
 		hermes_error(errno, TRUE, 2, "malloc()", strerror(errno));
 		return (NULL);
@@ -157,8 +157,8 @@ void			*ip4_min(t_node *tree)
 
 int				ip4rng_cmp(void *ipr_left, void *ipr_right)
 {
-	t_ip4range	*left;
-	t_ip4range	*right;
+	t_ip4rng	*left;
+	t_ip4rng	*right;
 
 	left = ipr_left;
 	right = ipr_right;
@@ -179,22 +179,22 @@ int				ip4rng_cmp(void *ipr_left, void *ipr_right)
 
 void			*ip4rng_min(t_node *tree)
 {
-	t_ip4range	*save;
+	t_ip4rng	*save;
 
 	if (!tree)
 		return (NULL);
 	save = new_ip4range();
 	while (tree->left)
 		tree = tree->left;
-	memcpy(save, tree->data, sizeof(t_ip4range));
+	memcpy(save, tree->data, sizeof(t_ip4rng));
 	return (save);
 }
 
 /*TODO replace if statements with whats in split range*/
 int				ip4rng_overlap_cmp(void *left, void *right)
 {
-	t_ip4range	*l;
-	t_ip4range	*r;
+	t_ip4rng	*l;
+	t_ip4rng	*r;
 
 	l = left;
 	r = right;

@@ -1,7 +1,7 @@
 # include "limits.h"
 # include "../../incl/hermes.h"
 
-static void			set_ip4range(t_ip4range *data, uint32_t ip, uint32_t subn_m)
+static void			set_ip4range(t_ip4rng *data, uint32_t ip, uint32_t subn_m)
 {
 	uint32_t		wildcard;
 	uint32_t		netid;
@@ -54,7 +54,7 @@ int					parse_ip(uint32_t *ip, char *ip_str)
 static int			bstadd_ip4range(t_node **ip_range, uint32_t ip,
 									   uint32_t subn_m)
 {
-	t_ip4range		*data;
+	t_ip4rng		*data;
 
 	data = new_ip4range();
 	set_ip4range(data, ip, subn_m);
@@ -79,10 +79,10 @@ int				do_ip4range(t_targetlist *targets, char *ip_str, char *cidr_str)
 		return (FAILURE);
 	if (parse_cidr_mask(&subn_m, cidr_str) < 0)
 		return (FAILURE);
-	if (bstadd_ip4range(&targets->iprange, ip, subn_m) == SUCCESS)
+	if (bstadd_ip4range(&targets->iprng, ip, subn_m) == SUCCESS)
 	{
-		targets->iprange_count++;
-		targets->total += ((t_ip4range*)targets->iprange->data)->size;
+		targets->rng_cnt++;
+		targets->total += ((t_ip4rng*)targets->iprng->data)->size;
 	}
 	return (SUCCESS);
 }

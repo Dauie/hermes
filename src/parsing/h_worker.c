@@ -25,8 +25,8 @@ int				parse_worker(t_workerlist *workerlist, char *input)
 		data->sin.sin_addr.s_addr = ip;
 		data->sin.sin_port = htons(port);
 		data->sin.sin_family = AF_INET;
-		if (add_node(&workerlist->workers, (void **)&data, worker_cmp) == SUCCESS)
-			workerlist->worker_count++;
+		if (add_node(&workerlist->wrkrs, (void **)&data, worker_cmp) == SUCCESS)
+			workerlist->wrkr_cnt++;
 	}
 	return (SUCCESS);
 }
@@ -34,7 +34,7 @@ int				parse_worker(t_workerlist *workerlist, char *input)
 void			h_worker(t_job *job, char *input)
 {
 	if (!input)
-		hermes_error(INPUT_ERROR, TRUE, 1, "no workers specified");
+		hermes_error(INPUT_ERROR, TRUE, 1, "no wrkrs specified");
 	parse_worker(&job->worker_list, input);
 }
 
