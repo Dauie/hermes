@@ -16,13 +16,13 @@
 
 int			 main(int ac, char **av)
 {
-	t_job	*job;
+	t_mgr	*mgr;
 
 	if (ac < 2)
 		return (FAILURE); //h_help();
-	if (!(job = (t_job *)memalloc(sizeof(t_job))))
+	if (!(mgr = (t_mgr *)memalloc(sizeof(t_mgr))))
 		hermes_error(errno, TRUE, 2, "malloc()", strerror(errno));
-	parse_opts(job, ac, av);
-	sanity_check(job);
+	parse_opts(mgr, ac, av);
+	sanity_check(mgr);
 	return (SUCCESS);
 }

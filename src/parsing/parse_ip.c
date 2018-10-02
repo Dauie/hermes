@@ -95,7 +95,7 @@ int				do_ip4(t_targetlist *targets, char *input)
 		return (FAILURE);
 	if (bstadd_ip4(&targets->ip, ip) == SUCCESS)
 	{
-		targets->ip_count++;
+		targets->ip_cnt++;
 		targets->total++;
 	}
 	return (SUCCESS);

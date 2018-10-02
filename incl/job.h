@@ -137,17 +137,21 @@ typedef struct			s_job
 {
 	t_ops				options;
 	t_targetlist		targets;
-	t_targetlist		exclude_targets;
 	t_portlist			ports;
-	t_portlist			exclude_ports;
 	t_portlist			syn_ports;
 	t_portlist			ack_ports;
 	t_portlist			udp_ports;
-	t_workerlist		worker_list;
 	void				*custom_payload;
+}						t_job;
+
+typedef struct			s_mgr {
+	t_job				job;
+	t_targetlist		exclude_targets;
+	t_portlist			exclude_ports;
+	t_workerlist		worker_list;
 	FILE				*resume_file;
 	FILE				*xml_file;
 	FILE				*norm_file;
-}						t_job;
+}						t_mgr;
 
 #endif

@@ -72,7 +72,7 @@ t_dtab_wopt g_disp_wopt[] = {
 		{ "--worker-file", h_worker_file }
 };
 
-int			dtab_loop(t_job *job, char *arg, t_dtab *tab)
+int			dtab_loop(t_mgr *mgr, char *arg, t_dtab *tab)
 {
 	int		i;
 	size_t	len;
@@ -84,14 +84,14 @@ int			dtab_loop(t_job *job, char *arg, t_dtab *tab)
 	{
 		if (strncmp(arg, tab[i].name, len) == 0)
 		{
-			tab[i].function(job);
+			tab[i].function(mgr);
 			return (SUCCESS);
 		}
 	}
 	return (FAILURE);
 }
 
-int			dtab_wopt_loop(t_job *job, char *arg, char *opt,
+int			dtab_wopt_loop(t_mgr *mgr, char *arg, char *opt,
 							  t_dtab_wopt *tab)
 {
 	int		i;
@@ -104,14 +104,14 @@ int			dtab_wopt_loop(t_job *job, char *arg, char *opt,
 	{
 		if (strncmp(arg, tab[i].name, len) == 0)
 		{
-			tab[i].function(job, opt);
+			tab[i].function(mgr, opt);
 			return (SUCCESS);
 		}
 	}
 	return (FAILURE);
 }
 
-int			parse_opts(t_job * job, int ac, char **args)
+int			parse_opts(t_mgr *mgr, int ac, char **args)
 {
 	int		i;
 
@@ -119,16 +119,16 @@ int			parse_opts(t_job * job, int ac, char **args)
 	while (++i < ac)
 	{
 		if (args[i][0] == '-') {
-			if (dtab_loop(job, args[i], g_disp) == FAILURE)
+			if (dtab_loop(mgr, args[i], g_disp) == FAILURE)
 			{
-				if (dtab_wopt_loop(job, args[i], args[i + 1], g_disp_wopt) == FAILURE)
+				if (dtab_wopt_loop(mgr, args[i], args[i + 1], g_disp_wopt) == FAILURE)
 					hermes_error(INPUT_ERROR, TRUE, 2, "invalid option", args[i]);
 				i++; 
 			}
 		}
 		else
 		{
-			if (handle_ip(&job->targets, args[i]) < 0)
+			if (handle_ip(&mgr->job.targets, args[i]) < 0)
 				hermes_error(INPUT_ERROR, TRUE, 1, "issue parsing targets");
 		}
 	}

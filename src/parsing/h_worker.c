@@ -31,18 +31,18 @@ int				parse_worker(t_workerlist *workerlist, char *input)
 	return (SUCCESS);
 }
 
-void			h_worker(t_job *job, char *input)
+void			h_worker(t_mgr *mgr, char *input)
 {
 	if (!input)
 		hermes_error(INPUT_ERROR, TRUE, 1, "no wrkrs specified");
-	parse_worker(&job->worker_list, input);
+	parse_worker(&mgr->worker_list, input);
 }
 
-void			h_daemon(t_job *job, char *input)
+void			h_daemon(t_mgr *mgr, char *input)
 {
 	uint16_t port;
 
-	(void)job;
+	(void)mgr;
 	if (!input)
 		hermes_error(INPUT_ERROR, TRUE, 1, "no port specified for daemon");
 	if (parse_port(&port, input) == FAILURE)
