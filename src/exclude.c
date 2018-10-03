@@ -12,7 +12,7 @@ void	exclude_ip4_ip4(t_targetlist *list, t_node **targets, t_node *exclude)
 		exclude_ip4_ip4(list, targets, exclude->left);
 	if (remove_node(targets, exclude->data, ip4_cmp, ip4_min) == SUCCESS)
 	{
-		list->ip_count--;
+		list->ip_cnt--;
 		list->total--;
 	}
 	if (exclude->right)
@@ -141,10 +141,12 @@ int		do_target_exclusions(t_targetlist *targets, t_targetlist *exclude)
 {
 	if (!targets || !exclude)
 		return (FAILURE);
-	if (targets->ip && exclude->ip)
-		exclude_ip4_ip4(targets, &targets->ip, exclude->ip);
-	if (targets->iprng && exclude->iprng)
-		exclude_ip4rng_ip4rng(targets, &targets->iprng, exclude->iprng);
+	if (targets->ips && exclude->ips)
+		exclude_ip4_ip4(targets, &targets->ips, exclude->ips);
+	if (targets->iprngs && exclude->iprngs)
+		exclude_ip4rng_ip4rng(targets, &targets->iprngs, exclude->iprngs);
+	if (targets->iprngs && exclude->ips)
+		exclude_ip4_ip4rng(targets, &targets->iprngs, exclude->ips);
 	return (SUCCESS);
 }
 
@@ -286,10 +288,10 @@ int		do_port_exclusions(t_portlist *target, t_portlist *exclude)
 		return (FAILURE);
 	if (target->ports && exclude->ports)
 		exclude_port_port(target, &target->ports, exclude->ports);
-	if (target->prt_rng && exclude->prt_rng)
-		exclude_prtrng_prtrng(target, &target->prt_rng, exclude->prt_rng);
-	if (target->prt_rng && exclude->ports)
-		exclude_port_prtrng(target, &target->prt_rng, exclude->ports);
+	if (target->prtrngs && exclude->prtrngs)
+		exclude_prtrng_prtrng(target, &target->prtrngs, exclude->prtrngs);
+	if (target->prtrngs && exclude->ports)
+		exclude_port_prtrng(target, &target->prtrngs, exclude->ports);
 	return (SUCCESS);
 }
 

@@ -5,11 +5,11 @@ CC = gcc
 
 SRC_DIR = src
 
-CFLAGS  = -Wall -Werror -Wextra -fsanitize=address
+CFLAGS  = -Wall -Werror -Wextra
 
 INCL = -I incl
 
-LIBHERMES = ./libhermes/
+LIBHERMES = ./libhermes
 
 SRC_DIR = src
 
@@ -29,15 +29,17 @@ SRC += $(addprefix $(PARSE_DIR)/, $(PARSE_FILES))
 RM = rm -fr
 
 $(NAME):
-		$(MAKE) -C $(LIBHERMES) re
-		$(CC) $(CFLAGS) $(INCL) $(SRC) $(LIBHERMES)/libhermes.a -o $(NAME)
+		$(MAKE) -C binn
+		$(MAKE) -C $(LIBHERMES)
+		$(CC) $(CFLAGS) $(INCL) $(SRC) binn/libbinn.so.1.0 $(LIBHERMES)/libhermes.a -o $(NAME)
 
 all: $(NAME)
 
 clean:
-		$(RM) $(OBJDIR)
+		$(RM) $(NAME)
 
 fclean: clean
-		$(RM) $(NAME)
+		$(MAKE) -C binn clean
+		$(MAKE) -C $(LIBHERMES) fclean
 
 re: fclean $(NAME)

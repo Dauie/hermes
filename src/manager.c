@@ -30,17 +30,17 @@ int				connect_workers(t_node **workers, size_t *worker_count,
 		connect_workers(&(*workers)->right, rm_tree, proto);
 }
 
-int					manager(t_job *job)
+int					manager(t_mgr *mgr)
 {
 	struct protoent	*proto;
 
 	if ((proto = getprotobyname("tcp")) == 0)
 		return (FAILURE);
-	if (job->worker_list.wrkr_cnt > 0)
+	if (mgr->worker_list.wrkr_cnt > 0)
 	{
-		connect_workers(&job->worker_list.wrkrs, &job->worker_list.wrkr_cnt,
-						&job->worker_list.wrkrs, proto->p_proto);
-		printf("connected to %zu wrkrs.\n", job->worker_list.wrkr_cnt);
+		connect_workers(&mgr->worker_list.wrkrs, &mgr->worker_list.wrkr_cnt,
+						&mgr->worker_list.wrkrs, proto->p_proto);
+		printf("connected to %zu wrkrs.\n", mgr->worker_list.wrkr_cnt);
 	}
 	/*TODO: Divide work amongst thread count, send jobs to wrkrs, spawn threads*/
 	return (0);
@@ -92,12 +92,12 @@ char		*strtrim(const char *s)
 
 int main(void)
 {
-	uint32_t    ip;
+	uint32_t    ips;
 	t_job       *job;
 	t_node      *worker;
 	char        input[20];
 
-	ip = NULL;
+	ips = NULL;
 	job = (t_job*)memalloc(sizeof(t_job));
 	job->worker_list = *(t_workerlist*)memalloc(sizeof(t_workerlist));
 	while (TRUE)
@@ -111,22 +111,22 @@ int main(void)
 		{
 			worker = new_node();
 			worker->data = new_worker();
-			prompt("ip > ", input, 20);
-			if (parse_ip(&WORKER(worker)->ip, strtrim(input)) < 0)
-				hermes_error(INPUT_ERROR, TRUE, 2, "parsing ip", strerror(errno));
-			prompt("port > ", input, 20);
-			if (parse_port(&WORKER(worker)->port, strtrim(input)) < 0)
-				hermes_error(INPUT_ERROR, TRUE, 2, "parsing port", strerror(errno));
+			prompt("ips > ", input, 20);
+			if (parse_ip(&WORKER(worker)->ips, strtrim(input)) < 0)
+				hermes_error(INPUT_ERROR, TRUE, 2, "parsing ips", strerror(errno));
+			prompt("ports > ", input, 20);
+			if (parse_port(&WORKER(worker)->ports, strtrim(input)) < 0)
+				hermes_error(INPUT_ERROR, TRUE, 2, "parsing ports", strerror(errno));
 			if (add_node(&(job->worker_list.wrkrs), &worker, worker_cmp) < 0)
 				hermes_error(INPUT_ERROR, TRUE, 2, "adding worker", strerror(errno));
 			job->worker_list.wrkr_cnt++;
 		}
 		else if (!memcmp("del", input, 3))
 		{
-			prompt("ip > ", input, 20);
-			if (parse_ip(&ip, strtrim(input)) < 0)
-				hermes_error(INPUT_ERROR, TRUE, 2, "parsing ip", strerror(errno));
-			if (remove_node(&job->worker_list.wrkrs, ip, worker_cmp, worker_min) < 0)
+			prompt("ips > ", input, 20);
+			if (parse_ip(&ips, strtrim(input)) < 0)
+				hermes_error(INPUT_ERROR, TRUE, 2, "parsing ips", strerror(errno));
+			if (remove_node(&job->worker_list.wrkrs, ips, worker_cmp, worker_min) < 0)
 				hermes_error(INPUT_ERROR, TRUE, 2, "removing worker", strerror(errno));
 			job->worker_list.wrkr_cnt--;
 		}
@@ -145,7 +145,7 @@ int main(void)
 //	struct sockaddr_in  *res;
 //	struct addrinfo		hints;
 //	struct protoent		*proto;
-//	char				ip[INET_ADDRSTRLEN];
+//	char				ips[INET_ADDRSTRLEN];
 //
 //	if (!w)
 //		return (0);
@@ -159,8 +159,8 @@ int main(void)
 //	{
 //		// TODO : itoa hermeslib
 //		// not sure if want to return error or keep trying for all wrkrs
-//		if (inet_ntop(AF_INET, &WORKER(w)->ip, &ip, sizeof(ip)) > 0) {
-//			if (getaddrinfo(ip, htons(WORKER(w)->port), &hints, &res) >= 0) {
+//		if (inet_ntop(AF_INET, &WORKER(w)->ips, &ips, sizeof(ips)) > 0) {
+//			if (getaddrinfo(ips, htons(WORKER(w)->ports), &hints, &res) >= 0) {
 //				if ((WORKER(w)->sock = socket(PF_INET, SOCK_STREAM, proto->p_proto)) >= 0) {
 //					if (setsockopt(session->lsock, SOL_SOCKET, SO_REUSEADDR, (char *)&opt, sizeof(opt)) >= 0) {
 //						if (connect(WORKER(w)->sock, res->sin_addr, res->sin_addrlen) >= 0) {

@@ -15,8 +15,8 @@
 
 ### PORT SPECIFICATION AND SCAN ORDER
  - [x] Struct representation
- - [ ] Only scan specified ports (-p <port ranges>) (Ex: -p22; -p1-65535; -p U:53,111,137,T:21-25,80,139,8080,S:9)
- - [ ] Exclude the specified ports from scanning (--exclude-ports <port ranges>)
+ - [ ] Only scan specified ports (-p <ports ranges>) (Ex: -p22; -p1-65535; -p U:53,111,137,T:21-25,80,139,8080,S:9)
+ - [ ] Exclude the specified ports from scanning (--exclude-ports <ports ranges>)
  - [ ] Scan ports consecutively - don't randomize (-r)
  - [ ] BONUS: Scan <number> most common ports (--top-ports <number>)
  - [ ] BONUS: Fast mode - Scan fewer ports than the default scan (-F)
@@ -26,7 +26,7 @@
  - [ ] Ping scan (-sn)
  - [ ] List scan (-sL)
  - [ ] Skip host discovery (-Pn)
- - [ ] Host discovery methods (With port list)
+ - [ ] Host discovery methods (With ports list)
  	- [ ] TCP SYN host discovery (-PS <ports>)
  	- [ ] TCP ACK host discovery (-PA <ports>)
  	- [ ] UDP host discovery (-PU <ports>)
@@ -44,7 +44,7 @@
 
 ### WORKER MODE
  - [x] Struct representation (not needed)
- - [ ] Run in "worker mode", and await a job. (--worker <port>)
+ - [ ] Run in "worker mode", and await a job. (--worker <ports>)
 
 ###  TIMING AND PERFORMANCE
  - [x] Struct representation
@@ -54,7 +54,7 @@
  - [ ] Specify host timeout. Give up on host after this time if scan is not complete. (--host-timeout <time>)
  - [ ] Specify lowest amount of packets sent per second (--min-rate <packet amount>)
  - [ ] Specify highest amount of packets sent per second (--max-rate <packet amount>)
- - [ ] Specify max number of probe retransmissions to a single port (--max-retries <time>)
+ - [ ] Specify max number of probe retransmissions to a single ports (--max-retries <time>)
  - [ ] Specify scan delay inbetween sending any probe from a host. (--scan-delay <time>)
  - [ ] Specify max scan delay. The scan delay can grow as Nmap detects packet loss, so set a max. (--max-scan-delay <time>)
 
@@ -84,7 +84,7 @@
  - [ ] Cloak a scan with decoys (-D <decoy1,decoy2\[,ME],...>)
  - [ ] Spoof source address (-S <IP_Address>)
  - [ ] (BONUS hard to work on all hosts) Use specified interface (-e <iface>)
- - [ ] Use given port number (-g/--source-port <portnum>)
+ - [ ] Use given ports number (-g/--source-ports <portnum>)
  - [ ] Set IP time-to-live field (--ttl <val>)
  - [ ] Append a custom payload to sent packets (--data <hex string>)
  - [ ] Append a custom ASCII string to sent packets (--data-string <string>)

@@ -25,14 +25,14 @@ t_ip4rng		*new_ip4range(void)
 	return (data);
 }
 
-int			ip4_cmp(void *left, void *right)
+int				ip4_cmp(void *left, void *right)
 {
-	int shift;
-	uint32_t l;
-	uint32_t r;
+	uint32_t	shift;
+	in_addr_t	l;
+	in_addr_t	r;
 
-	l = ((t_ip4*)left)->addr;
-	r = ((t_ip4*)right)->addr;
+	l = ((t_ip4*)left)->s_addr;
+	r = ((t_ip4*)right)->s_addr;
 	shift = 0xFF;
 	while (shift)
 	{
@@ -45,7 +45,7 @@ int			ip4_cmp(void *left, void *right)
 	return (0);
 }
 
-uint32_t			ip4_diff(uint32_t left, uint32_t right)
+uint32_t			ip4_diff(in_addr_t left, in_addr_t right)
 {
 	uint32_t		diff;
 	long long		ret;
@@ -75,9 +75,9 @@ uint32_t			ip4_diff(uint32_t left, uint32_t right)
 }
 
 /*TODO: do this without looping, its quick and dirty right now*/
-uint32_t		ip4_increment(uint32_t ip, uint32_t increase)
+in_addr_t		ip4_increment(in_addr_t ip, uint32_t increase)
 {
-	t_ip4bytes *b;
+	t_ip4bytes	*b;
 
 	b = (t_ip4bytes *)&ip;
 	while (increase--)
@@ -109,9 +109,9 @@ uint32_t		ip4_increment(uint32_t ip, uint32_t increase)
 }
 
 /*TODO: do this without looping, its quick and dirty right now*/
-uint32_t			ip4_decrement(uint32_t ip, int decrease)
+in_addr_t		ip4_decrement(in_addr_t ip, uint32_t decrease)
 {
-	t_ip4bytes *b;
+	t_ip4bytes	*b;
 
 	b = (t_ip4bytes *)&ip;
 	while (decrease--)

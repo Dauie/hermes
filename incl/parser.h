@@ -40,7 +40,7 @@ int				handle_port(t_portlist *list, char *input);
 int				parse_time(uint32_t *opt_time, char *input);
 int				parse_opts(t_mgr *mgr, int ac, char **args);
 int				handle_ip(t_targetlist *targets, char *input);
-int				parse_ip(uint32_t *ip, char *input);
+int				parse_ip(in_addr_t *ip, char *input);
 int				parse_worker(t_workerlist *workerlist, char *input);
 int				parse_worker_file(t_workerlist *list, char *filename);
 int				parse_ip_file(t_targetlist *list, char *filename);

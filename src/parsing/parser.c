@@ -33,7 +33,7 @@ t_dtab g_disp[] = {
 //		{ "-vv", h_very_verbose_output },
 };
 
-# define DTAB_WOPT_ENTRIES 29
+# define DTAB_WOPT_ENTRIES 30
 
 t_dtab_wopt g_disp_wopt[] = {
 
@@ -64,10 +64,9 @@ t_dtab_wopt g_disp_wopt[] = {
 //		{ "--resume", h_resume_output },
 		{ "-S", h_spoof_srcip },
 		{ "--scan-delay", h_scan_delay },
-		{ "--source-port", h_spoof_srcport },
+		{ "--source-ports", h_spoof_srcport },
 		{ "-ttl", h_custom_ip_ttl },
 		{ "--thread", h_thread_amt },
-
 		{ "--worker", h_worker },
 		{ "--worker-file", h_worker_file }
 };

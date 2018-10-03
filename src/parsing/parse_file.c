@@ -10,7 +10,7 @@ int			parse_ip_file(t_targetlist *list, char *filename)
 
 	len = 1024;
 	if (!filename)
-		hermes_error(errno, TRUE, 2, "ip file not provided");
+		hermes_error(errno, TRUE, 2, "ips file not provided");
 	if (!(buff = memalloc(sizeof(char) * (len + 1))))
 		hermes_error(errno, TRUE, 2, "malloc()", strerror(errno));
 	if (!(fp = fopen(filename, "r")))

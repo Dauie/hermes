@@ -9,14 +9,11 @@
 typedef struct			s_ip4rng
 {
 	uint32_t			size;
-	uint32_t			start;
-	uint32_t			end;
+	in_addr_t			start;
+	in_addr_t			end;
 }						t_ip4rng;
 
-typedef struct			s_ip4
-{
-	uint32_t			addr;
-}						t_ip4;
+typedef struct in_addr t_ip4;
 
 typedef struct			s_ip4bytes
 {
@@ -52,11 +49,11 @@ typedef struct			s_workerlist
 
 typedef struct			s_targetlist
 {
-	size_t				total;
-	size_t				ip_cnt;
-	size_t				rng_cnt;
-	t_node				*ip;					/*t_node list containing t_ip4 structs*/
-	t_node				*iprng;					/*t_node list containing t_ip4rng structs*/
+	uint32_t			total;
+	uint32_t			ip_cnt;
+	uint32_t			rng_cnt;
+	t_node				*ips;						/*t_node list containing t_ip4 structs*/
+	t_node				*iprngs;					/*t_node list containing t_ip4rng structs*/
 }						t_targetlist;
 
 typedef struct			s_portlist
@@ -65,7 +62,7 @@ typedef struct			s_portlist
 	uint16_t			port_cnt;
 	uint16_t			rng_cnt;
 	t_node				*ports;
-	t_node				*prt_rng;
+	t_node				*prtrngs;
 }						t_portlist;
 
 typedef struct			s_optbitf
@@ -78,7 +75,7 @@ typedef struct			s_optbitf
 	uint64_t			do_ping_scan: 1;			/* Do not send any probes, just do ping scan, and traceroute or OS Detection if specified, then quit */
 	uint64_t			do_echo_discov: 1;			/* Send ICMP ECHO_REQUEST probe during host discovery */
 	uint64_t			do_tstamp_discov: 1;		/* Send ICMP_TSTAMP probe during host discovery */
-	uint64_t			do_nmask_discov: 1;		/* Send ICMP_MASKREQ probe during host discovery */
+	uint64_t			do_nmask_discov: 1;			/* Send ICMP_MASKREQ probe during host discovery */
 	uint64_t			do_syn_discov: 1;			/* Send TCP SYN probe during host discovery */
 	uint64_t			do_ack_discov: 1;			/* Send TCP ACK probe during host discovery */
 	uint64_t			do_udp_discov: 1;			/* Send UDP Datagram during host discovery */

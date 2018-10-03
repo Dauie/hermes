@@ -76,9 +76,9 @@ void			h_spoof_srcip(t_mgr *mgr, char *input)
 	uint32_t	ip;
 
 	if (!input)
-		hermes_error(INPUT_ERROR, TRUE, 1, "spoof ip address not specified");
+		hermes_error(INPUT_ERROR, TRUE, 1, "spoof ips address not specified");
 	if (parse_ip(&ip, input) < 0)
-		hermes_error(INPUT_ERROR, TRUE, 1, "bad spoof ip address specified");
+		hermes_error(INPUT_ERROR, TRUE, 1, "bad spoof ips address specified");
 	mgr->job.options.spoofed_srcaddr = ip;
 }
 
@@ -87,9 +87,9 @@ void			h_spoof_srcport(t_mgr *mgr, char *input)
 	uint16_t	port;
 
 	if (!input)
-		hermes_error(INPUT_ERROR, TRUE, 1, "spoof port not specified");
+		hermes_error(INPUT_ERROR, TRUE, 1, "spoof ports not specified");
 	if (parse_port(&port, input) == FAILURE)
-		hermes_error(INPUT_ERROR, TRUE, 1, "bad spoof port specified");
+		hermes_error(INPUT_ERROR, TRUE, 1, "bad spoof ports specified");
 	mgr->job.options.spoofed_srcport = port;
 }
 
@@ -98,5 +98,5 @@ void			h_exclude_targets(t_mgr *mgr, char *input)
 	if (!input)
 		hermes_error(INPUT_ERROR, TRUE, 1, "--exclude-targets not specified");
 	if (handle_ip(&mgr->exclude_targets, input) == FAILURE)
-		hermes_error(INPUT_ERROR, TRUE, 1, "bad exclude target ip(s)");
+		hermes_error(INPUT_ERROR, TRUE, 1, "bad exclude target ips(s)");
 }
