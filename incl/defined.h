@@ -21,6 +21,14 @@
 # define fast_swap_ints(x, y) ((x ^= y),(y ^= x),(x ^= y))
 # endif
 
+//# ifndef
+//# define foo(type_t) ({ \
+//    unsigned char bar; \
+//    bar = ((type_t*)(&static_array))->member; \
+//    ... \
+//    })
+//# endif
+
 # define DEF_TCP_PROBE_PORT (80)
 # define DEF_SCTP_PROBE_PORT (80)
 # define DEF_UDP_PROBE_PORT (40125)
@@ -31,12 +39,12 @@
 **   drops until many probes later on extremely low-latency
 **   networks (such as localhost scans).
 */
+
 # define DEF_MAX_RETRIES (10)
 # define DEF_INIT_SCAN_DELAY (0)
 # define DEF_SCAN_DELAY (1000)
 # define DEF_MIN_RTT_TIMEOUT (100) /* ms */
 # define DEF_INIT_RTT_TIMEOUT (1000) /* ms */
 # define DEF_MAX_RTT_TIMEOUT (10000) /* ms */
-
 
 #endif

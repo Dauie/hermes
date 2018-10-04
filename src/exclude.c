@@ -19,6 +19,72 @@ static void	exclude_ip4_ip4(t_targetlist *list, t_bst **targets, t_bst *exclude)
 		exclude_ip4_ip4(list, targets, exclude->right);
 }
 
+// BIG TODO : make generic for t_ip4rng && t_prtrng
+
+t_node *split_nip4rng(uint32_t splits, void *data, int (*cmp)(void *, void *))
+{
+	uint32_t    rem;
+	t_node      *ret;
+	uint32_t    size;
+	uint32_t    start;
+	t_prtrng	*node;
+
+	ret = NULL;
+	node = new_portrange();
+	size = data->size / splits;
+	start = data->start;
+	while (start < data->end)
+	{
+		node->data->size = size;
+		node->data->start = start;
+		node->data->end = start + size;
+		add_node(&ret, node->data, cmp);
+		start += size;
+	}
+	if ((rem = data->size % splits))
+	{
+		ret->data->size += rem;
+		ret->data->end  += rem;
+	}
+	node->data = NULL;
+	node = NULL;
+	free(node);
+	return (ret);
+}
+
+// BIG TODO : make generic for iprng && portrng
+
+t_node *split_nprtrng(uint32_t splits, void *data, int (*cmp)(void *, void *))
+{
+    uint32_t    rem;
+    t_node      *ret;
+    uint32_t    size;
+    uint32_t    start;
+    t_ip4rng	*node;
+
+    ret = NULL;
+    node = new_ip4range();
+    size = data->size / splits;
+    start = data->start;
+    while (start < data->end)
+    {
+        node->data->size = size;
+        node->data->start = start;
+        node->data->end = start + size;
+        add_node(&ret, node->data, cmp);
+        start += size;
+    }
+    if ((rem = data->size % splits))
+    {
+        ret->data->size += rem;
+        ret->data->end  += rem;
+    }
+	node->data = NULL;
+	node = NULL;
+	free(node);
+    return (ret);
+}
+
 /* Fills 'left' and 'right' with different halves of the range.
  * Returns how many items were removed from the range*/
 static int		split_ip4range(t_ip4rng *target, t_ip4rng *exclude,

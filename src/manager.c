@@ -43,6 +43,7 @@ int					manager(t_mgr *mgr)
 		printf("connected to %zu wrkrs.\n", mgr->worker_list.wrkr_cnt);
 	}
 	/*TODO: Divide work amongst thread count, send jobs to wrkrs, spawn threads*/
+    partition_work(mgr->job, mgr->worker_list);
 	return (0);
 }
 

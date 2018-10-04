@@ -13,7 +13,7 @@ typedef struct			s_ip4rng
 	in_addr_t			end;
 }						t_ip4rng;
 
-typedef struct in_addr t_ip4;
+typedef struct in_addr	t_ip4;
 
 typedef struct			s_ip4bytes
 {
