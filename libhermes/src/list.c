@@ -1,159 +1,62 @@
-# include "sys/errno.h"
-# include "../incl/libhermes.h"
+#include "sys/errno.h"
+#include "../incl/libhermes.h"
 
-t_node			*new_node(void)
+t_lst			*new_node_list(void)
 {
-	t_node		*node;
+	t_lst		*node;
 
-	if (!(node = (t_node*)memalloc(sizeof(t_node))))
+	if (!(node = (t_lst*)memalloc(sizeof(t_lst))))
 		hermes_error(errno, TRUE, 2, "malloc()", strerror(errno));
 	return (node);
 }
 
-void			del_node(t_node **node)
+void            del_list_node(t_lst **node)
 {
 	if (!node || !*node)
 		return ;
-	if ((*node)->data)
-	{
-		free((*node)->data);
-		(*node)->data = NULL;
-	}
+	if ((*node)->prev)
+		(*node)->prev->next = (*node)->next;
+	if ((*node)->next)
+		(*node)->next->prev = (*node)->prev;
+	free((*node)->data);
+	(*node)->data = NULL;
 	free(*node);
 	*node = NULL;
 }
 
-t_node			*bst_search(t_node **tree, void *data, int (*cmp)(void *, void *))
+void			add_node_list_head(t_lst **list, t_lst *node)
 {
-	t_node		*cur;
-
-	cur = *tree;
-	while (cur)
-	{
-		if (cmp(cur->data, data) < 0)
-			cur = cur->left;
-		else if (cmp(cur->data, data) > 0)
-			cur = cur->right;
-		else
-			return (cur);
-	}
-	return (NULL);
-}
-
-t_node			*tree_search(t_node **tree, void *data, int (*cmp)(void *, void *))
-{
-	if (!*tree)
-		return (NULL);
-	if ((*tree)->left)
-		return (tree_search(&(*tree)->left, data, cmp));
-	if (cmp(data, (*tree)->data) == 0)
-		return (*tree);
-	if ((*tree)->right)
-		return (tree_search(&(*tree)->left, data, cmp));
-	return (NULL);
-}
-
-int		add_node(t_node **root, void **data, int (*cmp)(void *, void *))
-{
-	int ret;
-	t_node *node;
-	t_node *curr = *root;
-	t_node *parent = NULL;
-
-	node = new_node();
-	node->data = *data;
-	if (*root == NULL)
-	{
-		*root = node;
-		return (SUCCESS);
-	}
-	while (curr != NULL)
-	{
-		parent = curr;
-		ret = cmp(data, curr->data);
-		if (ret < 0)
-			curr = curr->left;
-		else if (ret > 0)
-			curr = curr->right;
-		else
-		{
-			del_node(&node);
-			return (FAILURE);
-		}
-	}
-	if (cmp(data, parent->data) < 0)
-		parent->left = node;
-	else
-		parent->right = node;
-	return (SUCCESS);
-}
-
-void remove_search_key(t_node **curr, t_node **parent, void *key,
-					   int (*cmp)(void *, void *))
-{
-	while (*curr != NULL && cmp((*curr)->data, key) != 0)
-	{
-		*parent = *curr;
-		if (cmp(key, (*curr)->data) < 0)
-			*curr = (*curr)->left;
-		else
-			*curr = (*curr)->right;
-	}
-}
-
-int			remove_node(t_node **root, void *key, int (*cmp)(void *, void *), void *(*min)(t_node *))
-{
-	t_node* parent = NULL;
-	t_node *curr = *root;
-	t_node *child;
-	void	*successor;
-
-	remove_search_key(&curr, &parent, key, cmp);
-	if (curr == NULL)
-		return (FAILURE);
-	if (curr->left == NULL && curr->right == NULL)
-	{
-		if (cmp(curr->data, (*root)->data) != 0)
-		{
-			if (parent->left == curr)
-				parent->left = NULL;
-			else
-				parent->right = NULL;
-		}
-		else
-			*root = NULL;
-		del_node(&curr);
-	}
-	else if (curr->left && curr->right)
-	{
-		successor  = min(curr->right);
-		remove_node(root, successor, cmp, min);
-		curr->data = successor;
-	}
+	if (!list || !node)
+		return;
+	if (*list == NULL)
+		*list = node;
 	else
 	{
-		child = (curr->left)? curr->left: curr->right;
-		if (curr != *root)
-		{
-			if (curr == parent->left)
-				parent->left = child;
-			else
-				parent->right = child;
-		}
-		else
-			*root = child;
-		del_node(&curr);
+		node->next = *list;
+		*list = node;
+		(*list)->next->prev = *list;
 	}
-	return (SUCCESS);
 }
 
+void			add_node_list_end(t_lst **list, t_lst *node)
+{
+	t_lst		*tmp;
+
+	if (!list || !node)
+		return;
+	tmp = *list;
+	while (tmp->next)
+		tmp = tmp->next;
+	tmp->next = node;
+	node->prev = tmp;
+}
 
 #ifdef TESTING
 typedef struct  s_data {
 	int         value;
 }               t_data;
 
-void        print_tree(t_node *tree)
+void        print_tree(t_bst *tree)
 {
 	if (tree && tree->data)
 	{
@@ -166,7 +69,7 @@ void        print_tree(t_node *tree)
 	return;
 }
 
-void    *test_min(t_node *tree)
+void    *test_min(t_bst *tree)
 {
 	t_data  *save;
 
@@ -188,8 +91,8 @@ int     test_cmp(void *l, void* r)
 int     main(void)
 {
 	t_data      *data;
-	t_node      *node;
-	t_node      *tree;
+	t_bst      *node;
+	t_bst      *tree;
 	char        input[20];
 
 	tree = new_node();

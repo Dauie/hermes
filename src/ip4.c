@@ -142,7 +142,7 @@ in_addr_t		ip4_decrement(in_addr_t ip, uint32_t decrease)
 	return (ip);
 }
 
-void			*ip4_min(t_node *tree)
+void			*ip4_min(t_bst *tree)
 {
 	t_ip4		*save;
 
@@ -177,7 +177,7 @@ int				ip4rng_cmp(void *ipr_left, void *ipr_right)
 		return (-1);
 }
 
-void			*ip4rng_min(t_node *tree)
+void			*ip4rng_min(t_bst *tree)
 {
 	t_ip4rng	*save;
 

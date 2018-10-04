@@ -25,7 +25,7 @@ int				parse_worker(t_workerlist *workerlist, char *input)
 		data->sin.sin_addr.s_addr = ip;
 		data->sin.sin_port = htons(port);
 		data->sin.sin_family = AF_INET;
-		if (add_node(&workerlist->wrkrs, (void **)&data, worker_cmp) == SUCCESS)
+		if (add_node_bst(&workerlist->wrkrs, (void **) &data, worker_cmp) == SUCCESS)
 			workerlist->wrkr_cnt++;
 	}
 	return (SUCCESS);

@@ -5,8 +5,8 @@
 #define WORKER(w) ((t_worker*)w->data)
 #endif
 
-int				connect_workers(t_node **workers, size_t *worker_count,
-		t_node **rm_tree, int proto)
+int				connect_workers(t_bst **workers, size_t *worker_count,
+		t_bst **rm_tree, int proto)
 {
 	t_worker		*worker;
 
@@ -21,7 +21,7 @@ int				connect_workers(t_node **workers, size_t *worker_count,
 				sizeof(worker->sin)) == -1)
 	{
 		hermes_error(FAILURE, FALSE, 2, "could not connect to worker:", inet_ntoa(worker->sin.sin_addr));
-		remove_node(rm_tree, worker, worker_cmp, worker_min);
+		remove_node_bst(rm_tree, worker, worker_cmp, worker_min);
 		*worker_count -= 1;
 	}
 	else
@@ -94,7 +94,7 @@ int main(void)
 {
 	uint32_t    ips;
 	t_job       *job;
-	t_node      *worker;
+	t_bst      *worker;
 	char        input[20];
 
 	ips = NULL;

@@ -20,7 +20,7 @@ int				worker_cmp(void *wrk_left, void *wrk_right)
 	return (ip4_cmp(&left->sin.sin_addr, &right->sin.sin_addr));
 }
 
-void			*worker_min(t_node *tree)
+void			*worker_min(t_bst *tree)
 {
 	t_worker	*save;
 

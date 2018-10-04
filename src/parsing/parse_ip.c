@@ -64,7 +64,7 @@ int				do_ip4range(t_targetlist *targets, char *ip_str, char *cidr_str)
 		return (FAILURE);
 	data = new_ip4range();
 	set_ip4range(data, &ip, &subn_m);
-	if (add_node(&targets->iprngs, (void **)&data, ip4rng_cmp) == SUCCESS)
+	if (add_node_bst(&targets->iprngs, (void **) &data, ip4rng_cmp) == SUCCESS)
 	{
 		targets->rng_cnt++;
 		targets->total += ((t_ip4rng*)targets->iprngs->data)->size;
@@ -82,7 +82,7 @@ int				do_ip4(t_targetlist *targets, char *input)
 		return (FAILURE);
 	data = new_ip4();
 	data->s_addr = ip;
-	if (add_node(&targets->ips, (void **)&data, ip4_cmp) == SUCCESS)
+	if (add_node_bst(&targets->ips, (void **) &data, ip4_cmp) == SUCCESS)
 	{
 		targets->ip_cnt++;
 		targets->total++;

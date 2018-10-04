@@ -44,7 +44,7 @@ typedef struct			s_worker
 typedef struct			s_workerlist
 {
 	size_t				wrkr_cnt;
-	t_node				*wrkrs;					/*t_node list containing t_ip4 structs*/
+	t_bst				*wrkrs;					/*t_bst list containing t_ip4 structs*/
 }						t_workerlist;
 
 typedef struct			s_targetlist
@@ -52,8 +52,8 @@ typedef struct			s_targetlist
 	uint32_t			total;
 	uint32_t			ip_cnt;
 	uint32_t			rng_cnt;
-	t_node				*ips;						/*t_node list containing t_ip4 structs*/
-	t_node				*iprngs;					/*t_node list containing t_ip4rng structs*/
+	t_bst				*ips;						/*t_bst list containing t_ip4 structs*/
+	t_bst				*iprngs;					/*t_bst list containing t_ip4rng structs*/
 }						t_targetlist;
 
 typedef struct			s_portlist
@@ -61,8 +61,8 @@ typedef struct			s_portlist
 	uint16_t			total;
 	uint16_t			port_cnt;
 	uint16_t			rng_cnt;
-	t_node				*ports;
-	t_node				*prtrngs;
+	t_bst				*ports;
+	t_bst				*prtrngs;
 }						t_portlist;
 
 typedef struct			s_optbitf
