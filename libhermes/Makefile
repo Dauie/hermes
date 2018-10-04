@@ -16,7 +16,7 @@ CC = gcc
 
 OBJ = obj/*.o
 
-CCFLAGS = -I.incl -Wall -Wextra -c
+CCFLAGS = -Wall -Wextra -c -g
 
 RM = -rm -fr
 
@@ -26,7 +26,7 @@ INDEX = ranlib
 
 HEADDR = incl/libhermes.h
 
-FILES = list.c memory.c str_tbl.c hermes_error.c conversions.c
+FILES = list.c memory.c str_tbl.c hermes_error.c conversions.c swap.c
 
 SRC_DIR = src
 

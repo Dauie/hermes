@@ -29,6 +29,7 @@ uint32_t		ip4_diff(in_addr_t left, in_addr_t right);
 t_ip4rng		*new_ip4range(void);
 int				ip4rng_cmp(void *ipr_left, void *ipr_right);
 int				ip4rng_overlap_cmp(void *left, void *right);
+int				ip4_ip4rng_overlap_cmp(void *ip, void *iprng);
 void			*ip4rng_min(t_node *tree);
 
 t_port			*new_port(void);
@@ -46,9 +47,7 @@ int				worker_cmp(void *wrk_left, void *wrk_right);
 void			*worker_min(t_node *tree);
 
 int				sanity_check(t_mgr *mgr);
-int				do_target_exclusions(t_targetlist *targets,
-										t_targetlist *exclude);
-int				do_port_exclusions(t_portlist *target, t_portlist *exclude);
+void			do_exclusions(t_mgr *mgr);
 int				worker_daemon(int port);
 
 #endif

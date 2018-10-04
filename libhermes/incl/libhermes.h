@@ -21,6 +21,13 @@ typedef struct			s_node
 	void				*data;
 }						t_node;
 
+/*
+**	Integer helper functions
+*/
+void					swap_uint8(uint8_t *l, uint8_t *r);
+void					swap_uint16(uint16_t *l, uint16_t *r);
+void					swap_uint32(uint32_t *l, uint32_t *r);
+void					swap_uint64(uint64_t *l, uint64_t *r);
 
 /*
 **	Character Manipulation Functions
