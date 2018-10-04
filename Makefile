@@ -5,7 +5,7 @@ CC = gcc
 
 SRC_DIR = src
 
-CFLAGS  = -Wall -Werror -Wextra
+CFLAGS  = -Wall -Werror -Wextra -g
 
 INCL = -I incl
 
@@ -31,7 +31,7 @@ RM = rm -fr
 $(NAME):
 		$(MAKE) -C binn
 		$(MAKE) -C $(LIBHERMES)
-		$(CC) $(CFLAGS) $(INCL) $(SRC) binn/libbinn.so.1.0 $(LIBHERMES)/libhermes.a -o $(NAME)
+		$(CC) $(CFLAGS) $(INCL) $(SRC) binn/binn.o $(LIBHERMES)/libhermes.a -o $(NAME)
 
 all: $(NAME)
 

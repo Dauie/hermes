@@ -3,7 +3,7 @@
 
 # include <stdint.h>
 # include <stddef.h>
-#include <netinet/in.h>
+# include <netinet/in.h>
 # include "../libhermes/incl/libhermes.h"
 
 typedef struct			s_ip4rng

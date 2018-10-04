@@ -41,8 +41,11 @@ static int		add_range(t_portlist *list, char **range)
 	if (parse_port(&end, range[1]) == FAILURE)
 		return (hermes_error(FAILURE, FALSE, 1, "bad end to ports range", range[1]));
 	data = new_portrange();
+	if (start > end)
+		swap_uint16(&start, &end);
 	data->start = start;
 	data->end = end;
+	data->size = end - start;
 	if (add_node(&list->prtrngs, (void**)&data, portrng_cmp) == SUCCESS)
 	{
 		list->rng_cnt++;

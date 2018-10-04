@@ -10,9 +10,9 @@ static void			set_ip4range(t_ip4rng *data, const in_addr_t *ip, const in_addr_t 
 	netid = (*ip) & (*subn_m);
 	if (*subn_m != 0xFFFFFFFF)
 	{
-		data->size = wildcard;
-		data->start = netid;
-		data->end = netid | wildcard;
+		data->size = htonl(wildcard);
+		data->start = ntohl(htonl(netid));
+		data->end = ntohl(ntohl(netid | wildcard));
 	}
 	else
 	{
@@ -30,7 +30,17 @@ static int			parse_cidr_mask(in_addr_t *subn_m, char *cidr_str)
 		return (hermes_error(INPUT_ERROR, FALSE, 1, "no cidr mask provided"));
 	if ((cidr_m = atoi(cidr_str)) > 32 || cidr_m < 0)
 		return (hermes_error(INPUT_ERROR, FALSE, 2, "bad cidr mask:", cidr_str));
-	*subn_m = (in_addr_t)((uint64_t)~0 << (32 - cidr_m));
+	*subn_m = 0;
+	if (cidr_m > 0)
+	{
+		*subn_m = 0x80000000;
+		while (cidr_m-- > 1)
+		{
+			*subn_m >>=  1;
+			*subn_m |= 0x80000000;
+		}
+	}
+	*subn_m = ntohl(*subn_m);
 	return (SUCCESS);
 }
 

@@ -42,6 +42,8 @@ t_node			*bst_search(t_node **tree, void *data, int (*cmp)(void *, void *))
 
 t_node			*tree_search(t_node **tree, void *data, int (*cmp)(void *, void *))
 {
+	if (!*tree)
+		return (NULL);
 	if ((*tree)->left)
 		return (tree_search(&(*tree)->left, data, cmp));
 	if (cmp(data, (*tree)->data) == 0)
@@ -89,7 +91,7 @@ int		add_node(t_node **root, void **data, int (*cmp)(void *, void *))
 void remove_search_key(t_node **curr, t_node **parent, void *key,
 					   int (*cmp)(void *, void *))
 {
-	while (curr != NULL && cmp((*curr)->data, key) != 0)
+	while (*curr != NULL && cmp((*curr)->data, key) != 0)
 	{
 		*parent = *curr;
 		if (cmp(key, (*curr)->data) < 0)
