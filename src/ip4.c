@@ -190,7 +190,7 @@ void			*ip4rng_min(t_node *tree)
 	return (save);
 }
 
-/*TODO replace if statements with whats in split range*/
+/* TODO replace if statements with whats in split range */
 int				ip4rng_overlap_cmp(void *left, void *right)
 {
 	t_ip4rng	*l;

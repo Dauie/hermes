@@ -42,7 +42,8 @@ int					manager(t_mgr *mgr)
 						&mgr->worker_list.wrkrs, proto->p_proto);
 		printf("connected to %zu wrkrs.\n", mgr->worker_list.wrkr_cnt);
 	}
-	/*TODO: Divide work amongst thread count, send jobs to wrkrs, spawn threads*/
+	/* TODO: Divide work amongst thread count, send jobs to wrkrs, spawn threads */
+    partition_portrng(mgr->job, mgr->worker_list);
 	return (0);
 }
 
@@ -139,56 +140,3 @@ int main(void)
 	}
 }
 #endif
-
-//int						connect_workers(t_node *w, size_t n)
-//{
-//	struct sockaddr_in  *res;
-//	struct addrinfo		hints;
-//	struct protoent		*proto;
-//	char				ips[INET_ADDRSTRLEN];
-//
-//	if (!w)
-//		return (0);
-//	res = NULL;
-//	memset(&hints, 0, sizeof(struct addrinfo));
-//	set_hints(&hints);
-//	printf("%d\n", n);
-//	if (!(proto = getprotobyname("tcp")))
-//		hermes_error(INPUT_ERROR, TRUE, 2, "getprotobyname()", strerror(errno));
-//	if (n > 0 && WORKER(w))
-//	{
-//		// TODO : itoa hermeslib
-//		// not sure if want to return error or keep trying for all wrkrs
-//		if (inet_ntop(AF_INET, &WORKER(w)->ips, &ips, sizeof(ips)) > 0) {
-//			if (getaddrinfo(ips, htons(WORKER(w)->ports), &hints, &res) >= 0) {
-//				if ((WORKER(w)->sock = socket(PF_INET, SOCK_STREAM, proto->p_proto)) >= 0) {
-//					if (setsockopt(session->lsock, SOL_SOCKET, SO_REUSEADDR, (char *)&opt, sizeof(opt)) >= 0) {
-//						if (connect(WORKER(w)->sock, res->sin_addr, res->sin_addrlen) >= 0) {
-//							if (bind(WORKER(w)->sock, &res->sin_addr, sizeof(res->sin_addrlen)) < 0) {
-//								close(WORKER(w)->sock);
-//								return (hermes_error(INPUT_ERROR, FALSE, 2, "bind()", strerror(errno)));
-//							}
-//						} else {
-//							return (hermes_error(INPUT_ERROR, FALSE, 2, "connect()", strerror(errno)));
-//						}
-//					} else {
-//						s = getaddrinfo(NULL, argv[1], &hints, &result);
-//						hermes_error(INPUT_ERROR, TRUE, 2, "setsockopt()", strerror(errno));
-//					}
-//				} else {
-//					return (hermes_error(INPUT_ERROR, FALSE, 2, "socket()", strerror(errno)));
-//				}
-//			} else {
-//				return (hermes_error(INPUT_ERROR, FALSE, 2, "getaddrinfo()", strerror(errno)));
-//			}
-//		} else {
-//			return (hermes_error(INPUT_ERROR, FALSE, 2, "inet conversion", strerror(errno)));
-//		}
-//		freeaddrinfo(res);
-//		if (w->left)
-//			return (connect_workers(w->left, n - 1));
-//		if (w->right)
-//			return (connect_workers(w->right, n - 1));
-//	}
-//	return (SUCCESS);
-//}
