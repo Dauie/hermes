@@ -14,19 +14,13 @@
 /*
 **	Structs
 */
-typedef struct			s_bst
+typedef struct			s_node
 {
-	struct s_bst		*left;
-	struct s_bst		*right;
+	struct s_node		*left;
+	struct s_node		*right;
 	void				*data;
-}						t_bst;
+}						t_node;
 
-typedef struct			s_lst
-{
-	struct s_lst		*next;
-	struct s_lst		*prev;
-	void				*data;
-}						t_lst;
 
 /*
 **	Integer helper functions
@@ -51,21 +45,26 @@ void					tbldel(char ***tbl);
 void					*memalloc(size_t size);
 
 /*
+**	Node helper functions
+*/
+t_node					*new_node(void* data);
+
+/*
 **	BST Functions
 */
-int						add_node_bst(t_bst **tree, void **data, int (*cmp)(void *, void *));
-int						remove_node_bst(t_bst **tree, void *key, int (*cmp)(void *, void *), void *(*min)(t_bst *));
-t_bst					*bst_search(t_bst **tree, void *data, int (*cmp)(void *, void *));
-t_bst					*tree_search(t_bst **tree, void *data, int (*cmp)(void *, void *));
-t_bst					*new_node_bst(void);
+int						add_node_bst(t_node **tree, void **data, int (*cmp)(void *, void *));
+int						remove_node_bst(t_node **tree, void *key, int (*cmp)(void *, void *), void *(*min)(t_node *));
+t_node					*bst_search(t_node **tree, void *data, int (*cmp)(void *, void *));
+t_node					*tree_search(t_node **tree, void *data, int (*cmp)(void *, void *));
+
 
 /*
 **	List Functions
 */
-void					add_node_list_end(t_lst **list, t_lst *node);
-void					add_node_list_head(t_lst **list, t_lst *node);
-void					del_list_node(t_lst **node);
-t_lst					*new_node_list(void);
+void					add_node_list_end(t_node **list, void *node);
+void					add_node_list_head(t_node **list, void *data);
+void					del_node_list(t_node **node);
+
 
 /*
 **	Error Management Functions

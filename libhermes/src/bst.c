@@ -1,16 +1,8 @@
 # include "sys/errno.h"
 # include "../incl/libhermes.h"
 
-t_bst		*new_node_bst(void)
-{
-	t_bst	*node;
 
-	if (!(node = (t_bst*)memalloc(sizeof(t_bst))))
-		hermes_error(errno, TRUE, 2, "malloc()", strerror(errno));
-	return (node);
-}
-
-void		del_bst_node(t_bst **node)
+void		del_bst_node(t_node **node)
 {
 	if (!node || !*node)
 		return ;
@@ -23,9 +15,9 @@ void		del_bst_node(t_bst **node)
 	*node = NULL;
 }
 
-t_bst		*bst_search(t_bst **tree, void *data, int (*cmp)(void *, void *))
+t_node		*bst_search(t_node **tree, void *data, int (*cmp)(void *, void *))
 {
-	t_bst	*cur;
+	t_node	*cur;
 
 	cur = *tree;
 	while (cur)
@@ -40,7 +32,7 @@ t_bst		*bst_search(t_bst **tree, void *data, int (*cmp)(void *, void *))
 	return (NULL);
 }
 
-t_bst		*tree_search(t_bst **tree, void *data, int (*cmp)(void *, void *))
+t_node		*tree_search(t_node **tree, void *data, int (*cmp)(void *, void *))
 {
 	if (!*tree)
 		return (NULL);
@@ -53,15 +45,14 @@ t_bst		*tree_search(t_bst **tree, void *data, int (*cmp)(void *, void *))
 	return (NULL);
 }
 
-int			add_node_bst(t_bst **root, void **data, int (*cmp)(void *, void *))
+int			add_node_bst(t_node **root, void **data, int (*cmp)(void *, void *))
 {
 	int ret;
-	t_bst *node;
-	t_bst *curr = *root;
-	t_bst *parent = NULL;
+	t_node *node;
+	t_node *curr = *root;
+	t_node *parent = NULL;
 
-	node = new_node_bst();
-	node->data = *data;
+	node = new_node(data);
 	if (*root == NULL)
 	{
 		*root = node;
@@ -88,7 +79,7 @@ int			add_node_bst(t_bst **root, void **data, int (*cmp)(void *, void *))
 	return (SUCCESS);
 }
 
-void		remove_search_key(t_bst **curr, t_bst **parent, void *key,
+void		remove_search_key(t_node **curr, t_node **parent, void *key,
 					int (*cmp)(void *, void *))
 {
 	while (*curr != NULL && cmp((*curr)->data, key) != 0)
@@ -101,13 +92,13 @@ void		remove_search_key(t_bst **curr, t_bst **parent, void *key,
 	}
 }
 
-int			remove_node_bst(t_bst **tree, void *key,
+int			remove_node_bst(t_node **tree, void *key,
 							   int (*cmp)(void *, void *),
-							   void *(*min)(t_bst *))
+							   void *(*min)(t_node *))
 {
-	t_bst* parent = NULL;
-	t_bst *curr = *tree;
-	t_bst *child;
+	t_node* parent = NULL;
+	t_node *curr = *tree;
+	t_node *child;
 	void	*successor;
 
 	remove_search_key(&curr, &parent, key, cmp);

@@ -4,7 +4,7 @@
 
 /*TODO need to exclude single IPs from ranges*/
 
-static void	exclude_ip4_ip4(t_targetlist *list, t_bst **targets, t_bst *exclude)
+static void	exclude_ip4_ip4(t_targetlist *list, t_node **targets, t_node *exclude)
 {
 	if (!exclude)
 		return ;
@@ -142,9 +142,9 @@ static void		correct_targetlist_totals(t_targetlist *list, t_ip4rng *exclude,
 	}
 }
 
-static void		exclude_ip4_ip4rng(t_targetlist *list, t_bst **targets, t_bst *exclude)
+static void		exclude_ip4_ip4rng(t_targetlist *list, t_node **targets, t_node *exclude)
 {
-	t_bst		*conflict;
+	t_node		*conflict;
 	t_ip4rng	*range;
 	t_ip4rng	tmp;
 	t_ip4rng	*left;
@@ -174,10 +174,10 @@ static void		exclude_ip4_ip4rng(t_targetlist *list, t_bst **targets, t_bst *excl
 		exclude_ip4_ip4rng(list, targets, exclude->right);
 }
 
-static void		exclude_ip4rng_ip4rng(t_targetlist *list, t_bst **targets,
-								  t_bst *exclude)
+static void		exclude_ip4rng_ip4rng(t_targetlist *list, t_node **targets,
+								  t_node *exclude)
 {
-	t_bst	*conflict;
+	t_node	*conflict;
 	t_ip4rng *range;
 	t_ip4rng *left;
 	t_ip4rng *right;
@@ -252,8 +252,8 @@ static long split_portrange(t_prtrng *target, t_prtrng *exclude,
 	return (0);
 }
 
-static void exclude_port_port(t_portlist *list, t_bst **target,
-							  t_bst *exclude)
+static void exclude_port_port(t_portlist *list, t_node **target,
+							  t_node *exclude)
 {
 	if (!exclude)
 		return ;
@@ -287,9 +287,9 @@ static void		correct_portrange_totals(t_portlist *list, t_prtrng *exclude,
 	}
 }
 
-static void		exclude_port_prtrng(t_portlist *list, t_bst **targets, t_bst *exclude)
+static void		exclude_port_prtrng(t_portlist *list, t_node **targets, t_node *exclude)
 {
-	t_bst		*conflict;
+	t_node		*conflict;
 	t_prtrng	*range;
 	t_prtrng	tmp;
 	t_prtrng	*left;
@@ -319,10 +319,10 @@ static void		exclude_port_prtrng(t_portlist *list, t_bst **targets, t_bst *exclu
 		exclude_port_prtrng(list, targets, exclude->right);
 }
 
-static void		exclude_prtrng_prtrng(t_portlist *list, t_bst **targets,
-										 t_bst *exclude)
+static void		exclude_prtrng_prtrng(t_portlist *list, t_node **targets,
+										 t_node *exclude)
 {
-	t_bst		*conflict;
+	t_node		*conflict;
 	t_prtrng	*range;
 	t_prtrng	*left;
 	t_prtrng	*right;

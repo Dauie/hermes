@@ -152,6 +152,9 @@
 		<Unit filename="/home/dauie/code/hermes/libhermes/src/memory.c">
 			<Option target="hermes"/>
 		</Unit>
+		<Unit filename="/home/dauie/code/hermes/libhermes/src/node.c">
+			<Option target="hermes"/>
+		</Unit>
 		<Unit filename="/home/dauie/code/hermes/libhermes/src/str_tbl.c">
 			<Option target="hermes"/>
 		</Unit>
@@ -161,13 +164,13 @@
 		<Unit filename="/home/dauie/code/hermes/src/binnify.c">
 			<Option target="hermes"/>
 		</Unit>
-		<Unit filename="/home/dauie/code/hermes/src/divide_work.c">
-			<Option target="hermes"/>
-		</Unit>
 		<Unit filename="/home/dauie/code/hermes/src/exclude.c">
 			<Option target="hermes"/>
 		</Unit>
 		<Unit filename="/home/dauie/code/hermes/src/ip4.c">
+			<Option target="hermes"/>
+		</Unit>
+		<Unit filename="/home/dauie/code/hermes/src/job.c">
 			<Option target="hermes"/>
 		</Unit>
 		<Unit filename="/home/dauie/code/hermes/src/main.c">
@@ -216,6 +219,9 @@
 			<Option target="hermes"/>
 		</Unit>
 		<Unit filename="/home/dauie/code/hermes/src/parsing/parser.c">
+			<Option target="hermes"/>
+		</Unit>
+		<Unit filename="/home/dauie/code/hermes/src/partition.c">
 			<Option target="hermes"/>
 		</Unit>
 		<Unit filename="/home/dauie/code/hermes/src/port.c">

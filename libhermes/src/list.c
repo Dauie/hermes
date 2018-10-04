@@ -1,54 +1,54 @@
 #include "sys/errno.h"
 #include "../incl/libhermes.h"
 
-t_lst			*new_node_list(void)
-{
-	t_lst		*node;
 
-	if (!(node = (t_lst*)memalloc(sizeof(t_lst))))
-		hermes_error(errno, TRUE, 2, "malloc()", strerror(errno));
-	return (node);
-}
-
-void            del_list_node(t_lst **node)
+void            del_node_list(t_node **node)
 {
 	if (!node || !*node)
 		return ;
-	if ((*node)->prev)
-		(*node)->prev->next = (*node)->next;
-	if ((*node)->next)
-		(*node)->next->prev = (*node)->prev;
-	free((*node)->data);
-	(*node)->data = NULL;
+	if ((*node)->left)
+		(*node)->left->right = (*node)->right;
+	if ((*node)->right)
+		(*node)->right->left = (*node)->left;
+	if ((*node)->data)
+	{
+		free((*node)->data);
+		(*node)->data = NULL;
+	}
 	free(*node);
 	*node = NULL;
 }
 
-void			add_node_list_head(t_lst **list, t_lst *node)
+void			add_node_list_head(t_node **list, void *data)
 {
-	if (!list || !node)
+	t_node		*node;
+
+	if (!list || !data)
 		return;
+	node = new_node(data);
 	if (*list == NULL)
 		*list = node;
 	else
 	{
-		node->next = *list;
+		node->right = *list;
 		*list = node;
-		(*list)->next->prev = *list;
+		(*list)->right->left = *list;
 	}
 }
 
-void			add_node_list_end(t_lst **list, t_lst *node)
+void			add_node_list_end(t_node **list, void *data)
 {
-	t_lst		*tmp;
+	t_node		*tmp;
+	t_node		*node;
 
-	if (!list || !node)
+	if (!list || !data)
 		return;
+	node = new_node(data);
 	tmp = *list;
-	while (tmp->next)
-		tmp = tmp->next;
-	tmp->next = node;
-	node->prev = tmp;
+	while (tmp->right)
+		tmp = tmp->right;
+	tmp->right = node;
+	node->left = tmp;
 }
 
 #ifdef TESTING
@@ -56,7 +56,7 @@ typedef struct  s_data {
 	int         value;
 }               t_data;
 
-void        print_tree(t_bst *tree)
+void        print_tree(t_node *tree)
 {
 	if (tree && tree->data)
 	{
@@ -69,7 +69,7 @@ void        print_tree(t_bst *tree)
 	return;
 }
 
-void    *test_min(t_bst *tree)
+void    *test_min(t_node *tree)
 {
 	t_data  *save;
 
@@ -91,8 +91,8 @@ int     test_cmp(void *l, void* r)
 int     main(void)
 {
 	t_data      *data;
-	t_bst      *node;
-	t_bst      *tree;
+	t_node      *node;
+	t_node      *tree;
 	char        input[20];
 
 	tree = new_node();

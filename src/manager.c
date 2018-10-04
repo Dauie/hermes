@@ -5,8 +5,8 @@
 #define WORKER(w) ((t_worker*)w->data)
 #endif
 
-int				connect_workers(t_bst **workers, size_t *worker_count,
-		t_bst **rm_tree, int proto)
+int				connect_workers(t_node **workers, size_t *worker_count,
+		t_node **rm_tree, int proto)
 {
 	t_worker		*worker;
 
@@ -95,7 +95,7 @@ int main(void)
 {
 	uint32_t    ips;
 	t_job       *job;
-	t_bst      *worker;
+	t_node      *worker;
 	char        input[20];
 
 	ips = NULL;
