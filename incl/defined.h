@@ -21,14 +21,6 @@
 # define fast_swap_ints(x, y) ((x ^= y),(y ^= x),(x ^= y))
 # endif
 
-//# ifndef
-//# define foo(type_t) ({ \
-//    unsigned char bar; \
-//    bar = ((type_t*)(&static_array))->member; \
-//    ... \
-//    })
-//# endif
-
 # define DEF_TCP_PROBE_PORT (80)
 # define DEF_SCTP_PROBE_PORT (80)
 # define DEF_UDP_PROBE_PORT (40125)
