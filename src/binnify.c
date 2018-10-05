@@ -170,7 +170,7 @@ void				get_ops_from_binn(t_ops *ops, binn *obj)
 	binn_object_get_uint8(ops, "verbose_level", &ops->verbose_level);
 }
 
-void				get_porttree_from_binnlist(t_node **tree, binn *list)
+static void				get_porttree_from_binnlist(t_node **tree, binn *list)
 {
 	int				i;
 	int				cnt;
@@ -186,23 +186,60 @@ void				get_porttree_from_binnlist(t_node **tree, binn *list)
 	}
 }
 
-void				get_prtrngtree_from_binnlist(t_node **tree, binn *list)
+static void				get_ip4tree_from_binnlist(t_node **tree, binn *list)
 {
 	int				i;
 	int				cnt;
-	t_prtrng		*prtrng;
+	t_ip4			*ip;
+
+	i = 0;
+	cnt = binn_count(list);
+	while (++i <= cnt)
+	{
+		ip = new_ip4();
+		ip->s_addr = binn_list_uint32(list, i);
+		add_node_bst(tree, (void **)&ip, ip4_cmp);
+	}
+}
+
+
+static void				get_prtrngtree_from_binnlist(t_node **tree, binn *list)
+{
+	int				i;
+	int				cnt;
+	t_prtrng		*rng;
 	binn			*obj;
 
 	i = 0;
 	cnt = binn_count(list);
 	while (++i <= cnt)
 	{
-		prtrng = new_portrange();
+		rng = new_portrange();
 		obj = binn_list_object(list, i);
-		binn_object_get_uint16(obj, "size", &prtrng->size);
-		binn_object_get_uint16(obj, "start", &prtrng->start);
-		binn_object_get_uint16(obj, "end", &prtrng->end);
-		add_node_bst(tree, (void **)&prtrng, port_cmp);
+		binn_object_get_uint16(obj, "size", &rng->size);
+		binn_object_get_uint16(obj, "start", &rng->start);
+		binn_object_get_uint16(obj, "end", &rng->end);
+		add_node_bst(tree, (void **)&rng, port_cmp);
+	}
+}
+
+static void				get_ip4rngtree_from_binnlist(t_node **tree, binn *list)
+{
+	int				i;
+	int				cnt;
+	t_ip4rng		*rng;
+	binn			*obj;
+
+	i = 0;
+	cnt = binn_count(list);
+	while (++i <= cnt)
+	{
+		rng = new_ip4range();
+		obj = binn_list_object(list, i);
+		binn_object_get_uint32(obj, "size", &rng->size);
+		binn_object_get_uint32(obj, "start", &rng->start);
+		binn_object_get_uint32(obj, "end", &rng->end);
+		add_node_bst(tree, (void **)&rng, port_cmp);
 	}
 }
 
@@ -222,5 +259,23 @@ void				get_portlist_from_binn(t_portlist *list, binn *obj)
 
 	get_porttree_from_binnlist(&list->ports, portlist);
 	get_prtrngtree_from_binnlist(&list->prtrngs, prtrnglist);
+}
+
+void				get_targetlist_from_binn(t_targetlist *list, binn *obj)
+{
+	binn			*ip4list;
+	binn			*ip4rnglist;
+
+	binn_object_get_uint32(obj, "prtrngtotal", &list->total);
+	binn_object_get_uint32(obj, "ip_cnt", &list->ip_cnt);
+	binn_object_get_uint32(obj, "rng_cnt", &list->rng_cnt);
+
+	/* TODO This may not work */
+
+	binn_object_get_list(obj, "ips", (void **)&ip4list);
+	binn_object_get_list(obj, "iprngs", (void**)&ip4rnglist);
+
+	get_ip4tree_from_binnlist(&list->ips, ip4list);
+	get_ip4rngtree_from_binnlist(&list->iprngs, ip4rnglist);
 }
 

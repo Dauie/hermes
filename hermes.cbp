@@ -125,6 +125,9 @@
 		<Unit filename="/home/dauie/code/hermes/incl/job.h">
 			<Option target="hermes"/>
 		</Unit>
+		<Unit filename="/home/dauie/code/hermes/incl/message.h">
+			<Option target="hermes"/>
+		</Unit>
 		<Unit filename="/home/dauie/code/hermes/incl/parser.h">
 			<Option target="hermes"/>
 		</Unit>
@@ -177,6 +180,9 @@
 			<Option target="hermes"/>
 		</Unit>
 		<Unit filename="/home/dauie/code/hermes/src/manager.c">
+			<Option target="hermes"/>
+		</Unit>
+		<Unit filename="/home/dauie/code/hermes/src/message.c">
 			<Option target="hermes"/>
 		</Unit>
 		<Unit filename="/home/dauie/code/hermes/src/parsing/h_custom_payload.c">

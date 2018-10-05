@@ -52,7 +52,7 @@ void			do_exclusions(t_mgr *mgr);
 int				worker_daemon(int port);
 
 binn			*make_ops_binn(t_ops *options);
-binn			*make_portlist_binn(t_portlist *ports, uint8_t msgtype);
+binn			*make_portlist_binn(t_portlist *ports);
 binn			*make_targetlist_binn(t_targetlist *list);
 
 
