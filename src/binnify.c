@@ -2,7 +2,7 @@
 #include "../binn/src/binn.h"
 #include "../incl/job.h"
 
-void			add_ip4tree_to_binnlist(binn **list, t_node *ips)
+void				add_ip4tree_to_binnlist(binn **list, t_node *ips)
 {
 	if (ips->left)
 		add_ip4tree_to_binnlist(list, ips->left);
@@ -13,10 +13,10 @@ void			add_ip4tree_to_binnlist(binn **list, t_node *ips)
 		add_ip4tree_to_binnlist(list, ips->right);
 }
 
-void			add_ip4rngtree_to_binnlist(binn **list, t_node *ip4rng)
+void				add_ip4rngtree_to_binnlist(binn **list, t_node *ip4rng)
 {
-	t_ip4rng	*rng;
-	binn		*obj;
+	t_ip4rng		*rng;
+	binn			*obj;
 
 	if (ip4rng->left)
 		add_ip4rngtree_to_binnlist(list, ip4rng->left);
@@ -47,8 +47,8 @@ void				add_porttree_to_binnlist(binn **list, t_node *ports)
 
 void				add_prtrngtree_to_binnlist(binn **list, t_node *prtrngs)
 {
-	t_prtrng	*rng;
-	binn		*obj;
+	t_prtrng		*rng;
+	binn			*obj;
 
 	if (prtrngs->left)
 		add_prtrngtree_to_binnlist(list, prtrngs->left);
@@ -170,7 +170,7 @@ void				get_ops_from_binn(t_ops *ops, binn *obj)
 	binn_object_get_uint8(ops, "verbose_level", &ops->verbose_level);
 }
 
-static void				get_porttree_from_binnlist(t_node **tree, binn *list)
+static void			get_porttree_from_binnlist(t_node **tree, binn *list)
 {
 	int				i;
 	int				cnt;
@@ -186,7 +186,7 @@ static void				get_porttree_from_binnlist(t_node **tree, binn *list)
 	}
 }
 
-static void				get_ip4tree_from_binnlist(t_node **tree, binn *list)
+static void			get_ip4tree_from_binnlist(t_node **tree, binn *list)
 {
 	int				i;
 	int				cnt;
@@ -203,7 +203,7 @@ static void				get_ip4tree_from_binnlist(t_node **tree, binn *list)
 }
 
 
-static void				get_prtrngtree_from_binnlist(t_node **tree, binn *list)
+static void			get_prtrngtree_from_binnlist(t_node **tree, binn *list)
 {
 	int				i;
 	int				cnt;
@@ -223,7 +223,7 @@ static void				get_prtrngtree_from_binnlist(t_node **tree, binn *list)
 	}
 }
 
-static void				get_ip4rngtree_from_binnlist(t_node **tree, binn *list)
+static void			get_ip4rngtree_from_binnlist(t_node **tree, binn *list)
 {
 	int				i;
 	int				cnt;

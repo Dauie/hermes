@@ -24,7 +24,7 @@ void			h_custom_random_payload(t_mgr *mgr, char *input)
 	if (!(payload = (uint8_t *)memalloc((size_t)len)))
 		hermes_error(errno, TRUE, 2, "malloc()", strerror(errno));
 	fread(payload, sizeof(uint8_t), (size_t)len, devrand);
-	mgr->job.options.bitops.custom_rand_payload = TRUE;
+	mgr->job.opts.bitops.custom_rand_payload = TRUE;
 	mgr->job.custom_payload = payload;
 }
 
@@ -34,5 +34,5 @@ void			h_custom_payload_ascii(t_mgr *mgr, char *input)
 		hermes_error(INPUT_ERROR, TRUE, 1, "--data not specified");
 	if (!(mgr->job.custom_payload = (void *)strdup(input)))
 		hermes_error(errno, TRUE, 2, "malloc()", strerror(errno));
-	mgr->job.options.bitops.custom_ascii_payload = TRUE;
+	mgr->job.opts.bitops.custom_ascii_payload = TRUE;
 }

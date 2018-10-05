@@ -126,7 +126,7 @@ typedef struct			s_ops
 
 typedef struct			s_job
 {
-	t_ops				options;
+	t_ops				opts;
 	t_targetlist		targets;
 	t_portlist			ports;
 	t_portlist			syn_ports;

@@ -5,38 +5,38 @@ void 			h_ack_portlist(t_mgr *mgr, char *input)
 {
 	if (handle_port(&mgr->job.ack_ports, input) == FAILURE)
 		return ; /* TODO hermes_error() */
-	mgr->job.options.bitops.do_ack_discov = TRUE;
+	mgr->job.opts.bitops.do_ack_discov = TRUE;
 }
 
 void 			h_scan_portlist(t_mgr *mgr, char *input)
 {
 	if (handle_port(&mgr->job.ports, input) == FAILURE)
 		return ; /* TODO hermes_error() */
-	mgr->job.options.bitops.scan_ports_spec = TRUE;
+	mgr->job.opts.bitops.scan_ports_spec = TRUE;
 }
 
 void 			h_syn_portlist(t_mgr *mgr, char *input)
 {
 	if (handle_port(&mgr->job.syn_ports, input) == FAILURE)
 		return ; /* TODO hermes_error() */
-	mgr->job.options.bitops.do_syn_discov = TRUE;
+	mgr->job.opts.bitops.do_syn_discov = TRUE;
 }
 
 void 			h_udp_portlist(t_mgr *mgr, char *input)
 {
 	if (handle_port(&mgr->job.udp_ports, input) == FAILURE)
 		return ; /* TODO hermes_error() */
-	mgr->job.options.bitops.do_udp_discov = TRUE;
+	mgr->job.opts.bitops.do_udp_discov = TRUE;
 }
 
 void			h_exclude_ports(t_mgr *mgr, char *input)
 {
 	if (handle_port(&mgr->exclude_ports, input) == FAILURE)
 		return ; /* TODO hermes_error() */
-	mgr->job.options.bitops.exclude_ports_spec = TRUE;
+	mgr->job.opts.bitops.exclude_ports_spec = TRUE;
 }
 
 void			h_dont_randomize_ports(t_mgr *mgr)
 {
-	mgr->job.options.bitops.ports_no_random = TRUE;
+	mgr->job.opts.bitops.ports_no_random = TRUE;
 }

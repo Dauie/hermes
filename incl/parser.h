@@ -46,7 +46,7 @@ int				parse_worker_file(t_workerlist *list, char *filename);
 int				parse_ip_file(t_targetlist *list, char *filename);
 
 /*
-**	boolean user options
+**	boolean user opts
 */
 void			h_ack_scan(t_mgr *mgr);
 void			h_append_output(t_mgr *mgr);
@@ -68,7 +68,7 @@ void			h_udp_scan(t_mgr *mgr);
 void			h_xmas_scan(t_mgr *mgr);
 
 /*
-**	user options with specification
+**	user opts with specification
 */
 void			h_ack_portlist(t_mgr *mgr, char *input); /*done*/
 void			h_daemon(t_mgr *mgr, char *input);

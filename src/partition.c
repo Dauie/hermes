@@ -42,7 +42,7 @@ t_node *new_joblist(t_ops *ops, uint32_t count)
 	while (count)
 	{
 		tmp = new_job();
-		memcpy(&tmp->options, ops, sizeof(t_ops));
+		memcpy(&tmp->opts, ops, sizeof(t_ops));
 		add_node_list_head(&job, (void **)&tmp);
 		count--;
 	}
@@ -55,7 +55,7 @@ t_node  *partition_jobs(t_job *job, uint32_t parts)
 
 	if (!parts)
 		return (NULL);
-	job_list = new_joblist(&job->options, parts);
+	job_list = new_joblist(&job->opts, parts);
 	while (job->targets.ips)
 		partition_ip4(&job->targets.ips, job_list);
 	while (job->targets.iprngs)
