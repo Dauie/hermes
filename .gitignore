@@ -1,3 +1,6 @@
 cmake*
 CMake*
 *.o
+*.a
+*.so
+*.dyld

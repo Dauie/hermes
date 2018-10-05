@@ -20,8 +20,8 @@
 # include "../libhermes/incl/libhermes.h"
 # include "parser.h"
 
-t_node          *split_nprtrng(uint32_t splits, void *data);
-t_node          *split_nip4rng(uint32_t splits, void *data);
+t_node *split_prtrng_n(void *data, uint32_t splits);
+t_node *split_ip4rng_n(void *data, uint32_t splits);
 
 t_ip4			*new_ip4(void);
 int				ip4_cmp(void *left, void *right);
@@ -59,6 +59,6 @@ binn			*make_portlist_binn(t_portlist *ports);
 binn			*make_targetlist_binn(t_targetlist *list);
 
 int             manager(t_mgr *mgr);
-t_node          *partition_jobs(t_job *job, uint32_t worker_count);
+t_node          *partition_jobs(t_job *job, uint32_t parts);
 
 #endif
