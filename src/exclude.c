@@ -35,7 +35,7 @@ t_node *split_nip4rng(uint32_t splits, void *data)
 	while (start < ((t_ip4rng*)data)->end)
 	{
         ((t_ip4rng*)node->data)->size = size;
-        ((t_ip4rng*)node->data->)start = start;
+        ((t_ip4rng*)node->data)->start = start;
         ((t_ip4rng*)node->data)->end = start + size;
 		add_node_list_head(&node, node->data);
 		start = ip4_increment(start, size);
