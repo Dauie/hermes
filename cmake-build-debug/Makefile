@@ -123,6 +123,33 @@ ft_nmap/fast:
 	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/build
 .PHONY : ft_nmap/fast
 
+libhermes/src/bst.o: libhermes/src/bst.c.o
+
+.PHONY : libhermes/src/bst.o
+
+# target to build an object file
+libhermes/src/bst.c.o:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/libhermes/src/bst.c.o
+.PHONY : libhermes/src/bst.c.o
+
+libhermes/src/bst.i: libhermes/src/bst.c.i
+
+.PHONY : libhermes/src/bst.i
+
+# target to preprocess a source file
+libhermes/src/bst.c.i:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/libhermes/src/bst.c.i
+.PHONY : libhermes/src/bst.c.i
+
+libhermes/src/bst.s: libhermes/src/bst.c.s
+
+.PHONY : libhermes/src/bst.s
+
+# target to generate assembly for a file
+libhermes/src/bst.c.s:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/libhermes/src/bst.c.s
+.PHONY : libhermes/src/bst.c.s
+
 libhermes/src/conversions.o: libhermes/src/conversions.c.o
 
 .PHONY : libhermes/src/conversions.o
@@ -231,6 +258,33 @@ libhermes/src/memory.c.s:
 	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/libhermes/src/memory.c.s
 .PHONY : libhermes/src/memory.c.s
 
+libhermes/src/node.o: libhermes/src/node.c.o
+
+.PHONY : libhermes/src/node.o
+
+# target to build an object file
+libhermes/src/node.c.o:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/libhermes/src/node.c.o
+.PHONY : libhermes/src/node.c.o
+
+libhermes/src/node.i: libhermes/src/node.c.i
+
+.PHONY : libhermes/src/node.i
+
+# target to preprocess a source file
+libhermes/src/node.c.i:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/libhermes/src/node.c.i
+.PHONY : libhermes/src/node.c.i
+
+libhermes/src/node.s: libhermes/src/node.c.s
+
+.PHONY : libhermes/src/node.s
+
+# target to generate assembly for a file
+libhermes/src/node.c.s:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/libhermes/src/node.c.s
+.PHONY : libhermes/src/node.c.s
+
 libhermes/src/str_tbl.o: libhermes/src/str_tbl.c.o
 
 .PHONY : libhermes/src/str_tbl.o
@@ -285,32 +339,32 @@ libhermes/src/swap.c.s:
 	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/libhermes/src/swap.c.s
 .PHONY : libhermes/src/swap.c.s
 
-src/divide_work.o: src/divide_work.c.o
+src/binnify.o: src/binnify.c.o
 
-.PHONY : src/divide_work.o
+.PHONY : src/binnify.o
 
 # target to build an object file
-src/divide_work.c.o:
-	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/divide_work.c.o
-.PHONY : src/divide_work.c.o
+src/binnify.c.o:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/binnify.c.o
+.PHONY : src/binnify.c.o
 
-src/divide_work.i: src/divide_work.c.i
+src/binnify.i: src/binnify.c.i
 
-.PHONY : src/divide_work.i
+.PHONY : src/binnify.i
 
 # target to preprocess a source file
-src/divide_work.c.i:
-	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/divide_work.c.i
-.PHONY : src/divide_work.c.i
+src/binnify.c.i:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/binnify.c.i
+.PHONY : src/binnify.c.i
 
-src/divide_work.s: src/divide_work.c.s
+src/binnify.s: src/binnify.c.s
 
-.PHONY : src/divide_work.s
+.PHONY : src/binnify.s
 
 # target to generate assembly for a file
-src/divide_work.c.s:
-	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/divide_work.c.s
-.PHONY : src/divide_work.c.s
+src/binnify.c.s:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/binnify.c.s
+.PHONY : src/binnify.c.s
 
 src/exclude.o: src/exclude.c.o
 
@@ -365,6 +419,33 @@ src/ip4.s: src/ip4.c.s
 src/ip4.c.s:
 	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/ip4.c.s
 .PHONY : src/ip4.c.s
+
+src/job.o: src/job.c.o
+
+.PHONY : src/job.o
+
+# target to build an object file
+src/job.c.o:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/job.c.o
+.PHONY : src/job.c.o
+
+src/job.i: src/job.c.i
+
+.PHONY : src/job.i
+
+# target to preprocess a source file
+src/job.c.i:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/job.c.i
+.PHONY : src/job.c.i
+
+src/job.s: src/job.c.s
+
+.PHONY : src/job.s
+
+# target to generate assembly for a file
+src/job.c.s:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/job.c.s
+.PHONY : src/job.c.s
 
 src/main.o: src/main.c.o
 
@@ -969,6 +1050,9 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... edit_cache"
 	@echo "... ft_nmap"
+	@echo "... libhermes/src/bst.o"
+	@echo "... libhermes/src/bst.i"
+	@echo "... libhermes/src/bst.s"
 	@echo "... libhermes/src/conversions.o"
 	@echo "... libhermes/src/conversions.i"
 	@echo "... libhermes/src/conversions.s"
@@ -981,21 +1065,27 @@ help:
 	@echo "... libhermes/src/memory.o"
 	@echo "... libhermes/src/memory.i"
 	@echo "... libhermes/src/memory.s"
+	@echo "... libhermes/src/node.o"
+	@echo "... libhermes/src/node.i"
+	@echo "... libhermes/src/node.s"
 	@echo "... libhermes/src/str_tbl.o"
 	@echo "... libhermes/src/str_tbl.i"
 	@echo "... libhermes/src/str_tbl.s"
 	@echo "... libhermes/src/swap.o"
 	@echo "... libhermes/src/swap.i"
 	@echo "... libhermes/src/swap.s"
-	@echo "... src/divide_work.o"
-	@echo "... src/divide_work.i"
-	@echo "... src/divide_work.s"
+	@echo "... src/binnify.o"
+	@echo "... src/binnify.i"
+	@echo "... src/binnify.s"
 	@echo "... src/exclude.o"
 	@echo "... src/exclude.i"
 	@echo "... src/exclude.s"
 	@echo "... src/ip4.o"
 	@echo "... src/ip4.i"
 	@echo "... src/ip4.s"
+	@echo "... src/job.o"
+	@echo "... src/job.i"
+	@echo "... src/job.s"
 	@echo "... src/main.o"
 	@echo "... src/main.i"
 	@echo "... src/main.s"

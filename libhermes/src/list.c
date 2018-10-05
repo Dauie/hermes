@@ -19,6 +19,21 @@ void            del_node_list(t_node **node)
 	*node = NULL;
 }
 
+t_node			*remove_node_list_head(t_node **list)
+{
+	t_node		*node;
+
+	if (!list)
+		return;
+	if ((*list)->left)
+		while ((*list)->left)
+			*list = (*list)->left;
+	node = (*list)->right;
+	*list = NULL;
+	free(*list);
+	return (node);
+}
+
 void			add_node_list_head(t_node **list, void *data)
 {
 	t_node		*node;

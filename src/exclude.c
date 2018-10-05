@@ -21,68 +21,60 @@ static void	exclude_ip4_ip4(t_targetlist *list, t_node **targets, t_node *exclud
 
 // BIG TODO : make generic for t_ip4rng && t_prtrng
 
-t_node *split_nip4rng(uint32_t splits, void *data, int (*cmp)(void *, void *))
+t_node *split_nip4rng(uint32_t splits, void *data)
 {
 	uint32_t    rem;
-	t_node      *ret;
 	uint32_t    size;
-	uint32_t    start;
-	t_prtrng	*node;
+	in_addr_t   start;
+	t_node      *node;
 
-	ret = NULL;
-	node = data->new_node(data->node_type);
-	size = data->size / splits;
-	start = data->start;
-	while (start < data->end)
+
+	node = new_node(data);
+	size = ((t_ip4rng*)data)->size / splits;
+	start = ((t_ip4rng*)data)->start;
+	while (start < ((t_ip4rng*)data)->end)
 	{
-		node->data->size = size;
-		node->data->start = start;
-		node->data->end = start + size;
-		add_node(&ret, node->data, cmp);
-		start += size;
+        ((t_ip4rng*)node->data)->size = size;
+        ((t_ip4rng*)node->data->)start = start;
+        ((t_ip4rng*)node->data)->end = start + size;
+		add_node_list_head(&node, node->data);
+		start = ip4_increment(start, size);
 	}
-	if ((rem = data->size % splits))
+	if ((rem = ((t_ip4rng*)data)->size % splits))
 	{
-		ret->data->size += rem;
-		ret->data->end  += rem;
+        ((t_ip4rng*)node->data)->size += rem;
+        ((t_ip4rng*)node->data)->end  += rem;
 	}
-	node->data = NULL;
-	node = NULL;
-	free(node);
-	return (ret);
+	return (node);
 }
 
 // BIG TODO : make generic for iprng && portrng
 
-t_node *split_nprtrng(uint32_t splits, void *data, int (*cmp)(void *, void *))
+t_node *split_nprtrng(uint32_t splits, void *data)
 {
     uint32_t    rem;
-    t_node      *ret;
     uint32_t    size;
-    uint32_t    start;
-    t_ip4rng	*node;
+    in_addr_t   start;
+    t_node      *node;
 
-    ret = NULL;
-    node = new_ip4range();
-    size = data->size / splits;
-    start = data->start;
-    while (start < data->end)
+
+    node = new_node(data);
+    size = ((t_prtrng*)data)->size / splits;
+    start = ((t_prtrng*)data)->start;
+    while (start < ((t_ip4rng*)data)->end)
     {
-        node->data->size = size;
-        node->data->start = start;
-        node->data->end = start + size;
-        add_node(&ret, node->data, cmp);
+        ((t_ip4rng*)node->data)->size = size;
+        ((t_ip4rng*)node->data)->start = start;
+        ((t_ip4rng*)node->data)->end = start + size;
+        add_node_list_head(&node, node->data);
         start += size;
     }
-    if ((rem = data->size % splits))
+    if ((rem = ((t_ip4rng*)data)->size % splits))
     {
-        ret->data->size += rem;
-        ret->data->end  += rem;
+        ((t_ip4rng*)node->data)->size += rem;
+        ((t_ip4rng*)node->data)->end  += rem;
     }
-	node->data = NULL;
-	node = NULL;
-	free(node);
-    return (ret);
+    return (node);
 }
 
 /* Fills 'left' and 'right' with different halves of the range.

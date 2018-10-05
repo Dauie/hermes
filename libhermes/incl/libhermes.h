@@ -64,6 +64,7 @@ t_node					*tree_search(t_node **tree, void *data, int (*cmp)(void *, void *));
 void					add_node_list_end(t_node **list, void *node);
 void					add_node_list_head(t_node **list, void *data);
 void					del_node_list(t_node **node);
+t_node                  *remove_node_list_head(t_node **list);
 
 
 /*

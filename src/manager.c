@@ -1,10 +1,6 @@
 #include "../incl/defined.h"
 #include "../incl/hermes.h"
 
-#ifndef WORKER
-#define WORKER(w) ((t_worker*)w->data)
-#endif
-
 int				connect_workers(t_node **workers, uint32_t *worker_count,
                                    t_node **rm_tree, int proto)
 {
@@ -50,7 +46,7 @@ int					manager(t_mgr *mgr)
 		connect_workers(&mgr->worker_list.wrkrs, &mgr->worker_list.wrkr_cnt,
 						&mgr->worker_list.wrkrs, proto->p_proto);
 		printf("connected to %zu wrkrs.\n", mgr->worker_list.wrkr_cnt);
-        partition_jobs(mgr->job, mgr->worker_list);
+        partition_jobs(mgr->job, mgr->worker_list.wrkr_cnt);
         distribute_jobs(mgr->worker_list.wrkrs);
 	}
     /* TODO: Divide work amongst thread count, send jobs to wrkrs, spawn threads
