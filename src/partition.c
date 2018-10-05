@@ -39,7 +39,7 @@ void partition_ip4rng(uint32_t parts, t_node **src, t_node **w_jobs, int (*cmp)(
         if (!temp)
             temp = *w_jobs;
         add_node_bst(&((t_job*)((t_node*)w_jobs)->data)->targets.iprngs, &partitioned->data, cmp);
-        partitioned = remove_node_list_head(&partitioned);
+        remove_node_list_head(&partitioned);
         temp = temp->right;
     }
     remove_node_bst(src, (*src)->data, cmp, min);
@@ -60,7 +60,7 @@ void partition_portrng(uint32_t parts, t_node **src, t_node **w_jobs, int (*cmp)
         if (!temp)
             temp = *w_jobs;
         add_node_list_head(&((t_job*)((t_node*)w_jobs)->data)->ports.prtrngs, &partitioned->data);
-        partitioned = remove_node_list_head(&partitioned);
+        remove_node_list_head(&partitioned);
         temp = temp->right;
     }
     remove_node_bst(src, (*src)->data, cmp, min);

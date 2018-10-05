@@ -23,8 +23,8 @@ int				port_cmp(void *prt_left, void *prt_right)
 	t_port		*left;
 	t_port		*right;
 
-	left = prt_left;
-	right = prt_right;
+	left = (t_port*)prt_left;
+	right = (t_port*)prt_right;
 	if (left->port == right->port)
 		return (0);
 	else if (left->port > right->port)
@@ -51,8 +51,8 @@ int				portrng_cmp(void *prt_left, void *prt_right)
 	t_prtrng	*left;
 	t_prtrng	*right;
 
-	left = prt_left;
-	right = prt_right;
+	left = (t_prtrng*)prt_left;
+	right = (t_prtrng*)prt_right;
 	if (left->start == right->start)
 	{
 		if (left->end < right->end)
@@ -73,8 +73,8 @@ int				port_prtrng_overlap_cmp(void *port, void *prtrng)
 	t_port		*p;
 	t_prtrng *pr;
 
-	p = port;
-	pr = prtrng;
+	p = (t_port*)port;
+	pr = (t_prtrng*)prtrng;
 	if (p->port >= pr->start && p->port <= pr->end)
 		return (0);
 	return (-1);
@@ -85,8 +85,8 @@ int				portrng_overlap_cmp(void *prt_left, void *prt_right)
 	t_prtrng	*left;
 	t_prtrng	*right;
 
-	left = prt_left;
-	right = prt_right;
+	left = (t_prtrng*)prt_left;
+	right = (t_prtrng*)prt_right;
 	if (left->start >= right->start && left->start <= right->end)
 		return (0);
 	else if (left->end >= right->start && left->end <= right->end)
