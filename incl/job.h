@@ -39,11 +39,12 @@ typedef struct			s_worker
 {
 	struct sockaddr_in	sin;
 	int 				sock;
+	t_job				*job;
 }						t_worker;
 
 typedef struct			s_workerlist
 {
-	size_t				wrkr_cnt;
+	uint32_t			wrkr_cnt;
 	t_node				*wrkrs;					/*t_node list containing t_ip4 structs*/
 }						t_workerlist;
 
