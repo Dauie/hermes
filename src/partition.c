@@ -54,12 +54,12 @@ void partition_portrng(uint32_t parts, t_node **src, t_node *w_jobs)
 		return ;
 	tmp = NULL;
 	// NOTE : this /should/ work
-	fragment_list = split_prtrng_n(&src, parts);
+	fragment_list = split_prtrng_n(&(*src)->data, parts);
 	while (fragment_list)
 	{
 		if (!tmp)
 			tmp = w_jobs;
-		add_node_list_head(&((t_job*)((t_node*)w_jobs)->data)->ports.prtrngs, &fragment_list->data);
+		add_node_list_head(&((t_job*)(w_jobs)->data)->ports.prtrngs, &fragment_list->data);
 		remove_node_list_head(&fragment_list);
 		tmp = tmp->right;
 	}
@@ -76,9 +76,8 @@ t_node *new_joblist(t_ops *ops, uint32_t count)
 	{
 		tmp = new_job();
 		memcpy(&tmp->options, ops, sizeof(t_ops));
-		add_node_list_head(&job, tmp);
+		add_node_list_head(&job, (void **)&tmp);
 		count--;
-		free(tmp);
 	}
 	return (job);
 }

@@ -21,7 +21,7 @@ static void	exclude_ip4_ip4(t_targetlist *list, t_node **targets, t_node *exclud
 
 // BIG TODO : make generic for t_ip4rng && t_prtrng
 
-t_node *split_ip4rng_n(void *data, uint32_t splits)
+t_node *split_ip4rng_n(void **data, uint32_t splits)
 {
 	uint32_t    rem;
 	uint32_t    size;
@@ -50,7 +50,7 @@ t_node *split_ip4rng_n(void *data, uint32_t splits)
 
 // BIG TODO : make generic for iprng && portrng
 
-t_node *split_prtrng_n(void *data, uint32_t splits)
+t_node *split_prtrng_n(void **data, uint32_t splits)
 {
     uint32_t    rem;
     uint32_t    size;

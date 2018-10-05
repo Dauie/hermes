@@ -20,8 +20,8 @@
 # include "../libhermes/incl/libhermes.h"
 # include "parser.h"
 
-t_node          *split_prtrng_n(void *data, uint32_t splits);
-t_node          *split_ip4rng_n(void *data, uint32_t splits);
+t_node			*split_prtrng_n(void **data, uint32_t splits);
+t_node			*split_ip4rng_n(void **data, uint32_t splits);
 
 t_ip4			*new_ip4(void);
 int				ip4_cmp(void *left, void *right);

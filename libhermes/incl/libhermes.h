@@ -47,7 +47,9 @@ void					*memalloc(size_t size);
 /*
 **	Node helper functions
 */
-t_node					*new_node(void* data);
+t_node					*new_node(void **data);
+void					del_node(t_node **node);
+
 
 /*
 **	BST Functions
@@ -61,9 +63,9 @@ t_node					*tree_search(t_node **tree, void *data, int (*cmp)(void *, void *));
 /*
 **	List Functions
 */
-void					add_node_list_end(t_node **list, void *node);
-void					add_node_list_head(t_node **list, void *data);
-void					del_node_list(t_node **node);
+void					add_node_list_end(t_node **list, void **node);
+void					add_node_list_head(t_node **list, void **data);
+void					remove_node_list(t_node **node);
 void					remove_node_list_head(t_node **list);
 
 

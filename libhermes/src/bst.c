@@ -1,20 +1,6 @@
 # include "sys/errno.h"
 # include "../incl/libhermes.h"
 
-
-void		del_bst_node(t_node **node)
-{
-	if (!node || !*node)
-		return ;
-	if ((*node)->data)
-	{
-		free((*node)->data);
-		(*node)->data = NULL;
-	}
-	free(*node);
-	*node = NULL;
-}
-
 t_node		*bst_search(t_node **tree, void *data, int (*cmp)(void *, void *))
 {
 	t_node	*cur;
@@ -68,7 +54,7 @@ int			add_node_bst(t_node **root, void **data, int (*cmp)(void *, void *))
 			curr = curr->right;
 		else
 		{
-			del_bst_node(&node);
+			del_node(&node);
 			return (FAILURE);
 		}
 	}
@@ -115,7 +101,7 @@ int			remove_node_bst(t_node **tree, void *key,
 		}
 		else
 			*tree = NULL;
-		del_bst_node(&curr);
+		del_node(&curr);
 	}
 	else if (curr->left && curr->right)
 	{
@@ -135,7 +121,7 @@ int			remove_node_bst(t_node **tree, void *key,
 		}
 		else
 			*tree = child;
-		del_bst_node(&curr);
+		del_node(&curr);
 	}
 	return (SUCCESS);
 }
