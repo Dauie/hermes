@@ -134,8 +134,6 @@ binn				*make_ops_binn(t_ops *options)
 
 int				send_work(t_worker *worker, t_job *job)
 {
-
-
 	binn			*ports;
 	binn			*ops;
 	binn			*targets;

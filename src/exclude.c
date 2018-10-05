@@ -30,7 +30,7 @@ t_node *split_nip4rng(uint32_t splits, void *data, int (*cmp)(void *, void *))
 	t_prtrng	*node;
 
 	ret = NULL;
-	node = new_portrange();
+	node = data->new_node(data->node_type);
 	size = data->size / splits;
 	start = data->start;
 	while (start < data->end)
