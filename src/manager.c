@@ -1,6 +1,6 @@
 #include "../incl/hermes.h"
 #include "../incl/defined.h"
-#include "../incl/hermes_tcp.h"
+#include "../incl/hermes_msg.h"
 
 int				connect_workers(t_node **workers, uint32_t *worker_count,
                                    t_node **rm_tree, int proto)
@@ -26,30 +26,6 @@ int				connect_workers(t_node **workers, uint32_t *worker_count,
 	if ((*workers)->right)
 		connect_workers(&(*workers)->right, worker_count, rm_tree, proto);
 	return (0);
-}
-
-void                send_work(t_worker *worker, t_node *job)
-{
-	int				read;
-    t_hermes_tcp	*header;
-
-    /* TODO :
-     * send job offer
-     * wait for response
-     * if response == good
-     *      send work
-     * else
-     *      handle response
-     */
-    header = new_hermes_header();
-
-    if (send(worker->sock, ) < 0)
-    	;
-    binnify(&job);
-    if ((read = recv(worker->sock, &header, /*CONSTANT*/, 0)) < 0)
-    	;
-    // check(buffer);
-    if ()
 }
 
 void                distribute_jobs(t_node *worker, t_node *job_list)
@@ -89,7 +65,6 @@ int					manager(t_mgr *mgr)
 }
 
 #ifdef TESTING
-
 #ifndef WORKER
 #define WORKER(w) ((t_worker*)w->data)
 #endif
