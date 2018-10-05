@@ -1,6 +1,6 @@
 #include "../incl/libhermes.h"
 
-t_node					*new_node(void **data)
+t_node			*new_node(void **data)
 {
 	t_node		*node;
 
@@ -13,7 +13,7 @@ t_node					*new_node(void **data)
 	return (node);
 }
 
-void		del_node(t_node **node)
+void			del_node(t_node **node)
 {
 	if (!node || !*node)
 		return ;

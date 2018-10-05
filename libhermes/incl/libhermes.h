@@ -1,4 +1,3 @@
-
 #ifndef LIB_HERMES_H
 # define LIB_HERMES_H
 
@@ -50,7 +49,6 @@ void					*memalloc(size_t size);
 t_node					*new_node(void **data);
 void					del_node(t_node **node);
 
-
 /*
 **	BST Functions
 */
@@ -59,7 +57,6 @@ int						remove_node_bst(t_node **tree, void *key, int (*cmp)(void *, void *), v
 t_node					*bst_search(t_node **tree, void *data, int (*cmp)(void *, void *));
 t_node					*tree_search(t_node **tree, void *data, int (*cmp)(void *, void *));
 
-
 /*
 **	List Functions
 */
@@ -67,7 +64,6 @@ void					add_node_list_end(t_node **list, void **node);
 void					add_node_list_head(t_node **list, void **data);
 void					remove_node_list(t_node **node);
 void					remove_node_list_head(t_node **list);
-
 
 /*
 **	Error Management Functions
