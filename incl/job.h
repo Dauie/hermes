@@ -35,13 +35,6 @@ typedef struct			s_prtrng
 	uint16_t 			end;
 }						t_prtrng;
 
-typedef struct			s_worker
-{
-	struct sockaddr_in	sin;
-	int 				sock;
-	t_job				*job;
-}						t_worker;
-
 typedef struct			s_workerlist
 {
 	uint32_t			wrkr_cnt;
@@ -141,6 +134,13 @@ typedef struct			s_job
 	t_portlist			udp_ports;
 	void				*custom_payload;
 }						t_job;
+
+typedef struct			s_worker
+{
+    struct sockaddr_in	sin;
+    int 				sock;
+    t_job				*job;
+}						t_worker;
 
 typedef struct			s_mgr {
 	t_job				job;
