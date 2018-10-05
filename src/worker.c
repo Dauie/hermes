@@ -1,4 +1,4 @@
-#include <hermes.h>
+#include "../incl/hermes.h"
 #include "../incl/job.h"
 
 t_worker		*new_worker(void)
@@ -15,8 +15,8 @@ int				worker_cmp(void *wrk_left, void *wrk_right)
 	t_worker	*left;
 	t_worker	*right;
 
-	left = wrk_left;
-	right = wrk_right;
+	left = (t_worker*)wrk_left;
+	right = (t_worker*)wrk_right;
 	return (ip4_cmp(&left->sin.sin_addr, &right->sin.sin_addr));
 }
 

@@ -58,6 +58,7 @@ binn			*make_ops_binn(t_ops *options);
 binn			*make_portlist_binn(t_portlist *ports);
 binn			*make_targetlist_binn(t_targetlist *list);
 
+int             manager(t_mgr *mgr);
 t_node          *partition_jobs(t_job *job, uint32_t worker_count);
 
 #endif

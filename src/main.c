@@ -25,5 +25,6 @@ int			 main(int ac, char **av)
 	parse_opts(mgr, ac, av);
 	sanity_check(mgr);
 	do_exclusions(mgr);
+	manager(mgr);
 	return (SUCCESS);
 }

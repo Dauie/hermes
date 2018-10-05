@@ -181,9 +181,9 @@ static void		exclude_ip4rng_ip4rng(t_targetlist *list, t_node **targets,
 	if ((conflict = tree_search(targets, exclude->data, ip4rng_overlap_cmp)))
 	{
 		range = new_ip4range();
-		memcpy(range, conflict->data, sizeof(t_ip4rng));
-		remove_node_bst(targets, conflict->data, ip4rng_cmp, ip4rng_min);
-		split_ip4range(range, exclude->data, &left, &right);
+		memcpy(range, (t_ip4rng*)conflict->data, sizeof(t_ip4rng));
+		remove_node_bst(targets, (t_ip4rng*)conflict->data, ip4rng_cmp, ip4rng_min);
+		split_ip4range(range, (t_ip4rng*)exclude->data, &left, &right);
 		correct_targetlist_totals(list, range, left, right);
 		free(range);
 		if (left)
@@ -291,14 +291,14 @@ static void		exclude_port_prtrng(t_portlist *list, t_node **targets, t_node *exc
 		return ;
 	if (exclude->left)
 		exclude_port_prtrng(list, targets, exclude->left);
-	if ((conflict = tree_search(targets, exclude->data, port_prtrng_overlap_cmp)))
+	if ((conflict = tree_search(targets, (t_ip4*)exclude->data, port_prtrng_overlap_cmp)))
 	{
 		tmp.start = ((t_port*)exclude->data)->port;
 		tmp.end = tmp.start;
 		tmp.size = 1;
 		range = new_portrange();
-		memcpy(range, conflict->data, sizeof(t_prtrng));
-		remove_node_bst(targets, conflict->data, portrng_cmp, portrng_min);
+		memcpy(range, (t_ip4*)conflict->data, sizeof(t_prtrng));
+		remove_node_bst(targets, (t_ip4*)conflict->data, portrng_cmp, portrng_min);
 		split_portrange(range, &tmp, &left, &right);
 		correct_portrange_totals(list, range, left, right);
 		free(range);
@@ -326,9 +326,9 @@ static void		exclude_prtrng_prtrng(t_portlist *list, t_node **targets,
 	if ((conflict = tree_search(targets, exclude->data, portrng_overlap_cmp)))
 	{
 		range = new_portrange();
-		memcpy(range, conflict->data, sizeof(t_prtrng));
-		remove_node_bst(targets, conflict->data, portrng_cmp, portrng_min);
-		split_portrange(range, exclude->data, &left, &right);
+		memcpy(range, (t_prtrng*)conflict->data, sizeof(t_prtrng));
+		remove_node_bst(targets, (t_prtrng*)conflict->data, portrng_cmp, portrng_min);
+		split_portrange(range, (t_prtrng*)exclude->data, &left, &right);
 		correct_portrange_totals(list, range, left, right);
 		free(range);
 		if (left)
