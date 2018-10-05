@@ -21,6 +21,7 @@ typedef struct			s_node
 	void				*data;
 }						t_node;
 
+
 /*
 **	Integer helper functions
 */
@@ -38,22 +39,31 @@ char					**strsplit(const char *str, char delim);
 char					*strsub(char const *s, int start, size_t len);
 void					tbldel(char ***tbl);
 
-
 /*
 **	Memory Helper Functions
 */
 void					*memalloc(size_t size);
 
+/*
+**	Node helper functions
+*/
+t_node					*new_node(void* data);
 
 /*
 **	BST Functions
 */
-int						add_node(t_node **tree, void **data,
-									int (*cmp)(void *, void *));
-int						remove_node(t_node **root, void *key, int (*cmp)(void *, void *), void *(*min)(t_node *));
+int						add_node_bst(t_node **tree, void **data, int (*cmp)(void *, void *));
+int						remove_node_bst(t_node **tree, void *key, int (*cmp)(void *, void *), void *(*min)(t_node *));
 t_node					*bst_search(t_node **tree, void *data, int (*cmp)(void *, void *));
 t_node					*tree_search(t_node **tree, void *data, int (*cmp)(void *, void *));
-t_node					*new_node(void);
+
+
+/*
+**	List Functions
+*/
+void					add_node_list_end(t_node **list, void *node);
+void					add_node_list_head(t_node **list, void *data);
+void					del_node_list(t_node **node);
 
 
 /*

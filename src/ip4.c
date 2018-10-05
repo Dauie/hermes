@@ -202,7 +202,6 @@ int				ip4_ip4rng_overlap_cmp(void *ip, void *iprng)
 	return (-1);
 }
 
-/*TODO replace if statements with whats in split range*/
 int				ip4rng_overlap_cmp(void *left, void *right)
 {
 	t_ip4rng	*l;

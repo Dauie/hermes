@@ -15,6 +15,7 @@
 # include <netinet/in.h>
 # include <netdb.h>
 # include <netinet/ip_icmp.h>
+# include "../binn/src/binn.h"
 
 # include "../libhermes/incl/libhermes.h"
 # include "parser.h"
@@ -49,5 +50,11 @@ void			*worker_min(t_node *tree);
 int				sanity_check(t_mgr *mgr);
 void			do_exclusions(t_mgr *mgr);
 int				worker_daemon(int port);
+
+binn			*make_ops_binn(t_ops *options);
+binn			*make_portlist_binn(t_portlist *ports, uint8_t msgtype);
+binn			*make_targetlist_binn(t_targetlist *list);
+
+
 
 #endif

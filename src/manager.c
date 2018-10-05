@@ -21,7 +21,7 @@ int				connect_workers(t_node **workers, uint32_t *worker_count,
 				sizeof(worker->sin)) == -1)
 	{
 		hermes_error(FAILURE, FALSE, 2, "could not connect to worker:", inet_ntoa(worker->sin.sin_addr));
-		remove_node(rm_tree, worker, worker_cmp, worker_min);
+		remove_node_bst(rm_tree, worker, worker_cmp, worker_min);
 		*worker_count -= 1;
 	}
 	else

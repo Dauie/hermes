@@ -152,4 +152,6 @@ typedef struct			s_mgr {
 	FILE				*norm_file;
 }						t_mgr;
 
+t_job		*new_job(void);
+
 #endif
