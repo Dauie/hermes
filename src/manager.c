@@ -1,5 +1,5 @@
-#include "../incl/defined.h"
 #include "../incl/hermes.h"
+#include "../incl/defined.h"
 
 int				connect_workers(t_node **workers, uint32_t *worker_count,
                                    t_node **rm_tree, int proto)
@@ -27,7 +27,7 @@ int				connect_workers(t_node **workers, uint32_t *worker_count,
 	return (0);
 }
 
-void    distribute_jobs(t_node *worker)
+void                distribute_jobs(t_node *worker)
 {
     if (!worker)
         return ;

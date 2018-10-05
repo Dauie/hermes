@@ -1,6 +1,6 @@
 #include "../incl/hermes.h"
 
-int				send_work(t_worker *worker, t_job *job)
+int				send_work(t_job *job)
 {
 	binn			*work;
 	binn			*ports;

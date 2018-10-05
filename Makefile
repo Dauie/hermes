@@ -14,7 +14,7 @@ LIBHERMES = ./libhermes
 SRC_DIR = src
 
 SRC_FILES = main.c worker_daemon.c ip4.c port.c worker.c sanity_check.c
-SRC_FILES += exclude.c send_work.c
+SRC_FILES += exclude.c manager.c partition.c job.c binnify.c send_work.c
 
 PARSE_DIR = src/parsing
 
