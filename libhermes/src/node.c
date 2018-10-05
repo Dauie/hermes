@@ -1,6 +1,6 @@
 #include "../incl/libhermes.h"
 
-t_node					*new_node(void* data)
+t_node			*new_node(void **data)
 {
 	t_node		*node;
 
@@ -9,6 +9,20 @@ t_node					*new_node(void* data)
 		hermes_error(errno, TRUE, 2, "malloc()", strerror(errno));
 		return (NULL);
 	}
-	node->data = data;
+	node->data = *data;
 	return (node);
 }
+
+void			del_node(t_node **node)
+{
+	if (!node || !*node)
+		return ;
+	if ((*node)->data)
+	{
+		free((*node)->data);
+		(*node)->data = NULL;
+	}
+	free(*node);
+	*node = NULL;
+}
+

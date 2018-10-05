@@ -2,7 +2,7 @@
 #include "../incl/libhermes.h"
 
 
-void            del_node_list(t_node **node)
+void            remove_node_list(t_node **node)
 {
 	if (!node || !*node)
 		return ;
@@ -26,16 +26,16 @@ void 			remove_node_list_head(t_node **list)
 	if (!list)
 		return ;
 	node = *list;
-	*((t_node*)list)->right = **list;
-	node = NULL;
+	(*list) = (*list)->right;
 	free(node);
+	node = NULL;
 }
 
-void			add_node_list_head(t_node **list, void *data)
+void			add_node_list_head(t_node **list, void **data)
 {
 	t_node		*node;
 
-	if (!list || !data)
+	if (!list || !data || !*data)
 		return;
 	node = new_node(data);
 	if (*list == NULL)
@@ -48,19 +48,24 @@ void			add_node_list_head(t_node **list, void *data)
 	}
 }
 
-void			add_node_list_end(t_node **list, void *data)
+void			add_node_list_end(t_node **list, void **data)
 {
 	t_node		*tmp;
 	t_node		*node;
 
-	if (!list || !data)
+	if (!list || !data || !*data)
 		return;
 	node = new_node(data);
-	tmp = *list;
-	while (tmp->right)
-		tmp = tmp->right;
-	tmp->right = node;
-	node->left = tmp;
+	if (*list == NULL)
+		*list = node;
+	else
+	{
+		tmp = *list;
+		while (tmp->right)
+			tmp = tmp->right;
+		tmp->right = node;
+		node->left = tmp;
+	}
 }
 
 #ifdef TESTING
