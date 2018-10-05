@@ -1,7 +1,20 @@
 #include "sys/errno.h"
 #include "../incl/libhermes.h"
 
-void			del_list();
+void			del_list(t_node **list)
+{
+    t_node *tmp;
+
+    if (!list)
+        return ;
+    while (*list)
+    {
+        tmp = (*list)->right;
+        *list = NULL;
+        free(*list);
+        *list = tmp;
+    }
+}
 
 void            remove_node_list(t_node **node)
 {
@@ -28,8 +41,8 @@ void 			remove_node_list_head(t_node **list)
 		return ;
 	node = *list;
 	(*list) = (*list)->right;
-	free(node);
-	node = NULL;
+    node = NULL;
+    free(node);
 }
 
 void			add_node_list_head(t_node **list, void **data)
