@@ -1,6 +1,7 @@
 #include "sys/errno.h"
 #include "../incl/libhermes.h"
 
+void			del_list();
 
 void            remove_node_list(t_node **node)
 {

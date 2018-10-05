@@ -53,6 +53,8 @@ t_node  *partition_jobs(t_job *job, uint32_t parts)
 {
 	t_node      *job_list;
 
+	if (!parts)
+		return (NULL);
 	job_list = new_joblist(&job->options, parts);
 	while (job->targets.ips)
 		partition_ip4(&job->targets.ips, job_list);

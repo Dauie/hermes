@@ -27,7 +27,7 @@ int				connect_workers(t_node **workers, uint32_t *worker_count,
 	return (0);
 }
 
-void                distribute_jobs(t_node *worker)
+void                distribute_jobs(t_node *worker, t_node *job_list)
 {
     if (!worker)
         return ;
@@ -39,21 +39,25 @@ void                distribute_jobs(t_node *worker)
 int					manager(t_mgr *mgr)
 {
 	struct protoent	*proto;
+    t_node          *job_list;
 
-	if ((proto = getprotobyname("tcp")) == 0)
+    if ((proto = getprotobyname("tcp")) == 0)
 		return (FAILURE);
 	if (mgr->worker_list.wrkr_cnt > 0)
 	{
+	    job_list = new_node();
 		connect_workers(&mgr->worker_list.wrkrs, &mgr->worker_list.wrkr_cnt,
 						&mgr->worker_list.wrkrs, proto->p_proto);
 		printf("connected to %i wrkrs.\n", mgr->worker_list.wrkr_cnt);
-        partition_jobs(&mgr->job, mgr->worker_list.wrkr_cnt);
-        distribute_jobs(mgr->worker_list.wrkrs);
+        job_list = partition_jobs(&mgr->job, mgr->worker_list.wrkr_cnt);
+        distribute_jobs(mgr->worker_list.wrkrs, job_list);
+        del_list(&job_list);
 	}
-    /* TODO: Divide work amongst thread count, send jobs to wrkrs, spawn threads
-    partition_jobs(mgr->job, mgr->thread_count);
-    distribute_jobs(mgr->threads);
-    */
+	job_list = new_node();
+    /* TODO: Divide work amongst thread count, send jobs to wrkrs, spawn threads*/
+    job_list = partition_jobs(&mgr->job, mgr->thread_count);
+    if (job_list)
+        //distribute_jobs(mgr->threads, job_list);
     //run_hermes(mgr);
 	return (0);
 }
