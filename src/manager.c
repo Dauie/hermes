@@ -28,9 +28,10 @@ int				connect_workers(t_node **workers, uint32_t *worker_count,
 	return (0);
 }
 
-void                send_work(t_node *worker, t_node *job)
+void                send_work(t_worker *worker, t_node *job)
 {
-    t_hermes_tcp   *header;
+	int				read;
+    t_hermes_tcp	*header;
 
     /* TODO :
      * send job offer
@@ -41,7 +42,14 @@ void                send_work(t_node *worker, t_node *job)
      *      handle response
      */
     header = new_hermes_header();
-    if (send() < 0)
+
+    if (send(worker->sock, ) < 0)
+    	;
+    binnify(&job);
+    if ((read = recv(worker->sock, &header, /*CONSTANT*/, 0)) < 0)
+    	;
+    // check(buffer);
+    if ()
 }
 
 void                distribute_jobs(t_node *worker, t_node *job_list)
@@ -52,8 +60,8 @@ void                distribute_jobs(t_node *worker, t_node *job_list)
      */
     if (!worker || !job_list)
         return ;
-    send_work(worker->right, job_list->right);
-    distribute_jobs(worker->right, job_list->right);
+    send_work(worker->right->data, job_list->right);
+    distribute_jobs(worker->right->data, job_list->right);
 }
 
 int					manager(t_mgr *mgr)
@@ -74,8 +82,7 @@ int					manager(t_mgr *mgr)
 	}
     /* TODO: Divide work amongst thread count, send jobs to wrkrs, spawn threads*/
     job_list = partition_jobs(&mgr->job, mgr->thread_count);
-    if (job_list)
-        ;//distribute_jobs(mgr->threads, job_list);
+    distribute_jobs(mgr->, job_list);
     //run_hermes(mgr);
     del_list(&job_list);
     return (0);
