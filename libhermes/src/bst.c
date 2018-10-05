@@ -8,7 +8,8 @@ void		del_bst_node(t_node **node)
 		return ;
 	if ((*node)->data)
 	{
-		free((*node)->data);
+		if ((*node)->data)
+			free((*node)->data);
 		(*node)->data = NULL;
 	}
 	free(*node);

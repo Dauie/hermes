@@ -123,6 +123,222 @@ ft_nmap/fast:
 	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/build
 .PHONY : ft_nmap/fast
 
+binn/conversions/json/binn_json.o: binn/conversions/json/binn_json.c.o
+
+.PHONY : binn/conversions/json/binn_json.o
+
+# target to build an object file
+binn/conversions/json/binn_json.c.o:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/binn/conversions/json/binn_json.c.o
+.PHONY : binn/conversions/json/binn_json.c.o
+
+binn/conversions/json/binn_json.i: binn/conversions/json/binn_json.c.i
+
+.PHONY : binn/conversions/json/binn_json.i
+
+# target to preprocess a source file
+binn/conversions/json/binn_json.c.i:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/binn/conversions/json/binn_json.c.i
+.PHONY : binn/conversions/json/binn_json.c.i
+
+binn/conversions/json/binn_json.s: binn/conversions/json/binn_json.c.s
+
+.PHONY : binn/conversions/json/binn_json.s
+
+# target to generate assembly for a file
+binn/conversions/json/binn_json.c.s:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/binn/conversions/json/binn_json.c.s
+.PHONY : binn/conversions/json/binn_json.c.s
+
+binn/examples/reading.o: binn/examples/reading.c.o
+
+.PHONY : binn/examples/reading.o
+
+# target to build an object file
+binn/examples/reading.c.o:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/binn/examples/reading.c.o
+.PHONY : binn/examples/reading.c.o
+
+binn/examples/reading.i: binn/examples/reading.c.i
+
+.PHONY : binn/examples/reading.i
+
+# target to preprocess a source file
+binn/examples/reading.c.i:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/binn/examples/reading.c.i
+.PHONY : binn/examples/reading.c.i
+
+binn/examples/reading.s: binn/examples/reading.c.s
+
+.PHONY : binn/examples/reading.s
+
+# target to generate assembly for a file
+binn/examples/reading.c.s:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/binn/examples/reading.c.s
+.PHONY : binn/examples/reading.c.s
+
+binn/examples/writing.o: binn/examples/writing.c.o
+
+.PHONY : binn/examples/writing.o
+
+# target to build an object file
+binn/examples/writing.c.o:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/binn/examples/writing.c.o
+.PHONY : binn/examples/writing.c.o
+
+binn/examples/writing.i: binn/examples/writing.c.i
+
+.PHONY : binn/examples/writing.i
+
+# target to preprocess a source file
+binn/examples/writing.c.i:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/binn/examples/writing.c.i
+.PHONY : binn/examples/writing.c.i
+
+binn/examples/writing.s: binn/examples/writing.c.s
+
+.PHONY : binn/examples/writing.s
+
+# target to generate assembly for a file
+binn/examples/writing.c.s:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/binn/examples/writing.c.s
+.PHONY : binn/examples/writing.c.s
+
+binn/src/binn.o: binn/src/binn.c.o
+
+.PHONY : binn/src/binn.o
+
+# target to build an object file
+binn/src/binn.c.o:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/binn/src/binn.c.o
+.PHONY : binn/src/binn.c.o
+
+binn/src/binn.i: binn/src/binn.c.i
+
+.PHONY : binn/src/binn.i
+
+# target to preprocess a source file
+binn/src/binn.c.i:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/binn/src/binn.c.i
+.PHONY : binn/src/binn.c.i
+
+binn/src/binn.s: binn/src/binn.c.s
+
+.PHONY : binn/src/binn.s
+
+# target to generate assembly for a file
+binn/src/binn.c.s:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/binn/src/binn.c.s
+.PHONY : binn/src/binn.c.s
+
+binn/src/win32/dllmain.o: binn/src/win32/dllmain.c.o
+
+.PHONY : binn/src/win32/dllmain.o
+
+# target to build an object file
+binn/src/win32/dllmain.c.o:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/binn/src/win32/dllmain.c.o
+.PHONY : binn/src/win32/dllmain.c.o
+
+binn/src/win32/dllmain.i: binn/src/win32/dllmain.c.i
+
+.PHONY : binn/src/win32/dllmain.i
+
+# target to preprocess a source file
+binn/src/win32/dllmain.c.i:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/binn/src/win32/dllmain.c.i
+.PHONY : binn/src/win32/dllmain.c.i
+
+binn/src/win32/dllmain.s: binn/src/win32/dllmain.c.s
+
+.PHONY : binn/src/win32/dllmain.s
+
+# target to generate assembly for a file
+binn/src/win32/dllmain.c.s:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/binn/src/win32/dllmain.c.s
+.PHONY : binn/src/win32/dllmain.c.s
+
+binn/test/test_binn.o: binn/test/test_binn.c.o
+
+.PHONY : binn/test/test_binn.o
+
+# target to build an object file
+binn/test/test_binn.c.o:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/binn/test/test_binn.c.o
+.PHONY : binn/test/test_binn.c.o
+
+binn/test/test_binn.i: binn/test/test_binn.c.i
+
+.PHONY : binn/test/test_binn.i
+
+# target to preprocess a source file
+binn/test/test_binn.c.i:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/binn/test/test_binn.c.i
+.PHONY : binn/test/test_binn.c.i
+
+binn/test/test_binn.s: binn/test/test_binn.c.s
+
+.PHONY : binn/test/test_binn.s
+
+# target to generate assembly for a file
+binn/test/test_binn.c.s:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/binn/test/test_binn.c.s
+.PHONY : binn/test/test_binn.c.s
+
+binn/test/test_binn2.o: binn/test/test_binn2.c.o
+
+.PHONY : binn/test/test_binn2.o
+
+# target to build an object file
+binn/test/test_binn2.c.o:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/binn/test/test_binn2.c.o
+.PHONY : binn/test/test_binn2.c.o
+
+binn/test/test_binn2.i: binn/test/test_binn2.c.i
+
+.PHONY : binn/test/test_binn2.i
+
+# target to preprocess a source file
+binn/test/test_binn2.c.i:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/binn/test/test_binn2.c.i
+.PHONY : binn/test/test_binn2.c.i
+
+binn/test/test_binn2.s: binn/test/test_binn2.c.s
+
+.PHONY : binn/test/test_binn2.s
+
+# target to generate assembly for a file
+binn/test/test_binn2.c.s:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/binn/test/test_binn2.c.s
+.PHONY : binn/test/test_binn2.c.s
+
+binn/test/test_binn_json.o: binn/test/test_binn_json.c.o
+
+.PHONY : binn/test/test_binn_json.o
+
+# target to build an object file
+binn/test/test_binn_json.c.o:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/binn/test/test_binn_json.c.o
+.PHONY : binn/test/test_binn_json.c.o
+
+binn/test/test_binn_json.i: binn/test/test_binn_json.c.i
+
+.PHONY : binn/test/test_binn_json.i
+
+# target to preprocess a source file
+binn/test/test_binn_json.c.i:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/binn/test/test_binn_json.c.i
+.PHONY : binn/test/test_binn_json.c.i
+
+binn/test/test_binn_json.s: binn/test/test_binn_json.c.s
+
+.PHONY : binn/test/test_binn_json.s
+
+# target to generate assembly for a file
+binn/test/test_binn_json.c.s:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/binn/test/test_binn_json.c.s
+.PHONY : binn/test/test_binn_json.c.s
+
 libhermes/src/bst.o: libhermes/src/bst.c.o
 
 .PHONY : libhermes/src/bst.o
@@ -500,6 +716,33 @@ src/manager.s: src/manager.c.s
 src/manager.c.s:
 	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/manager.c.s
 .PHONY : src/manager.c.s
+
+src/message.o: src/message.c.o
+
+.PHONY : src/message.o
+
+# target to build an object file
+src/message.c.o:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/message.c.o
+.PHONY : src/message.c.o
+
+src/message.i: src/message.c.i
+
+.PHONY : src/message.i
+
+# target to preprocess a source file
+src/message.c.i:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/message.c.i
+.PHONY : src/message.c.i
+
+src/message.s: src/message.c.s
+
+.PHONY : src/message.s
+
+# target to generate assembly for a file
+src/message.c.s:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/message.c.s
+.PHONY : src/message.c.s
 
 src/parsing/h_custom_payload.o: src/parsing/h_custom_payload.c.o
 
@@ -1050,6 +1293,30 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... edit_cache"
 	@echo "... ft_nmap"
+	@echo "... binn/conversions/json/binn_json.o"
+	@echo "... binn/conversions/json/binn_json.i"
+	@echo "... binn/conversions/json/binn_json.s"
+	@echo "... binn/examples/reading.o"
+	@echo "... binn/examples/reading.i"
+	@echo "... binn/examples/reading.s"
+	@echo "... binn/examples/writing.o"
+	@echo "... binn/examples/writing.i"
+	@echo "... binn/examples/writing.s"
+	@echo "... binn/src/binn.o"
+	@echo "... binn/src/binn.i"
+	@echo "... binn/src/binn.s"
+	@echo "... binn/src/win32/dllmain.o"
+	@echo "... binn/src/win32/dllmain.i"
+	@echo "... binn/src/win32/dllmain.s"
+	@echo "... binn/test/test_binn.o"
+	@echo "... binn/test/test_binn.i"
+	@echo "... binn/test/test_binn.s"
+	@echo "... binn/test/test_binn2.o"
+	@echo "... binn/test/test_binn2.i"
+	@echo "... binn/test/test_binn2.s"
+	@echo "... binn/test/test_binn_json.o"
+	@echo "... binn/test/test_binn_json.i"
+	@echo "... binn/test/test_binn_json.s"
 	@echo "... libhermes/src/bst.o"
 	@echo "... libhermes/src/bst.i"
 	@echo "... libhermes/src/bst.s"
@@ -1092,6 +1359,9 @@ help:
 	@echo "... src/manager.o"
 	@echo "... src/manager.i"
 	@echo "... src/manager.s"
+	@echo "... src/message.o"
+	@echo "... src/message.i"
+	@echo "... src/message.s"
 	@echo "... src/parsing/h_custom_payload.o"
 	@echo "... src/parsing/h_custom_payload.i"
 	@echo "... src/parsing/h_custom_payload.s"
