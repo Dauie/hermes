@@ -5,6 +5,7 @@
 # include <stdlib.h>
 # include <unistd.h>
 # include <stdio.h>
+# include <zconf.h>
 
 # include <pthread.h>
 # include <sys/socket.h>
@@ -15,10 +16,10 @@
 # include <netinet/in.h>
 # include <netdb.h>
 # include <netinet/ip_icmp.h>
-# include "../binn/src/binn.h"
 
 # include "../libhermes/incl/libhermes.h"
 # include "parser.h"
+# include "binnify.h"
 
 t_node			*split_prtrng_n(void **data, uint32_t splits);
 t_node			*split_ip4rng_n(void **data, uint32_t splits);

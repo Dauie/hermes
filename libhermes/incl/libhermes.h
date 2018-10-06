@@ -20,7 +20,6 @@ typedef struct			s_node
 	void				*data;
 }						t_node;
 
-
 /*
 **	Integer helper functions
 */
