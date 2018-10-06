@@ -10,8 +10,6 @@ int				process_request(uint8_t *msgbuff)
 	t_msg_hdr	*hdr;
 
 	hdr = (t_msg_hdr*)msgbuff;
-	hdr->type = ntohs(hdr->type);
-	hdr->code = ntohs(hdr->code);
 	if (hdr->type == JOB_MSG)
 	{
 		if (hdr->code == JOB_OFFER)

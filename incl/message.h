@@ -12,8 +12,9 @@ typedef union u_uints
 
 typedef	struct s_msg_hdr
 {
-	uint16_t	type;
-	uint16_t	code;
+	uint8_t		type;
+	uint8_t		code;
+	uint16_t	msglen;
 }				t_msg_hdr;
 
 /*
@@ -46,7 +47,7 @@ typedef	struct s_msg_hdr
 **   |                       Version String                          |
 **   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
  */
-
+# define HERMES_MSG_HDRSZ (4)
 # define HERMES_MSG_MAX (64)
 
 /*
@@ -63,6 +64,5 @@ typedef	struct s_msg_hdr
 # define JOB_DENY (2)
 
 ssize_t		hermes_recv_msg(int sock, uint8_t *msgbuff);
-ssize_t			hermes_send_msg(int sock, uint16_t type_code, int len, char *format, ...);
-
+ssize_t		hermes_send_msg(int sock, uint16_t type_code, uint16_t len, char *format, ...);
 #endif //HERMES_MESSAGE_H
