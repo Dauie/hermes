@@ -22,8 +22,7 @@ void			pack_uint32(uint8_t **p, uint32_t val)
 }
 
 
-/*TODO need to make pack functions*/
-ssize_t			hermes_send_msg(int sock, uint8_t type, uint8_t code, char *format, ...)
+ssize_t			hermes_send_msg(int sock, uint16_t type_code, int len, char *format, ...)
 {
 	uint8_t		*p;
 	uint8_t		msgbuff[HERMES_MSG_MAX];
@@ -34,9 +33,8 @@ ssize_t			hermes_send_msg(int sock, uint8_t type, uint8_t code, char *format, ..
 
 	va_start(ap, format);
 	p = msgbuff;
-	/* TODO type_code endian needs to be handled */
-	pack_uint8(&p, type);
-	pack_uint8(&p, code);
+	pack_uint16(&p, type_code);
+	pack_uint16(&p, type_code);
 	while ((spec = strsep(&format, ",")) && (p - msgbuff) < HERMES_MSG_MAX)
 	{
 		if (strcmp(spec, "u8") == 0)

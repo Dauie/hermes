@@ -63,6 +63,6 @@ typedef	struct s_msg_hdr
 # define JOB_DENY (2)
 
 ssize_t		hermes_recv_msg(int sock, uint8_t *msgbuff);
-ssize_t		hermes_send_msg(int sock, uint8_t type, uint8_t code, char *format, ...);
+ssize_t			hermes_send_msg(int sock, uint16_t type_code, int len, char *format, ...);
 
 #endif //HERMES_MESSAGE_H
