@@ -87,7 +87,7 @@ FIREWALL/IDS EVASION AND SPOOFING:
   --data <hex string>: Append a custom payload to sent packets
   --data-string <string>: Append a custom ASCII string to sent packets
   --data-length <num>: Append random data to sent packets
-  --ips-options <options>: Send packets with specified ips options
+  --ips-opts <opts>: Send packets with specified ips opts
   --ttl <val>: Set IP time-to-live field
   --spoof-mac <mac address/prefix/vendor name>: Spoof your MAC address
   --badsum: Send packets with a bogus TCP/UDP/SCTP checksum

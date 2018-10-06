@@ -1,5 +1,5 @@
-#include "../incl/hermes.h"
-#include "../incl/job.h"
+#include "hermes.h"
+#include "job.h"
 
 t_worker		*new_worker(void)
 {

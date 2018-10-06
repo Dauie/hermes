@@ -1,14 +1,12 @@
-#include "../incl/hermes.h"
-#include "../incl/message.h"
+#include <stdarg.h>
+#include "hermes.h"
 
-uint32_t	type_code(uint8_t type, uint8_t code)
+#define TC (type, code) ()
+
+uint32_t	type_code(uint16_t type, uint16_t code)
 {
-	uint32_t 	type_code;
-
-	memcpy(&type_code, &type, sizeof(uint8_t));
-	type_code <<= 16;
-	memcpy(&type_code, &code, sizeof(uint8_t));
-	return (type_code);
+	memcpy(*p, &val, sizeof(uint8_t));
+	*p += sizeof(uint8_t);
 }
 
 void 	msg_load_data(uint8_t **p, va_list ap, char type)
@@ -24,47 +22,100 @@ void 	msg_load_data(uint8_t **p, va_list ap, char type)
 	hermes_error(FORMAT_ERROR, TRUE, -1, "wrong msg data format");
 }
 
-int		hermes_msg(uint8_t buffer[], uint32_t type_code, char *format, ...)
+void			pack_uint16(uint8_t **p, uint16_t val)
+{
+	memcpy(*p, &val, sizeof(uint16_t));
+	*p += sizeof(uint16_t);
+}
+
+void			pack_uint32(uint8_t **p, uint32_t val)
+{
+	memcpy(*p, &val, sizeof(uint32_t));
+	*p += sizeof(uint32_t);
+}
+
+void			pack_string(uint8_t **p, char *str)
+{
+	size_t		len;
+
+	len = strlen(str);
+	memcpy(*p, str, len);
+	*p += len;
+}
+
+/* TODO: Have better bounds checks while packing to prevent going over MAX_MSG */
+ssize_t			hermes_send_msg(int sock, uint16_t type_code, uint16_t len, char *format, ...)
 {
 	uint8_t		*p;
-	va_list 	ap;
-	char		*next;
+	uint8_t		msgbuff[HERMES_MSG_MAX];
+	va_list		ap;
+	char		*spec;
+	t_uints		val;
+	ssize_t		ret;
 
-	p = buffer;
-	memcpy(p, &type_code, sizeof(uint32_t));
-	p += sizeof(uint32_t);
 	va_start(ap, format);
-	while (*format)
+	p = msgbuff;
+	pack_uint16(&p, type_code);
+	pack_uint16(&p, len);
+	while ((spec = strsep(&format, ",")) && (p - msgbuff) < HERMES_MSG_MAX)
 	{
-		if ((next = strchr(format, '%')))
+		if (strcmp(spec, "u8") == 0)
 		{
-			next++;
-			if (*next)
-				msg_load_data(&p, ap, *next);
+			val.u8 = (uint8_t)va_arg(ap, uint32_t);
+			pack_uint8(&p, val.u8);
 		}
-		else
+		else if (strcmp(spec, "u16") == 0)
 		{
-			;// TODO : do something
+			val.u16 = htons((uint16_t)va_arg(ap, uint32_t));
+			pack_uint16(&p, val.u16);
 		}
-		format = next;
+		else if (strcmp(spec, "u32") == 0)
+		{
+			val.u32 = htonl(va_arg(ap, uint32_t));
+			pack_uint32(&p, val.u32);
+		}
+		else if (*format == 's')
+		{
+			val.str = va_arg(ap, char *);
+			pack_string(&p, val.str);
+		}
 	}
+	if ((ret = send(sock, msgbuff, msgbuff - p, 0)) < 0)
+		hermes_error(errno, TRUE, 2, "send()", strerror(errno));
 	va_end(ap);
-	// TODO : fmt args
-	//memcpy(p, &, sizeof(uint16_t));
+	return (ret);
 }
 
-ssize_t		hermes_send_msg(int sock, uint8_t type, uint8_t code, void *data, char *type_fmt)
+/*
+**	If hermes_recv_msg returns -1 the connection was closed.
+*/
+ssize_t			hermes_recv_msg(int sock, uint8_t *msgbuff)
 {
-	uint8_t		msg_buff[HERMES_MSG_MAX];
-												/*TODO*/
-	hermes_msg(msg_buff, type_code(type, code), type_fmt, data);
-	return (send(sock, msg_buff, sizeof(msg_buff), 0));
-}
+	t_msg_hdr	*hdr;
+	ssize_t		ret;
 
-void		hermes_recv_msg(int sock /*TODO : function handler pointer?*/)
-{
-	uint8_t		msg_buff[HERMES_MSG_MAX];
-
-	if (recv(sock, msg_buff, sizeof(msg_buff), 0) < 0)
-		;
+	hdr = (t_msg_hdr*)msgbuff;
+	if ((ret = recv(sock, msgbuff, HERMES_MSG_HDRSZ, MSG_DONTWAIT)) <= 0)
+	{
+		if (ret == 0)
+			return (-1);
+		else if (errno == EWOULDBLOCK || errno == EAGAIN)
+			return (0);
+		else
+			hermes_error(errno, TRUE, 2, "recv()", strerror(errno));
+	}
+	hdr->msglen = ntohs(hdr->msglen);
+	if (hdr->msglen > 0)
+	{
+		if ((ret = recv(sock, msgbuff + HERMES_MSG_HDRSZ, hdr->msglen, MSG_DONTWAIT)) <= 0)
+		{
+			if (ret == 0)
+				return (-1);
+			else if (errno == EWOULDBLOCK || errno == EAGAIN)
+				return (0);
+			else
+				hermes_error(errno, TRUE, 2, "recv()", strerror(errno));
+		}
+	}
+	return (ret);
 }

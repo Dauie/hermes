@@ -1,5 +1,5 @@
-#include "../incl/job.h"
-#include "../incl/hermes.h"
+#include "job.h"
+#include "hermes.h"
 
 t_ip4			*new_ip4(void)
 {

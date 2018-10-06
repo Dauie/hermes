@@ -1,9 +1,8 @@
 #include "../incl/hermes.h"
 #include "../incl/defined.h"
-#include "../incl/hermes_msg.h"
 
 int				connect_workers(t_node **workers, uint32_t *worker_count,
-                                   t_node **rm_tree, int proto)
+		t_node **rm_tree, int proto)
 {
 	t_worker		*worker;
 
@@ -28,40 +27,39 @@ int				connect_workers(t_node **workers, uint32_t *worker_count,
 	return (0);
 }
 
-void                distribute_jobs(t_node *worker, t_node *job_list)
+void                distribute_jobs(t_node *workers, t_node *jobs)
 {
-    /* TODO : kick out w/ error
-     * if workerlist and joblist
-     * are not balanced
-     */
-    if (!worker || !job_list)
-        return ;
-    send_work(worker->right->data, job_list->right);
-    distribute_jobs(worker->right->data, job_list->right);
+	/* TODO : kick out w/ error
+	 * if workerlist and joblist
+	 * are not balanced
+	 */
+	if (!workers || !jobs)
+		return ;
+	send_work(workers->data, jobs->data);
+	distribute_jobs(workers->right->data, jobs->right);
 }
 
 int					manager(t_mgr *mgr)
 {
 	struct protoent	*proto;
-    t_node          *job_list;
+	t_node			*job_list;
 
-    if ((proto = getprotobyname("tcp")) == 0)
+	if ((proto = getprotobyname("tcp")) == 0)
 		return (FAILURE);
 	if (mgr->worker_list.wrkr_cnt > 0)
 	{
 		connect_workers(&mgr->worker_list.wrkrs, &mgr->worker_list.wrkr_cnt,
-						&mgr->worker_list.wrkrs, proto->p_proto);
+				&mgr->worker_list.wrkrs, proto->p_proto);
 		printf("connected to %i wrkrs.\n", mgr->worker_list.wrkr_cnt);
-        job_list = partition_jobs(&mgr->job, mgr->worker_list.wrkr_cnt);
-        distribute_jobs(mgr->worker_list.wrkrs, job_list);
-        del_list(&job_list);
+		job_list = partition_job(&mgr->job, mgr->worker_list.wrkr_cnt);
+		distribute_jobs(mgr->worker_list.wrkrs, job_list);
+		del_list(&job_list);
 	}
-    /* TODO: Divide work amongst thread count, send jobs to wrkrs, spawn threads*/
-    job_list = partition_jobs(&mgr->job, mgr->thread_count);
-    distribute_jobs(mgr->, job_list);
-    //run_hermes(mgr);
-    del_list(&job_list);
-    return (0);
+	job_list = partition_job(&mgr->job, mgr->job.opts.thread_count);
+	distribute_jobs(mgr->worker_list.wrkrs, job_list);
+	//run_hermes(mgr);
+	del_list(&job_list);
+	return (0);
 }
 
 #ifdef TESTING

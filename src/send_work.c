@@ -1,5 +1,4 @@
 #include "../incl/hermes.h"
-#include "../incl/message.h"
 
 int				send_work(t_worker *worker, t_job *job)
 {
