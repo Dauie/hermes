@@ -16,7 +16,7 @@ static int				accept_wrapper(t_wsession *session, int lsock)
 
 static int				daemon_loop(t_wsession *session, int lsock)
 {
-	while (session->run)
+	while (session->stat.running)
 	{
 		if (accept_wrapper(session, lsock) == FAILURE)
 			continue;
@@ -52,7 +52,7 @@ int						worker_daemon(int port)
 
 	if (!(session = memalloc(sizeof(t_wsession))))
 		return (hermes_error(INPUT_ERROR, TRUE, 2, "malloc()", strerror(errno)));
-	session->run = TRUE;
+	session->stat.running = TRUE;
 	/* TODO add signal handlers */
 	if ((proto = getprotobyname("tcp")) == NULL)
 		hermes_error(INPUT_ERROR, TRUE, 2, "getprotobyname()", strerror(errno));

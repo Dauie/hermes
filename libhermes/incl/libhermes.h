@@ -7,6 +7,7 @@
 # include <stdint.h>
 # include <stdlib.h>
 # include <stdio.h>
+# include <stdarg.h>
 
 # include "error_codes.h"
 # include "bool.h"

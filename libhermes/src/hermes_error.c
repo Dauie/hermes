@@ -1,5 +1,4 @@
-#include <stdarg.h>
-#include <unistd.h>
+
 # include "../incl/libhermes.h"
 
 int				hermes_error(int errcode, int fatal, int str_amt, ...)

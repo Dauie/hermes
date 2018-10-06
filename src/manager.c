@@ -39,7 +39,7 @@ void                distribute_jobs(t_node *workers, t_node *jobs)
 	distribute_jobs(workers->right->data, jobs->right);
 }
 
-int					manager(t_mgr *mgr)
+int					manager_loop(t_mgr *mgr)
 {
 	struct protoent	*proto;
 	t_node			*job_list;

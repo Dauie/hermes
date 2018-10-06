@@ -1,7 +1,7 @@
 #include "../incl/hermes.h"
 
 // TODO : function pointers to cmp, min in struct?
-void partition_ip4(t_node **src, t_node *w_jobs)
+void			partition_ip4(t_node **src, t_node *w_jobs)
 {
 	if (!w_jobs)
 		return ;
@@ -13,10 +13,10 @@ void partition_ip4(t_node **src, t_node *w_jobs)
 		partition_ip4(src, w_jobs->right);
 }
 
-void partition_ip4rng(uint32_t parts, t_node **src, t_node *w_jobs)
+void			partition_ip4rng(uint32_t parts, t_node **src, t_node *w_jobs)
 {
-	t_node	*fragment_lst;
-	t_node	*tmp;
+	t_node		*fragment_lst;
+	t_node		*tmp;
 
 	if (!w_jobs)
 		return ;
@@ -33,10 +33,10 @@ void partition_ip4rng(uint32_t parts, t_node **src, t_node *w_jobs)
 	remove_node_bst(src, (*src)->data, ip4rng_cmp, ip4rng_min);
 }
 
-t_node *new_joblist(t_ops *ops, uint32_t count)
+t_node			*new_joblist(t_ops *ops, uint32_t count)
 {
-	t_job       *tmp;
-	t_node      *job;
+	t_job		*tmp;
+	t_node		*job;
 
 	job = NULL;
 	while (count)
@@ -50,9 +50,9 @@ t_node *new_joblist(t_ops *ops, uint32_t count)
 }
 
 // TODO : link joblist to list of job pointers from mgr
-t_node  *partition_job(t_job *job, uint32_t parts)
+t_node			*partition_job(t_job *job, uint32_t parts)
 {
-	t_node      *job_list;
+	t_node		*job_list;
 
 	if (!parts)
 		return (NULL);

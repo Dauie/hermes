@@ -1357,7 +1357,7 @@ help:
 	@echo "... src/main.i"
 	@echo "... src/main.s"
 	@echo "... src/manager.o"
-	@echo "... src/manager.i"
+	@echo "... src/manager_loop.i"
 	@echo "... src/manager.s"
 	@echo "... src/message.o"
 	@echo "... src/message.i"

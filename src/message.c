@@ -31,7 +31,7 @@ void			pack_string(uint8_t **p, char *str)
 }
 
 /* TODO: Have better bounds checks while packing to prevent going over MAX_MSG */
-ssize_t			hermes_send_msg(int sock, uint16_t type_code, uint16_t len, char *format, ...)
+ssize_t			hermes_send_msg(int sock, uint16_t type_code, char *format, ...)
 {
 	uint8_t		*p;
 	uint8_t		msgbuff[HERMES_MSG_MAX];
@@ -82,7 +82,7 @@ ssize_t			hermes_recv_msg(int sock, uint8_t *msgbuff)
 	ssize_t		ret;
 
 	hdr = (t_msg_hdr*)msgbuff;
-	if ((ret = recv(sock, msgbuff, HERMES_MSG_HDRSZ, MSG_DONTWAIT)) <= 0)
+	if ((ret = recv(sock, msgbuff, HERMES_MSG_HDRSZ, MSG_WAITALL)) <= 0)
 	{
 		if (ret == 0)
 			return (-1);
@@ -94,7 +94,7 @@ ssize_t			hermes_recv_msg(int sock, uint8_t *msgbuff)
 	hdr->msglen = ntohs(hdr->msglen);
 	if (hdr->msglen > 0)
 	{
-		if ((ret = recv(sock, msgbuff + HERMES_MSG_HDRSZ, hdr->msglen, MSG_DONTWAIT)) <= 0)
+		if ((ret = recv(sock, msgbuff + HERMES_MSG_HDRSZ, hdr->msglen, MSG_WAITALL)) <= 0)
 		{
 			if (ret == 0)
 				return (-1);

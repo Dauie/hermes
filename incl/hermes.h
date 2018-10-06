@@ -22,11 +22,18 @@
 typedef struct	sockaddr_in sockaddr_in;
 typedef struct	sockaddr sockaddr;
 
+typedef struct	s_worker_status
+{
+	uint8_t		running: 1;
+	uint8_t		working: 1;
+}				t_wstatus;
+
 typedef struct	s_worker_session /* worker session make by worker daemon process*/
 {
-	int			run;
+	t_wstatus	stat;
 	int			pid;
 	int			sock;	/* Endpoint for mgr communication */
+	t_job		*work;
 	sockaddr_in	sin;
 }				t_wsession;
 
@@ -70,7 +77,7 @@ binn			*make_targetlist_binn(t_targetlist *list);
 
 int				worker_loop(t_wsession* session);
 
-int				manager(t_mgr *mgr);
+int				manager_loop(t_mgr *mgr);
 t_node			*partition_job(t_job *job, uint32_t parts);
 int				send_work(t_worker *worker, t_job *job);
 
