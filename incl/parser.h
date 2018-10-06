@@ -5,7 +5,7 @@
 # include "defined.h"
 
 /*
-**	Dispatch TABle
+**	Dispatch Tables
 */
 
 typedef struct	s_dtab_wopt
@@ -20,17 +20,9 @@ typedef struct	s_dtab
 	void		(*function)(t_mgr *);
 }				t_dtab;
 
-
-/*
-**	LEXicon for
-**	file parsing
-*/
-
-//# define LEX_ENTRIES 1
-//
-//t_tab LEX[LEX_ENTRIES][] = {
-//		{ "#IP", NULL }
-//};
+//typedef enum	s_types
+//{
+//}				t_types;
 
 int				dtab_loop(t_mgr *mgr, char *opt, t_dtab *tab);
 int				dtab_wopt_loop(t_mgr *mgr, char *arg, char *opt,

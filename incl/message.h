@@ -26,7 +26,6 @@ typedef	struct s_msg_hdr
 **
 **	General header layout
 **
- *  TODO: Think about including the version minor and major in the header for all messages...
 **    0                   1                   2                   3
 **    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
 **   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -47,15 +46,16 @@ typedef	struct s_msg_hdr
 **   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 **   |                       Version String                          |
 **   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-*/
+ */
 # define HERMES_MSG_HDRSZ (4)
 # define HERMES_MSG_MAX (64)
+
+# define HERMES_PACK_SIZE (512)
 
 /*
 **	Hermes Message Types
 */
-# define JOB_OFFER_REQ (0)
-# define JOB_OFFER_RPLY (1)
+# define JOB_MSG (0)
 # define ERROR_MSG (1)
 
 /*
@@ -68,8 +68,12 @@ typedef	struct s_msg_hdr
 */
 # define JOB_ACCEPT (1)
 # define JOB_DENY (2)
+# define JOB_DATA (3)
 
 
+uint16_t	type_code(uint8_t type, uint8_t code);
 ssize_t		hermes_recv_msg(int sock, uint8_t *msgbuff);
-ssize_t		hermes_send_msg(int sock, uint16_t type_code, uint16_t len, char *format, ...);
+ssize_t		hermes_send_msg(int sock, uint16_t type_code, char *format, ...);
+ssize_t		hermes_send_binn(int sock, uint16_t type_code, binn *data);
+
 #endif //HERMES_MESSAGE_H

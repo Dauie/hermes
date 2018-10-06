@@ -1,22 +1,28 @@
 #include "../incl/hermes.h"
 
-int				send_work(t_worker *worker, t_job *job)
+int				send_job(t_worker *worker, t_job *job)
 {
-	binn			*work;
-	binn			*ports;
-	binn			*ops;
-	binn			*targets;
+	binn			*job_binn;
+//	binn			*ports;
+//	binn			*ops;
+//	binn			*targets;
+//
+//	work = binn_object();
+//	ops = make_ops_binn(&job->options);
+//	targets = make_targetlist_binn(&job->targets);
+//	ports = make_portlist_binn(&job->ports);
+//
+//	binn_object_set_object(work, "targets", targets);
+//	binn_object_set_object(work, "ports", ports);
+//	binn_object_set_object(work, "ops", ops);
+//	printf("ops size: %d\n", binn_size(ops));
+//	printf("targets size: %d\n",binn_size(targets));
+//	printf("ports size: %d\n",binn_size(ports));
 
-	work = binn_object();
-	ops = make_ops_binn(&job->opts);
-	targets = make_targetlist_binn(&job->targets);
-	ports = make_portlist_binn(&job->ports);
-
-	binn_object_set_object(work, "targets", targets);
-	binn_object_set_object(work, "ports", ports);
-	binn_object_set_object(work, "ops", ops);
-	printf("ops size: %d\n", binn_size(ops));
-	printf("targets size: %d\n",binn_size(targets));
-	printf("ports size: %d\n",binn_size(ports));
+	job_binn = binnify(job);
+	if (hermes_send_msg(worker->sock, type_code(JOB_MSG, JOB_OFFER), "", ...) < 0)
+		return (FAILURE);
+	if (hermes_send_binn(worker->sock, type_code(JOB_MSG, JOB_DATA), job_binn) < 0)
+		return (FAILURE);
 	return (SUCCESS);
 }

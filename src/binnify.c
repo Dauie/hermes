@@ -1,6 +1,4 @@
 #include <hermes.h>
-#include "../binn/src/binn.h"
-#include "../incl/job.h"
 
 void				add_ip4tree_to_binnlist(binn **list, t_node *ips)
 {
@@ -279,3 +277,23 @@ void				get_targetlist_from_binn(t_targetlist *list, binn *obj)
 	get_ip4rngtree_from_binnlist(&list->iprngs, ip4rnglist);
 }
 
+binn	*binnify(t_job *job)
+{
+	binn			*work;
+	binn			*ports;
+	binn			*ops;
+	binn			*targets;
+
+	work = binn_object();
+	ops = make_ops_binn(&job->opts);
+	targets = make_targetlist_binn(&job->targets);
+	ports = make_portlist_binn(&job->ports);
+
+	binn_object_set_object(work, "targets", targets);
+	binn_object_set_object(work, "ports", ports);
+	binn_object_set_object(work, "ops", ops);
+	printf("ops size: %d\n", binn_size(ops));
+	printf("targets size: %d\n",binn_size(targets));
+	printf("ports size: %d\n",binn_size(ports));
+	return (work);
+}
