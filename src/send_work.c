@@ -1,8 +1,8 @@
 #include "../incl/hermes.h"
 
-int				send_work(t_worker *worker, t_job *job)
+int				send_job(t_worker *worker, t_job *job)
 {
-	binn			*work;
+	binn			*job_binn;
 //	binn			*ports;
 //	binn			*ops;
 //	binn			*targets;
@@ -19,10 +19,10 @@ int				send_work(t_worker *worker, t_job *job)
 //	printf("targets size: %d\n",binn_size(targets));
 //	printf("ports size: %d\n",binn_size(ports));
 
-	work = binnify(job);
-	if (hermes_send_msg(worker->sock, type_code(MSGTYPE_JOB, JOB_DELIVERY), NULL, "\0") < 0)
+	job_binn = binnify(job);
+	if (hermes_send_msg(worker->sock, type_code(JOB_MSG, JOB_OFFER), "", ...) < 0)
 		return (FAILURE);
-	if (hermes_send_msg(worker->sock, type_code(MSGTYPE_JOB, JOB_DELIVERY), work, "%b") < 0)
+	if (hermes_send_binn(worker->sock, type_code(JOB_MSG, JOB_DATA), job_binn) < 0)
 		return (FAILURE);
 	return (SUCCESS);
 }

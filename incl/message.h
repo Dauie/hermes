@@ -50,6 +50,8 @@ typedef	struct s_msg_hdr
 # define HERMES_MSG_HDRSZ (4)
 # define HERMES_MSG_MAX (64)
 
+# define HERMES_PACK_SIZE (512)
+
 /*
 **	Hermes Message Types
 */
@@ -62,9 +64,12 @@ typedef	struct s_msg_hdr
 # define JOB_OFFER (0)
 # define JOB_ACCEPT (1)
 # define JOB_DENY (2)
+# define JOB_DATA (3)
+
 
 uint16_t	type_code(uint8_t type, uint8_t code);
 ssize_t		hermes_recv_msg(int sock, uint8_t *msgbuff);
 ssize_t		hermes_send_msg(int sock, uint16_t type_code, uint16_t len, char *format, ...);
+ssize_t		hermes_send_binn(int sock, uint16_t type_code, binn *data);
 
 #endif //HERMES_MESSAGE_H

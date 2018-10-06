@@ -50,6 +50,45 @@ void			pack_string(uint8_t **p, char *str)
 	*p += len;
 }
 
+void 			pack_header(uint8_t **p, uint16_t type_code, uint16_t len)
+{
+	pack_uint16(p, type_code);
+	pack_uint16(p, len);
+}
+
+void			pack_binn(uint8_t **p, binn *data, int len)
+{
+	memcpy(p, data, len);
+	*p += len;
+}
+
+ssize_t			hermes_send_binn(int sock, uint16_t type_code, binn *data)
+{
+	int			len;
+	ssize_t 	ret;
+	binn		*binn;
+	uint32_t		msgbuff[HERMES_MSG_MAX];
+
+	ret = 0;
+	len = binn_size(data);
+	binn = binn_ptr(data);
+	while (binn)
+	{
+		if (!binn + HERMES_PACK_SIZE)
+		{
+			if ((ret = send(sock, binn, (size_t)(len - HERMES_PACK_SIZE), 0)) < 0)
+				hermes_error(errno, TRUE, 2, "send()", strerror(errno));
+		}
+		else
+		{
+			if ((ret = send(sock, binn, HERMES_PACK_SIZE, 0)) < 0)
+				hermes_error(errno, TRUE, 2, "send()", strerror(errno));
+		}
+		binn += HERMES_PACK_SIZE;
+	}
+	return (ret);
+}
+
 /* TODO: Have better bounds checks while packing to prevent going over MAX_MSG */
 ssize_t			hermes_send_msg(int sock, uint16_t type_code, uint16_t len, char *format, ...)
 {
@@ -62,10 +101,7 @@ ssize_t			hermes_send_msg(int sock, uint16_t type_code, uint16_t len, char *form
 
 	va_start(ap, format);
 	p = msgbuff;
-	pack_uint16(&p, type_code);
-	pack_uint16(&p, len);
-
-	//msg_pack_data(&p, &ap, (int)spec);
+	pack_header(&p, type_code, len);
 	while ((spec = strsep(&format, ",")) && (p - msgbuff) < HERMES_MSG_MAX)
 	{
 
