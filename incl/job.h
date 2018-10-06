@@ -144,7 +144,6 @@ typedef struct			s_worker
 
 typedef struct			s_mgr {
 	t_job				job;
-	uint32_t            thread_count;
 	t_targetlist		exclude_targets;
 	t_portlist			exclude_ports;
 	t_workerlist		worker_list;

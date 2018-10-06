@@ -15,6 +15,7 @@
 
 
 # include "parser.h"
+# include "message.h"
 
 typedef struct	sockaddr_in sockaddr_in;
 typedef struct	sockaddr sockaddr;
@@ -69,6 +70,7 @@ binn			*make_targetlist_binn(t_targetlist *list);
 int				worker_loop(t_wsession* session);
 
 int				manager(t_mgr *mgr);
-t_node			*partition_jobs(t_job *job, uint32_t parts);
+t_node			*partition_job(t_job *job, uint32_t parts);
+int				send_work(t_worker *worker, t_job *job);
 
 #endif

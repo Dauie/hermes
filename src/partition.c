@@ -50,7 +50,7 @@ t_node *new_joblist(t_ops *ops, uint32_t count)
 }
 
 // TODO : link joblist to list of job pointers from mgr
-t_node  *partition_jobs(t_job *job, uint32_t parts)
+t_node  *partition_job(t_job *job, uint32_t parts)
 {
 	t_node      *job_list;
 

@@ -1,6 +1,6 @@
 #include "../incl/hermes.h"
 
-int				send_work(t_job *job)
+int				send_work(t_worker *worker, t_job *job)
 {
 	binn			*work;
 	binn			*ports;
@@ -18,6 +18,5 @@ int				send_work(t_job *job)
 	printf("ops size: %d\n", binn_size(ops));
 	printf("targets size: %d\n",binn_size(targets));
 	printf("ports size: %d\n",binn_size(ports));
-
 	return (SUCCESS);
 }
