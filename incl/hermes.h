@@ -1,15 +1,11 @@
 #ifndef HERMES_H
 # define HERMES_H
 
-# include <errno.h>
-# include <stdlib.h>
-# include <unistd.h>
-# include <stdio.h>
+# include "../libhermes/incl/libhermes.h"
 
 # include <pthread.h>
 # include <sys/socket.h>
 # include <sys/time.h>
-
 # include <arpa/inet.h>
 # include <netinet/ip.h>
 # include <netinet/in.h>
@@ -17,8 +13,20 @@
 # include <netinet/ip_icmp.h>
 # include "../binn/src/binn.h"
 
-# include "../libhermes/incl/libhermes.h"
+
 # include "parser.h"
+
+typedef struct	sockaddr_in sockaddr_in;
+typedef struct	sockaddr sockaddr;
+
+typedef struct	s_worker_session /* worker session make by worker daemon process*/
+{
+	int			run;
+	int			pid;
+	int			sock;	/* Endpoint for mgr communication */
+	sockaddr_in	sin;
+}				t_wsession;
+
 
 t_node			*split_prtrng_n(void **data, uint32_t splits);
 t_node			*split_ip4rng_n(void **data, uint32_t splits);
@@ -58,7 +66,9 @@ binn			*make_ops_binn(t_ops *options);
 binn			*make_portlist_binn(t_portlist *ports);
 binn			*make_targetlist_binn(t_targetlist *list);
 
-int             manager(t_mgr *mgr);
-t_node          *partition_jobs(t_job *job, uint32_t parts);
+int				worker_loop(t_wsession* session);
+
+int				manager(t_mgr *mgr);
+t_node			*partition_jobs(t_job *job, uint32_t parts);
 
 #endif

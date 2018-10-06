@@ -1,5 +1,6 @@
 #include "../incl/hermes.h"
 #include "../incl/defined.h"
+#include "../incl/hermes_tcp.h"
 
 int				connect_workers(t_node **workers, uint32_t *worker_count,
                                    t_node **rm_tree, int proto)
@@ -27,13 +28,40 @@ int				connect_workers(t_node **workers, uint32_t *worker_count,
 	return (0);
 }
 
+void                send_work(t_worker *worker, t_node *job)
+{
+	int				read;
+    t_hermes_tcp	*header;
+
+    /* TODO :
+     * send job offer
+     * wait for response
+     * if response == good
+     *      send work
+     * else
+     *      handle response
+     */
+    header = new_hermes_header();
+
+    if (send(worker->sock, ) < 0)
+    	;
+    binnify(&job);
+    if ((read = recv(worker->sock, &header, /*CONSTANT*/, 0)) < 0)
+    	;
+    // check(buffer);
+    if ()
+}
+
 void                distribute_jobs(t_node *worker, t_node *job_list)
 {
-    if (!worker)
+    /* TODO : kick out w/ error
+     * if workerlist and joblist
+     * are not balanced
+     */
+    if (!worker || !job_list)
         return ;
-    //send_work(worker);
-    distribute_jobs(worker->left);
-    distribute_jobs(worker->right);
+    send_work(worker->right->data, job_list->right);
+    distribute_jobs(worker->right->data, job_list->right);
 }
 
 int					manager(t_mgr *mgr)
@@ -45,20 +73,19 @@ int					manager(t_mgr *mgr)
 		return (FAILURE);
 	if (mgr->worker_list.wrkr_cnt > 0)
 	{
-	    job_list = new_node();
 		connect_workers(&mgr->worker_list.wrkrs, &mgr->worker_list.wrkr_cnt,
 						&mgr->worker_list.wrkrs, proto->p_proto);
 		printf("connected to %i wrkrs.\n", mgr->worker_list.wrkr_cnt);
-		job_list = partition_jobs(&mgr->job, mgr->worker_list.wrkr_cnt);
-		distribute_jobs(mgr->worker_list.wrkrs, job_list);
-		del_list(&job_list);
+        job_list = partition_jobs(&mgr->job, mgr->worker_list.wrkr_cnt);
+        distribute_jobs(mgr->worker_list.wrkrs, job_list);
+        del_list(&job_list);
 	}
-	/* TODO: Divide work amongst thread count, send jobs to wrkrs, spawn threads*/
-	job_list = partition_jobs(&mgr->job, mgr->thread_count);
-	 if (job_list)
-        //distribute_jobs(mgr->threads, job_list);
+    /* TODO: Divide work amongst thread count, send jobs to wrkrs, spawn threads*/
+    job_list = partition_jobs(&mgr->job, mgr->thread_count);
+    distribute_jobs(mgr->, job_list);
     //run_hermes(mgr);
-	return (0);
+    del_list(&job_list);
+    return (0);
 }
 
 #ifdef TESTING
