@@ -285,7 +285,7 @@ binn	*binnify(t_job *job)
 	binn			*targets;
 
 	work = binn_object();
-	ops = make_ops_binn(&job->options);
+	ops = make_ops_binn(&job->opts);
 	targets = make_targetlist_binn(&job->targets);
 	ports = make_portlist_binn(&job->ports);
 

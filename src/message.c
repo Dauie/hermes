@@ -1,25 +1,32 @@
 #include <stdarg.h>
 #include "hermes.h"
 
-#define TC (type, code) ()
-
-uint32_t	type_code(uint16_t type, uint16_t code)
+uint16_t	type_code(uint8_t type, uint8_t code)
 {
-	memcpy(*p, &val, sizeof(uint8_t));
-	*p += sizeof(uint8_t);
+	uint16_t tc;
+
+	tc = (uint16_t)type;
+	tc = (tc << 8) | code;
+	return (tc);
 }
 
-void 	msg_load_data(uint8_t **p, va_list ap, char type)
+void 	msg_pack_data(uint8_t **p, va_list *ap, int type)
 {
 	binn	obj;
 
 	if (type == 'b')
 	{
-		obj = va_arg(ap, binn);
+		obj = va_arg(*ap, binn);
 		memcpy(p, binn_ptr(&obj), binn_size(&obj));
 		return ;
 	}
 	hermes_error(FORMAT_ERROR, TRUE, -1, "wrong msg data format");
+}
+
+void			pack_uint8(uint8_t **p, uint8_t val)
+{
+	memcpy(*p, &val, sizeof(uint8_t));
+	*p += sizeof(uint8_t);
 }
 
 void			pack_uint16(uint8_t **p, uint16_t val)
@@ -57,8 +64,11 @@ ssize_t			hermes_send_msg(int sock, uint16_t type_code, uint16_t len, char *form
 	p = msgbuff;
 	pack_uint16(&p, type_code);
 	pack_uint16(&p, len);
+
+	//msg_pack_data(&p, &ap, (int)spec);
 	while ((spec = strsep(&format, ",")) && (p - msgbuff) < HERMES_MSG_MAX)
 	{
+
 		if (strcmp(spec, "u8") == 0)
 		{
 			val.u8 = (uint8_t)va_arg(ap, uint32_t);

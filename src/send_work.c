@@ -20,9 +20,9 @@ int				send_work(t_worker *worker, t_job *job)
 //	printf("ports size: %d\n",binn_size(ports));
 
 	work = binnify(job);
-	if (hermes_send_msg(worker->sock, MSGTYPE_JOB, JOB_DELIVERY, NULL, "\0") < 0)
+	if (hermes_send_msg(worker->sock, type_code(MSGTYPE_JOB, JOB_DELIVERY), NULL, "\0") < 0)
 		return (FAILURE);
-	if (hermes_send_msg(worker->sock, MSGTYPE_JOB, JOB_DELIVERY, work, "%b") < 0)
+	if (hermes_send_msg(worker->sock, type_code(MSGTYPE_JOB, JOB_DELIVERY), work, "%b") < 0)
 		return (FAILURE);
 	return (SUCCESS);
 }

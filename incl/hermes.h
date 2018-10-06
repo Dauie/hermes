@@ -12,8 +12,9 @@
 # include <netdb.h>
 # include <netinet/ip_icmp.h>
 
-
 # include "parser.h"
+# include "binnify.h"
+# include "defined.h"
 # include "message.h"
 
 # define HERMES_VERSION "v0.0.1"
