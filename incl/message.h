@@ -10,6 +10,12 @@ typedef union u_uints
 	char		*str;
 }			t_uints;
 
+typedef	struct s_msg_hdr
+{
+	uint16_t	type;
+	uint16_t	code;
+}				t_msg_hdr;
+
 /*
 **	Types: Job, Error, Result
  *
@@ -22,10 +28,10 @@ typedef union u_uints
 **    0                   1                   2                   3
 **    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
 **   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-**   |               Type            |              Code             |
+**   |     Type      |     Code     |           Msg Length          |
 **   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-**   |                             Data
-**   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+...
+ *   |                             Data                              |
+**   +-+-+-+-+-+-+-+-+-+-+-+-+...
 **
 **
 **	Job Offer Example
@@ -33,11 +39,13 @@ typedef union u_uints
 **    0                   1                   2                   3
 **    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
 **   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-**   |               Type   (0)     |              Code   (0)        |
+**   |     Type      |     Code      |           Msg Length          |
 **   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-**   |                             Length  ex. (1754)                |
+**   |                           Binn Length ex. (1754)              |
 **   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-*/
+**   |                       Version String                          |
+**   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ */
 
 # define HERMES_MSG_MAX (64)
 
@@ -45,6 +53,7 @@ typedef union u_uints
 **	Hermes Message Types
 */
 # define JOB_MSG (0)
+# define ERROR_MSG (1)
 
 /*
 **	Job Codes
@@ -54,6 +63,6 @@ typedef union u_uints
 # define JOB_DENY (2)
 
 ssize_t		hermes_recv_msg(int sock, uint8_t *msgbuff);
-ssize_t		hermes_send_msg(int sock, uint32_t type_code, char *format, ...);
+ssize_t		hermes_send_msg(int sock, uint8_t type, uint8_t code, char *format, ...);
 
 #endif //HERMES_MESSAGE_H

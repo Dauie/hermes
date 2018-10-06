@@ -3,7 +3,27 @@
 
 #define TC (type, code) ()
 
-ssize_t			hermes_send_msg(int sock, uint32_t type_code, char *format, ...)
+void			pack_uint8(uint8_t **p, uint8_t val)
+{
+	memcpy(*p, &val, sizeof(uint8_t));
+	*p += sizeof(uint8_t);
+}
+
+void			pack_uint16(uint8_t **p, uint16_t val)
+{
+	memcpy(*p, &val, sizeof(uint16_t));
+	*p += sizeof(uint16_t);
+}
+
+void			pack_uint32(uint8_t **p, uint32_t val)
+{
+	memcpy(*p, &val, sizeof(uint32_t));
+	*p += sizeof(uint32_t);
+}
+
+
+/*TODO need to make pack functions*/
+ssize_t			hermes_send_msg(int sock, uint8_t type, uint8_t code, char *format, ...)
 {
 	uint8_t		*p;
 	uint8_t		msgbuff[HERMES_MSG_MAX];
@@ -14,28 +34,25 @@ ssize_t			hermes_send_msg(int sock, uint32_t type_code, char *format, ...)
 
 	va_start(ap, format);
 	p = msgbuff;
-	/* type_code endian needs to be handled */
-	memcpy(p, &type_code, sizeof(uint32_t));
-	p += sizeof(uint32_t);
+	/* TODO type_code endian needs to be handled */
+	pack_uint8(&p, type);
+	pack_uint8(&p, code);
 	while ((spec = strsep(&format, ",")) && (p - msgbuff) < HERMES_MSG_MAX)
 	{
 		if (strcmp(spec, "u8") == 0)
 		{
 			val.u8 = (uint8_t)va_arg(ap, uint32_t);
-			memcpy(p, &val.u8, sizeof(uint8_t));
-			p += sizeof(uint8_t);
+			pack_uint8(&p, val.u8);
 		}
 		else if (strcmp(spec, "u16") == 0)
 		{
 			val.u16 = htons((uint16_t)va_arg(ap, uint32_t));
-			memcpy(p, &val.u16, sizeof(uint16_t));
-			p += sizeof(uint16_t);
+			pack_uint16(&p, val.u16);
 		}
 		else if (strcmp(spec, "u32") == 0)
 		{
 			val.u32 = htonl(va_arg(ap, uint32_t));
-			memcpy(p, &val.u32, sizeof(uint32_t));
-			p += sizeof(uint32_t);
+			pack_uint32(&p, val.u32);
 		}
 		else if (*format == 's')
 		{

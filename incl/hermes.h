@@ -17,6 +17,8 @@
 # include "parser.h"
 # include "message.h"
 
+# define HERMES_VERSION "v0.0.1"
+
 typedef struct	sockaddr_in sockaddr_in;
 typedef struct	sockaddr sockaddr;
 
@@ -29,7 +31,6 @@ typedef struct	s_worker_session /* worker session make by worker daemon process*
 }				t_wsession;
 
 
-t_node			*split_prtrng_n(void **data, uint32_t splits);
 t_node			*split_ip4rng_n(void **data, uint32_t splits);
 
 t_ip4			*new_ip4(void);
