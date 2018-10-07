@@ -52,23 +52,32 @@ typedef	struct s_msg_hdr
 
 # define HERMES_PACK_SIZE (512)
 
+
 /*
 **	Hermes Message Types
 */
-# define MT_JOB_OFFER (0)
-# define ERROR_MSG (1)
+# define MT_JOB
+# define MT_JOB_REPLY
+
+# define MT_CMD
 
 /*
-**	Job Offer Request Codes
+**	Job Request Codes
 */
-# define JOB_OFFER (0)
+# define MC_JOB_OFFER
 
 /*
-**	Job Offer Reply Codes
+**	Job Reply Codes
 */
-# define JOB_ACCEPT (1)
-# define JOB_DENY (2)
-# define JOB_DATA (3)
+# define MC_JOB_ACCEPT
+# define MC_JOB_DENY
+
+/*
+**	Command Codes
+*/
+# define MC_KILL
+# define MC_KILL_NOW
+
 
 
 uint16_t	type_code(uint8_t type, uint8_t code);

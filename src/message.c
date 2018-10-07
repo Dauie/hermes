@@ -56,7 +56,6 @@ ssize_t			hermes_send_binn(int sock, uint16_t type_code, binn *data)
 	int			len;
 	ssize_t 	ret;
 	binn		*binn;
-	uint32_t	msgbuff[HERMES_MSG_MAX];
 
 	ret = 0;
 	len = binn_size(data);
