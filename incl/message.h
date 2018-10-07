@@ -55,7 +55,7 @@ typedef	struct s_msg_hdr
 /*
 **	Hermes Message Types
 */
-# define JOB_MSG (0)
+# define MT_JOB_OFFER (0)
 # define ERROR_MSG (1)
 
 /*
