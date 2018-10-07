@@ -277,7 +277,15 @@ void				get_targetlist_from_binn(t_targetlist *list, binn *obj)
 	get_ip4rngtree_from_binnlist(&list->iprngs, ip4rnglist);
 }
 
-binn	*binnify(t_job *job)
+void			unbinnify_job(binn *obj, t_job *job)
+{
+	get_ops_from_binn(&job->opts, obj);
+	get_targetlist_from_binn(&job->targets, obj);
+	get_portlist_from_binn(&job->ports, obj);
+}
+
+
+binn	*binnify_job(t_job *job)
 {
 	binn			*work;
 	binn			*ports;

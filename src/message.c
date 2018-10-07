@@ -1,4 +1,3 @@
-#include <stdarg.h>
 #include "hermes.h"
 
 uint16_t	type_code(uint8_t type, uint8_t code)
@@ -39,22 +38,13 @@ void			pack_string(uint8_t **p, char *str)
 
 ssize_t			hermes_send_binn(int sock, binn *data)
 {
-	int			i;
 	int			len;
-	ssize_t 	ret;
-	ssize_t		sendsz;
+	ssize_t		ret;
 	void		*binn;
 
-	i = 0;
-	ret = 0;
 	len = binn_size(data);
 	binn = binn_ptr(data);
-	while (i < len)
-	{
-		sendsz = (len - i) > FRAGMENT_SIZE ? FRAGMENT_SIZE : (len - i);
-		ret = send(sock, &binn[i], (size_t)sendsz, 0);
-		i += ret;
-	}
+	ret = send(sock, &binn, len, 0);
 	return (ret);
 }
 
@@ -68,10 +58,10 @@ size_t			msg_pack_data(uint8_t *msgbuff, va_list *ap, char *frmt)
 {
 	uint8_t		*p;
 	char		*spec;
-	t_uints		val;
+	t_mval		val;
 
 	p = msgbuff;
-	while ((spec = strsep(&frmt, ",")) && (p - msgbuff) < HERMES_MSG_MAX)
+	while ((spec = strsep(&frmt, ",")) && (p - msgbuff) < PKT_SIZE)
 	{
 		if (strcmp(spec, "u8") == 0)
 		{
@@ -104,17 +94,21 @@ ssize_t			hermes_send_msg(int sock, uint16_t type_code, char *format, ...)
 	uint8_t		*dp;
 	va_list		ap;
 	size_t		datalen;
-	uint8_t		msgbuff[HERMES_MSG_MAX];
+	uint8_t		msgbuff[PKT_SIZE] = {0};
 	ssize_t		ret;
 
-	va_start(ap, format);
+	datalen = 0;
 	hp = msgbuff;
 	dp = msgbuff + HERMES_MSG_HDRSZ;
-	datalen = msg_pack_data(dp, &ap, format);
+	if (format)
+	{
+		va_start(ap, format);
+		datalen = msg_pack_data(dp, &ap, format);
+		va_end(ap);
+	}
 	msg_pack_header(hp, type_code, (uint16_t) datalen);
 	if ((ret = send(sock, msgbuff, HERMES_MSG_HDRSZ + datalen, 0)) < 0)
 		hermes_error(errno, TRUE, 2, "send()", strerror(errno));
-	va_end(ap);
 	return (ret);
 }
 

@@ -33,7 +33,7 @@ typedef struct	s_worker_session /* worker session make by worker daemon process*
 	t_wstatus	stat;
 	int			pid;
 	int			sock;	/* Endpoint for mgr communication */
-	t_job		*work;
+	t_job		job;
 	sockaddr_in	sin;
 }				t_wsession;
 

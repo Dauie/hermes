@@ -164,7 +164,7 @@
 		<Unit filename="/home/dauie/code/hermes/libhermes/src/swap.c">
 			<Option target="hermes"/>
 		</Unit>
-		<Unit filename="/home/dauie/code/hermes/src/binnify.c">
+		<Unit filename="/home/dauie/code/hermes/src/binnify_job.c">
 			<Option target="hermes"/>
 		</Unit>
 		<Unit filename="/home/dauie/code/hermes/src/exclude.c">

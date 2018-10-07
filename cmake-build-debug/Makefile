@@ -825,7 +825,7 @@ help:
 	@echo "... libhermes/src/swap.o"
 	@echo "... libhermes/src/swap.i"
 	@echo "... libhermes/src/swap.s"
-	@echo "... src/binnify.o"
+	@echo "... src/binnify_job.o"
 	@echo "... src/binnify.i"
 	@echo "... src/binnify.s"
 	@echo "... src/exclude.o"

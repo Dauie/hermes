@@ -1,14 +1,17 @@
 #ifndef HERMES_MESSAGE_H
-#define HERMES_MESSAGE_H
-# include "../libhermes/incl/libhermes.h"
+# define HERMES_MESSAGE_H
 
-typedef union u_uints
+# include "../libhermes/incl/libhermes.h"
+# include "../binn/src/binn.h"
+
+
+typedef union	u_mval
 {
 	uint8_t		u8;
 	uint16_t	u16;
 	uint32_t	u32;
 	char		*str;
-}			t_uints;
+}				t_mval;
 
 typedef	struct s_msg_hdr
 {
@@ -48,10 +51,8 @@ typedef	struct s_msg_hdr
 **   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
  */
 # define HERMES_MSG_HDRSZ (4)
-# define HERMES_MSG_MAX (64)
-# define FRAGMENT_SIZE (512)
 
-# define HERMES_PACK_SIZE (512)
+# define PKT_SIZE (256)
 
 
 /*
@@ -67,10 +68,15 @@ typedef	struct s_msg_hdr
 # define MC_JOB_OFFER (0)
 
 /*
-**	Job Reply Codes
+**	Reply Codes
 */
-# define MC_JOB_ACCEPT
-# define MC_JOB_DENY
+# define MC_EMPTY (0)
+# define MC_ACCEPT (1)
+# define MC_PARAM_ERR (2)
+# define MC_DENY_BUSY (3)
+# define MC_DENY_OOM (4)
+# define MC_RECV_CNFRM (5)
+# define MC_RECV_FAIL (6)
 
 /*
 **	Command Codes
@@ -83,6 +89,6 @@ typedef	struct s_msg_hdr
 uint16_t	type_code(uint8_t type, uint8_t code);
 ssize_t		hermes_recv_msg(int sock, uint8_t *msgbuff);
 ssize_t		hermes_send_msg(int sock, uint16_t type_code, char *format, ...);
-ssize_t		hermes_send_binn(int sock, uint16_t type_code, binn *data);
+ssize_t		hermes_send_binn(int sock, binn *data);
 
 #endif //HERMES_MESSAGE_H

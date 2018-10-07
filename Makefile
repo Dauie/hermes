@@ -13,7 +13,7 @@ LIBHERMES = ./libhermes
 
 SRC_DIR = src
 SRC_FILES = main.c worker_daemon.c sanity_check.c exclude.c
-SRC_FILES += manager.c partition.c binnify.c send_work.c
+SRC_FILES += manager.c partition.c binnify_job.c send_work.c
 
 THELP_DIR = src/type_helper
 THELP_FILES = ip4.c port.c job.c worker.c
