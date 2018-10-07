@@ -5,7 +5,8 @@ int				handle_job_offer_request(t_wsession *session,
 {
 	if (session->stat.working == TRUE)
 	{
-		hermes_send_msg(session->sock, JOB_OFFER_RPLY, JOB_DENY)
+		hermes_send_msg(session->sock, type_code(MT_JOB_REPLY, MC_JOB_DENY), NULL);
+		return (FAILURE);
 	}
 }
 
@@ -14,7 +15,7 @@ int				process_request(t_wsession *session, uint8_t *msgbuff)
 	t_msg_hdr	*hdr;
 
 	hdr = (t_msg_hdr*)msgbuff;
-	if (hdr->type == JOB_OFFER_REQ)
+	if (hdr->type == MT_JOB)
 		handle_job_offer_request(session, msgbuff);
 		/* TODO parse job message and dispatch */;
 	else if (hdr->type == ERROR_MSG)

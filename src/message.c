@@ -10,8 +10,6 @@ uint16_t	type_code(uint8_t type, uint8_t code)
 	return (tc);
 }
 
-
-
 void			pack_uint8(uint8_t **p, uint8_t val)
 {
 	memcpy(*p, &val, sizeof(uint8_t));
@@ -39,45 +37,34 @@ void			pack_string(uint8_t **p, char *str)
 	*p += len;
 }
 
-void 			pack_header(uint8_t **p, uint16_t type_code, uint16_t len)
+ssize_t			hermes_send_binn(int sock, binn *data)
 {
-	pack_uint16(p, type_code);
-	pack_uint16(p, len);
-}
-
-void			pack_binn(uint8_t **p, binn *data, int len)
-{
-	memcpy(p, data, len);
-	*p += len;
-}
-
-ssize_t			hermes_send_binn(int sock, uint16_t type_code, binn *data)
-{
+	int			i;
 	int			len;
 	ssize_t 	ret;
-	binn		*binn;
+	ssize_t		sendsz;
+	void		*binn;
 
+	i = 0;
 	ret = 0;
 	len = binn_size(data);
 	binn = binn_ptr(data);
-	while (binn)
+	while (i < len)
 	{
-		if (!binn + HERMES_PACK_SIZE)
-		{
-			if ((ret = send(sock, binn, (size_t)(len - HERMES_PACK_SIZE), 0)) < 0)
-				hermes_error(errno, TRUE, 2, "send()", strerror(errno));
-		}
-		else
-		{
-			if ((ret = send(sock, binn, HERMES_PACK_SIZE, 0)) < 0)
-				hermes_error(errno, TRUE, 2, "send()", strerror(errno));
-		}
-		binn += HERMES_PACK_SIZE;
+		sendsz = (len - i) > FRAGMENT_SIZE ? FRAGMENT_SIZE : (len - i);
+		ret = send(sock, &binn[i], (size_t)sendsz, 0);
+		i += ret;
 	}
 	return (ret);
 }
 
-ssize_t			msg_pack_data(uint8_t *msgbuff, va_list *ap, char *frmt)
+void 			msg_pack_header(uint8_t *p, uint16_t type_code, uint16_t len)
+{
+	pack_uint16(&p, type_code);
+	pack_uint16(&p, len);
+}
+
+size_t			msg_pack_data(uint8_t *msgbuff, va_list *ap, char *frmt)
 {
 	uint8_t		*p;
 	char		*spec;
@@ -113,18 +100,19 @@ ssize_t			msg_pack_data(uint8_t *msgbuff, va_list *ap, char *frmt)
 /* TODO: Have better bounds checks while packing to prevent going over MAX_MSG */
 ssize_t			hermes_send_msg(int sock, uint16_t type_code, char *format, ...)
 {
-	ssize_t		datalen;
-	uint8_t		*p;
-	uint8_t		msgbuff[HERMES_MSG_MAX];
+	uint8_t		*hp;
+	uint8_t		*dp;
 	va_list		ap;
-
+	size_t		datalen;
+	uint8_t		msgbuff[HERMES_MSG_MAX];
 	ssize_t		ret;
 
 	va_start(ap, format);
-	p = msgbuff;
-	datalen = msg_pack_data(p, &ap, format);
-	pack_header(&p, type_code, (uint16_t)datalen);
-	if ((ret = send(sock, msgbuff, msgbuff - p, 0)) < 0)
+	hp = msgbuff;
+	dp = msgbuff + HERMES_MSG_HDRSZ;
+	datalen = msg_pack_data(dp, &ap, format);
+	msg_pack_header(hp, type_code, (uint16_t) datalen);
+	if ((ret = send(sock, msgbuff, HERMES_MSG_HDRSZ + datalen, 0)) < 0)
 		hermes_error(errno, TRUE, 2, "send()", strerror(errno));
 	va_end(ap);
 	return (ret);

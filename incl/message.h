@@ -49,6 +49,7 @@ typedef	struct s_msg_hdr
  */
 # define HERMES_MSG_HDRSZ (4)
 # define HERMES_MSG_MAX (64)
+# define FRAGMENT_SIZE (512)
 
 # define HERMES_PACK_SIZE (512)
 
@@ -56,15 +57,14 @@ typedef	struct s_msg_hdr
 /*
 **	Hermes Message Types
 */
-# define MT_JOB
-# define MT_JOB_REPLY
-
-# define MT_CMD
+# define MT_JOB (0)
+# define MT_JOB_REPLY (1)
+# define MT_CMD (2)
 
 /*
-**	Job Request Codes
+**	Job Codes
 */
-# define MC_JOB_OFFER
+# define MC_JOB_OFFER (0)
 
 /*
 **	Job Reply Codes
