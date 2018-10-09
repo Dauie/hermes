@@ -1,8 +1,8 @@
 #include "../incl/hermes.h"
 #include "../incl/defined.h"
 
-int				connect_workers(t_node **workers, uint32_t *worker_count,
-		t_node **rm_tree, int proto)
+int					connect_workers(t_node **workers, uint32_t *worker_count,
+						t_node **rm_tree, int proto)
 {
 	t_worker		*worker;
 
@@ -27,7 +27,7 @@ int				connect_workers(t_node **workers, uint32_t *worker_count,
 	return (0);
 }
 
-void                distribute_jobs(t_node *workers, t_node *jobs)
+void				distribute_jobs(t_node *workers, t_node *jobs)
 {
 	/* TODO : kick out w/ error
 	 * if workerlist and joblist
@@ -35,8 +35,8 @@ void                distribute_jobs(t_node *workers, t_node *jobs)
 	 */
 	if (!workers || !jobs)
 		return ;
-	send_work(workers->data, jobs->data);
-	distribute_jobs(workers->right->data, jobs->right);
+	send_job(workers->data, jobs->data);
+	distribute_jobs(workers->right, jobs->right);
 }
 
 int					manager_loop(t_mgr *mgr)

@@ -5,15 +5,15 @@ CC = gcc
 
 SRC_DIR = src
 
-CFLAGS  = -Wall -Werror -Wextra
+CFLAGS  = -Wall -Werror -Wextra -g
 
 INCL = -I incl
 
 LIBHERMES = ./libhermes
 
 SRC_DIR = src
-SRC_FILES = main.c worker_daemon.c sanity_check.c exclude.c
-SRC_FILES += manager.c partition.c binnify_job.c send_work.c
+SRC_FILES = main.c worker_daemon.c worker_loop.c sanity_check.c exclude.c
+SRC_FILES += manager.c partition.c binnify.c send_work.c message.c
 
 THELP_DIR = src/type_helper
 THELP_FILES = ip4.c port.c job.c worker.c

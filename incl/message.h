@@ -60,7 +60,6 @@ typedef	struct s_msg_hdr
 */
 # define MT_JOB (0)
 # define MT_JOB_REPLY (1)
-# define MT_CMD (2)
 
 /*
 **	Job Codes
@@ -68,15 +67,14 @@ typedef	struct s_msg_hdr
 # define MC_JOB_OFFER (0)
 
 /*
-**	Reply Codes
+**	Job Reply Codes
 */
-# define MC_EMPTY (0)
-# define MC_ACCEPT (1)
-# define MC_PARAM_ERR (2)
-# define MC_DENY_BUSY (3)
-# define MC_DENY_OOM (4)
-# define MC_RECV_CNFRM (5)
-# define MC_RECV_FAIL (6)
+# define MC_JOB_ACCEPT (0)
+# define MC_JOB_PARAM_ERR (1)
+# define MC_JOB_DENY_BUSY (2)
+# define MC_JOB_DENY_OOM (3)
+# define MC_JOB_RECV_CNFRM (4)
+# define MC_JOB_RECV_FAIL (5)
 
 /*
 **	Command Codes
@@ -88,7 +86,7 @@ typedef	struct s_msg_hdr
 
 uint16_t	type_code(uint8_t type, uint8_t code);
 ssize_t		hermes_recv_msg(int sock, uint8_t *msgbuff);
-ssize_t		hermes_send_msg(int sock, uint16_t type_code, char *format, ...);
-ssize_t		hermes_send_binn(int sock, binn *data);
+int			hermes_send_msg(int sock, uint16_t type_code, char *format, ...);
+ssize_t		hermes_send_binn(int sock, binn *data, ssize_t datalen);
 
 #endif //HERMES_MESSAGE_H

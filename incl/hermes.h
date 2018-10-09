@@ -79,6 +79,8 @@ int				worker_loop(t_wsession* session);
 
 int				manager_loop(t_mgr *mgr);
 t_node			*partition_job(t_job *job, uint32_t parts);
-int				send_work(t_worker *worker, t_job *job);
+int				send_job(t_worker *worker, t_job *job);
+int				worker_loop(t_wsession *session);
+
 
 #endif

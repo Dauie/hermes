@@ -6,15 +6,15 @@ int				handle_job_offer_request(t_wsession *session, uint8_t *msgbuff, ssize_t m
 	uint32_t 	*len;
 	binn		*obj;
 
-	if (msglen <= HERMES_MSG_HDRSZ + sizeof(uint32_t))
+	if (msglen < (ssize_t)(HERMES_MSG_HDRSZ + sizeof(uint32_t)))
 	{
-		tc = type_code(MT_JOB_REPLY, MC_PARAM_ERR);
+		tc = type_code(MT_JOB_REPLY, MC_JOB_PARAM_ERR);
 		hermes_send_msg(session->sock, tc, NULL);
 		return (FAILURE);
 	}
 	if (session->stat.working == TRUE)
 	{
-		tc = type_code(MT_JOB_REPLY, MC_DENY_BUSY);
+		tc = type_code(MT_JOB_REPLY, MC_JOB_DENY_BUSY);
 		hermes_send_msg(session->sock, tc, NULL);
 		return (FAILURE);
 	}
@@ -22,25 +22,25 @@ int				handle_job_offer_request(t_wsession *session, uint8_t *msgbuff, ssize_t m
 	*len = ntohl(*len);
 	if (*len <= 0)
 	{
-		tc = type_code(MT_JOB_REPLY, MC_PARAM_ERR);
+		tc = type_code(MT_JOB_REPLY, MC_JOB_PARAM_ERR);
 		hermes_send_msg(session->sock, tc, NULL);
 		return (FAILURE);
 	}
 	if (!(obj = (binn *)malloc(sizeof(uint8_t) * *len)))
 	{
-		tc = type_code(MT_JOB_REPLY, MC_DENY_OOM);
+		tc = type_code(MT_JOB_REPLY, MC_JOB_DENY_OOM);
 		hermes_send_msg(session->sock, tc, NULL);
 		return (FAILURE);
 	}
-	tc = type_code(MT_JOB_REPLY, MC_ACCEPT);
+	tc = type_code(MT_JOB_REPLY, MC_JOB_ACCEPT);
 	hermes_send_msg(session->sock, tc, NULL);
 	if (recv(session->sock, obj, *len, MSG_WAITALL) < *len)
 	{
-		tc = type_code(MT_JOB_REPLY, MC_RECV_FAIL);
+		tc = type_code(MT_JOB_REPLY, MC_JOB_RECV_FAIL);
 		hermes_send_msg(session->sock, tc, NULL);
 		return (FAILURE);
 	}
-	tc = type_code(MT_JOB_REPLY, MC_RECV_CNFRM);
+	tc = type_code(MT_JOB_REPLY, MC_JOB_RECV_CNFRM);
 	hermes_send_msg(session->sock, tc, NULL);
 	unbinnify_job(obj, &session->job);
 	/*TODO split work, make threads */
@@ -70,7 +70,7 @@ int			worker_loop(t_wsession *session)
 			session->stat.running = FALSE;
 		}
 		else if (ret > 0)
-			process_request(session, msgbuff);
+			process_request(session, msgbuff, ret);
 	}
 	return (SUCCESS);
 }
