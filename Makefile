@@ -7,6 +7,10 @@ SRC_DIR = src
 
 CFLAGS  = -Wall -Werror -Wextra -g
 
+LIBHERMES = libhermes/
+
+LIBBINN = binn/
+
 UNITSRC_DIR = src/unit_testing
 UNITSRC_FILES = munit.c
 
@@ -36,21 +40,21 @@ UNIT_SRC += $(addprefix $(UNITSRC_DIR)/, $(UNITSRC_FILES))
 RM = rm -fr
 
 $(NAME):
-		$(MAKE) -C binn
-		$(MAKE) -C libhermes
+		$(MAKE) -C $(LIBBINN)
+		$(MAKE) -C $(LIBHERMES)
 		$(CC) $(CFLAGS) $(SRC) src/main.c -o $(NAME)
 
 all: $(NAME)
 
 test:
-		$(MAKE) -C binn
-		$(MAKE) -C libhermes
+		$(MAKE) -C $(LIBBINN)
+		$(MAKE) -C $(LIBHERMES)
 		$(CC) $(CFLAGS) $(UNIT_SRC) -o hermes_test
 clean:
 		$(RM) $(NAME)
 
 fclean: clean
-		$(MAKE) -C binn clean
+		$(MAKE) -C $(LIBBINN) clean
 		$(MAKE) -C $(LIBHERMES) fclean
 
 re: fclean $(NAME)
