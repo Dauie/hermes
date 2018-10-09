@@ -3,7 +3,7 @@
 #include "../../incl/hermes.h"
 
 static char *ip_class_a[] = {
-		(char *)"10.0.0.0", (char *)"10.1.0.0", (char *)"10.42.42.1", NULL
+		(char *)"10.21.7.80", (char *)"10.34.25.3", (char *)"10.42.42.1", NULL
 };
 
 //static char *ip_class_b[] = {
@@ -11,7 +11,7 @@ static char *ip_class_a[] = {
 //};
 
 static char *ip_class_c[] = {
-		(char *)"192.168.0.0", (char *)"192.168.23.5", (char *)"192.168.42.9", NULL
+		(char *)"192.168.99.21", (char *)"192.168.23.5", (char *)"192.168.42.9", NULL
 };
 
 static MunitParameterEnum ip4_cmp_test_greaterless_params[] = {
@@ -19,7 +19,7 @@ static MunitParameterEnum ip4_cmp_test_greaterless_params[] = {
 		{ (char *)"class_c", ip_class_c}
 };
 
-static MunitParameterEnum ip4_cmp_test_equal[] = {
+static MunitParameterEnum ip4_cmp_test_equal_params[] = {
 		{ (char *)"class_c", ip_class_c}
 };
 
@@ -69,10 +69,68 @@ static MunitResult	test_ip4_cmp_equal(const MunitParameter params[], void *user_
 	return (MUNIT_OK);
 }
 
+static MunitResult	test_ip4_increment(const MunitParameter params[], void *user_data)
+{
+	struct in_addr	ip1;
+	struct in_addr	ip2;
+	struct in_addr	ip3;
+	struct in_addr	ip4;
+	char			*ip1oi = {"255.255.255.255"};
+	char			*ip2oi = {"192.255.255.255"};
+	char			*ip3oi = {"192.168.255.255"};
+	char			*ip4oi = {"192.168.0.255"};
+
+	(void)params;
+	(void)user_data;
+	inet_pton(AF_INET, ip1oi, &ip1.s_addr);
+	inet_pton(AF_INET, ip2oi, &ip2.s_addr);
+	inet_pton(AF_INET, ip3oi, &ip3.s_addr);
+	inet_pton(AF_INET, ip4oi, &ip4.s_addr);
+	ip1.s_addr = ip4_increment(ip1.s_addr, 1);
+	ip2.s_addr = ip4_increment(ip2.s_addr, 1);
+	ip3.s_addr = ip4_increment(ip3.s_addr, 1);
+	ip4.s_addr = ip4_increment(ip4.s_addr, 1);
+	munit_assert_string_equal(inet_ntoa(ip1), "0.0.0.0");
+	munit_assert_string_equal(inet_ntoa(ip2), "193.0.0.0");
+	munit_assert_string_equal(inet_ntoa(ip3), "192.169.0.0");
+	munit_assert_string_equal(inet_ntoa(ip4), "192.168.1.0");
+	return (MUNIT_OK);
+}
+
+static MunitResult	test_ip4_decrement(const MunitParameter params[], void *user_data)
+{
+	struct in_addr	ip1;
+	struct in_addr	ip2;
+	struct in_addr	ip3;
+	struct in_addr	ip4;
+	char			*ip1oi = {"0.0.0.0"};
+	char			*ip2oi = {"192.0.0.0"};
+	char			*ip3oi = {"192.168.0.0"};
+	char			*ip4oi = {"192.168.1.0"};
+
+	(void)params;
+	(void)user_data;
+	inet_pton(AF_INET, ip1oi, &ip1.s_addr);
+	inet_pton(AF_INET, ip2oi, &ip2.s_addr);
+	inet_pton(AF_INET, ip3oi, &ip3.s_addr);
+	inet_pton(AF_INET, ip4oi, &ip4.s_addr);
+	ip1.s_addr = ip4_decrement(ip1.s_addr, 1);
+	ip2.s_addr = ip4_decrement(ip2.s_addr, 1);
+	ip3.s_addr = ip4_decrement(ip3.s_addr, 1);
+	ip4.s_addr = ip4_decrement(ip4.s_addr, 1);
+	munit_assert_string_equal(inet_ntoa(ip1), "255.255.255.255");
+	munit_assert_string_equal(inet_ntoa(ip2), "191.255.255.255");
+	munit_assert_string_equal(inet_ntoa(ip3), "192.167.255.255");
+	munit_assert_string_equal(inet_ntoa(ip4), "192.168.0.255");
+	return (MUNIT_OK);
+}
+
 static const MunitTest ip4_tests[] = {
 		{ (char *)"ip4_cmp less-than", test_ip4_cmp_less, NULL, NULL, MUNIT_TEST_OPTION_NONE, ip4_cmp_test_greaterless_params},
 		{ (char *)"ip4_cmp greater-than", test_ip4_cmp_great, NULL, NULL, MUNIT_TEST_OPTION_NONE, ip4_cmp_test_greaterless_params},
-		{ (char *)"ip4_cmp greater-equal", test_ip4_cmp_equal, NULL, NULL, MUNIT_TEST_OPTION_NONE, ip4_cmp_test_equal},
+		{ (char *)"ip4_cmp equal", test_ip4_cmp_equal, NULL, NULL, MUNIT_TEST_OPTION_NONE, ip4_cmp_test_equal_params},
+		{ (char *)"ip4_cmp increment", test_ip4_increment, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
+		{ (char *)"ip4_cmp decrement", test_ip4_decrement, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
 		{ NULL, NULL, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL },
 };
 

@@ -134,7 +134,7 @@ in_addr_t		ip4_decrement(in_addr_t ip, uint32_t decrease)
 					if (b->b1 > 0)
 						b->b1 -= 1;
 					else
-						b->b1 = 0;
+						b->b1 = 255;
 				}
 			}
 		}
