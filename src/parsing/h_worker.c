@@ -1,7 +1,7 @@
 #include "../../incl/parser.h"
 #include "../../incl/hermes.h"
 
-int				parse_worker(t_workerlist *workerlist, char *input)
+int				parse_worker(t_workerset *set, char *input)
 {
 	char		*worker;
 	char		*ip_str;
@@ -25,8 +25,8 @@ int				parse_worker(t_workerlist *workerlist, char *input)
 		data->sin.sin_addr.s_addr = ip;
 		data->sin.sin_port = htons(port);
 		data->sin.sin_family = AF_INET;
-		if (add_node_bst(&workerlist->wrkrs, (void **) &data, worker_cmp) == SUCCESS)
-			workerlist->wrkr_cnt++;
+		if (add_node_bst(&set->wrkrs, (void **) &data, worker_cmp) == SUCCESS)
+			set->wrkr_cnt++;
 	}
 	return (SUCCESS);
 }
@@ -35,7 +35,7 @@ void			h_worker(t_mgr *mgr, char *input)
 {
 	if (!input)
 		hermes_error(INPUT_ERROR, TRUE, 1, "no wrkrs specified");
-	parse_worker(&mgr->worker_list, input);
+	parse_worker(&mgr->worker_set, input);
 }
 
 void			h_daemon(t_mgr *mgr, char *input)

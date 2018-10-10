@@ -5,8 +5,6 @@
 **	If something is commented out in DTABs, it is low priority.
 */
 
-# define DTAB_ENTRIES 18
-
 t_dtab g_disp[] = {
 		{ "--append-output", h_append_output },
 		{ "--badsum", h_bad_checksum },
@@ -31,9 +29,8 @@ t_dtab g_disp[] = {
 		{ "--trace", h_traceroute },
 //		{ "-v", h_verbose_output },
 //		{ "-vv", h_very_verbose_output },
+		{ NULL, NULL}
 };
-
-# define DTAB_WOPT_ENTRIES 30
 
 t_dtab_wopt g_disp_wopt[] = {
 
@@ -57,10 +54,10 @@ t_dtab_wopt g_disp_wopt[] = {
 		{ "--min-rtt-timeout", h_min_rtt_timeout },
 		{ "--fragment-mtu", h_fragment_mtu },
 //		{ "-oX", h_xml_output},
-		{ "-p", h_scan_portlist },
-		{ "-PA", h_ack_portlist },
-		{ "-PS", h_syn_portlist },
-		{ "-PU", h_udp_portlist },
+		{ "-p", h_scan_portset },
+		{ "-PA", h_ack_portset },
+		{ "-PS", h_syn_portset },
+		{ "-PU", h_udp_portset },
 //		{ "--resume", h_resume_output },
 		{ "-S", h_spoof_srcip },
 		{ "--scan-delay", h_scan_delay },
@@ -68,7 +65,8 @@ t_dtab_wopt g_disp_wopt[] = {
 		{ "-ttl", h_custom_ip_ttl },
 		{ "--thread", h_thread_amt },
 		{ "--worker", h_worker },
-		{ "--worker-file", h_worker_file }
+		{ "--worker-file", h_worker_file },
+		{ NULL, NULL}
 };
 
 int			dtab_loop(t_mgr *mgr, char *arg, t_dtab *tab)
@@ -79,7 +77,7 @@ int			dtab_loop(t_mgr *mgr, char *arg, t_dtab *tab)
 	i = -1;
 	len = strlen(arg);
 	/* iterate TAB and look for the correct entry */
-	while (++i < DTAB_ENTRIES)
+	while (tab->name[i])
 	{
 		if (strncmp(arg, tab[i].name, len) == 0)
 		{
@@ -99,7 +97,7 @@ int			dtab_wopt_loop(t_mgr *mgr, char *arg, char *opt,
 	i = -1;
 	len = strlen(arg);
 	/* iterate TAB and look for the correct entry */
-	while (++i < DTAB_WOPT_ENTRIES)
+	while (tab->name[i])
 	{
 		if (strncmp(arg, tab[i].name, len) == 0)
 		{
@@ -117,7 +115,8 @@ int			parse_opts(t_mgr *mgr, int ac, char **args)
 	i = 0;
 	while (++i < ac)
 	{
-		if (args[i][0] == '-') {
+		if (args[i][0] == '-')
+		{
 			if (dtab_loop(mgr, args[i], g_disp) == FAILURE)
 			{
 				if (dtab_wopt_loop(mgr, args[i], args[i + 1], g_disp_wopt) == FAILURE)

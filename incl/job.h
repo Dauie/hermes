@@ -35,29 +35,29 @@ typedef struct			s_prtrng
 	uint16_t 			end;
 }						t_prtrng;
 
-typedef struct			s_workerlist
+typedef struct			s_workerset
 {
 	uint32_t			wrkr_cnt;
 	t_node				*wrkrs;					/*t_node list containing t_ip4 structs*/
-}						t_workerlist;
+}						t_workerset;
 
-typedef struct			s_targetlist
+typedef struct			s_targetset
 {
 	uint32_t			total;
 	uint32_t			ip_cnt;
 	uint32_t			rng_cnt;
-	t_node				*ips;						/*t_node list containing t_ip4 structs*/
-	t_node				*iprngs;					/*t_node list containing t_ip4rng structs*/
-}						t_targetlist;
+	t_node				*ips;						/*t_node tree containing t_ip4 structs*/
+	t_node				*iprngs;					/*t_node tree containing t_ip4rng structs*/
+}						t_targetset;
 
-typedef struct			s_portlist
+typedef struct			s_portset
 {
 	uint16_t			total;
 	uint16_t			port_cnt;
 	uint16_t			rng_cnt;
 	t_node				*ports;
 	t_node				*prtrngs;
-}						t_portlist;
+}						t_portset;
 
 typedef struct			s_optbitf
 {
@@ -122,16 +122,16 @@ typedef struct			s_ops
 	uint8_t				ip_ttl;
 	uint8_t				thread_count;
 	uint8_t				verbose_level; /* Default 0, verbose 1, very verbose 2 TODO: possibe enum */
-}						t_ops;
+}						t_opts;
 
 typedef struct			s_job
 {
-	t_ops				opts;
-	t_targetlist		targets;
-	t_portlist			ports;
-	t_portlist			syn_ports;
-	t_portlist			ack_ports;
-	t_portlist			udp_ports;
+	t_opts				opts;
+	t_targetset			targets;
+	t_portset			ports;
+	t_portset			syn_ports;
+	t_portset			ack_ports;
+	t_portset			udp_ports;
 	void				*custom_payload;
 }						t_job;
 
@@ -139,14 +139,14 @@ typedef struct			s_worker
 {
     struct sockaddr_in	sin;
     int 				sock;
-    t_job				*job;
+    t_targetset			targets;
 }						t_worker;
 
 typedef struct			s_mgr {
 	t_job				job;
-	t_targetlist		exclude_targets;
-	t_portlist			exclude_ports;
-	t_workerlist		worker_list;
+	t_targetset			exclude_targets;
+	t_portset			exclude_ports;
+	t_workerset			worker_set;
 	FILE				*resume_file;
 	FILE				*xml_file;
 	FILE				*norm_file;

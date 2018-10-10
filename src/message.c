@@ -1,6 +1,6 @@
 #include "../incl/hermes.h"
 
-uint16_t	type_code(uint8_t type, uint8_t code)
+uint16_t		msg_tc(uint8_t type, uint8_t code)
 {
 	uint16_t tc;
 
@@ -34,19 +34,6 @@ void			pack_string(uint8_t **p, char *str)
 	len = strlen(str);
 	memcpy(*p, str, len);
 	*p += len;
-}
-
-ssize_t			hermes_send_binn(int sock, binn *data, ssize_t datalen)
-{
-	ssize_t		ret;
-	void		*binn;
-
-	binn = binn_ptr(data);
-	if ((ret = send(sock, &binn, (size_t)datalen, MSG_DONTWAIT)) < 0)
-		hermes_error(errno, TRUE, 2, "send()", strerror(errno));
-	if (ret != datalen)
-		return (FAILURE);
-	return (SUCCESS);
 }
 
 void 			msg_pack_header(uint8_t *p, uint16_t type_code, uint16_t len)
@@ -89,7 +76,8 @@ size_t			msg_pack_data(uint8_t *msgbuff, va_list *ap, char *frmt)
 }
 
 /* TODO: Error handling in this func needs to be improved */
-int				hermes_send_msg(int sock, uint16_t type_code, char *format, ...)
+int				hermes_sendmsgf(int sock, uint16_t type_code, char *format,
+								   ...)
 {
 	uint8_t		*hp;	/* header pointer */
 	uint8_t		*dp;	/* data pointer */
@@ -98,9 +86,9 @@ int				hermes_send_msg(int sock, uint16_t type_code, char *format, ...)
 	uint8_t		msgbuff[PKT_SIZE] = {0};
 	ssize_t		ret;
 
-	msglen = HERMES_MSG_HDRSZ;
+	msglen = MSG_HDRSZ;
 	hp = msgbuff;
-	dp = msgbuff + HERMES_MSG_HDRSZ;
+	dp = msgbuff + MSG_HDRSZ;
 	if (format)
 	{
 		va_start(ap, format);
@@ -111,21 +99,34 @@ int				hermes_send_msg(int sock, uint16_t type_code, char *format, ...)
 	if ((ret = send(sock, msgbuff, (size_t)msglen, MSG_DONTWAIT)) < 0)
 		hermes_error(errno, TRUE, 2, "send()", strerror(errno));
 	else if (ret != msglen)
-		return (hermes_error(FAILURE, FALSE, 1, "hermes_send_msg() failed to send message"));
+		return (hermes_error(FAILURE, FALSE, 1, "hermes_sendmsgf() failed to send message"));
+	return (SUCCESS);
+}
+
+ssize_t			hermes_send_binn(int sock, binn *data, ssize_t datalen)
+{
+	ssize_t		ret;
+	void		*binn;
+
+	binn = binn_ptr(data);
+	if ((ret = send(sock, &binn, (size_t)datalen, MSG_DONTWAIT)) < 0)
+		hermes_error(errno, TRUE, 2, "send()", strerror(errno));
+	if (ret != datalen)
+		return (FAILURE);
 	return (SUCCESS);
 }
 
 /*
-**	If hermes_recv_msg returns FAILURE the connection was closed.
+**	If hermes_recvmsg returns FAILURE the connection was closed.
 **	if Fatal error has occurred, process will be ended.
 */
-ssize_t			hermes_recv_msg(int sock, uint8_t *msgbuff)
+ssize_t			hermes_recvmsg(int sock, uint8_t *msgbuff)
 {
 	t_msg_hdr	*hdr;
 	ssize_t		ret;
 
 	hdr = (t_msg_hdr*)msgbuff;
-	if ((ret = recv(sock, msgbuff, HERMES_MSG_HDRSZ, MSG_WAITALL)) <= 0)
+	if ((ret = recv(sock, msgbuff, MSG_HDRSZ, MSG_WAITALL)) <= 0)
 	{
 		if (ret == 0)
 			return (FAILURE);
@@ -137,7 +138,7 @@ ssize_t			hermes_recv_msg(int sock, uint8_t *msgbuff)
 	hdr->msglen = ntohs(hdr->msglen);
 	if (hdr->msglen > 0)
 	{
-		if ((ret = recv(sock, msgbuff + HERMES_MSG_HDRSZ, hdr->msglen, MSG_WAITALL)) <= 0)
+		if ((ret = recv(sock, msgbuff + MSG_HDRSZ, hdr->msglen, MSG_WAITALL)) <= 0)
 		{
 			if (ret == 0)
 				return (FAILURE);

@@ -51,7 +51,7 @@ int					parse_ip(in_addr_t *ip, char *ip_str)
 	return (SUCCESS);
 }
 
-int				do_ip4range(t_targetlist *targets, char *ip_str, char *cidr_str)
+int				do_ip4range(t_targetset *targets, char *ip_str, char *cidr_str)
 {
 	in_addr_t	ip;
 	in_addr_t	subn_m;
@@ -72,7 +72,7 @@ int				do_ip4range(t_targetlist *targets, char *ip_str, char *cidr_str)
 	return (SUCCESS);
 }
 
-int				do_ip4(t_targetlist *targets, char *input)
+int				do_ip4(t_targetset *targets, char *input)
 {
 	in_addr_t	ip;
 	t_ip4		*data;
@@ -90,7 +90,7 @@ int				do_ip4(t_targetlist *targets, char *input)
 	return (SUCCESS);
 }
 
-int				handle_ip(t_targetlist *targets, char *input)
+int				handle_ip(t_targetset *targets, char *input)
 {
 	char		*section;
 	char		*ip_str;

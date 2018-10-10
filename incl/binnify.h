@@ -4,8 +4,11 @@
 #include "../incl/job.h"
 #include "../binn/src/binn.h"
 
-binn		*binnify_job(t_job *job);
-void		unbinnify_job(binn *obj, t_job *job);
+binn				*binnify_opts(t_opts *opts);
+binn				*binnify_portset(t_portset *set);
+binn				*binnify_targetset(t_targetset *set);
+void				unbinnify_opts(t_opts *opts, binn *obj);
+void				unbinnify_portset(t_portset *set, binn *obj);
+void				unbinnify_targetset(t_targetset *set, binn *obj);
 
-
-#endif //FT_NMAP_BINNIFY_H
+#endif //HERMES_BINNIFY_H

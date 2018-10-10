@@ -13,7 +13,7 @@ int				parse_port(uint16_t *port, char *input)
 	return (SUCCESS);
 }
 
-static int		add_port(t_portlist *list, char *input)
+static int		add_port(t_portset *list, char *input)
 {
 	t_port		*data;
 	uint16_t	port;
@@ -30,7 +30,7 @@ static int		add_port(t_portlist *list, char *input)
 	return (FAILURE);
 }
 
-static int		add_range(t_portlist *list, char **range)
+static int		add_range(t_portset *list, char **range)
 {
 	uint16_t	start;
 	uint16_t	end;
@@ -54,7 +54,7 @@ static int		add_range(t_portlist *list, char **range)
 	return (FAILURE);
 }
 
-int				handle_port(t_portlist *list, char *input)
+int				handle_port(t_portset *set, char *input)
 {
 	char		*port;
 	char		**port_range;
@@ -66,12 +66,12 @@ int				handle_port(t_portlist *list, char *input)
 		{
 			if (!(port_range = strsplit(port, '-')))
 				return (hermes_error(INPUT_ERROR, TRUE, 1, "strsplit()"));
-			if (add_range(list, port_range) == FAILURE)
+			if (add_range(set, port_range) == FAILURE)
 				return (FAILURE);
 			tbldel(&port_range);
 		}
 		else
-			if (add_port(list, port) == FAILURE)
+			if (add_port(set, port) == FAILURE)
 				return (FAILURE);
 	}
 	return (SUCCESS);

@@ -16,7 +16,9 @@ int					connect_workers(t_node **workers, uint32_t *worker_count,
 	if (connect(worker->sock, (const struct sockaddr *)&worker->sin,
 				sizeof(worker->sin)) == -1)
 	{
-		hermes_error(FAILURE, FALSE, 2, "could not connect to worker:", inet_ntoa(worker->sin.sin_addr));
+		hermes_error(FAILURE, FALSE, 2,
+				"could not connect to worker dropping:",
+				inet_ntoa(worker->sin.sin_addr));
 		remove_node_bst(rm_tree, worker, worker_cmp, worker_min);
 		*worker_count -= 1;
 	}
@@ -27,38 +29,40 @@ int					connect_workers(t_node **workers, uint32_t *worker_count,
 	return (0);
 }
 
-void				distribute_jobs(t_node *workers, t_node *jobs)
+/* TODO if job is rejected by worker for some reason, it should be divided again and sent to other worker_set */
+
+void				assign_targetsets_to_workers(t_node *wrkr_tree, t_node *job_lst)
 {
-	/* TODO : kick out w/ error
-	 * if workerlist and joblist
-	 * are not balanced
-	 */
-	if (!workers || !jobs)
-		return ;
-	send_job(workers->data, jobs->data);
-	distribute_jobs(workers->right, jobs->right);
+	t_node			*wrkrs;
+	t_node			*jobs;
+
+
 }
 
+/* TODO manager is left without work atm */
 int					manager_loop(t_mgr *mgr)
 {
 	struct protoent	*proto;
-	t_node			*job_list;
+	t_node			*targetset_list;
 
 	if ((proto = getprotobyname("tcp")) == 0)
 		return (FAILURE);
-	if (mgr->worker_list.wrkr_cnt > 0)
+	if (mgr->worker_set.wrkr_cnt > 0)
 	{
-		connect_workers(&mgr->worker_list.wrkrs, &mgr->worker_list.wrkr_cnt,
-				&mgr->worker_list.wrkrs, proto->p_proto);
-		printf("connected to %i wrkrs.\n", mgr->worker_list.wrkr_cnt);
-		job_list = partition_job(&mgr->job, mgr->worker_list.wrkr_cnt);
-		distribute_jobs(mgr->worker_list.wrkrs, job_list);
-		del_list(&job_list);
+		connect_workers(&mgr->worker_set.wrkrs, &mgr->worker_set.wrkr_cnt,
+				&mgr->worker_set.wrkrs, proto->p_proto);
+		printf("connected to %i worker_set.\n", mgr->worker_set.wrkr_cnt);
+		printf("partitioning work...\n");
+		/* TODO remove targetset from mgr, and replace with one from list, then distribute targetsets to workers*/
+		targetset_list = partition_targetset(&mgr->job.targets, mgr->worker_set.wrkr_cnt + 1);
+		printf("done.\nsending work...\n");
+		assign_targetsets_to_workers(mgr->worker_set.wrkrs, targetset_list);
+		del_list(&targetset_list);
 	}
-	job_list = partition_job(&mgr->job, mgr->job.opts.thread_count);
-	distribute_jobs(mgr->worker_list.wrkrs, job_list);
+	targetset_list = partition_targetset(&mgr->job.targets, mgr->job.opts.thread_count);
+	assign_targetsets_to_workers(mgr->worker_set.wrkrs, targetset_list);
 	//run_hermes(mgr);
-	del_list(&job_list);
+	del_list(&targetset_list);
 	return (0);
 }
 
@@ -143,8 +147,8 @@ int main(void)
 			prompt("ports > ", input, 20);
 			if (parse_port(&PORT(mgr), strtrim(input)) < 0)
 				hermes_error(INPUT_ERROR, TRUE, 2, "parsing ports", strerror(errno));
-			add_node_list_head(&(mgr->worker_list.wrkrs), &worker);
-			mgr->worker_list.wrkr_cnt++;
+			add_node_list_head(&(mgr->worker_set.wrkrs), &worker);
+			mgr->worker_set.wrkr_cnt++;
 			free(worker);
 		}
 		else if (!memcmp("del", input, 3))
@@ -152,8 +156,8 @@ int main(void)
 			prompt("ips > ", input, 20);
 			if (parse_ip(&ips, strtrim(input)) < 0)
 				hermes_error(INPUT_ERROR, TRUE, 2, "parsing ips", strerror(errno));
-			remove_node_list_head(&mgr->worker_list.wrkrs);
-			mgr->worker_list.wrkr_cnt--;
+			remove_node_list_head(&mgr->worker_set.wrkrs);
+			mgr->worker_set.wrkr_cnt--;
 		}
 		else if (!memcmp("quit", input, 4) ||
 				!memcmp("exit", input, 4))

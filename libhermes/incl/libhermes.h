@@ -15,6 +15,7 @@
 /*
 **	Structs
 */
+
 typedef struct		s_node
 {
 	struct s_node	*left;
@@ -63,7 +64,7 @@ t_node				*tree_search(t_node **tree, void *data, int (*cmp)(void *, void *));
 */
 void				del_list(t_node **list);
 void				add_node_list_end(t_node **list, void **node);
-void				add_node_list_head(t_node **list, void **data);
+int add_node_list_head(t_node **list, void **data);
 void				remove_node_list(t_node **node);
 void				remove_node_list_head(t_node **list);
 

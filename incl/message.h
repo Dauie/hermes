@@ -4,6 +4,12 @@
 # include "../libhermes/incl/libhermes.h"
 # include "../binn/src/binn.h"
 
+typedef	struct	s_msg_hdr
+{
+	uint8_t		type;
+	uint8_t		code;
+	uint16_t	msglen;
+}				t_msg_hdr;
 
 typedef union	u_mval
 {
@@ -13,32 +19,22 @@ typedef union	u_mval
 	char		*str;
 }				t_mval;
 
-typedef	struct s_msg_hdr
-{
-	uint8_t		type;
-	uint8_t		code;
-	uint16_t	msglen;
-}				t_msg_hdr;
-
 /*
-**	Types: Job, Error, Result
- *
-** 	Job Codes: JobOffer, JobAccept,
- *
-*	Error Codes:
 **
-**	General header layout
+**
+**
+**	General Header Layout
 **
 **    0                   1                   2                   3
 **    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
 **   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 **   |     Type      |     Code     |           Msg Length           |
 **   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
- *   |                             Data                              |
+**   |                             Data                              |
 **   +-+-+-+-+-+-+-+-+-+-+-+-+...
 **
 **
-**	Job Offer Example
+**	Asset Example
 **
 **    0                   1                   2                   3
 **    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
@@ -47,35 +43,43 @@ typedef	struct s_msg_hdr
 **   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 **   |                           Binn Length ex. (1754)              |
 **   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-**   |                       Version String                          |
-**   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
- */
-# define HERMES_MSG_HDRSZ (4)
-
+**
+*/
+# define MSG_HDRSZ (4)
+# define OBJ_MSG_HDRSZ (8)
 # define PKT_SIZE (256)
 
 
 /*
 **	Hermes Message Types
 */
-# define MT_JOB (0)
-# define MT_JOB_REPLY (1)
+# define T_OBJ (0)
+# define T_OBJ_RPLY (1)
+# define T_START (2)
 
 /*
-**	Job Codes
+**	T_OBJ Message Codes
 */
-# define MC_JOB_OFFER (0)
+# define C_OBJ_OPTS (0)
+# define C_OBJ_TARGETS (1)
+# define C_OBJ_PS_NRM (2)
+# define C_OBJ_PS_ACK (3)
+# define C_OBJ_PS_SYN (4)
+# define C_OBJ_PS_UDP (5)
 
 /*
-**	Job Reply Codes
+**	T_OBJ_RPLY Message Codes
 */
-# define MC_JOB_ACCEPT (0)
-# define MC_JOB_PARAM_ERR (1)
-# define MC_JOB_DENY_BUSY (2)
-# define MC_JOB_DENY_OOM (3)
-# define MC_JOB_RECV_CNFRM (4)
-# define MC_JOB_RECV_FAIL (5)
+# define C_ACCEPT (0)
+# define C_PARAM_ERR (1)
+# define C_DENY_OOM (3)
+# define C_RECV_CNFRM (4)
+# define C_RECV_FAIL (5)
 
+/*
+**	T_START Message Codes
+*/
+# define C_START (0)
 /*
 **	Command Codes
 */
@@ -84,9 +88,9 @@ typedef	struct s_msg_hdr
 
 
 
-uint16_t	type_code(uint8_t type, uint8_t code);
-ssize_t		hermes_recv_msg(int sock, uint8_t *msgbuff);
-int			hermes_send_msg(int sock, uint16_t type_code, char *format, ...);
+uint16_t	msg_tc(uint8_t type, uint8_t code);
+ssize_t		hermes_recvmsg(int sock, uint8_t *msgbuff);
+int			hermes_sendmsgf(int sock, uint16_t type_code, char *format, ...);
 ssize_t		hermes_send_binn(int sock, binn *data, ssize_t datalen);
 
 #endif //HERMES_MESSAGE_H

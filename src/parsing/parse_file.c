@@ -1,7 +1,7 @@
 # include "../../incl/job.h"
 # include "../../incl/parser.h"
 
-int			parse_ip_file(t_targetlist *list, char *filename)
+int			parse_ip_file(t_targetset *set, char *filename)
 {
 	FILE	*fp;
 	size_t	len;
@@ -19,7 +19,7 @@ int			parse_ip_file(t_targetlist *list, char *filename)
 	{
 		if (buff[read - 1] == '\n')
 			buff[read - 1] = '\0';
-		if (handle_ip(list, buff) == FAILURE)
+		if (handle_ip(set, buff) == FAILURE)
 			hermes_error(INPUT_ERROR, TRUE, 2, "issue parsing targets from", filename);
 	}
 	free(buff);
@@ -27,7 +27,7 @@ int			parse_ip_file(t_targetlist *list, char *filename)
 	return (SUCCESS);
 }
 
-int			parse_worker_file(t_workerlist *list, char *filename)
+int			parse_worker_file(t_workerset *set, char *filename)
 {
 	FILE	*fp;
 	size_t	len;
@@ -45,7 +45,7 @@ int			parse_worker_file(t_workerlist *list, char *filename)
 	{
 		if (buff[read - 1] == '\n')
 			buff[read - 1] = '\0';
-		if (parse_worker(list, buff) == FAILURE)
+		if (parse_worker(set, buff) == FAILURE)
 			hermes_error(INPUT_ERROR, TRUE, 2, "issue parsing targets from", filename);
 	}
 	free(buff);

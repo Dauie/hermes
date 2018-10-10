@@ -3,20 +3,20 @@
 
 void			del_list(t_node **list)
 {
-    t_node *tmp;
+	t_node *tmp;
 
-    if (!list)
-        return ;
-    while (*list)
-    {
-        tmp = (*list)->right;
-        *list = NULL;
-        free(*list);
-        *list = tmp;
-    }
+	if (!list)
+		return ;
+	while (*list)
+	{
+		tmp = (*list)->right;
+		*list = NULL;
+		free(*list);
+		*list = tmp;
+	}
 }
 
-void            remove_node_list(t_node **node)
+void			remove_node_list(t_node **node)
 {
 	if (!node || !*node)
 		return ;
@@ -41,11 +41,11 @@ void 			remove_node_list_head(t_node **list)
 		return ;
 	node = *list;
 	(*list) = (*list)->right;
-    node = NULL;
-    free(node);
+	node = NULL;
+	free(node);
 }
 
-void			add_node_list_head(t_node **list, void **data)
+int				add_node_list_head(t_node **list, void **data)
 {
 	t_node		*node;
 
