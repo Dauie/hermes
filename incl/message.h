@@ -65,6 +65,7 @@ typedef	struct s_msg_hdr
 **	Job Request Codes
 */
 # define MC_JOB_OFFER
+# define MC_JOB_BINN
 
 /*
 **	Job Reply Codes

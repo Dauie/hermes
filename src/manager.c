@@ -35,7 +35,7 @@ void                distribute_jobs(t_node *workers, t_node *jobs)
 	 */
 	if (!workers || !jobs)
 		return ;
-	send_work(workers->data, jobs->data);
+	send_job(workers->data, jobs->data);
 	distribute_jobs(workers->right->data, jobs->right);
 }
 

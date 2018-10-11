@@ -123,650 +123,1193 @@ ft_nmap/fast:
 	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/build
 .PHONY : ft_nmap/fast
 
-# target to build an object file
-binn/conversions/json/binn_json.o:
-	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/binn/conversions/json/binn_json.o
+binn/conversions/json/binn_json.o: binn/conversions/json/binn_json.c.o
+
 .PHONY : binn/conversions/json/binn_json.o
 
-# target to preprocess a source file
-binn/conversions/json/binn_json.i:
-	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/binn/conversions/json/binn_json.i
+# target to build an object file
+binn/conversions/json/binn_json.c.o:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/binn/conversions/json/binn_json.c.o
+.PHONY : binn/conversions/json/binn_json.c.o
+
+binn/conversions/json/binn_json.i: binn/conversions/json/binn_json.c.i
+
 .PHONY : binn/conversions/json/binn_json.i
 
-# target to generate assembly for a file
-binn/conversions/json/binn_json.s:
-	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/binn/conversions/json/binn_json.s
+# target to preprocess a source file
+binn/conversions/json/binn_json.c.i:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/binn/conversions/json/binn_json.c.i
+.PHONY : binn/conversions/json/binn_json.c.i
+
+binn/conversions/json/binn_json.s: binn/conversions/json/binn_json.c.s
+
 .PHONY : binn/conversions/json/binn_json.s
 
-# target to build an object file
-binn/examples/reading.o:
-	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/binn/examples/reading.o
+# target to generate assembly for a file
+binn/conversions/json/binn_json.c.s:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/binn/conversions/json/binn_json.c.s
+.PHONY : binn/conversions/json/binn_json.c.s
+
+binn/examples/reading.o: binn/examples/reading.c.o
+
 .PHONY : binn/examples/reading.o
 
-# target to preprocess a source file
-binn/examples/reading.i:
-	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/binn/examples/reading.i
+# target to build an object file
+binn/examples/reading.c.o:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/binn/examples/reading.c.o
+.PHONY : binn/examples/reading.c.o
+
+binn/examples/reading.i: binn/examples/reading.c.i
+
 .PHONY : binn/examples/reading.i
 
-# target to generate assembly for a file
-binn/examples/reading.s:
-	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/binn/examples/reading.s
+# target to preprocess a source file
+binn/examples/reading.c.i:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/binn/examples/reading.c.i
+.PHONY : binn/examples/reading.c.i
+
+binn/examples/reading.s: binn/examples/reading.c.s
+
 .PHONY : binn/examples/reading.s
 
-# target to build an object file
-binn/examples/writing.o:
-	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/binn/examples/writing.o
+# target to generate assembly for a file
+binn/examples/reading.c.s:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/binn/examples/reading.c.s
+.PHONY : binn/examples/reading.c.s
+
+binn/examples/writing.o: binn/examples/writing.c.o
+
 .PHONY : binn/examples/writing.o
 
-# target to preprocess a source file
-binn/examples/writing.i:
-	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/binn/examples/writing.i
+# target to build an object file
+binn/examples/writing.c.o:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/binn/examples/writing.c.o
+.PHONY : binn/examples/writing.c.o
+
+binn/examples/writing.i: binn/examples/writing.c.i
+
 .PHONY : binn/examples/writing.i
 
-# target to generate assembly for a file
-binn/examples/writing.s:
-	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/binn/examples/writing.s
+# target to preprocess a source file
+binn/examples/writing.c.i:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/binn/examples/writing.c.i
+.PHONY : binn/examples/writing.c.i
+
+binn/examples/writing.s: binn/examples/writing.c.s
+
 .PHONY : binn/examples/writing.s
 
-# target to build an object file
-binn/src/binn.o:
-	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/binn/src/binn.o
+# target to generate assembly for a file
+binn/examples/writing.c.s:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/binn/examples/writing.c.s
+.PHONY : binn/examples/writing.c.s
+
+binn/src/binn.o: binn/src/binn.c.o
+
 .PHONY : binn/src/binn.o
 
-# target to preprocess a source file
-binn/src/binn.i:
-	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/binn/src/binn.i
+# target to build an object file
+binn/src/binn.c.o:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/binn/src/binn.c.o
+.PHONY : binn/src/binn.c.o
+
+binn/src/binn.i: binn/src/binn.c.i
+
 .PHONY : binn/src/binn.i
 
-# target to generate assembly for a file
-binn/src/binn.s:
-	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/binn/src/binn.s
+# target to preprocess a source file
+binn/src/binn.c.i:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/binn/src/binn.c.i
+.PHONY : binn/src/binn.c.i
+
+binn/src/binn.s: binn/src/binn.c.s
+
 .PHONY : binn/src/binn.s
 
-# target to build an object file
-binn/src/win32/dllmain.o:
-	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/binn/src/win32/dllmain.o
+# target to generate assembly for a file
+binn/src/binn.c.s:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/binn/src/binn.c.s
+.PHONY : binn/src/binn.c.s
+
+binn/src/win32/dllmain.o: binn/src/win32/dllmain.c.o
+
 .PHONY : binn/src/win32/dllmain.o
 
-# target to preprocess a source file
-binn/src/win32/dllmain.i:
-	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/binn/src/win32/dllmain.i
+# target to build an object file
+binn/src/win32/dllmain.c.o:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/binn/src/win32/dllmain.c.o
+.PHONY : binn/src/win32/dllmain.c.o
+
+binn/src/win32/dllmain.i: binn/src/win32/dllmain.c.i
+
 .PHONY : binn/src/win32/dllmain.i
 
-# target to generate assembly for a file
-binn/src/win32/dllmain.s:
-	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/binn/src/win32/dllmain.s
+# target to preprocess a source file
+binn/src/win32/dllmain.c.i:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/binn/src/win32/dllmain.c.i
+.PHONY : binn/src/win32/dllmain.c.i
+
+binn/src/win32/dllmain.s: binn/src/win32/dllmain.c.s
+
 .PHONY : binn/src/win32/dllmain.s
 
-# target to build an object file
-binn/test/test_binn.o:
-	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/binn/test/test_binn.o
+# target to generate assembly for a file
+binn/src/win32/dllmain.c.s:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/binn/src/win32/dllmain.c.s
+.PHONY : binn/src/win32/dllmain.c.s
+
+binn/test/test_binn.o: binn/test/test_binn.c.o
+
 .PHONY : binn/test/test_binn.o
 
-# target to preprocess a source file
-binn/test/test_binn.i:
-	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/binn/test/test_binn.i
+# target to build an object file
+binn/test/test_binn.c.o:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/binn/test/test_binn.c.o
+.PHONY : binn/test/test_binn.c.o
+
+binn/test/test_binn.i: binn/test/test_binn.c.i
+
 .PHONY : binn/test/test_binn.i
 
-# target to generate assembly for a file
-binn/test/test_binn.s:
-	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/binn/test/test_binn.s
+# target to preprocess a source file
+binn/test/test_binn.c.i:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/binn/test/test_binn.c.i
+.PHONY : binn/test/test_binn.c.i
+
+binn/test/test_binn.s: binn/test/test_binn.c.s
+
 .PHONY : binn/test/test_binn.s
 
-# target to build an object file
-binn/test/test_binn2.o:
-	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/binn/test/test_binn2.o
+# target to generate assembly for a file
+binn/test/test_binn.c.s:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/binn/test/test_binn.c.s
+.PHONY : binn/test/test_binn.c.s
+
+binn/test/test_binn2.o: binn/test/test_binn2.c.o
+
 .PHONY : binn/test/test_binn2.o
 
-# target to preprocess a source file
-binn/test/test_binn2.i:
-	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/binn/test/test_binn2.i
+# target to build an object file
+binn/test/test_binn2.c.o:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/binn/test/test_binn2.c.o
+.PHONY : binn/test/test_binn2.c.o
+
+binn/test/test_binn2.i: binn/test/test_binn2.c.i
+
 .PHONY : binn/test/test_binn2.i
 
-# target to generate assembly for a file
-binn/test/test_binn2.s:
-	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/binn/test/test_binn2.s
+# target to preprocess a source file
+binn/test/test_binn2.c.i:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/binn/test/test_binn2.c.i
+.PHONY : binn/test/test_binn2.c.i
+
+binn/test/test_binn2.s: binn/test/test_binn2.c.s
+
 .PHONY : binn/test/test_binn2.s
 
-# target to build an object file
-binn/test/test_binn_json.o:
-	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/binn/test/test_binn_json.o
+# target to generate assembly for a file
+binn/test/test_binn2.c.s:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/binn/test/test_binn2.c.s
+.PHONY : binn/test/test_binn2.c.s
+
+binn/test/test_binn_json.o: binn/test/test_binn_json.c.o
+
 .PHONY : binn/test/test_binn_json.o
 
-# target to preprocess a source file
-binn/test/test_binn_json.i:
-	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/binn/test/test_binn_json.i
+# target to build an object file
+binn/test/test_binn_json.c.o:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/binn/test/test_binn_json.c.o
+.PHONY : binn/test/test_binn_json.c.o
+
+binn/test/test_binn_json.i: binn/test/test_binn_json.c.i
+
 .PHONY : binn/test/test_binn_json.i
 
-# target to generate assembly for a file
-binn/test/test_binn_json.s:
-	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/binn/test/test_binn_json.s
+# target to preprocess a source file
+binn/test/test_binn_json.c.i:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/binn/test/test_binn_json.c.i
+.PHONY : binn/test/test_binn_json.c.i
+
+binn/test/test_binn_json.s: binn/test/test_binn_json.c.s
+
 .PHONY : binn/test/test_binn_json.s
 
-# target to build an object file
-libhermes/src/bst.o:
-	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/libhermes/src/bst.o
+# target to generate assembly for a file
+binn/test/test_binn_json.c.s:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/binn/test/test_binn_json.c.s
+.PHONY : binn/test/test_binn_json.c.s
+
+libhermes/src/bst.o: libhermes/src/bst.c.o
+
 .PHONY : libhermes/src/bst.o
 
-# target to preprocess a source file
-libhermes/src/bst.i:
-	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/libhermes/src/bst.i
+# target to build an object file
+libhermes/src/bst.c.o:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/libhermes/src/bst.c.o
+.PHONY : libhermes/src/bst.c.o
+
+libhermes/src/bst.i: libhermes/src/bst.c.i
+
 .PHONY : libhermes/src/bst.i
 
-# target to generate assembly for a file
-libhermes/src/bst.s:
-	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/libhermes/src/bst.s
+# target to preprocess a source file
+libhermes/src/bst.c.i:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/libhermes/src/bst.c.i
+.PHONY : libhermes/src/bst.c.i
+
+libhermes/src/bst.s: libhermes/src/bst.c.s
+
 .PHONY : libhermes/src/bst.s
 
-# target to build an object file
-libhermes/src/conversions.o:
-	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/libhermes/src/conversions.o
+# target to generate assembly for a file
+libhermes/src/bst.c.s:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/libhermes/src/bst.c.s
+.PHONY : libhermes/src/bst.c.s
+
+libhermes/src/conversions.o: libhermes/src/conversions.c.o
+
 .PHONY : libhermes/src/conversions.o
 
-# target to preprocess a source file
-libhermes/src/conversions.i:
-	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/libhermes/src/conversions.i
+# target to build an object file
+libhermes/src/conversions.c.o:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/libhermes/src/conversions.c.o
+.PHONY : libhermes/src/conversions.c.o
+
+libhermes/src/conversions.i: libhermes/src/conversions.c.i
+
 .PHONY : libhermes/src/conversions.i
 
-# target to generate assembly for a file
-libhermes/src/conversions.s:
-	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/libhermes/src/conversions.s
+# target to preprocess a source file
+libhermes/src/conversions.c.i:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/libhermes/src/conversions.c.i
+.PHONY : libhermes/src/conversions.c.i
+
+libhermes/src/conversions.s: libhermes/src/conversions.c.s
+
 .PHONY : libhermes/src/conversions.s
 
-# target to build an object file
-libhermes/src/hermes_error.o:
-	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/libhermes/src/hermes_error.o
+# target to generate assembly for a file
+libhermes/src/conversions.c.s:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/libhermes/src/conversions.c.s
+.PHONY : libhermes/src/conversions.c.s
+
+libhermes/src/hermes_error.o: libhermes/src/hermes_error.c.o
+
 .PHONY : libhermes/src/hermes_error.o
 
-# target to preprocess a source file
-libhermes/src/hermes_error.i:
-	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/libhermes/src/hermes_error.i
+# target to build an object file
+libhermes/src/hermes_error.c.o:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/libhermes/src/hermes_error.c.o
+.PHONY : libhermes/src/hermes_error.c.o
+
+libhermes/src/hermes_error.i: libhermes/src/hermes_error.c.i
+
 .PHONY : libhermes/src/hermes_error.i
 
-# target to generate assembly for a file
-libhermes/src/hermes_error.s:
-	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/libhermes/src/hermes_error.s
+# target to preprocess a source file
+libhermes/src/hermes_error.c.i:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/libhermes/src/hermes_error.c.i
+.PHONY : libhermes/src/hermes_error.c.i
+
+libhermes/src/hermes_error.s: libhermes/src/hermes_error.c.s
+
 .PHONY : libhermes/src/hermes_error.s
 
-# target to build an object file
-libhermes/src/list.o:
-	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/libhermes/src/list.o
+# target to generate assembly for a file
+libhermes/src/hermes_error.c.s:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/libhermes/src/hermes_error.c.s
+.PHONY : libhermes/src/hermes_error.c.s
+
+libhermes/src/list.o: libhermes/src/list.c.o
+
 .PHONY : libhermes/src/list.o
 
-# target to preprocess a source file
-libhermes/src/list.i:
-	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/libhermes/src/list.i
+# target to build an object file
+libhermes/src/list.c.o:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/libhermes/src/list.c.o
+.PHONY : libhermes/src/list.c.o
+
+libhermes/src/list.i: libhermes/src/list.c.i
+
 .PHONY : libhermes/src/list.i
 
-# target to generate assembly for a file
-libhermes/src/list.s:
-	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/libhermes/src/list.s
+# target to preprocess a source file
+libhermes/src/list.c.i:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/libhermes/src/list.c.i
+.PHONY : libhermes/src/list.c.i
+
+libhermes/src/list.s: libhermes/src/list.c.s
+
 .PHONY : libhermes/src/list.s
 
-# target to build an object file
-libhermes/src/memory.o:
-	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/libhermes/src/memory.o
+# target to generate assembly for a file
+libhermes/src/list.c.s:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/libhermes/src/list.c.s
+.PHONY : libhermes/src/list.c.s
+
+libhermes/src/memory.o: libhermes/src/memory.c.o
+
 .PHONY : libhermes/src/memory.o
 
-# target to preprocess a source file
-libhermes/src/memory.i:
-	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/libhermes/src/memory.i
+# target to build an object file
+libhermes/src/memory.c.o:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/libhermes/src/memory.c.o
+.PHONY : libhermes/src/memory.c.o
+
+libhermes/src/memory.i: libhermes/src/memory.c.i
+
 .PHONY : libhermes/src/memory.i
 
-# target to generate assembly for a file
-libhermes/src/memory.s:
-	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/libhermes/src/memory.s
+# target to preprocess a source file
+libhermes/src/memory.c.i:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/libhermes/src/memory.c.i
+.PHONY : libhermes/src/memory.c.i
+
+libhermes/src/memory.s: libhermes/src/memory.c.s
+
 .PHONY : libhermes/src/memory.s
 
-# target to build an object file
-libhermes/src/node.o:
-	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/libhermes/src/node.o
+# target to generate assembly for a file
+libhermes/src/memory.c.s:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/libhermes/src/memory.c.s
+.PHONY : libhermes/src/memory.c.s
+
+libhermes/src/node.o: libhermes/src/node.c.o
+
 .PHONY : libhermes/src/node.o
 
-# target to preprocess a source file
-libhermes/src/node.i:
-	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/libhermes/src/node.i
+# target to build an object file
+libhermes/src/node.c.o:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/libhermes/src/node.c.o
+.PHONY : libhermes/src/node.c.o
+
+libhermes/src/node.i: libhermes/src/node.c.i
+
 .PHONY : libhermes/src/node.i
 
-# target to generate assembly for a file
-libhermes/src/node.s:
-	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/libhermes/src/node.s
+# target to preprocess a source file
+libhermes/src/node.c.i:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/libhermes/src/node.c.i
+.PHONY : libhermes/src/node.c.i
+
+libhermes/src/node.s: libhermes/src/node.c.s
+
 .PHONY : libhermes/src/node.s
 
-# target to build an object file
-libhermes/src/str_tbl.o:
-	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/libhermes/src/str_tbl.o
+# target to generate assembly for a file
+libhermes/src/node.c.s:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/libhermes/src/node.c.s
+.PHONY : libhermes/src/node.c.s
+
+libhermes/src/str_tbl.o: libhermes/src/str_tbl.c.o
+
 .PHONY : libhermes/src/str_tbl.o
 
-# target to preprocess a source file
-libhermes/src/str_tbl.i:
-	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/libhermes/src/str_tbl.i
+# target to build an object file
+libhermes/src/str_tbl.c.o:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/libhermes/src/str_tbl.c.o
+.PHONY : libhermes/src/str_tbl.c.o
+
+libhermes/src/str_tbl.i: libhermes/src/str_tbl.c.i
+
 .PHONY : libhermes/src/str_tbl.i
 
-# target to generate assembly for a file
-libhermes/src/str_tbl.s:
-	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/libhermes/src/str_tbl.s
+# target to preprocess a source file
+libhermes/src/str_tbl.c.i:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/libhermes/src/str_tbl.c.i
+.PHONY : libhermes/src/str_tbl.c.i
+
+libhermes/src/str_tbl.s: libhermes/src/str_tbl.c.s
+
 .PHONY : libhermes/src/str_tbl.s
 
-# target to build an object file
-libhermes/src/swap.o:
-	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/libhermes/src/swap.o
+# target to generate assembly for a file
+libhermes/src/str_tbl.c.s:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/libhermes/src/str_tbl.c.s
+.PHONY : libhermes/src/str_tbl.c.s
+
+libhermes/src/swap.o: libhermes/src/swap.c.o
+
 .PHONY : libhermes/src/swap.o
 
-# target to preprocess a source file
-libhermes/src/swap.i:
-	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/libhermes/src/swap.i
+# target to build an object file
+libhermes/src/swap.c.o:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/libhermes/src/swap.c.o
+.PHONY : libhermes/src/swap.c.o
+
+libhermes/src/swap.i: libhermes/src/swap.c.i
+
 .PHONY : libhermes/src/swap.i
 
-# target to generate assembly for a file
-libhermes/src/swap.s:
-	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/libhermes/src/swap.s
+# target to preprocess a source file
+libhermes/src/swap.c.i:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/libhermes/src/swap.c.i
+.PHONY : libhermes/src/swap.c.i
+
+libhermes/src/swap.s: libhermes/src/swap.c.s
+
 .PHONY : libhermes/src/swap.s
 
-# target to build an object file
-src/binnify.o:
-	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/binnify.o
+# target to generate assembly for a file
+libhermes/src/swap.c.s:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/libhermes/src/swap.c.s
+.PHONY : libhermes/src/swap.c.s
+
+src/binnify.o: src/binnify.c.o
+
 .PHONY : src/binnify.o
 
-# target to preprocess a source file
-src/binnify.i:
-	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/binnify.i
+# target to build an object file
+src/binnify.c.o:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/binnify.c.o
+.PHONY : src/binnify.c.o
+
+src/binnify.i: src/binnify.c.i
+
 .PHONY : src/binnify.i
 
-# target to generate assembly for a file
-src/binnify.s:
-	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/binnify.s
+# target to preprocess a source file
+src/binnify.c.i:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/binnify.c.i
+.PHONY : src/binnify.c.i
+
+src/binnify.s: src/binnify.c.s
+
 .PHONY : src/binnify.s
 
-# target to build an object file
-src/exclude.o:
-	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/exclude.o
+# target to generate assembly for a file
+src/binnify.c.s:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/binnify.c.s
+.PHONY : src/binnify.c.s
+
+src/exclude.o: src/exclude.c.o
+
 .PHONY : src/exclude.o
 
-# target to preprocess a source file
-src/exclude.i:
-	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/exclude.i
+# target to build an object file
+src/exclude.c.o:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/exclude.c.o
+.PHONY : src/exclude.c.o
+
+src/exclude.i: src/exclude.c.i
+
 .PHONY : src/exclude.i
 
-# target to generate assembly for a file
-src/exclude.s:
-	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/exclude.s
+# target to preprocess a source file
+src/exclude.c.i:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/exclude.c.i
+.PHONY : src/exclude.c.i
+
+src/exclude.s: src/exclude.c.s
+
 .PHONY : src/exclude.s
 
-# target to build an object file
-src/ip4.o:
-	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/ip4.o
-.PHONY : src/ip4.o
-
-# target to preprocess a source file
-src/ip4.i:
-	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/ip4.i
-.PHONY : src/ip4.i
-
 # target to generate assembly for a file
-src/ip4.s:
-	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/ip4.s
-.PHONY : src/ip4.s
+src/exclude.c.s:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/exclude.c.s
+.PHONY : src/exclude.c.s
 
-# target to build an object file
-src/job.o:
-	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/job.o
-.PHONY : src/job.o
+src/main.o: src/main.c.o
 
-# target to preprocess a source file
-src/job.i:
-	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/job.i
-.PHONY : src/job.i
-
-# target to generate assembly for a file
-src/job.s:
-	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/job.s
-.PHONY : src/job.s
-
-# target to build an object file
-src/main.o:
-	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/main.o
 .PHONY : src/main.o
 
-# target to preprocess a source file
-src/main.i:
-	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/main.i
+# target to build an object file
+src/main.c.o:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/main.c.o
+.PHONY : src/main.c.o
+
+src/main.i: src/main.c.i
+
 .PHONY : src/main.i
 
-# target to generate assembly for a file
-src/main.s:
-	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/main.s
+# target to preprocess a source file
+src/main.c.i:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/main.c.i
+.PHONY : src/main.c.i
+
+src/main.s: src/main.c.s
+
 .PHONY : src/main.s
 
-# target to build an object file
-src/manager.o:
-	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/manager.o
+# target to generate assembly for a file
+src/main.c.s:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/main.c.s
+.PHONY : src/main.c.s
+
+src/manager.o: src/manager.c.o
+
 .PHONY : src/manager.o
 
-# target to preprocess a source file
-src/manager.i:
-	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/manager.i
+# target to build an object file
+src/manager.c.o:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/manager.c.o
+.PHONY : src/manager.c.o
+
+src/manager.i: src/manager.c.i
+
 .PHONY : src/manager.i
 
-# target to generate assembly for a file
-src/manager.s:
-	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/manager.s
+# target to preprocess a source file
+src/manager.c.i:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/manager.c.i
+.PHONY : src/manager.c.i
+
+src/manager.s: src/manager.c.s
+
 .PHONY : src/manager.s
 
-# target to build an object file
-src/message.o:
-	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/message.o
+# target to generate assembly for a file
+src/manager.c.s:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/manager.c.s
+.PHONY : src/manager.c.s
+
+src/message.o: src/message.c.o
+
 .PHONY : src/message.o
 
-# target to preprocess a source file
-src/message.i:
-	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/message.i
+# target to build an object file
+src/message.c.o:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/message.c.o
+.PHONY : src/message.c.o
+
+src/message.i: src/message.c.i
+
 .PHONY : src/message.i
 
-# target to generate assembly for a file
-src/message.s:
-	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/message.s
+# target to preprocess a source file
+src/message.c.i:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/message.c.i
+.PHONY : src/message.c.i
+
+src/message.s: src/message.c.s
+
 .PHONY : src/message.s
 
-# target to build an object file
-src/parsing/h_custom_payload.o:
-	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/parsing/h_custom_payload.o
+# target to generate assembly for a file
+src/message.c.s:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/message.c.s
+.PHONY : src/message.c.s
+
+src/parsing/h_custom_payload.o: src/parsing/h_custom_payload.c.o
+
 .PHONY : src/parsing/h_custom_payload.o
 
-# target to preprocess a source file
-src/parsing/h_custom_payload.i:
-	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/parsing/h_custom_payload.i
+# target to build an object file
+src/parsing/h_custom_payload.c.o:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/parsing/h_custom_payload.c.o
+.PHONY : src/parsing/h_custom_payload.c.o
+
+src/parsing/h_custom_payload.i: src/parsing/h_custom_payload.c.i
+
 .PHONY : src/parsing/h_custom_payload.i
 
-# target to generate assembly for a file
-src/parsing/h_custom_payload.s:
-	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/parsing/h_custom_payload.s
+# target to preprocess a source file
+src/parsing/h_custom_payload.c.i:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/parsing/h_custom_payload.c.i
+.PHONY : src/parsing/h_custom_payload.c.i
+
+src/parsing/h_custom_payload.s: src/parsing/h_custom_payload.c.s
+
 .PHONY : src/parsing/h_custom_payload.s
 
-# target to build an object file
-src/parsing/h_files.o:
-	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/parsing/h_files.o
+# target to generate assembly for a file
+src/parsing/h_custom_payload.c.s:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/parsing/h_custom_payload.c.s
+.PHONY : src/parsing/h_custom_payload.c.s
+
+src/parsing/h_files.o: src/parsing/h_files.c.o
+
 .PHONY : src/parsing/h_files.o
 
-# target to preprocess a source file
-src/parsing/h_files.i:
-	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/parsing/h_files.i
+# target to build an object file
+src/parsing/h_files.c.o:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/parsing/h_files.c.o
+.PHONY : src/parsing/h_files.c.o
+
+src/parsing/h_files.i: src/parsing/h_files.c.i
+
 .PHONY : src/parsing/h_files.i
 
-# target to generate assembly for a file
-src/parsing/h_files.s:
-	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/parsing/h_files.s
+# target to preprocess a source file
+src/parsing/h_files.c.i:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/parsing/h_files.c.i
+.PHONY : src/parsing/h_files.c.i
+
+src/parsing/h_files.s: src/parsing/h_files.c.s
+
 .PHONY : src/parsing/h_files.s
 
-# target to build an object file
-src/parsing/h_host_discovery.o:
-	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/parsing/h_host_discovery.o
+# target to generate assembly for a file
+src/parsing/h_files.c.s:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/parsing/h_files.c.s
+.PHONY : src/parsing/h_files.c.s
+
+src/parsing/h_host_discovery.o: src/parsing/h_host_discovery.c.o
+
 .PHONY : src/parsing/h_host_discovery.o
 
-# target to preprocess a source file
-src/parsing/h_host_discovery.i:
-	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/parsing/h_host_discovery.i
+# target to build an object file
+src/parsing/h_host_discovery.c.o:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/parsing/h_host_discovery.c.o
+.PHONY : src/parsing/h_host_discovery.c.o
+
+src/parsing/h_host_discovery.i: src/parsing/h_host_discovery.c.i
+
 .PHONY : src/parsing/h_host_discovery.i
 
-# target to generate assembly for a file
-src/parsing/h_host_discovery.s:
-	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/parsing/h_host_discovery.s
+# target to preprocess a source file
+src/parsing/h_host_discovery.c.i:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/parsing/h_host_discovery.c.i
+.PHONY : src/parsing/h_host_discovery.c.i
+
+src/parsing/h_host_discovery.s: src/parsing/h_host_discovery.c.s
+
 .PHONY : src/parsing/h_host_discovery.s
 
-# target to build an object file
-src/parsing/h_output_ops.o:
-	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/parsing/h_output_ops.o
+# target to generate assembly for a file
+src/parsing/h_host_discovery.c.s:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/parsing/h_host_discovery.c.s
+.PHONY : src/parsing/h_host_discovery.c.s
+
+src/parsing/h_output_ops.o: src/parsing/h_output_ops.c.o
+
 .PHONY : src/parsing/h_output_ops.o
 
-# target to preprocess a source file
-src/parsing/h_output_ops.i:
-	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/parsing/h_output_ops.i
+# target to build an object file
+src/parsing/h_output_ops.c.o:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/parsing/h_output_ops.c.o
+.PHONY : src/parsing/h_output_ops.c.o
+
+src/parsing/h_output_ops.i: src/parsing/h_output_ops.c.i
+
 .PHONY : src/parsing/h_output_ops.i
 
-# target to generate assembly for a file
-src/parsing/h_output_ops.s:
-	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/parsing/h_output_ops.s
+# target to preprocess a source file
+src/parsing/h_output_ops.c.i:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/parsing/h_output_ops.c.i
+.PHONY : src/parsing/h_output_ops.c.i
+
+src/parsing/h_output_ops.s: src/parsing/h_output_ops.c.s
+
 .PHONY : src/parsing/h_output_ops.s
 
-# target to build an object file
-src/parsing/h_performace_opts.o:
-	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/parsing/h_performace_opts.o
+# target to generate assembly for a file
+src/parsing/h_output_ops.c.s:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/parsing/h_output_ops.c.s
+.PHONY : src/parsing/h_output_ops.c.s
+
+src/parsing/h_performace_opts.o: src/parsing/h_performace_opts.c.o
+
 .PHONY : src/parsing/h_performace_opts.o
 
-# target to preprocess a source file
-src/parsing/h_performace_opts.i:
-	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/parsing/h_performace_opts.i
+# target to build an object file
+src/parsing/h_performace_opts.c.o:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/parsing/h_performace_opts.c.o
+.PHONY : src/parsing/h_performace_opts.c.o
+
+src/parsing/h_performace_opts.i: src/parsing/h_performace_opts.c.i
+
 .PHONY : src/parsing/h_performace_opts.i
 
-# target to generate assembly for a file
-src/parsing/h_performace_opts.s:
-	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/parsing/h_performace_opts.s
+# target to preprocess a source file
+src/parsing/h_performace_opts.c.i:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/parsing/h_performace_opts.c.i
+.PHONY : src/parsing/h_performace_opts.c.i
+
+src/parsing/h_performace_opts.s: src/parsing/h_performace_opts.c.s
+
 .PHONY : src/parsing/h_performace_opts.s
 
-# target to build an object file
-src/parsing/h_portlists.o:
-	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/parsing/h_portlists.o
+# target to generate assembly for a file
+src/parsing/h_performace_opts.c.s:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/parsing/h_performace_opts.c.s
+.PHONY : src/parsing/h_performace_opts.c.s
+
+src/parsing/h_portlists.o: src/parsing/h_portlists.c.o
+
 .PHONY : src/parsing/h_portlists.o
 
-# target to preprocess a source file
-src/parsing/h_portlists.i:
-	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/parsing/h_portlists.i
+# target to build an object file
+src/parsing/h_portlists.c.o:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/parsing/h_portlists.c.o
+.PHONY : src/parsing/h_portlists.c.o
+
+src/parsing/h_portlists.i: src/parsing/h_portlists.c.i
+
 .PHONY : src/parsing/h_portlists.i
 
-# target to generate assembly for a file
-src/parsing/h_portlists.s:
-	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/parsing/h_portlists.s
+# target to preprocess a source file
+src/parsing/h_portlists.c.i:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/parsing/h_portlists.c.i
+.PHONY : src/parsing/h_portlists.c.i
+
+src/parsing/h_portlists.s: src/parsing/h_portlists.c.s
+
 .PHONY : src/parsing/h_portlists.s
 
-# target to build an object file
-src/parsing/h_scan.o:
-	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/parsing/h_scan.o
+# target to generate assembly for a file
+src/parsing/h_portlists.c.s:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/parsing/h_portlists.c.s
+.PHONY : src/parsing/h_portlists.c.s
+
+src/parsing/h_scan.o: src/parsing/h_scan.c.o
+
 .PHONY : src/parsing/h_scan.o
 
-# target to preprocess a source file
-src/parsing/h_scan.i:
-	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/parsing/h_scan.i
+# target to build an object file
+src/parsing/h_scan.c.o:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/parsing/h_scan.c.o
+.PHONY : src/parsing/h_scan.c.o
+
+src/parsing/h_scan.i: src/parsing/h_scan.c.i
+
 .PHONY : src/parsing/h_scan.i
 
-# target to generate assembly for a file
-src/parsing/h_scan.s:
-	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/parsing/h_scan.s
+# target to preprocess a source file
+src/parsing/h_scan.c.i:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/parsing/h_scan.c.i
+.PHONY : src/parsing/h_scan.c.i
+
+src/parsing/h_scan.s: src/parsing/h_scan.c.s
+
 .PHONY : src/parsing/h_scan.s
 
-# target to build an object file
-src/parsing/h_timeouts.o:
-	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/parsing/h_timeouts.o
+# target to generate assembly for a file
+src/parsing/h_scan.c.s:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/parsing/h_scan.c.s
+.PHONY : src/parsing/h_scan.c.s
+
+src/parsing/h_timeouts.o: src/parsing/h_timeouts.c.o
+
 .PHONY : src/parsing/h_timeouts.o
 
-# target to preprocess a source file
-src/parsing/h_timeouts.i:
-	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/parsing/h_timeouts.i
+# target to build an object file
+src/parsing/h_timeouts.c.o:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/parsing/h_timeouts.c.o
+.PHONY : src/parsing/h_timeouts.c.o
+
+src/parsing/h_timeouts.i: src/parsing/h_timeouts.c.i
+
 .PHONY : src/parsing/h_timeouts.i
 
-# target to generate assembly for a file
-src/parsing/h_timeouts.s:
-	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/parsing/h_timeouts.s
+# target to preprocess a source file
+src/parsing/h_timeouts.c.i:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/parsing/h_timeouts.c.i
+.PHONY : src/parsing/h_timeouts.c.i
+
+src/parsing/h_timeouts.s: src/parsing/h_timeouts.c.s
+
 .PHONY : src/parsing/h_timeouts.s
 
-# target to build an object file
-src/parsing/h_worker.o:
-	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/parsing/h_worker.o
+# target to generate assembly for a file
+src/parsing/h_timeouts.c.s:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/parsing/h_timeouts.c.s
+.PHONY : src/parsing/h_timeouts.c.s
+
+src/parsing/h_worker.o: src/parsing/h_worker.c.o
+
 .PHONY : src/parsing/h_worker.o
 
-# target to preprocess a source file
-src/parsing/h_worker.i:
-	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/parsing/h_worker.i
+# target to build an object file
+src/parsing/h_worker.c.o:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/parsing/h_worker.c.o
+.PHONY : src/parsing/h_worker.c.o
+
+src/parsing/h_worker.i: src/parsing/h_worker.c.i
+
 .PHONY : src/parsing/h_worker.i
 
-# target to generate assembly for a file
-src/parsing/h_worker.s:
-	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/parsing/h_worker.s
+# target to preprocess a source file
+src/parsing/h_worker.c.i:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/parsing/h_worker.c.i
+.PHONY : src/parsing/h_worker.c.i
+
+src/parsing/h_worker.s: src/parsing/h_worker.c.s
+
 .PHONY : src/parsing/h_worker.s
 
-# target to build an object file
-src/parsing/parse_file.o:
-	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/parsing/parse_file.o
+# target to generate assembly for a file
+src/parsing/h_worker.c.s:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/parsing/h_worker.c.s
+.PHONY : src/parsing/h_worker.c.s
+
+src/parsing/parse_file.o: src/parsing/parse_file.c.o
+
 .PHONY : src/parsing/parse_file.o
 
-# target to preprocess a source file
-src/parsing/parse_file.i:
-	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/parsing/parse_file.i
+# target to build an object file
+src/parsing/parse_file.c.o:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/parsing/parse_file.c.o
+.PHONY : src/parsing/parse_file.c.o
+
+src/parsing/parse_file.i: src/parsing/parse_file.c.i
+
 .PHONY : src/parsing/parse_file.i
 
-# target to generate assembly for a file
-src/parsing/parse_file.s:
-	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/parsing/parse_file.s
+# target to preprocess a source file
+src/parsing/parse_file.c.i:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/parsing/parse_file.c.i
+.PHONY : src/parsing/parse_file.c.i
+
+src/parsing/parse_file.s: src/parsing/parse_file.c.s
+
 .PHONY : src/parsing/parse_file.s
 
-# target to build an object file
-src/parsing/parse_ip.o:
-	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/parsing/parse_ip.o
+# target to generate assembly for a file
+src/parsing/parse_file.c.s:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/parsing/parse_file.c.s
+.PHONY : src/parsing/parse_file.c.s
+
+src/parsing/parse_ip.o: src/parsing/parse_ip.c.o
+
 .PHONY : src/parsing/parse_ip.o
 
-# target to preprocess a source file
-src/parsing/parse_ip.i:
-	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/parsing/parse_ip.i
+# target to build an object file
+src/parsing/parse_ip.c.o:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/parsing/parse_ip.c.o
+.PHONY : src/parsing/parse_ip.c.o
+
+src/parsing/parse_ip.i: src/parsing/parse_ip.c.i
+
 .PHONY : src/parsing/parse_ip.i
 
-# target to generate assembly for a file
-src/parsing/parse_ip.s:
-	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/parsing/parse_ip.s
+# target to preprocess a source file
+src/parsing/parse_ip.c.i:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/parsing/parse_ip.c.i
+.PHONY : src/parsing/parse_ip.c.i
+
+src/parsing/parse_ip.s: src/parsing/parse_ip.c.s
+
 .PHONY : src/parsing/parse_ip.s
 
-# target to build an object file
-src/parsing/parse_ports.o:
-	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/parsing/parse_ports.o
+# target to generate assembly for a file
+src/parsing/parse_ip.c.s:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/parsing/parse_ip.c.s
+.PHONY : src/parsing/parse_ip.c.s
+
+src/parsing/parse_ports.o: src/parsing/parse_ports.c.o
+
 .PHONY : src/parsing/parse_ports.o
 
-# target to preprocess a source file
-src/parsing/parse_ports.i:
-	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/parsing/parse_ports.i
+# target to build an object file
+src/parsing/parse_ports.c.o:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/parsing/parse_ports.c.o
+.PHONY : src/parsing/parse_ports.c.o
+
+src/parsing/parse_ports.i: src/parsing/parse_ports.c.i
+
 .PHONY : src/parsing/parse_ports.i
 
-# target to generate assembly for a file
-src/parsing/parse_ports.s:
-	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/parsing/parse_ports.s
+# target to preprocess a source file
+src/parsing/parse_ports.c.i:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/parsing/parse_ports.c.i
+.PHONY : src/parsing/parse_ports.c.i
+
+src/parsing/parse_ports.s: src/parsing/parse_ports.c.s
+
 .PHONY : src/parsing/parse_ports.s
 
-# target to build an object file
-src/parsing/parse_time.o:
-	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/parsing/parse_time.o
+# target to generate assembly for a file
+src/parsing/parse_ports.c.s:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/parsing/parse_ports.c.s
+.PHONY : src/parsing/parse_ports.c.s
+
+src/parsing/parse_time.o: src/parsing/parse_time.c.o
+
 .PHONY : src/parsing/parse_time.o
 
-# target to preprocess a source file
-src/parsing/parse_time.i:
-	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/parsing/parse_time.i
+# target to build an object file
+src/parsing/parse_time.c.o:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/parsing/parse_time.c.o
+.PHONY : src/parsing/parse_time.c.o
+
+src/parsing/parse_time.i: src/parsing/parse_time.c.i
+
 .PHONY : src/parsing/parse_time.i
 
-# target to generate assembly for a file
-src/parsing/parse_time.s:
-	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/parsing/parse_time.s
+# target to preprocess a source file
+src/parsing/parse_time.c.i:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/parsing/parse_time.c.i
+.PHONY : src/parsing/parse_time.c.i
+
+src/parsing/parse_time.s: src/parsing/parse_time.c.s
+
 .PHONY : src/parsing/parse_time.s
 
-# target to build an object file
-src/parsing/parser.o:
-	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/parsing/parser.o
+# target to generate assembly for a file
+src/parsing/parse_time.c.s:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/parsing/parse_time.c.s
+.PHONY : src/parsing/parse_time.c.s
+
+src/parsing/parser.o: src/parsing/parser.c.o
+
 .PHONY : src/parsing/parser.o
 
-# target to preprocess a source file
-src/parsing/parser.i:
-	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/parsing/parser.i
+# target to build an object file
+src/parsing/parser.c.o:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/parsing/parser.c.o
+.PHONY : src/parsing/parser.c.o
+
+src/parsing/parser.i: src/parsing/parser.c.i
+
 .PHONY : src/parsing/parser.i
 
-# target to generate assembly for a file
-src/parsing/parser.s:
-	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/parsing/parser.s
+# target to preprocess a source file
+src/parsing/parser.c.i:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/parsing/parser.c.i
+.PHONY : src/parsing/parser.c.i
+
+src/parsing/parser.s: src/parsing/parser.c.s
+
 .PHONY : src/parsing/parser.s
 
-# target to build an object file
-src/partition.o:
-	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/partition.o
+# target to generate assembly for a file
+src/parsing/parser.c.s:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/parsing/parser.c.s
+.PHONY : src/parsing/parser.c.s
+
+src/partition.o: src/partition.c.o
+
 .PHONY : src/partition.o
 
-# target to preprocess a source file
-src/partition.i:
-	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/partition.i
+# target to build an object file
+src/partition.c.o:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/partition.c.o
+.PHONY : src/partition.c.o
+
+src/partition.i: src/partition.c.i
+
 .PHONY : src/partition.i
 
-# target to generate assembly for a file
-src/partition.s:
-	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/partition.s
+# target to preprocess a source file
+src/partition.c.i:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/partition.c.i
+.PHONY : src/partition.c.i
+
+src/partition.s: src/partition.c.s
+
 .PHONY : src/partition.s
 
-# target to build an object file
-src/port.o:
-	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/port.o
-.PHONY : src/port.o
-
-# target to preprocess a source file
-src/port.i:
-	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/port.i
-.PHONY : src/port.i
-
 # target to generate assembly for a file
-src/port.s:
-	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/port.s
-.PHONY : src/port.s
+src/partition.c.s:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/partition.c.s
+.PHONY : src/partition.c.s
 
-# target to build an object file
-src/sanity_check.o:
-	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/sanity_check.o
+src/sanity_check.o: src/sanity_check.c.o
+
 .PHONY : src/sanity_check.o
 
-# target to preprocess a source file
-src/sanity_check.i:
-	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/sanity_check.i
+# target to build an object file
+src/sanity_check.c.o:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/sanity_check.c.o
+.PHONY : src/sanity_check.c.o
+
+src/sanity_check.i: src/sanity_check.c.i
+
 .PHONY : src/sanity_check.i
 
-# target to generate assembly for a file
-src/sanity_check.s:
-	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/sanity_check.s
+# target to preprocess a source file
+src/sanity_check.c.i:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/sanity_check.c.i
+.PHONY : src/sanity_check.c.i
+
+src/sanity_check.s: src/sanity_check.c.s
+
 .PHONY : src/sanity_check.s
 
-# target to build an object file
-src/send_work.o:
-	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/send_work.o
+# target to generate assembly for a file
+src/sanity_check.c.s:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/sanity_check.c.s
+.PHONY : src/sanity_check.c.s
+
+src/send_work.o: src/send_work.c.o
+
 .PHONY : src/send_work.o
 
-# target to preprocess a source file
-src/send_work.i:
-	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/send_work.i
+# target to build an object file
+src/send_work.c.o:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/send_work.c.o
+.PHONY : src/send_work.c.o
+
+src/send_work.i: src/send_work.c.i
+
 .PHONY : src/send_work.i
 
-# target to generate assembly for a file
-src/send_work.s:
-	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/send_work.s
+# target to preprocess a source file
+src/send_work.c.i:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/send_work.c.i
+.PHONY : src/send_work.c.i
+
+src/send_work.s: src/send_work.c.s
+
 .PHONY : src/send_work.s
 
+# target to generate assembly for a file
+src/send_work.c.s:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/send_work.c.s
+.PHONY : src/send_work.c.s
+
+src/type_helper/ip4.o: src/type_helper/ip4.c.o
+
+.PHONY : src/type_helper/ip4.o
+
 # target to build an object file
-src/worker.o:
-	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/worker.o
-.PHONY : src/worker.o
+src/type_helper/ip4.c.o:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/type_helper/ip4.c.o
+.PHONY : src/type_helper/ip4.c.o
+
+src/type_helper/ip4.i: src/type_helper/ip4.c.i
+
+.PHONY : src/type_helper/ip4.i
 
 # target to preprocess a source file
-src/worker.i:
-	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/worker.i
-.PHONY : src/worker.i
+src/type_helper/ip4.c.i:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/type_helper/ip4.c.i
+.PHONY : src/type_helper/ip4.c.i
+
+src/type_helper/ip4.s: src/type_helper/ip4.c.s
+
+.PHONY : src/type_helper/ip4.s
 
 # target to generate assembly for a file
-src/worker.s:
-	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/worker.s
-.PHONY : src/worker.s
+src/type_helper/ip4.c.s:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/type_helper/ip4.c.s
+.PHONY : src/type_helper/ip4.c.s
+
+src/type_helper/job.o: src/type_helper/job.c.o
+
+.PHONY : src/type_helper/job.o
 
 # target to build an object file
-src/worker_daemon.o:
-	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/worker_daemon.o
+src/type_helper/job.c.o:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/type_helper/job.c.o
+.PHONY : src/type_helper/job.c.o
+
+src/type_helper/job.i: src/type_helper/job.c.i
+
+.PHONY : src/type_helper/job.i
+
+# target to preprocess a source file
+src/type_helper/job.c.i:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/type_helper/job.c.i
+.PHONY : src/type_helper/job.c.i
+
+src/type_helper/job.s: src/type_helper/job.c.s
+
+.PHONY : src/type_helper/job.s
+
+# target to generate assembly for a file
+src/type_helper/job.c.s:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/type_helper/job.c.s
+.PHONY : src/type_helper/job.c.s
+
+src/type_helper/port.o: src/type_helper/port.c.o
+
+.PHONY : src/type_helper/port.o
+
+# target to build an object file
+src/type_helper/port.c.o:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/type_helper/port.c.o
+.PHONY : src/type_helper/port.c.o
+
+src/type_helper/port.i: src/type_helper/port.c.i
+
+.PHONY : src/type_helper/port.i
+
+# target to preprocess a source file
+src/type_helper/port.c.i:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/type_helper/port.c.i
+.PHONY : src/type_helper/port.c.i
+
+src/type_helper/port.s: src/type_helper/port.c.s
+
+.PHONY : src/type_helper/port.s
+
+# target to generate assembly for a file
+src/type_helper/port.c.s:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/type_helper/port.c.s
+.PHONY : src/type_helper/port.c.s
+
+src/type_helper/worker.o: src/type_helper/worker.c.o
+
+.PHONY : src/type_helper/worker.o
+
+# target to build an object file
+src/type_helper/worker.c.o:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/type_helper/worker.c.o
+.PHONY : src/type_helper/worker.c.o
+
+src/type_helper/worker.i: src/type_helper/worker.c.i
+
+.PHONY : src/type_helper/worker.i
+
+# target to preprocess a source file
+src/type_helper/worker.c.i:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/type_helper/worker.c.i
+.PHONY : src/type_helper/worker.c.i
+
+src/type_helper/worker.s: src/type_helper/worker.c.s
+
+.PHONY : src/type_helper/worker.s
+
+# target to generate assembly for a file
+src/type_helper/worker.c.s:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/type_helper/worker.c.s
+.PHONY : src/type_helper/worker.c.s
+
+src/worker_daemon.o: src/worker_daemon.c.o
+
 .PHONY : src/worker_daemon.o
 
-# target to preprocess a source file
-src/worker_daemon.i:
-	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/worker_daemon.i
+# target to build an object file
+src/worker_daemon.c.o:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/worker_daemon.c.o
+.PHONY : src/worker_daemon.c.o
+
+src/worker_daemon.i: src/worker_daemon.c.i
+
 .PHONY : src/worker_daemon.i
 
-# target to generate assembly for a file
-src/worker_daemon.s:
-	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/worker_daemon.s
+# target to preprocess a source file
+src/worker_daemon.c.i:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/worker_daemon.c.i
+.PHONY : src/worker_daemon.c.i
+
+src/worker_daemon.s: src/worker_daemon.c.s
+
 .PHONY : src/worker_daemon.s
+
+# target to generate assembly for a file
+src/worker_daemon.c.s:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/worker_daemon.c.s
+.PHONY : src/worker_daemon.c.s
+
+src/worker_loop.o: src/worker_loop.c.o
+
+.PHONY : src/worker_loop.o
+
+# target to build an object file
+src/worker_loop.c.o:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/worker_loop.c.o
+.PHONY : src/worker_loop.c.o
+
+src/worker_loop.i: src/worker_loop.c.i
+
+.PHONY : src/worker_loop.i
+
+# target to preprocess a source file
+src/worker_loop.c.i:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/worker_loop.c.i
+.PHONY : src/worker_loop.c.i
+
+src/worker_loop.s: src/worker_loop.c.s
+
+.PHONY : src/worker_loop.s
+
+# target to generate assembly for a file
+src/worker_loop.c.s:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/worker_loop.c.s
+.PHONY : src/worker_loop.c.s
 
 # Help Target
 help:
@@ -831,17 +1374,11 @@ help:
 	@echo "... src/exclude.o"
 	@echo "... src/exclude.i"
 	@echo "... src/exclude.s"
-	@echo "... src/ip4.o"
-	@echo "... src/ip4.i"
-	@echo "... src/ip4.s"
-	@echo "... src/job.o"
-	@echo "... src/job.i"
-	@echo "... src/job.s"
 	@echo "... src/main.o"
 	@echo "... src/main.i"
 	@echo "... src/main.s"
 	@echo "... src/manager.o"
-	@echo "... src/manager_loop.i"
+	@echo "... src/manager.i"
 	@echo "... src/manager.s"
 	@echo "... src/message.o"
 	@echo "... src/message.i"
@@ -891,21 +1428,30 @@ help:
 	@echo "... src/partition.o"
 	@echo "... src/partition.i"
 	@echo "... src/partition.s"
-	@echo "... src/port.o"
-	@echo "... src/port.i"
-	@echo "... src/port.s"
 	@echo "... src/sanity_check.o"
 	@echo "... src/sanity_check.i"
 	@echo "... src/sanity_check.s"
 	@echo "... src/send_work.o"
 	@echo "... src/send_work.i"
 	@echo "... src/send_work.s"
-	@echo "... src/worker.o"
-	@echo "... src/worker.i"
-	@echo "... src/worker.s"
+	@echo "... src/type_helper/ip4.o"
+	@echo "... src/type_helper/ip4.i"
+	@echo "... src/type_helper/ip4.s"
+	@echo "... src/type_helper/job.o"
+	@echo "... src/type_helper/job.i"
+	@echo "... src/type_helper/job.s"
+	@echo "... src/type_helper/port.o"
+	@echo "... src/type_helper/port.i"
+	@echo "... src/type_helper/port.s"
+	@echo "... src/type_helper/worker.o"
+	@echo "... src/type_helper/worker.i"
+	@echo "... src/type_helper/worker.s"
 	@echo "... src/worker_daemon.o"
 	@echo "... src/worker_daemon.i"
 	@echo "... src/worker_daemon.s"
+	@echo "... src/worker_loop.o"
+	@echo "... src/worker_loop.i"
+	@echo "... src/worker_loop.s"
 .PHONY : help
 
 
