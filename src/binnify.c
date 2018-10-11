@@ -154,6 +154,7 @@ binn			*binnify_opts(t_opts *opts)
 	binn_object_set_uint32(obj, "host_timeo", opts->host_timeo);
 	binn_object_set_uint32(obj, "scan_delay", opts->scan_delay);
 	binn_object_set_uint32(obj, "max_scan_delay", opts->max_scan_delay);
+	// TODO -> heap overflow
 	binn_object_set_uint32(obj, "min_packet_rate", opts->min_packet_rate);
 	binn_object_set_uint32(obj, "max_packet_rate", opts->max_packet_rate);
 	binn_object_set_uint32(obj, "max_retries", opts->max_retries);

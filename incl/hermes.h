@@ -84,6 +84,6 @@ binn					*binnify_targetset(t_targetset *set);
 int						worker_loop(t_session* session);
 int						manager_loop(t_mgr *mgr);
 t_node					*partition_targetset(t_targetset *targets, uint32_t parts);
-int						send_work(t_wrkr *worker, t_job *job, t_targetset *portion);
+int						send_work(t_wrkr *worker, t_job *job/*, t_targetset *portion*/);
 
 #endif

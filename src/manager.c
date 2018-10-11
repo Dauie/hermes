@@ -36,7 +36,9 @@ void				assign_targetsets(t_node *wrkr_tree, t_node **job_lst)
 		return ;
 	if (wrkr_tree->left)
 		assign_targetsets(wrkr_tree->left, job_lst);
-	wrkr_tree->data = (*job_lst)->data;
+	//wrkr_tree->data = (*job_lst)->data;
+	if (send_work(wrkr_tree->data, (t_job*)(*job_lst)->data) == FAILURE)
+		;
 	remove_list_head(job_lst, false);
 	if (wrkr_tree->right)
 		assign_targetsets(wrkr_tree->right, job_lst);
@@ -56,7 +58,7 @@ int					manager_loop(t_mgr *mgr)
 				&mgr->workers->wrkrs, proto->p_proto);
 		printf("connected to %i workers.\n", mgr->workers->wrkr_cnt);
 		printf("partitioning work...\n");
-		/* TODO remove targetset from mgr, and replace with one from list, then distribute targetsets to workers*/
+		/* TODO remove targetset from mgr, and replace with one from list, then distribute targetsets to workers */
 		targetset_list = partition_targetset(mgr->job.targets, mgr->workers->wrkr_cnt + 1);
 		printf("done.\nsending work...\n");
 		assign_targetsets(mgr->workers->wrkrs, &targetset_list);

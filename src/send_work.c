@@ -14,14 +14,14 @@
 **	sent, else error is thrown. Job should be saved and re-distributed;
 */
 /*TODO send sections of job separately*/
-int					send_work(t_wrkr *worker, t_job *job, t_targetset *portion)
+int					send_work(t_wrkr *worker, t_job *job/*, t_targetset *portion*/)
 {
 	binn			*opts_binn;
 	t_msg_hdr		*hdr;
 	uint32_t		binn_len;
 	uint8_t			rplybuff[PKT_SIZE];
 
-	(void)portion;
+	//(void)portion;
 	opts_binn = binnify_opts(&job->opts);
 	binn_len = htonl((uint32_t)binn_size(opts_binn));
 	if (hermes_sendmsgf(worker->sock, msg_tc(T_OBJ, C_OBJ_OPTS), "u32",
