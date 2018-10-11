@@ -16,6 +16,7 @@ typedef union	u_mval
 	uint8_t		u8;
 	uint16_t	u16;
 	uint32_t	u32;
+	int			i;
 	char		*str;
 }				t_mval;
 
@@ -91,6 +92,6 @@ typedef union	u_mval
 uint16_t	msg_tc(uint8_t type, uint8_t code);
 ssize_t		hermes_recvmsg(int sock, uint8_t *msgbuff);
 int			hermes_sendmsgf(int sock, uint16_t type_code, char *format, ...);
-ssize_t		hermes_send_binn(int sock, uint8_t code, binn *obj, ssize_t objlen);
+ssize_t		hermes_send_binn(int sock, uint8_t code, binn *obj);
 
 #endif //HERMES_MESSAGE_H

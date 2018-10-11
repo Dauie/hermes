@@ -1,7 +1,7 @@
 # include "../incl/hermes.h"
 
 /* TODO fix everything you fucked up */
-int				handle_obj_offer(t_session *session,
+int				handle_obj_offer(t_wsession *session,
 		uint8_t code, uint8_t *msg, ssize_t msglen)
 {
 	uint16_t	tc;
@@ -52,7 +52,7 @@ int				handle_obj_offer(t_session *session,
 	return (SUCCESS);
 }
 
-int				process_message(t_session *session,
+int				process_message(t_wsession *session,
 								   uint8_t *msgbuff, ssize_t msglen)
 {
 	t_msg_hdr	*hdr;
@@ -68,18 +68,18 @@ int				process_message(t_session *session,
 	return (SUCCESS);
 }
 
-int				worker_loop(t_session *session)
+int				worker_loop(t_wsession *session)
 {
 	ssize_t		ret;
 	uint8_t		msgbuff[PKT_SIZE];
 
-	while (session->stat.running == true)
+	while (session->stat.run == true)
 	{
 		bzero(msgbuff, PKT_SIZE);
 		if ((ret = hermes_recvmsg(session->sock, msgbuff)) < 0)
 		{
 			hermes_error(FAILURE, 1, "manager disconnected unexpectedly");
-			session->stat.running = false;
+			session->stat.run = false;
 		}
 		else if (ret > 0)
 		{

@@ -1,8 +1,9 @@
 #ifndef HERMES_BINNIFY_H
-#define HERMES_BINNIFY_H
+# define HERMES_BINNIFY_H
 
-#include "../incl/job.h"
-#include "../binn/src/binn.h"
+#ifndef HERMES_H
+# include "hermes.h"
+#endif
 
 binn				*binnify_opts(t_opts *opts);
 binn				*binnify_portset(t_portset *set);

@@ -3,7 +3,7 @@
 
 
 
-static int				accept_wrapper(t_session *session, int lsock)
+static int				accept_wrapper(t_wsession *session, int lsock)
 {
 	uint				cslen;
 
@@ -14,9 +14,9 @@ static int				accept_wrapper(t_session *session, int lsock)
 	return (SUCCESS);
 }
 
-static int				daemon_loop(t_session *session, int lsock)
+static int				daemon_loop(t_wsession *session, int lsock)
 {
-	while (session->stat.running)
+	while (session->stat.run)
 	{
 		if (accept_wrapper(session, lsock) == FAILURE)
 			continue;
@@ -47,12 +47,12 @@ static void				setsockopt_wrapper(int lsock)
 int						worker_daemon(int port)
 {
 	int					lsock;
-	t_session			*session;
+	t_wsession			*session;
 	struct protoent		*proto;
 
-	if (!(session = memalloc(sizeof(t_session))))
+	if (!(session = memalloc(sizeof(t_wsession))))
 		return (hermes_error(EXIT_FAILURE, 2, "malloc()", strerror(errno)));
-	session->stat.running = true;
+	session->stat.run = true;
 	/* TODO add signal handlers */
 	if ((proto = getprotobyname("tcp")) == NULL)
 		hermes_error(EXIT_FAILURE, 2, "getprotobyname()", strerror(errno));
