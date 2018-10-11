@@ -1,5 +1,5 @@
-#include "job.h"
-#include "hermes.h"
+#include "../../incl/job.h"
+#include "../../incl/hermes.h"
 
 t_ip4			*new_ip4(void)
 {
@@ -7,7 +7,7 @@ t_ip4			*new_ip4(void)
 
 	if (!(data = (t_ip4*)memalloc(sizeof(t_ip4))))
 	{
-		hermes_error(errno, TRUE, 2, "malloc()", strerror(errno));
+		hermes_error(FAILURE, 2, "malloc()", strerror(errno));
 		return (NULL);
 	}
 	return (data);
@@ -19,11 +19,21 @@ t_ip4rng		*new_ip4range(void)
 
 	if (!(data = (t_ip4rng*)memalloc(sizeof(t_ip4rng))))
 	{
-		hermes_error(errno, TRUE, 2, "malloc()", strerror(errno));
+		hermes_error(FAILURE, 2, "malloc()", strerror(errno));
 		return (NULL);
 	}
 	return (data);
 }
+
+t_targetset		*new_targetset(void)
+{
+	t_targetset *new;
+
+	if (!(new = (t_targetset *)memalloc(sizeof(t_targetset))))
+		hermes_error(FAILURE, 2, "malloc()", strerror(errno));
+	return (new);
+}
+
 
 int				ip4_cmp(void *left, void *right)
 {
@@ -134,7 +144,7 @@ in_addr_t		ip4_decrement(in_addr_t ip, uint32_t decrease)
 					if (b->b1 > 0)
 						b->b1 -= 1;
 					else
-						b->b1 = 0;
+						b->b1 = 255;
 				}
 			}
 		}

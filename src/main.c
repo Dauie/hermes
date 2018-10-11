@@ -19,10 +19,11 @@ int			 main(int ac, char **av)
 	t_mgr	*mgr;
 
 	if (ac < 2)
-		return (FAILURE); //h_help();
+		return (FAILURE); // usage();
 	if (!(mgr = (t_mgr *)memalloc(sizeof(t_mgr))))
-		hermes_error(errno, TRUE, 2, "malloc()", strerror(errno));
-	parse_opts(mgr, ac, av);
+		hermes_error(FAILURE, 2, "malloc()", strerror(errno));
+	if (parse_opts(mgr, ac, av) == FAILURE)
+		exit(EXIT_FAILURE);
 	sanity_check(mgr);
 	do_exclusions(mgr);
 	manager_loop(mgr);

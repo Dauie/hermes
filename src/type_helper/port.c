@@ -1,11 +1,11 @@
-#include "job.h"
+#include "../../incl/job.h"
 
 t_port			*new_port()
 {
 	t_port		*port;
 
 	if (!(port = (t_port *)memalloc(sizeof(t_port))))
-		hermes_error(INPUT_ERROR, TRUE, 2, "malloc()", strerror(errno));
+		hermes_error(FAILURE, 2, "malloc()", strerror(errno));
 	return (port);
 }
 
@@ -14,10 +14,18 @@ t_prtrng		*new_portrange()
 	t_prtrng	*range;
 
 	if (!(range = (t_prtrng *)memalloc(sizeof(t_prtrng))))
-		hermes_error(errno, TRUE, 2, "malloc()", strerror(errno));
+		hermes_error(FAILURE, 2, "malloc()", strerror(errno));
 	return (range);
 }
 
+t_portset		*new_portset()
+{
+	t_portset	*set;
+
+	if (!(set = (t_portset *)memalloc(sizeof(t_portset))))
+		hermes_error(FAILURE, 2, "malloc()", strerror(errno));
+	return (set);
+}
 int				port_cmp(void *prt_left, void *prt_right)
 {
 	t_port		*left;
@@ -46,13 +54,13 @@ void			*port_min(t_node *tree)
 	return (save);
 }
 
-int				portrng_cmp(void *prt_left, void *prt_right)
+int				portrng_cmp(void *rng_left, void *rng_right)
 {
 	t_prtrng	*left;
 	t_prtrng	*right;
 
-	left = (t_prtrng*)prt_left;
-	right = (t_prtrng*)prt_right;
+	left = (t_prtrng*)rng_left;
+	right = (t_prtrng*)rng_right;
 	if (left->start == right->start)
 	{
 		if (left->end < right->end)
@@ -68,25 +76,25 @@ int				portrng_cmp(void *prt_left, void *prt_right)
 		return (-1);
 }
 
-int				port_prtrng_overlap_cmp(void *port, void *prtrng)
+int				port_prtrng_overlap_cmp(void *prt, void *rng)
 {
 	t_port		*p;
 	t_prtrng *pr;
 
-	p = (t_port*)port;
-	pr = (t_prtrng*)prtrng;
+	p = (t_port*)prt;
+	pr = (t_prtrng*)rng;
 	if (p->port >= pr->start && p->port <= pr->end)
 		return (0);
 	return (-1);
 }
 
-int				portrng_overlap_cmp(void *prt_left, void *prt_right)
+int				portrng_overlap_cmp(void *rng_left, void *rng_right)
 {
 	t_prtrng	*left;
 	t_prtrng	*right;
 
-	left = (t_prtrng*)prt_left;
-	right = (t_prtrng*)prt_right;
+	left = (t_prtrng*)rng_left;
+	right = (t_prtrng*)rng_right;
 	if (left->start >= right->start && left->start <= right->end)
 		return (0);
 	else if (left->end >= right->start && left->end <= right->end)

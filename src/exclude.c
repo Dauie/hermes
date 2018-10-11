@@ -4,7 +4,7 @@
 
 /*TODO need to exclude single IPs from ranges*/
 
-static void	exclude_ip4_ip4(t_targetlist *list, t_node **targets, t_node *exclude)
+static void	exclude_ip4_ip4(t_targetset *list, t_node **targets, t_node *exclude)
 {
 	if (!exclude)
 		return ;
@@ -34,53 +34,51 @@ t_node *split_ip4rng_n(void **data, uint32_t splits)
 	start = ((t_ip4rng*)data)->start;
 	while (start < ((t_ip4rng*)data)->end)
 	{
-        ((t_ip4rng*)node->data)->size = size;
-        ((t_ip4rng*)node->data)->start = start;
-        ((t_ip4rng*)node->data)->end = start + size;
-		add_node_list_head(&node, node->data);
+		((t_ip4rng*)node->data)->size = size;
+		((t_ip4rng*)node->data)->start = start;
+		((t_ip4rng*)node->data)->end = start + size;
+		add_list_head(&node, node->data);
 		start = ip4_increment(start, size);
 	}
 	if ((rem = ((t_ip4rng*)data)->size % splits))
 	{
-        ((t_ip4rng*)node->data)->size += rem;
-        ((t_ip4rng*)node->data)->end  += rem;
+		((t_ip4rng*)node->data)->size += rem;
+		((t_ip4rng*)node->data)->end  += rem;
 	}
 	return (node);
 }
 
-// BIG TODO : make generic for iprng && portrng
-
-t_node *split_prtrng_n(void **data, uint32_t splits)
+t_node			*split_prtrng_n(void **data, uint32_t splits)
 {
-    uint32_t    rem;
-    uint32_t    size;
-    in_addr_t   start;
-    t_node      *node;
+	uint32_t	rem;
+	uint32_t	size;
+	in_addr_t	start;
+	t_node		*node;
 
 
-    node = new_node(data);
-    size = ((t_prtrng*)data)->size / splits;
-    start = ((t_prtrng*)data)->start;
-    while (start < ((t_ip4rng*)data)->end)
-    {
-        ((t_ip4rng*)node->data)->size = size;
-        ((t_ip4rng*)node->data)->start = start;
-        ((t_ip4rng*)node->data)->end = start + size;
-        add_node_list_head(&node, node->data);
-        start += size;
-    }
-    if ((rem = ((t_ip4rng*)data)->size % splits))
-    {
-        ((t_ip4rng*)node->data)->size += rem;
-        ((t_ip4rng*)node->data)->end  += rem;
-    }
-    return (node);
+	node = new_node(data);
+	size = ((t_prtrng*)data)->size / splits;
+	start = ((t_prtrng*)data)->start;
+	while (start < ((t_ip4rng*)data)->end)
+	{
+		((t_ip4rng*)node->data)->size = size;
+		((t_ip4rng*)node->data)->start = start;
+		((t_ip4rng*)node->data)->end = start + size;
+		add_list_head(&node, node->data);
+		start += size;
+	}
+	if ((rem = ((t_ip4rng*)data)->size % splits))
+	{
+		((t_ip4rng*)node->data)->size += rem;
+		((t_ip4rng*)node->data)->end  += rem;
+	}
+	return (node);
 }
 
 /* Fills 'left' and 'right' with different halves of the range.
  * Returns how many items were removed from the range*/
 static int		split_ip4range(t_ip4rng *target, t_ip4rng *exclude,
-						  t_ip4rng **l, t_ip4rng **r)
+		t_ip4rng **l, t_ip4rng **r)
 {
 	*l = NULL;
 	*r = NULL;
@@ -105,7 +103,7 @@ static int		split_ip4range(t_ip4rng *target, t_ip4rng *exclude,
 		(*r)->size = ip4_diff((*r)->start, (*r)->end);
 	}
 	else if (ip4_cmp(&exclude->start, &target->start) >= 0 &&
-			 ip4_cmp(&exclude->start, &target->end) > 0)
+			ip4_cmp(&exclude->start, &target->end) > 0)
 	{
 		*l = new_ip4range();
 		(*l)->start = target->start;
@@ -115,8 +113,8 @@ static int		split_ip4range(t_ip4rng *target, t_ip4rng *exclude,
 	return (0);
 }
 
-static void		correct_targetlist_totals(t_targetlist *list, t_ip4rng *exclude,
-											t_ip4rng *left, t_ip4rng *right)
+static void		correct_targetlist_totals(t_targetset *list, t_ip4rng *exclude,
+		t_ip4rng *left, t_ip4rng *right)
 {
 	t_ip4rng		*tmp;
 
@@ -134,7 +132,7 @@ static void		correct_targetlist_totals(t_targetlist *list, t_ip4rng *exclude,
 	}
 }
 
-static void		exclude_ip4_ip4rng(t_targetlist *list, t_node **targets, t_node *exclude)
+static void		exclude_ip4_ip4rng(t_targetset *list, t_node **targets, t_node *exclude)
 {
 	t_node		*conflict;
 	t_ip4rng	*range;
@@ -166,8 +164,8 @@ static void		exclude_ip4_ip4rng(t_targetlist *list, t_node **targets, t_node *ex
 		exclude_ip4_ip4rng(list, targets, exclude->right);
 }
 
-static void		exclude_ip4rng_ip4rng(t_targetlist *list, t_node **targets,
-								  t_node *exclude)
+static void		exclude_ip4rng_ip4rng(t_targetset *list, t_node **targets,
+		t_node *exclude)
 {
 	t_node	*conflict;
 	t_ip4rng *range;
@@ -195,7 +193,7 @@ static void		exclude_ip4rng_ip4rng(t_targetlist *list, t_node **targets,
 		exclude_ip4rng_ip4rng(list, targets, exclude->right);
 }
 
-static int		do_target_exclusions(t_targetlist *targets, t_targetlist *exclude)
+static int		do_target_exclusions(t_targetset *targets, t_targetset *exclude)
 {
 	if (!targets || !exclude)
 		return (FAILURE);
@@ -209,12 +207,12 @@ static int		do_target_exclusions(t_targetlist *targets, t_targetlist *exclude)
 }
 
 static long split_portrange(t_prtrng *target, t_prtrng *exclude,
-							t_prtrng **l, t_prtrng **r )
+		t_prtrng **l, t_prtrng **r )
 {
 	*l = NULL;
 	*r = NULL;
 	if (port_cmp(&exclude->start, &target->start) > 0 &&
-		port_cmp(&exclude->end, &target->end) < 0)
+			port_cmp(&exclude->end, &target->end) < 0)
 	{
 		*l = new_portrange();
 		*r = new_portrange();
@@ -226,7 +224,7 @@ static long split_portrange(t_prtrng *target, t_prtrng *exclude,
 		(*r)->size =  (*r)->end - (*r)->start;
 	}
 	else if (port_cmp(&exclude->end, &target->start) >= 0 &&
-			 port_cmp(&exclude->end, &target->end) < 0)
+			port_cmp(&exclude->end, &target->end) < 0)
 	{
 		*r = new_portrange();
 		(*r)->start = exclude->end + (uint16_t)1;
@@ -234,7 +232,7 @@ static long split_portrange(t_prtrng *target, t_prtrng *exclude,
 		(*r)->size =  (*r)->end - (*r)->start;
 	}
 	else if (port_cmp(&exclude->start, &target->start) >= 0 &&
-			 port_cmp(&exclude->start, &target->end) > 0)
+			port_cmp(&exclude->start, &target->end) > 0)
 	{
 		*l = new_portrange();
 		(*l)->start = target->start;
@@ -244,8 +242,8 @@ static long split_portrange(t_prtrng *target, t_prtrng *exclude,
 	return (0);
 }
 
-static void exclude_port_port(t_portlist *list, t_node **target,
-							  t_node *exclude)
+static void exclude_port_port(t_portset *list, t_node **target,
+		t_node *exclude)
 {
 	if (!exclude)
 		return ;
@@ -260,7 +258,7 @@ static void exclude_port_port(t_portlist *list, t_node **target,
 		exclude_port_port(list, target, exclude->right);
 }
 
-static void		correct_portrange_totals(t_portlist *list, t_prtrng *exclude,
+static void		correct_portrange_totals(t_portset *list, t_prtrng *exclude,
 		t_prtrng *left, t_prtrng *right)
 {
 	t_prtrng	*tmp;
@@ -279,7 +277,7 @@ static void		correct_portrange_totals(t_portlist *list, t_prtrng *exclude,
 	}
 }
 
-static void		exclude_port_prtrng(t_portlist *list, t_node **targets, t_node *exclude)
+static void		exclude_port_prtrng(t_portset *list, t_node **targets, t_node *exclude)
 {
 	t_node		*conflict;
 	t_prtrng	*range;
@@ -311,8 +309,8 @@ static void		exclude_port_prtrng(t_portlist *list, t_node **targets, t_node *exc
 		exclude_port_prtrng(list, targets, exclude->right);
 }
 
-static void		exclude_prtrng_prtrng(t_portlist *list, t_node **targets,
-										 t_node *exclude)
+static void		exclude_prtrng_prtrng(t_portset *list, t_node **targets,
+		t_node *exclude)
 {
 	t_node		*conflict;
 	t_prtrng	*range;
@@ -340,7 +338,7 @@ static void		exclude_prtrng_prtrng(t_portlist *list, t_node **targets,
 		exclude_prtrng_prtrng(list, targets, exclude->right);
 }
 
-static int				do_port_exclusions(t_portlist *target, t_portlist *exclude)
+static int				do_port_exclusions(t_portset *target, t_portset *exclude)
 {
 	if (!target || !exclude)
 		return (FAILURE);
@@ -355,6 +353,6 @@ static int				do_port_exclusions(t_portlist *target, t_portlist *exclude)
 
 void			do_exclusions(t_mgr *mgr)
 {
-	do_target_exclusions(&mgr->job.targets, &mgr->exclude_targets);
-	do_port_exclusions(&mgr->job.ports, &mgr->exclude_ports);
+	do_target_exclusions(mgr->job.targets, mgr->exclude_targets);
+	do_port_exclusions(mgr->job.ports, mgr->exclude_ports);
 }

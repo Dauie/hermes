@@ -1,17 +1,20 @@
 # include "../../incl/job.h"
 # include "../../incl/parser.h"
 
-void			h_append_output(t_mgr *mgr)
+int h_append_output(t_mgr *mgr)
 {
-	mgr->job.opts.bitops.apnd_file = TRUE;
+	mgr->job.opts.bitops.apnd_file = true;
+	return (SUCCESS);
 }
 
-void			h_norm_output(t_mgr *mgr)
+int h_norm_output(t_mgr *mgr)
 {
-	mgr->job.opts.bitops.output_norm = TRUE;
+	mgr->job.opts.bitops.output_norm = true;
+	return (SUCCESS);
 }
 
-void			h_show_only_open_ports(t_mgr *mgr)
+int h_show_only_open_ports(t_mgr *mgr)
 {
-	mgr->job.opts.bitops.show_only_open_ports = TRUE;
+	mgr->job.opts.bitops.show_only_open_ports = true;
+	return (SUCCESS);
 }

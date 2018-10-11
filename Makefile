@@ -5,15 +5,18 @@ CC = gcc
 
 SRC_DIR = src
 
-CFLAGS  = -Wall -Werror -Wextra
+CFLAGS  = -Wall -Werror -Wextra -g -fsanitize=address
 
-INCL = -I incl
+LIBHERMES = libhermes/
 
-LIBHERMES = ./libhermes
+LIBBINN = binn/
+
+UNITSRC_DIR = src/unit_testing
+UNITSRC_FILES = munit.c
 
 SRC_DIR = src
-SRC_FILES = main.c worker_daemon.c sanity_check.c exclude.c
-SRC_FILES += manager.c partition.c binnify.c send_work.c
+SRC_FILES = worker_daemon.c worker_loop.c sanity_check.c exclude.c
+SRC_FILES += manager.c partition.c binnify.c send_work.c message.c
 
 THELP_DIR = src/type_helper
 THELP_FILES = ip4.c port.c job.c worker.c
@@ -27,21 +30,31 @@ PARSE_FILES += parse_ip.c parse_ports.c parse_time.c parser.c
 SRC = $(addprefix $(SRC_DIR)/, $(SRC_FILES))
 SRC += $(addprefix $(PARSE_DIR)/, $(PARSE_FILES))
 SRC += $(addprefix $(THELP_DIR)/, $(THELP_FILES))
+SRC += binn/binn.o
+SRC += libhermes/libhermes.a
+
+UNIT_SRC = $(SRC)
+UNIT_SRC += munit/munit.c
+UNIT_SRC += $(addprefix $(UNITSRC_DIR)/, $(UNITSRC_FILES))
 
 RM = rm -fr
 
 $(NAME):
-		$(MAKE) -C binn
+		$(MAKE) -C $(LIBBINN)
 		$(MAKE) -C $(LIBHERMES)
-		$(CC) $(CFLAGS) $(INCL) $(SRC) binn/binn.o $(LIBHERMES)/libhermes.a -o $(NAME)
+		$(CC) $(CFLAGS) $(SRC) src/main.c -o $(NAME)
 
 all: $(NAME)
 
+test:
+		$(MAKE) -C $(LIBBINN)
+		$(MAKE) -C $(LIBHERMES)
+		$(CC) $(CFLAGS) $(UNIT_SRC) -o hermes_test
 clean:
 		$(RM) $(NAME)
 
 fclean: clean
-		$(MAKE) -C binn clean
+		$(MAKE) -C $(LIBBINN) clean
 		$(MAKE) -C $(LIBHERMES) fclean
 
 re: fclean $(NAME)

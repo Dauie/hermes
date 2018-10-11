@@ -1,65 +1,69 @@
 #include "../incl/hermes.h"
 
 // TODO : function pointers to cmp, min in struct?
-void			partition_ip4(t_node **src, t_node *w_jobs)
+void			partition_ip4_tree(t_node **ip4tree, t_node *w_targetsets)
 {
-	if (!w_jobs)
-		return ;
-	if (w_jobs->left)
-		partition_ip4(src, w_jobs->left);
-	add_node_bst(&((t_job*)w_jobs->data)->targets.ips, &(*src)->data, ip4_cmp);
-	remove_node_bst(src, (*src)->data, ip4_cmp, ip4_min);
-	if (w_jobs->right)
-		partition_ip4(src, w_jobs->right);
+	t_targetset *set;
+
+	while (w_targetsets && *ip4tree)
+	{
+		set = w_targetsets->data;
+		add_node_bst(&set->ips, &(*ip4tree)->data, ip4_cmp);
+		remove_node_bst(ip4tree, (*ip4tree)->data, ip4_cmp, ip4_min);
+		w_targetsets = w_targetsets->right;
+	}
 }
 
-void			partition_ip4rng(uint32_t parts, t_node **src, t_node *w_jobs)
+void			partition_ip4rng_tree(t_node **iprngtree, uint32_t parts, t_node *targetsets)
 {
+	t_targetset	*set;
 	t_node		*fragment_lst;
 	t_node		*tmp;
 
-	if (!w_jobs)
+	if (!targetsets)
 		return ;
-	tmp = w_jobs;
-	fragment_lst = split_ip4rng_n((*src)->data, parts);
+	tmp = targetsets;
+	fragment_lst = split_ip4rng_n((*iprngtree)->data, parts);
 	while (fragment_lst)
 	{
 		if (!tmp)
-			tmp = w_jobs;
-		add_node_bst(&((t_job*)w_jobs->data)->targets.iprngs, &fragment_lst->data, ip4rng_cmp);
-		remove_node_list_head(&fragment_lst);
+			tmp = targetsets;
+		set = targetsets->data;
+		add_node_bst(&set->iprngs, &fragment_lst->data, ip4rng_cmp);
+		/*TODO make a remove_node_head take a bool to delete data or not*/
+		remove_list_head(&fragment_lst, 0);
 		tmp = tmp->right;
 	}
-	remove_node_bst(src, (*src)->data, ip4rng_cmp, ip4rng_min);
+	remove_node_bst(iprngtree, (*iprngtree)->data, ip4rng_cmp, ip4rng_min);
 }
 
-t_node			*new_joblist(t_ops *ops, uint32_t count)
+t_node			*new_targetset_list(uint32_t count)
 {
-	t_job		*tmp;
-	t_node		*job;
+	t_targetset	*newset;
+	t_node		*set_list;
 
-	job = NULL;
+	set_list = NULL;
 	while (count)
 	{
-		tmp = new_job();
-		memcpy(&tmp->opts, ops, sizeof(t_ops));
-		add_node_list_head(&job, (void **)&tmp);
+		newset = new_targetset();
+		add_list_head(&set_list, (void **) &newset);
 		count--;
 	}
-	return (job);
+	return (set_list);
 }
 
-// TODO : link joblist to list of job pointers from mgr
-t_node			*partition_job(t_job *job, uint32_t parts)
+t_node			*partition_targetset(t_targetset *targets, uint32_t parts)
 {
-	t_node		*job_list;
+	t_node		*targetset_list;
 
-	if (!parts)
+	if (!targets)
 		return (NULL);
-	job_list = new_joblist(&job->opts, parts);
-	while (job->targets.ips)
-		partition_ip4(&job->targets.ips, job_list);
-	while (job->targets.iprngs)
-		partition_ip4rng(parts, &job->targets.iprngs, job_list);
-	return (job_list);
+	if (parts <=1)
+		return (new_node((void **)&targets));
+	targetset_list = new_targetset_list(parts);
+	while (targets->ips)
+		partition_ip4_tree(&targets->ips, targetset_list);
+	while (targets->iprngs)
+		partition_ip4rng_tree(NULL, 0, NULL);
+	return (targetset_list);
 }

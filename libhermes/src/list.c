@@ -1,56 +1,60 @@
+#include <stdbool.h>
 #include "sys/errno.h"
 #include "../incl/libhermes.h"
 
-void			del_list(t_node **list)
+void			del_list(t_node **list, bool deldata)
 {
-    t_node *tmp;
+	t_node		*tmp;
 
-    if (!list)
-        return ;
-    while (*list)
-    {
-        tmp = (*list)->right;
-        *list = NULL;
-        free(*list);
-        *list = tmp;
-    }
+	if (!list)
+		return ;
+	while (*list)
+	{
+		tmp = (*list)->right;
+		*list = NULL;
+		free(*list);
+		*list = tmp;
+	}
 }
 
-void            remove_node_list(t_node **node)
+bool			remove_node_list(t_node **node, bool deldata)
 {
 	if (!node || !*node)
-		return ;
+		return (false);
 	if ((*node)->left)
 		(*node)->left->right = (*node)->right;
 	if ((*node)->right)
 		(*node)->right->left = (*node)->left;
-	if ((*node)->data)
+	if (deldata && (*node)->data)
 	{
 		free((*node)->data);
 		(*node)->data = NULL;
 	}
 	free(*node);
 	*node = NULL;
+	return (true);
 }
 
-void 			remove_node_list_head(t_node **list)
+bool			remove_list_head(t_node **list, bool deldata)
 {
 	t_node		*node;
 
 	if (!list)
-		return ;
+		return (false);
 	node = *list;
 	(*list) = (*list)->right;
-    node = NULL;
-    free(node);
+	if (deldata && node->data)
+		free(node->data);
+	free(node);
+	return (true);
 }
 
-void			add_node_list_head(t_node **list, void **data)
+bool			add_list_head(t_node **list, void **data)
 {
 	t_node		*node;
 
 	if (!list || !data || !*data)
-		return;
+		return (false);
 	node = new_node(data);
 	if (*list == NULL)
 		*list = node;
@@ -60,15 +64,16 @@ void			add_node_list_head(t_node **list, void **data)
 		*list = node;
 		(*list)->right->left = *list;
 	}
+	return (true);
 }
 
-void			add_node_list_end(t_node **list, void **data)
+bool			add_list_end(t_node **list, void **data)
 {
 	t_node		*tmp;
 	t_node		*node;
 
 	if (!list || !data || !*data)
-		return;
+		return (false);
 	node = new_node(data);
 	if (*list == NULL)
 		*list = node;
@@ -80,6 +85,7 @@ void			add_node_list_end(t_node **list, void **data)
 		tmp->right = node;
 		node->left = tmp;
 	}
+	return (true);
 }
 
 #ifdef TESTING

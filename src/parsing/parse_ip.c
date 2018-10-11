@@ -27,9 +27,9 @@ static int			parse_cidr_mask(in_addr_t *subn_m, char *cidr_str)
 	int				cidr_m;
 
 	if (!cidr_str)
-		return (hermes_error(INPUT_ERROR, FALSE, 1, "no cidr mask provided"));
+		return (hermes_error(FAILURE, 1, "no cidr mask provided"));
 	if ((cidr_m = atoi(cidr_str)) > 32 || cidr_m < 0)
-		return (hermes_error(INPUT_ERROR, FALSE, 2, "bad cidr mask:", cidr_str));
+		return (hermes_error(FAILURE, 2, "bad cidr mask:", cidr_str));
 	*subn_m = 0;
 	if (cidr_m > 0)
 	{
@@ -47,11 +47,11 @@ static int			parse_cidr_mask(in_addr_t *subn_m, char *cidr_str)
 int					parse_ip(in_addr_t *ip, char *ip_str)
 {
 	if (inet_pton(AF_INET, ip_str, ip) <= 0)
-		return (hermes_error(INPUT_ERROR, FALSE, 2, "inet_pton()", strerror(errno)));
+		return (hermes_error(FAILURE, 2, "inet_pton()", strerror(errno)));
 	return (SUCCESS);
 }
 
-int				do_ip4range(t_targetlist *targets, char *ip_str, char *cidr_str)
+int				do_ip4range(t_targetset *targets, char *ip_str, char *cidr_str)
 {
 	in_addr_t	ip;
 	in_addr_t	subn_m;
@@ -72,7 +72,7 @@ int				do_ip4range(t_targetlist *targets, char *ip_str, char *cidr_str)
 	return (SUCCESS);
 }
 
-int				do_ip4(t_targetlist *targets, char *input)
+int				do_ip4(t_targetset *targets, char *input)
 {
 	in_addr_t	ip;
 	t_ip4		*data;
@@ -90,7 +90,7 @@ int				do_ip4(t_targetlist *targets, char *input)
 	return (SUCCESS);
 }
 
-int				handle_ip(t_targetlist *targets, char *input)
+int				handle_ip(t_targetset *targets, char *input)
 {
 	char		*section;
 	char		*ip_str;

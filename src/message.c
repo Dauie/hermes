@@ -1,7 +1,6 @@
-#include <stdarg.h>
-#include "hermes.h"
+#include "../incl/hermes.h"
 
-uint16_t	type_code(uint8_t type, uint8_t code)
+uint16_t		msg_tc(uint8_t type, uint8_t code)
 {
 	uint16_t tc;
 
@@ -9,8 +8,6 @@ uint16_t	type_code(uint8_t type, uint8_t code)
 	tc = (tc << 8) | code;
 	return (tc);
 }
-
-
 
 void			pack_uint8(uint8_t **p, uint8_t val)
 {
@@ -39,52 +36,20 @@ void			pack_string(uint8_t **p, char *str)
 	*p += len;
 }
 
-void 			pack_header(uint8_t **p, uint16_t type_code, uint16_t len)
+void 			msg_pack_header(uint8_t *p, uint16_t type_code, uint16_t len)
 {
-	pack_uint16(p, type_code);
-	pack_uint16(p, len);
+	pack_uint16(&p, type_code);
+	pack_uint16(&p, htons(len));
 }
 
-void			pack_binn(uint8_t **p, binn *data, int len)
-{
-	memcpy(p, data, len);
-	*p += len;
-}
-
-ssize_t			hermes_send_binn(int sock, uint16_t type_code, binn *data)
-{
-	int			len;
-	ssize_t 	ret;
-	binn		*binn;
-
-	ret = 0;
-	len = binn_size(data);
-	binn = binn_ptr(data);
-	while (binn)
-	{
-		if (!binn + HERMES_PACK_SIZE)
-		{
-			if ((ret = send(sock, binn, (size_t)(len - HERMES_PACK_SIZE), 0)) < 0)
-				hermes_error(errno, TRUE, 2, "send()", strerror(errno));
-		}
-		else
-		{
-			if ((ret = send(sock, binn, HERMES_PACK_SIZE, 0)) < 0)
-				hermes_error(errno, TRUE, 2, "send()", strerror(errno));
-		}
-		binn += HERMES_PACK_SIZE;
-	}
-	return (ret);
-}
-
-ssize_t			msg_pack_data(uint8_t *msgbuff, va_list *ap, char *frmt)
+size_t			msg_pack_data(uint8_t *msgbuff, va_list *ap, char *frmt)
 {
 	uint8_t		*p;
 	char		*spec;
-	t_uints		val;
+	t_mval		val;
 
 	p = msgbuff;
-	while ((spec = strsep(&frmt, ",")) && (p - msgbuff) < HERMES_MSG_MAX)
+	while ((spec = strsep(&frmt, ",")) && (p - msgbuff) < PKT_SIZE)
 	{
 		if (strcmp(spec, "u8") == 0)
 		{
@@ -110,55 +75,118 @@ ssize_t			msg_pack_data(uint8_t *msgbuff, va_list *ap, char *frmt)
 	return (p - msgbuff);
 }
 
-/* TODO: Have better bounds checks while packing to prevent going over MAX_MSG */
-ssize_t			hermes_send_msg(int sock, uint16_t type_code, char *format, ...)
+/* TODO: Error handling in this func needs to be improved */
+int				hermes_sendmsgf(int sock, uint16_t type_code, char *format, ...)
 {
-	ssize_t		datalen;
-	uint8_t		*p;
-	uint8_t		msgbuff[HERMES_MSG_MAX];
-	va_list		ap;
-
+	uint8_t		*hp;	/* header pointer */
+	uint8_t		*dp;	/* data pointer */
+	va_list		ap;		/* vargs list */
+	ssize_t		msglen;
+	uint8_t		msgbuff[PKT_SIZE] = {0};
 	ssize_t		ret;
 
-	va_start(ap, format);
-	p = msgbuff;
-	datalen = msg_pack_data(p, &ap, format);
-	pack_header(&p, type_code, (uint16_t)datalen);
-	if ((ret = send(sock, msgbuff, msgbuff - p, 0)) < 0)
-		hermes_error(errno, TRUE, 2, "send()", strerror(errno));
-	va_end(ap);
+	msglen = MSG_HDRSZ;
+	hp = msgbuff;
+	dp = msgbuff + MSG_HDRSZ;
+	if (format)
+	{
+		va_start(ap, format);
+		msglen += msg_pack_data(dp, &ap, format);
+		va_end(ap);
+	}
+	msg_pack_header(hp, type_code, (uint16_t) msglen);
+	if ((ret = send(sock, msgbuff, (size_t)msglen, MSG_DONTWAIT)) < 0)
+		return (hermes_error(FAILURE, 2, "send()", strerror(errno)));
+	else if (ret != msglen)
+		return (hermes_error(FAILURE, 1, "hermes_sendmsgf()"));
+	return (SUCCESS);
+}
+
+ssize_t			hermes_send_binn(int sock, uint8_t code, binn *obj, ssize_t objlen)
+{
+	uint16_t	tc;
+	ssize_t		ret;
+	void		*run;
+	t_msg_hdr	*hdr;
+	uint8_t		recvbuff[PKT_SIZE];
+
+	tc = msg_tc(T_OBJ, code);
+	if (hermes_sendmsgf(sock, tc, "u32", objlen) == FAILURE)
+		return (FAILURE);
+	if (hermes_recvmsg(sock, recvbuff) < 0)
+		return (FAILURE);
+
+	hdr = (t_msg_hdr*)recvbuff;
+	run = binn_ptr(obj);
+	if (hdr->type == T_OBJ_RPLY)
+	{
+		if (hdr->code == C_ACCEPT)
+		{
+			if ((ret = send(sock, &run, (size_t)objlen, MSG_DONTWAIT)) < 0)
+				return (hermes_error(FAILURE, 2, "send()", strerror(errno)));
+			if (ret != objlen)
+				return (FAILURE);
+			if (hermes_recvmsg(sock, recvbuff) == FAILURE)
+				return (FAILURE);
+			if (hdr->type == T_OBJ_RPLY)
+			{
+				if (hdr->code == C_RECV_CNFRM)
+					return (SUCCESS);
+				else if (hdr->code == C_RECV_FAIL)
+					return (FAILURE);
+			}
+			else
+				return (FAILURE);
+		}
+		else if (hdr->code == C_PARAM_ERR)
+		{
+			hermes_error(FAILURE, false, 1,
+						 "hermes message parameter issue reported by worker");
+			return (FAILURE);
+		}
+		else if (hdr->code == C_DENY_OOM)
+		{
+			hermes_error(FAILURE, false, 1, "out of memory");
+			return (FAILURE);
+		}
+		else
+			return (FAILURE);
+	}
+	else
+		return (FAILURE);
 	return (ret);
 }
 
 /*
-**	If hermes_recv_msg returns -1 the connection was closed.
+**	If hermes_recvmsg returns FAILURE the connection was closed.
+**	if Fatal error has occurred, process will be ended.
 */
-ssize_t			hermes_recv_msg(int sock, uint8_t *msgbuff)
+ssize_t			hermes_recvmsg(int sock, uint8_t *msgbuff)
 {
 	t_msg_hdr	*hdr;
 	ssize_t		ret;
 
 	hdr = (t_msg_hdr*)msgbuff;
-	if ((ret = recv(sock, msgbuff, HERMES_MSG_HDRSZ, MSG_WAITALL)) <= 0)
+	if ((ret = recv(sock, msgbuff, MSG_HDRSZ, MSG_WAITALL)) <= 0)
 	{
 		if (ret == 0)
-			return (-1);
+			return (FAILURE);
 		else if (errno == EWOULDBLOCK || errno == EAGAIN)
-			return (0);
+			return (SUCCESS);
 		else
-			hermes_error(errno, TRUE, 2, "recv()", strerror(errno));
+			hermes_error(errno, true, 2, "recv()", strerror(errno));
 	}
 	hdr->msglen = ntohs(hdr->msglen);
 	if (hdr->msglen > 0)
 	{
-		if ((ret = recv(sock, msgbuff + HERMES_MSG_HDRSZ, hdr->msglen, MSG_WAITALL)) <= 0)
+		if ((ret = recv(sock, msgbuff + MSG_HDRSZ, hdr->msglen, MSG_WAITALL)) <= 0)
 		{
 			if (ret == 0)
-				return (-1);
+				return (FAILURE);
 			else if (errno == EWOULDBLOCK || errno == EAGAIN)
-				return (0);
+				return (SUCCESS);
 			else
-				hermes_error(errno, TRUE, 2, "recv()", strerror(errno));
+				hermes_error(errno, true, 2, "recv()", strerror(errno));
 		}
 	}
 	return (ret);
