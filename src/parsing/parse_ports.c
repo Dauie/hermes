@@ -19,7 +19,7 @@ static int		add_port(t_portset *list, char *input)
 	uint16_t	port;
 
 	if (parse_port(&port, input) == FAILURE)
-		return (hermes_error(FAILURE, FALSE, 1, "bad ports specified", input));
+		return (hermes_error(FAILURE, 1, "bad ports specified", input));
 	data = new_port();
 	data->port = (uint16_t)port;
 	if (add_node_bst(&list->ports, (void **) &data, port_cmp) == SUCCESS)
@@ -37,9 +37,9 @@ static int		add_range(t_portset *list, char **range)
 	t_prtrng	*data;
 
 	if (parse_port(&start, range[0]) == FAILURE)
-		return (hermes_error(FAILURE, FALSE, 1, "bad start to ports range", range[0]));
+		return (hermes_error(FAILURE, 1, "bad start to ports range", range[0]));
 	if (parse_port(&end, range[1]) == FAILURE)
-		return (hermes_error(FAILURE, FALSE, 1, "bad end to ports range", range[1]));
+		return (hermes_error(FAILURE, 1, "bad end to ports range", range[1]));
 	data = new_portrange();
 	if (start > end)
 		swap_uint16(&start, &end);
@@ -59,13 +59,12 @@ int				handle_port(t_portset *set, char *input)
 	char		*port;
 	char		**port_range;
 
-	/* TODO: Make sure all portlists in job are free'd */
 	while ((port = strsep(&input, ",")) != NULL)
 	{
 		if (strchr(port, '-'))
 		{
 			if (!(port_range = strsplit(port, '-')))
-				return (hermes_error(INPUT_ERROR, TRUE, 1, "strsplit()"));
+				return (hermes_error(FAILURE, 1, "strsplit()"));
 			if (add_range(set, port_range) == FAILURE)
 				return (FAILURE);
 			tbldel(&port_range);

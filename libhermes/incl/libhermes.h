@@ -8,14 +8,14 @@
 # include <stdlib.h>
 # include <stdio.h>
 # include <stdarg.h>
+# include <stdbool.h>
+# include <stdbool.h>
 
 # include "error_codes.h"
-# include "bool.h"
 
 /*
 **	Structs
 */
-
 typedef struct		s_node
 {
 	struct s_node	*left;
@@ -49,28 +49,28 @@ void				*memalloc(size_t size);
 **	Node helper functions
 */
 t_node				*new_node(void **data);
-void				del_node(t_node **node);
+void				del_node(t_node **node, bool deldata);
 
 /*
 **	BST Functions
 */
-int					add_node_bst(t_node **tree, void **data, int (*cmp)(void *, void *));
-int					remove_node_bst(t_node **tree, void *key, int (*cmp)(void *, void *), void *(*min)(t_node *));
+bool				add_node_bst(t_node **tree, void **data, int (*cmp)(void *, void *));
+bool				remove_node_bst(t_node **tree, void *key, int (*cmp)(void *, void *), void *(*min)(t_node *));
 t_node				*bst_search(t_node **tree, void *data, int (*cmp)(void *, void *));
 t_node				*tree_search(t_node **tree, void *data, int (*cmp)(void *, void *));
 
 /*
 **	List Functions
 */
-void				del_list(t_node **list);
-void				add_node_list_end(t_node **list, void **node);
-int add_node_list_head(t_node **list, void **data);
-void				remove_node_list(t_node **node);
-void				remove_node_list_head(t_node **list);
+void				del_list(t_node **list, bool deldata);
+bool				add_list_end(t_node **list, void **node);
+bool				add_list_head(t_node **list, void **data);
+bool				remove_node_list(t_node **node, bool deldata);
+bool				remove_list_head(t_node **list, bool deldata);
 
 /*
 **	Error Management Functions
 */
-int					hermes_error(int errcode, int fatal, int str_amt, ...);
+int					hermes_error(int errcode, int str_amt, ...);
 
 #endif //hermes_hermes_H

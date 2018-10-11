@@ -10,17 +10,17 @@ int			parse_ip_file(t_targetset *set, char *filename)
 
 	len = 1024;
 	if (!filename)
-		hermes_error(errno, TRUE, 2, "ips file not provided");
+		return (hermes_error(FAILURE, 2, "ips file not provided"));
 	if (!(buff = memalloc(sizeof(char) * (len + 1))))
-		hermes_error(errno, TRUE, 2, "malloc()", strerror(errno));
+		return (hermes_error(FAILURE, 2, "malloc()", strerror(errno)));
 	if (!(fp = fopen(filename, "r")))
-		hermes_error(errno, TRUE, 3, "error opening", filename, strerror(errno));
+		return (hermes_error(FAILURE, 3, "error opening", filename, strerror(errno)));
 	while ((read = getline(&buff, &len, fp)) > 0)
 	{
 		if (buff[read - 1] == '\n')
 			buff[read - 1] = '\0';
 		if (handle_ip(set, buff) == FAILURE)
-			hermes_error(INPUT_ERROR, TRUE, 2, "issue parsing targets from", filename);
+			return (hermes_error(FAILURE, 2, "issue parsing targets from", filename));
 	}
 	free(buff);
 	fclose(fp);
@@ -36,17 +36,17 @@ int			parse_worker_file(t_workerset *set, char *filename)
 
 	len = 1024;
 	if (!filename)
-		hermes_error(errno, TRUE, 2, "worker file not provided");
+		return (hermes_error(FAILURE, 2, "worker file not provided"));
 	if (!(buff = memalloc(sizeof(char) * (len + 1))))
-		hermes_error(errno, TRUE, 2, "malloc()", strerror(errno));
+		return (hermes_error(FAILURE, 2, "malloc()", strerror(errno)));
 	if (!(fp = fopen(filename, "r")))
-		hermes_error(errno, TRUE, 3, "error opening", filename, strerror(errno));
+		return (hermes_error(FAILURE, 3, "error opening", filename, strerror(errno)));
 	while ((read = getline(&buff, &len, fp)) > 0)
 	{
 		if (buff[read - 1] == '\n')
 			buff[read - 1] = '\0';
 		if (parse_worker(set, buff) == FAILURE)
-			hermes_error(INPUT_ERROR, TRUE, 2, "issue parsing targets from", filename);
+			return (hermes_error(FAILURE, 2, "issue parsing targets from", filename));
 	}
 	free(buff);
 	fclose(fp);

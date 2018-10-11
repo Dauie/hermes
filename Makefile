@@ -5,7 +5,7 @@ CC = gcc
 
 SRC_DIR = src
 
-CFLAGS  = -Wall -Werror -Wextra -g
+CFLAGS  = -Wall -Werror -Wextra -g -fsanitize=address
 
 LIBHERMES = libhermes/
 

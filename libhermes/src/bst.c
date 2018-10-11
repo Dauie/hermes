@@ -31,12 +31,12 @@ t_node		*tree_search(t_node **tree, void *data, int (*cmp)(void *, void *))
 	return (NULL);
 }
 
-int			add_node_bst(t_node **root, void **data, int (*cmp)(void *, void *))
+bool		add_node_bst(t_node **root, void **data, int (*cmp)(void *, void *))
 {
-	int ret;
-	t_node *node;
-	t_node *curr = *root;
-	t_node *parent = NULL;
+	int		ret;
+	t_node	*node;
+	t_node	*curr = *root;
+	t_node	*parent = NULL;
 
 	node = new_node(data);
 	if (*root == NULL)
@@ -54,7 +54,7 @@ int			add_node_bst(t_node **root, void **data, int (*cmp)(void *, void *))
 			curr = curr->right;
 		else
 		{
-			del_node(&node);
+			del_node(&node, NULL);
 			return (FAILURE);
 		}
 	}
@@ -78,13 +78,11 @@ void		remove_search_key(t_node **curr, t_node **parent, void *key,
 	}
 }
 
-int			remove_node_bst(t_node **tree, void *key,
-							   int (*cmp)(void *, void *),
-							   void *(*min)(t_node *))
+bool		remove_node_bst(t_node **tree, void *key, int (*cmp)(void *, void *), void *(*min)(t_node *))
 {
-	t_node* parent = NULL;
-	t_node *curr = *tree;
-	t_node *child;
+	t_node	*parent = NULL;
+	t_node	*curr = *tree;
+	t_node	*child;
 	void	*successor;
 
 	remove_search_key(&curr, &parent, key, cmp);
@@ -101,7 +99,7 @@ int			remove_node_bst(t_node **tree, void *key,
 		}
 		else
 			*tree = NULL;
-		del_node(&curr);
+		del_node(&curr, NULL);
 	}
 	else if (curr->left && curr->right)
 	{
@@ -121,7 +119,7 @@ int			remove_node_bst(t_node **tree, void *key,
 		}
 		else
 			*tree = child;
-		del_node(&curr);
+		del_node(&curr, NULL);
 	}
 	return (SUCCESS);
 }

@@ -13,6 +13,5 @@ int			sanity_check(t_mgr *mgr)
 		mgr->job.opts.init_rtt_timeo = DEF_INIT_RTT_TIMEOUT;
 	if (mgr->job.opts.max_retries == 0)
 		mgr->job.opts.max_retries = DEF_MAX_RETRIES;
-
 	return (SUCCESS);
 }

@@ -1,7 +1,7 @@
 # include "../incl/hermes.h"
 
 /* TODO fix everything you fucked up */
-int				handle_obj_offer(t_wsession *session,
+int				handle_obj_offer(t_session *session,
 		uint8_t code, uint8_t *msg, ssize_t msglen)
 {
 	uint16_t	tc;
@@ -39,20 +39,20 @@ int				handle_obj_offer(t_wsession *session,
 	if (code == C_OBJ_OPTS)
 		unbinnify_opts(&session->job.opts, obj);
 	else if (code == C_OBJ_TARGETS)
-		unbinnify_targetset(&session->job.targets, obj);
+		unbinnify_targetset(session->job.targets, obj);
 	else if (code == C_OBJ_PS_NRM)
-		unbinnify_portset(&session->job.ports, obj);
+		unbinnify_portset(session->job.ports, obj);
 	else if (code == C_OBJ_PS_ACK)
-		unbinnify_portset(&session->job.ack_ports, obj);
+		unbinnify_portset(session->job.ack_ports, obj);
 	else if (code == C_OBJ_PS_SYN)
-		unbinnify_portset(&session->job.syn_ports, obj);
+		unbinnify_portset(session->job.syn_ports, obj);
 	else
-		unbinnify_portset(&session->job.udp_ports, obj);
+		unbinnify_portset(session->job.udp_ports, obj);
 	free(obj);
 	return (SUCCESS);
 }
 
-int				process_message(t_wsession *session,
+int				process_message(t_session *session,
 								   uint8_t *msgbuff, ssize_t msglen)
 {
 	t_msg_hdr	*hdr;
@@ -65,18 +65,18 @@ int				process_message(t_wsession *session,
 	return (SUCCESS);
 }
 
-int				worker_loop(t_wsession *session)
+int				worker_loop(t_session *session)
 {
 	ssize_t		ret;
 	uint8_t		msgbuff[PKT_SIZE];
 
-	while (session->stat.running == TRUE)
+	while (session->stat.running == true)
 	{
 		bzero(msgbuff, PKT_SIZE);
 		if ((ret = hermes_recvmsg(session->sock, msgbuff)) < 0)
 		{
-			hermes_error(FAILURE, FALSE, 1, "manager disconnected unexpectedly");
-			session->stat.running = FALSE;
+			hermes_error(FAILURE, 1, "manager disconnected unexpectedly");
+			session->stat.running = false;
 		}
 		else if (ret > 0)
 			process_message(session, msgbuff, ret);

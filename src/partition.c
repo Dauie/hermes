@@ -14,7 +14,7 @@ void			partition_ip4_tree(t_node **ip4tree, t_node *w_targetsets)
 	}
 }
 
-void partition_ip4rng_tree(t_node **iprngtree, uint32_t parts, t_node *targetsets)
+void			partition_ip4rng_tree(t_node **iprngtree, uint32_t parts, t_node *targetsets)
 {
 	t_targetset	*set;
 	t_node		*fragment_lst;
@@ -31,7 +31,7 @@ void partition_ip4rng_tree(t_node **iprngtree, uint32_t parts, t_node *targetset
 		set = targetsets->data;
 		add_node_bst(&set->iprngs, &fragment_lst->data, ip4rng_cmp);
 		/*TODO make a remove_node_head take a bool to delete data or not*/
-		remove_node_list_head(&fragment_lst);
+		remove_list_head(&fragment_lst, 0);
 		tmp = tmp->right;
 	}
 	remove_node_bst(iprngtree, (*iprngtree)->data, ip4rng_cmp, ip4rng_min);
@@ -46,7 +46,7 @@ t_node			*new_targetset_list(uint32_t count)
 	while (count)
 	{
 		newset = new_targetset();
-		add_node_list_head(&set_list, (void **)&newset);
+		add_list_head(&set_list, (void **) &newset);
 		count--;
 	}
 	return (set_list);

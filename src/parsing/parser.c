@@ -69,6 +69,7 @@ t_dtab_wopt g_disp_wopt[] = {
 		{ NULL, NULL}
 };
 
+/* TODO start here*/
 int			dtab_loop(t_mgr *mgr, char *arg, t_dtab *tab)
 {
 	int		i;
@@ -77,15 +78,12 @@ int			dtab_loop(t_mgr *mgr, char *arg, t_dtab *tab)
 	i = -1;
 	len = strlen(arg);
 	/* iterate TAB and look for the correct entry */
-	while (tab->name[i])
+	while ((tab[++i]).name)
 	{
 		if (strncmp(arg, tab[i].name, len) == 0)
-		{
-			tab[i].function(mgr);
-			return (SUCCESS);
-		}
+			return (tab[i].function(mgr) == FAILURE);
 	}
-	return (FAILURE);
+	return (ERR_PARAM);
 }
 
 int			dtab_wopt_loop(t_mgr *mgr, char *arg, char *opt,
@@ -97,37 +95,42 @@ int			dtab_wopt_loop(t_mgr *mgr, char *arg, char *opt,
 	i = -1;
 	len = strlen(arg);
 	/* iterate TAB and look for the correct entry */
-	while (tab->name[i])
+	while ((tab[++i]).name)
 	{
 		if (strncmp(arg, tab[i].name, len) == 0)
-		{
-			tab[i].function(mgr, opt);
-			return (SUCCESS);
-		}
+			return (tab[i].function(mgr, opt));
+
 	}
-	return (FAILURE);
+	return (ERR_PARAM);
 }
 
 int			parse_opts(t_mgr *mgr, int ac, char **args)
 {
 	int		i;
+	int		ret;
 
 	i = 0;
 	while (++i < ac)
 	{
 		if (args[i][0] == '-')
 		{
-			if (dtab_loop(mgr, args[i], g_disp) == FAILURE)
+			if ((ret = dtab_loop(mgr, args[i], g_disp)) == ERR_PARAM)
 			{
-				if (dtab_wopt_loop(mgr, args[i], args[i + 1], g_disp_wopt) == FAILURE)
-					hermes_error(INPUT_ERROR, TRUE, 2, "invalid option", args[i]);
+				if ((ret = dtab_wopt_loop(mgr, args[i], args[i + 1], g_disp_wopt)) == ERR_PARAM)
+					return (hermes_error(FAILURE, 2, "invalid option", args[i]));
+				if (ret == FAILURE)
+					return (FAILURE);
 				i++; 
 			}
+			if (ret == FAILURE)
+				return (FAILURE);
 		}
 		else
 		{
-			if (handle_ip(&mgr->job.targets, args[i]) < 0)
-				hermes_error(INPUT_ERROR, TRUE, 1, "issue parsing targets");
+			if (!mgr->job.targets)
+				mgr->job.targets = new_targetset();
+			if (handle_ip(mgr->job.targets, args[i]) == FAILURE)
+				return (hermes_error(FAILURE, 1, "issue parsing targets"));
 		}
 	}
 	return (SUCCESS);

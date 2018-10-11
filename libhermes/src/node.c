@@ -6,14 +6,14 @@ t_node			*new_node(void **data)
 
 	if (!(node = (t_node*)memalloc(sizeof(t_node))))
 	{
-		hermes_error(errno, TRUE, 2, "malloc()", strerror(errno));
+		hermes_error(errno, true, 2, "malloc()", strerror(errno));
 		return (NULL);
 	}
 	node->data = *data;
 	return (node);
 }
 
-void			del_node(t_node **node)
+void			del_node(t_node **node, bool deldata)
 {
 	if (!node || !*node)
 		return ;

@@ -15,6 +15,15 @@ typedef struct			s_ip4rng
 
 typedef struct in_addr	t_ip4;
 
+typedef struct			s_targetset
+{
+	uint32_t			total;
+	uint32_t			ip_cnt;
+	uint32_t			rng_cnt;
+	t_node				*ips;						/*t_node tree containing t_ip4 structs*/
+	t_node				*iprngs;					/*t_node tree containing t_ip4rng structs*/
+}						t_targetset;
+
 typedef struct			s_ip4bytes
 {
 	uint8_t				b1;
@@ -35,21 +44,6 @@ typedef struct			s_prtrng
 	uint16_t 			end;
 }						t_prtrng;
 
-typedef struct			s_workerset
-{
-	uint32_t			wrkr_cnt;
-	t_node				*wrkrs;					/*t_node list containing t_ip4 structs*/
-}						t_workerset;
-
-typedef struct			s_targetset
-{
-	uint32_t			total;
-	uint32_t			ip_cnt;
-	uint32_t			rng_cnt;
-	t_node				*ips;						/*t_node tree containing t_ip4 structs*/
-	t_node				*iprngs;					/*t_node tree containing t_ip4rng structs*/
-}						t_targetset;
-
 typedef struct			s_portset
 {
 	uint16_t			total;
@@ -58,6 +52,19 @@ typedef struct			s_portset
 	t_node				*ports;
 	t_node				*prtrngs;
 }						t_portset;
+
+typedef struct			s_wrkr
+{
+	struct sockaddr_in	sin;
+	int 				sock;
+	t_targetset			*targets;
+}						t_wrkr;
+
+typedef struct			s_workerset
+{
+	uint32_t			wrkr_cnt;
+	t_node				*wrkrs;					/*t_node list containing t_wrkr structs*/
+}						t_workerset;
 
 typedef struct			s_optbitf
 {
@@ -127,31 +134,25 @@ typedef struct			s_ops
 typedef struct			s_job
 {
 	t_opts				opts;
-	t_targetset			targets;
-	t_portset			ports;
-	t_portset			syn_ports;
-	t_portset			ack_ports;
-	t_portset			udp_ports;
+	t_targetset			*targets;
+	t_portset			*ports;
+	t_portset			*syn_ports;
+	t_portset			*ack_ports;
+	t_portset			*udp_ports;
 	void				*custom_payload;
 }						t_job;
 
-typedef struct			s_worker
+typedef struct			s_mgr
 {
-    struct sockaddr_in	sin;
-    int 				sock;
-    t_targetset			targets;
-}						t_worker;
-
-typedef struct			s_mgr {
 	t_job				job;
-	t_targetset			exclude_targets;
-	t_portset			exclude_ports;
-	t_workerset			worker_set;
+	t_targetset			*exclude_targets;
+	t_portset			*exclude_ports;
+	t_workerset			*workers;
 	FILE				*resume_file;
 	FILE				*xml_file;
 	FILE				*norm_file;
 }						t_mgr;
 
-t_job		*new_job(void);
+t_job					*new_job(void);
 
 #endif

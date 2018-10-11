@@ -1,8 +1,8 @@
 #ifndef PARSER_H
 # define PARSER_H
 
-# include "job.h"
-# include "defined.h"
+# include "../incl/job.h"
+# include "../incl/defined.h"
 
 /*
 **	Dispatch Tables
@@ -11,13 +11,13 @@
 typedef struct	s_dtab_wopt
 {
 	char		*name;
-	void		(*function)(t_mgr *, char *);
+	int			(*function)(t_mgr *, char *);
 }				t_dtab_wopt;
 
 typedef struct	s_dtab
 {
 	char		*name;
-	void		(*function)(t_mgr *);
+	int			(*function)(t_mgr *);
 }				t_dtab;
 
 int				dtab_loop(t_mgr *mgr, char *opt, t_dtab *tab);
@@ -36,57 +36,57 @@ int				parse_worker_file(t_workerset *set, char *filename);
 /*
 **	boolean user opts
 */
-void			h_ack_scan(t_mgr *mgr);
-void			h_append_output(t_mgr *mgr);
-void			h_bad_checksum(t_mgr *mgr);
-void			h_dont_randomize_ports(t_mgr *mgr);
-void			h_fin_scan(t_mgr *mgr);
-void			h_icmp_host_discovery(t_mgr *mgr);
-void			h_list_scan(t_mgr *mgr);
-void			h_nmask_host_discovery(t_mgr *mgr);
-void			h_norm_output(t_mgr *mgr);
-void			h_null_scan(t_mgr *mgr);
-void			h_ping_scan(t_mgr *mgr);
-void			h_show_only_open_ports(t_mgr *mgr);
-void			h_skip_host_discovery(t_mgr *mgr);
-void			h_syn_scan(t_mgr *mgr);
-void			h_tstamp_host_discovery(t_mgr *mgr);
-void			h_traceroute(t_mgr *mgr);
-void			h_udp_scan(t_mgr *mgr);
-void			h_xmas_scan(t_mgr *mgr);
+int				h_ack_scan(t_mgr *mgr);
+int				h_append_output(t_mgr *mgr);
+int				h_bad_checksum(t_mgr *mgr);
+int				h_dont_randomize_ports(t_mgr *mgr);
+int				h_fin_scan(t_mgr *mgr);
+int				h_icmp_host_discovery(t_mgr *mgr);
+int				h_list_scan(t_mgr *mgr);
+int				h_nmask_host_discovery(t_mgr *mgr);
+int				h_norm_output(t_mgr *mgr);
+int				h_null_scan(t_mgr *mgr);
+int				h_ping_scan(t_mgr *mgr);
+int				h_show_only_open_ports(t_mgr *mgr);
+int				h_skip_host_discovery(t_mgr *mgr);
+int				h_syn_scan(t_mgr *mgr);
+int				h_tstamp_host_discovery(t_mgr *mgr);
+int				h_traceroute(t_mgr *mgr);
+int				h_udp_scan(t_mgr *mgr);
+int				h_xmas_scan(t_mgr *mgr);
 
 /*
-**	user opts with specification
+**				user opts with specification
 */
-void			h_ack_portset(t_mgr *mgr, char *input); /*done*/
-void			h_daemon(t_mgr *mgr, char *input);
-void			h_custom_payload_hex(t_mgr *mgr, char *input);
-void			h_custom_random_payload(t_mgr *mgr, char *input); /*done*/
-void			h_custom_payload_ascii(t_mgr *mgr, char *input); /*done*/
-void			h_exclude_targets(t_mgr *mgr, char *input);
-void			h_exclude_target_file(t_mgr *mgr, char *input);
-void			h_exclude_ports(t_mgr *mgr, char *input); /*done*/
-void			h_fragment_mtu(t_mgr *mgr, char *input);
-void			h_host_timeout(t_mgr *mgr, char *input);
-void			h_custom_ip_ttl(t_mgr *mgr, char *input);
-void			h_target_file(t_mgr *mgr, char *input);
-void			h_max_hostgroup(t_mgr *mgr, char *input);
-void			h_max_packet_rate(t_mgr *mgr, char *input);
-void			h_max_retries(t_mgr *mgr, char *input);
-void			h_max_rtt_timeout(t_mgr *mgr, char *input);
-void			h_min_hostgroup(t_mgr *mgr, char *input);
-void			h_min_packet_rate(t_mgr *mgr, char *input);
-void			h_min_rtt_timeout(t_mgr *mgr, char *input);
-void			h_scan_portset(t_mgr *mgr, char *input);
-void			h_scan_delay(t_mgr *mgr, char *input);
-void			h_max_scan_delay(t_mgr *mgr, char *input);
-void			h_spoof_srcip(t_mgr *mgr, char *input);
-void			h_spoof_srcport(t_mgr *mgr, char *input);
-void			h_syn_portset(t_mgr *mgr, char *input);
-void			h_udp_portset(t_mgr *mgr, char *input);
-void			h_thread_amt(t_mgr *mgr, char *input);
-void			h_worker(t_mgr *mgr, char *input);
-void			h_worker_file(t_mgr *mgr, char *input);
+int				h_ack_portset(t_mgr *mgr, char *input); /*done*/
+int				h_daemon(t_mgr *mgr, char *input);
+int				h_custom_payload_hex(t_mgr *mgr, char *input);
+int				h_custom_random_payload(t_mgr *mgr, char *input); /*done*/
+int				h_custom_payload_ascii(t_mgr *mgr, char *input); /*done*/
+int				h_exclude_targets(t_mgr *mgr, char *input);
+int				h_exclude_target_file(t_mgr *mgr, char *input);
+int				h_exclude_ports(t_mgr *mgr, char *input); /*done*/
+int				h_fragment_mtu(t_mgr *mgr, char *input);
+int				h_host_timeout(t_mgr *mgr, char *input);
+int				h_custom_ip_ttl(t_mgr *mgr, char *input);
+int				h_target_file(t_mgr *mgr, char *input);
+int				h_max_hostgroup(t_mgr *mgr, char *input);
+int				h_max_packet_rate(t_mgr *mgr, char *input);
+int				h_max_retries(t_mgr *mgr, char *input);
+int				h_max_rtt_timeout(t_mgr *mgr, char *input);
+int				h_min_hostgroup(t_mgr *mgr, char *input);
+int				h_min_packet_rate(t_mgr *mgr, char *input);
+int				h_min_rtt_timeout(t_mgr *mgr, char *input);
+int				h_scan_portset(t_mgr *mgr, char *input);
+int				h_scan_delay(t_mgr *mgr, char *input);
+int				h_max_scan_delay(t_mgr *mgr, char *input);
+int				h_spoof_srcip(t_mgr *mgr, char *input);
+int				h_spoof_srcport(t_mgr *mgr, char *input);
+int				h_syn_portset(t_mgr *mgr, char *input);
+int				h_udp_portset(t_mgr *mgr, char *input);
+int				h_thread_amt(t_mgr *mgr, char *input);
+int				h_worker(t_mgr *mgr, char *input);
+int				h_worker_file(t_mgr *mgr, char *input);
 
 
 #endif

@@ -76,8 +76,7 @@ size_t			msg_pack_data(uint8_t *msgbuff, va_list *ap, char *frmt)
 }
 
 /* TODO: Error handling in this func needs to be improved */
-int				hermes_sendmsgf(int sock, uint16_t type_code, char *format,
-								   ...)
+int				hermes_sendmsgf(int sock, uint16_t type_code, char *format, ...)
 {
 	uint8_t		*hp;	/* header pointer */
 	uint8_t		*dp;	/* data pointer */
@@ -97,23 +96,65 @@ int				hermes_sendmsgf(int sock, uint16_t type_code, char *format,
 	}
 	msg_pack_header(hp, type_code, (uint16_t) msglen);
 	if ((ret = send(sock, msgbuff, (size_t)msglen, MSG_DONTWAIT)) < 0)
-		hermes_error(errno, TRUE, 2, "send()", strerror(errno));
+		return (hermes_error(FAILURE, 2, "send()", strerror(errno)));
 	else if (ret != msglen)
-		return (hermes_error(FAILURE, FALSE, 1, "hermes_sendmsgf() failed to send message"));
+		return (hermes_error(FAILURE, 1, "hermes_sendmsgf()"));
 	return (SUCCESS);
 }
 
-ssize_t			hermes_send_binn(int sock, binn *data, ssize_t datalen)
+ssize_t			hermes_send_binn(int sock, uint8_t code, binn *obj, ssize_t objlen)
 {
+	uint16_t	tc;
 	ssize_t		ret;
-	void		*binn;
+	void		*run;
+	t_msg_hdr	*hdr;
+	uint8_t		recvbuff[PKT_SIZE];
 
-	binn = binn_ptr(data);
-	if ((ret = send(sock, &binn, (size_t)datalen, MSG_DONTWAIT)) < 0)
-		hermes_error(errno, TRUE, 2, "send()", strerror(errno));
-	if (ret != datalen)
+	tc = msg_tc(T_OBJ, code);
+	if (hermes_sendmsgf(sock, tc, "u32", objlen) == FAILURE)
 		return (FAILURE);
-	return (SUCCESS);
+	if (hermes_recvmsg(sock, recvbuff) < 0)
+		return (FAILURE);
+
+	hdr = (t_msg_hdr*)recvbuff;
+	run = binn_ptr(obj);
+	if (hdr->type == T_OBJ_RPLY)
+	{
+		if (hdr->code == C_ACCEPT)
+		{
+			if ((ret = send(sock, &run, (size_t)objlen, MSG_DONTWAIT)) < 0)
+				return (hermes_error(FAILURE, 2, "send()", strerror(errno)));
+			if (ret != objlen)
+				return (FAILURE);
+			if (hermes_recvmsg(sock, recvbuff) == FAILURE)
+				return (FAILURE);
+			if (hdr->type == T_OBJ_RPLY)
+			{
+				if (hdr->code == C_RECV_CNFRM)
+					return (SUCCESS);
+				else if (hdr->code == C_RECV_FAIL)
+					return (FAILURE);
+			}
+			else
+				return (FAILURE);
+		}
+		else if (hdr->code == C_PARAM_ERR)
+		{
+			hermes_error(FAILURE, false, 1,
+						 "hermes message parameter issue reported by worker");
+			return (FAILURE);
+		}
+		else if (hdr->code == C_DENY_OOM)
+		{
+			hermes_error(FAILURE, false, 1, "out of memory");
+			return (FAILURE);
+		}
+		else
+			return (FAILURE);
+	}
+	else
+		return (FAILURE);
+	return (ret);
 }
 
 /*
@@ -133,7 +174,7 @@ ssize_t			hermes_recvmsg(int sock, uint8_t *msgbuff)
 		else if (errno == EWOULDBLOCK || errno == EAGAIN)
 			return (SUCCESS);
 		else
-			hermes_error(errno, TRUE, 2, "recv()", strerror(errno));
+			hermes_error(errno, true, 2, "recv()", strerror(errno));
 	}
 	hdr->msglen = ntohs(hdr->msglen);
 	if (hdr->msglen > 0)
@@ -145,7 +186,7 @@ ssize_t			hermes_recvmsg(int sock, uint8_t *msgbuff)
 			else if (errno == EWOULDBLOCK || errno == EAGAIN)
 				return (SUCCESS);
 			else
-				hermes_error(errno, TRUE, 2, "recv()", strerror(errno));
+				hermes_error(errno, true, 2, "recv()", strerror(errno));
 		}
 	}
 	return (ret);

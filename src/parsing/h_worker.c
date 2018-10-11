@@ -8,44 +8,46 @@ int				parse_worker(t_workerset *set, char *input)
 	char		*port_str;
 	in_addr_t	ip;
 	uint16_t	port;
-	t_worker	*data;
+	t_wrkr		*data;
 
 	if (input == NULL)
-		hermes_error(INPUT_ERROR, TRUE, 1, "no ips:ports provided for worker");
+		hermes_error(FAILURE, 1, "no ips:ports provided for worker");
 	while ((worker = strsep(&input, ",")))
 	{
 		port_str = worker;
 		if (!(ip_str = strsep(&port_str, ":")))
-			return (hermes_error(INPUT_ERROR, FALSE, 2, "no ports specified for worker:", worker));
+			return (hermes_error(FAILURE, 2, "no ports specified for worker:", worker));
 		if ((parse_ip(&ip, ip_str)) == FAILURE)
-			return (hermes_error(INPUT_ERROR, FALSE, 2, "bad ips provided for worker:", ip_str));
+			return (hermes_error(FAILURE, 2, "bad ips provided for worker:", ip_str));
 		if ((parse_port(&port, port_str)) == FAILURE)
-			return (hermes_error(INPUT_ERROR, FALSE, 3, "bad ports provided for worker:", ip_str, port_str));
+			return (hermes_error(FAILURE, 3, "bad ports provided for worker:", ip_str, port_str));
 		data = new_worker();
 		data->sin.sin_addr.s_addr = ip;
 		data->sin.sin_port = htons(port);
 		data->sin.sin_family = AF_INET;
-		if (add_node_bst(&set->wrkrs, (void **) &data, worker_cmp) == SUCCESS)
+		if (add_node_bst(&set->wrkrs, (void **) &data, worker_cmp) == true)
 			set->wrkr_cnt++;
 	}
 	return (SUCCESS);
 }
 
-void			h_worker(t_mgr *mgr, char *input)
+int				h_worker(t_mgr *mgr, char *input)
 {
 	if (!input)
-		hermes_error(INPUT_ERROR, TRUE, 1, "no wrkrs specified");
-	parse_worker(&mgr->worker_set, input);
+		return (hermes_error(FAILURE, 1, "no wrkrs specified"));
+	if (!mgr->workers)
+		mgr->workers = new_workerset();
+	return (parse_worker(mgr->workers, input));
 }
 
-void			h_daemon(t_mgr *mgr, char *input)
+int				h_daemon(t_mgr *mgr, char *input)
 {
 	uint16_t port;
 
 	(void)mgr;
 	if (!input)
-		hermes_error(INPUT_ERROR, TRUE, 1, "no ports specified for daemon");
+		return (hermes_error(FAILURE, 1, "no ports specified for daemon"));
 	if (parse_port(&port, input) == FAILURE)
-		hermes_error(INPUT_ERROR, TRUE, 2, "bad ports given for daemon:", input);
-	worker_daemon(port);
+		return (hermes_error(FAILURE, 2, "bad ports given for daemon:", input));
+	return (worker_daemon(port));
 }

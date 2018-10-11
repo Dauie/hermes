@@ -30,7 +30,7 @@ size_t		cntwrds(char *str, char c)
 	return (i);
 }
 
-char				*strsub(char const *s, int start, size_t len)
+char		*strsub(char const *s, int start, size_t len)
 {
 	char	*sub;
 	int		i;
@@ -50,7 +50,7 @@ char				*strsub(char const *s, int start, size_t len)
 	return (sub);
 }
 
-char 				**strsplit(const char *str, char delim)
+char 		**strsplit(const char *str, char delim)
 {
 	int		wcnt;
 	char	**ret;
