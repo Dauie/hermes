@@ -59,7 +59,10 @@ int				process_message(t_session *session,
 
 	hdr = (t_msg_hdr*)msgbuff;
 	if (hdr->type == T_OBJ)
-		handle_obj_offer(session, hdr->code, msgbuff, msglen);
+	{
+		if (handle_obj_offer(session, hdr->code, msgbuff, msglen) == FAILURE)
+			hermes_error(FAILURE, 1, "handle_job_offer() unknown error");
+	}
 	else
 		return (FAILURE);
 	return (SUCCESS);
@@ -79,7 +82,10 @@ int				worker_loop(t_session *session)
 			session->stat.running = false;
 		}
 		else if (ret > 0)
+		{
+			printf("message received %lu\n", ret);
 			process_message(session, msgbuff, ret);
+		}
 	}
 	return (SUCCESS);
 }
