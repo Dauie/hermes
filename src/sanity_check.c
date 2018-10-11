@@ -3,7 +3,7 @@
 #include "../incl/defined.h"
 
 
-int			sanity_check(t_mgr *mgr)
+int			sanity_check(t_msession *mgr)
 {
 	if (mgr->job.opts.min_rtt_timeo == 0)
 		mgr->job.opts.min_rtt_timeo = DEF_MIN_RTT_TIMEOUT;

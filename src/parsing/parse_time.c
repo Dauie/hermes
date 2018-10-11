@@ -8,8 +8,7 @@ int			parse_time(uint32_t *opt_time, char *input)
 	long	time;
 
 	if ((time = atoi(input)) < 0)
-		hermes_error(FAILURE, 1, "bad time specified");
-	/* TODO bounds check for ms */
+		return (hermes_error(FAILURE, 1, "bad time specified"));
 	*opt_time = (uint32_t)time;
 	return (SUCCESS);
 }

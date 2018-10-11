@@ -43,7 +43,7 @@ void				assign_targetsets(t_node *wrkr_tree, t_node **job_lst)
 }
 
 /* TODO manager is left without work atm */
-int					manager_loop(t_mgr *mgr)
+int					manager_loop(t_msession *mgr)
 {
 	struct protoent	*proto;
 	t_node			*targetset_list;

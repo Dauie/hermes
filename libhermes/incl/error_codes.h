@@ -3,8 +3,6 @@
 
 typedef enum	s_ret_codes
 {
-	ERR_MEM = -4,
-	ERR_PARAM = -3,
 	ERR_DISCON = -2,
 	FAILURE = -1,
 	SUCCESS = 0,

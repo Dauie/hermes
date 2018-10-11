@@ -5,7 +5,7 @@ int				hermes_error(int errcode, int str_amt, ...)
 {
 	va_list		ap;
 	size_t 		i;
-	char		buff[2048] = {0};
+	char		buff[512] = {0};
 	int			strcnt;
 
 	i = 0;

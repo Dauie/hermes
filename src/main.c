@@ -16,11 +16,11 @@
 
 int			 main(int ac, char **av)
 {
-	t_mgr	*mgr;
+	t_msession	*mgr;
 
 	if (ac < 2)
 		return (FAILURE); // usage();
-	if (!(mgr = (t_mgr *)memalloc(sizeof(t_mgr))))
+	if (!(mgr = (t_msession *)memalloc(sizeof(t_msession))))
 		hermes_error(FAILURE, 2, "malloc()", strerror(errno));
 	if (parse_opts(mgr, ac, av) == FAILURE)
 		exit(EXIT_FAILURE);

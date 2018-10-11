@@ -1,7 +1,7 @@
 #include "../../incl/parser.h"
 #include "../../incl/defined.h"
 
-int h_thread_amt(t_mgr *mgr, char *input)
+int				h_thread_amt(t_mgr *mgr, char *input)
 {
 	int			threads;
 
@@ -11,7 +11,7 @@ int h_thread_amt(t_mgr *mgr, char *input)
 	return (SUCCESS);
 }
 
-int h_max_hostgroup(t_mgr *mgr, char *input)
+int				h_max_hostgroup(t_mgr *mgr, char *input)
 {
 	long		hgsize;
 
@@ -23,7 +23,7 @@ int h_max_hostgroup(t_mgr *mgr, char *input)
 	return (SUCCESS);
 }
 
-int h_min_hostgroup(t_mgr *mgr, char *input)
+int				h_min_hostgroup(t_mgr *mgr, char *input)
 {
 	long		hgsize;
 
@@ -35,7 +35,7 @@ int h_min_hostgroup(t_mgr *mgr, char *input)
 	return (SUCCESS);
 }
 
-int h_max_packet_rate(t_mgr *mgr, char *input)
+int				h_max_packet_rate(t_mgr *mgr, char *input)
 {
 	long		rate;
 
@@ -47,7 +47,7 @@ int h_max_packet_rate(t_mgr *mgr, char *input)
 	return (SUCCESS);
 }
 
-int h_min_packet_rate(t_mgr *mgr, char *input)
+int				h_min_packet_rate(t_mgr *mgr, char *input)
 {
 	long		rate;
 	if (!input)
@@ -59,7 +59,7 @@ int h_min_packet_rate(t_mgr *mgr, char *input)
 }
 
 
-int h_max_retries(t_mgr *mgr, char *input)
+int				h_max_retries(t_mgr *mgr, char *input)
 {
 	long		retries;
 

@@ -104,7 +104,7 @@ static void		add_ip4rngtree_to_binnlist(binn **list, t_node *ip4rng)
 		add_ip4rngtree_to_binnlist(list, ip4rng->right);
 }
 
-static void			add_porttree_to_binnlist(binn **list, t_node *ports)
+static void		add_porttree_to_binnlist(binn **list, t_node *ports)
 {
 	if (ports->left)
 		add_porttree_to_binnlist(list, ports->left);
@@ -141,6 +141,8 @@ binn			*binnify_opts(t_opts *opts)
 	binn		*obj;
 	uint64_t	*bitops;
 
+	if (! opts)
+		return (NULL);
 	if (!(obj = binn_object()))
 	{
 		hermes_error(FAILURE, 1, "binn_object() failed");
@@ -177,10 +179,24 @@ binn			*binnify_portset(t_portset *set)
 	binn		*port;
 	binn		*prtrng;
 
-	obj = binn_object();
-	port = binn_list();
-	prtrng = binn_list();
+	if (!set)
+		return (NULL);
 
+	if (!(obj = binn_object()))
+	{
+		hermes_error(FAILURE, 1, "binn_object() failed");
+		return (NULL);
+	}
+	if (!(port = binn_list()))
+	{
+		hermes_error(FAILURE, 1, "binn_list() failed");
+		return (NULL);
+	}
+	if (!(prtrng = binn_list()))
+	{
+		hermes_error(FAILURE, 1, "binn_list() failed");
+		return (NULL);
+	}
 	binn_object_set_uint16(obj, "total", set->total);
 	binn_object_set_uint16(obj, "port_cnt", set->port_cnt);
 	binn_object_set_uint16(obj, "rng_cnt", set->rng_cnt);
@@ -188,9 +204,11 @@ binn			*binnify_portset(t_portset *set)
 	add_porttree_to_binnlist(&port, set->ports);
 	add_prtrngtree_to_binnlist(&prtrng, set->prtrngs);
 
+	/* add lists to main object */
 	binn_object_set_list(obj, "ports", port);
 	binn_object_set_list(obj, "prtrngs", prtrng);
 
+	/* delete lists that were added */
 	binn_free(port);
 	binn_free(prtrng);
 	return (obj);

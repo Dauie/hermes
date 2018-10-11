@@ -1,61 +1,61 @@
 #include "../../incl/parser.h"
 #include "../../incl/hermes.h"
 
-int				h_list_scan(t_mgr *mgr)
+int				h_list_scan(t_msession *mgr)
 {
 	mgr->job.opts.bitops.do_list_scan = true;
 	return (SUCCESS);
 }
 
-int				h_ping_scan(t_mgr *mgr)
+int				h_ping_scan(t_msession *mgr)
 {
 	mgr->job.opts.bitops.do_ping_scan = true;
 	return (SUCCESS);
 }
 
-int				h_syn_scan(t_mgr *mgr)
+int				h_syn_scan(t_msession *mgr)
 {
 	mgr->job.opts.bitops.do_syn_scan = true;
 	return (SUCCESS);
 }
 
-int				h_ack_scan(t_mgr *mgr)
+int				h_ack_scan(t_msession *mgr)
 {
 	mgr->job.opts.bitops.do_ack_scan = true;
 	return (SUCCESS);
 }
 
-int				h_null_scan(t_mgr *mgr)
+int				h_null_scan(t_msession *mgr)
 {
 	mgr->job.opts.bitops.do_null_scan = true;
 	return (SUCCESS);
 }
 
-int				h_fin_scan(t_mgr *mgr)
+int				h_fin_scan(t_msession *mgr)
 {
 	mgr->job.opts.bitops.do_fin_scan = true;
 	return (SUCCESS);
 }
 
-int				h_xmas_scan(t_mgr *mgr)
+int				h_xmas_scan(t_msession *mgr)
 {
 	mgr->job.opts.bitops.do_xmas_scan = true;
 	return (SUCCESS);
 }
 
-int				h_udp_scan(t_mgr *mgr)
+int				h_udp_scan(t_msession *mgr)
 {
 	mgr->job.opts.bitops.do_udp_scan = true;
 	return (SUCCESS);
 }
 
-int				h_bad_checksum(t_mgr *mgr)
+int				h_bad_checksum(t_msession *mgr)
 {
 	mgr->job.opts.bitops.do_bad_checksum = true;
 	return (SUCCESS);
 }
 
-int				h_custom_ip_ttl(t_mgr *mgr, char *input)
+int				h_custom_ip_ttl(t_msession *mgr, char *input)
 {
 	int			ttl;
 
@@ -64,11 +64,10 @@ int				h_custom_ip_ttl(t_mgr *mgr, char *input)
 	if ((ttl = atoi(input)) <= 0 || ttl > TTL_MAX)
 		return (hermes_error(FAILURE, 1, "bad ttl specified"));
 	mgr->job.opts.ip_ttl = (uint8_t)ttl;
-	mgr->job.opts.bitops.custom_ip_ttl = true;
 	return (SUCCESS);
 }
 
-int				h_fragment_mtu(t_mgr *mgr, char *input)
+int				h_fragment_mtu(t_msession *mgr, char *input)
 {
 	int			mtu;
 
@@ -77,11 +76,10 @@ int				h_fragment_mtu(t_mgr *mgr, char *input)
 	if ((mtu = atoi(input)) <= 0 || mtu > MTU_MAX)
 		return (hermes_error(FAILURE, 1, "bad fragment-mtu specified"));
 	mgr->job.opts.fragment_mtu = (uint8_t)mtu;
-	mgr->job.opts.bitops.fragment_pkts = true;
 	return (SUCCESS);
 }
 
-int				h_spoof_srcip(t_mgr *mgr, char *input)
+int				h_spoof_srcip(t_msession *mgr, char *input)
 {
 	uint32_t	ip;
 
@@ -93,7 +91,7 @@ int				h_spoof_srcip(t_mgr *mgr, char *input)
 	return (SUCCESS);
 }
 
-int				h_spoof_srcport(t_mgr *mgr, char *input)
+int				h_spoof_srcport(t_msession *mgr, char *input)
 {
 	uint16_t	port;
 
@@ -105,7 +103,7 @@ int				h_spoof_srcport(t_mgr *mgr, char *input)
 	return (SUCCESS);
 }
 
-int				h_exclude_targets(t_mgr *mgr, char *input)
+int				h_exclude_targets(t_msession *mgr, char *input)
 {
 	if (!input)
 		return (hermes_error(FAILURE, 1, "--exclude-targets not specified"));

@@ -351,7 +351,7 @@ static int				do_port_exclusions(t_portset *target, t_portset *exclude)
 	return (SUCCESS);
 }
 
-void			do_exclusions(t_mgr *mgr)
+void			do_exclusions(t_msession *mgr)
 {
 	do_target_exclusions(mgr->job.targets, mgr->exclude_targets);
 	do_port_exclusions(mgr->job.ports, mgr->exclude_ports);
