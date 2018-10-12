@@ -1,9 +1,6 @@
 #include "../incl/hermes.h"
-#include "../incl/job.h"
-#include "../incl/defined.h"
 
-
-int			sanity_check(t_msession *mgr)
+int			sanity_check(t_mgr *mgr)
 {
 	if (mgr->job.opts.min_rtt_timeo == 0)
 		mgr->job.opts.min_rtt_timeo = DEF_MIN_RTT_TIMEOUT;

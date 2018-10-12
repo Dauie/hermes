@@ -40,4 +40,3 @@ void		*worker_min(t_node *tree)
 	memcpy(save, tree->data, sizeof(t_wrkr));
 	return (save);
 }
-

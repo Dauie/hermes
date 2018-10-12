@@ -1,8 +1,9 @@
 #ifndef PARSER_H
 # define PARSER_H
 
-# include "../incl/job.h"
-# include "../incl/defined.h"
+#ifndef HERMES_H
+# include "hermes.h"
+#endif
 
 /*
 **	Dispatch Tables

@@ -1,8 +1,9 @@
 #ifndef HERMES_MESSAGE_H
 # define HERMES_MESSAGE_H
 
-# include "../libhermes/incl/libhermes.h"
-# include "../binn/src/binn.h"
+#ifndef HERMES_H
+# include "hermes.h"
+#endif
 
 typedef	struct	s_msg_hdr
 {

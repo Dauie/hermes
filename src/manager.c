@@ -1,5 +1,4 @@
 #include "../incl/hermes.h"
-#include "../incl/defined.h"
 
 int					connect_workers(t_node **workers, uint32_t *worker_count,
 						t_node **rm_tree, int proto)
@@ -21,7 +20,10 @@ int					connect_workers(t_node **workers, uint32_t *worker_count,
 			*worker_count -= 1;
 	}
 	else
+	{
+		worker->stat.connected = true;
 		printf("connected to %s.\n", inet_ntoa(worker->sin.sin_addr));
+	}
 	if ((*workers)->right)
 		connect_workers(&(*workers)->right, worker_count, rm_tree, proto);
 	return (0);
@@ -42,8 +44,7 @@ void				assign_targetsets(t_node *wrkr_tree, t_node **job_lst)
 		assign_targetsets(wrkr_tree->right, job_lst);
 }
 
-/* TODO manager is left without work atm */
-int					manager_loop(t_msession *mgr)
+int					manager_loop(t_mgr *mgr)
 {
 	struct protoent	*proto;
 	t_node			*targetset_list;
@@ -52,20 +53,21 @@ int					manager_loop(t_msession *mgr)
 		return (FAILURE);
 	if (mgr->workers && mgr->workers->wrkr_cnt > 0)
 	{
-		connect_workers(&mgr->workers->wrkrs, &mgr->workers->wrkr_cnt,
-				&mgr->workers->wrkrs, proto->p_proto);
+		connect_workers(&mgr->workers->wrkrs, &mgr->workers->wrkr_cnt, &mgr->workers->wrkrs, proto->p_proto);
 		printf("connected to %i workers.\n", mgr->workers->wrkr_cnt);
 		printf("partitioning work...\n");
 		/* TODO remove targetset from mgr, and replace with one from list, then distribute targetsets to workers*/
 		targetset_list = partition_targetset(mgr->job.targets, mgr->workers->wrkr_cnt + 1);
 		printf("done.\nsending work...\n");
 		assign_targetsets(mgr->workers->wrkrs, &targetset_list);
-		/* TODO track all memory used up to this point and refactor accordingly */
+		//send_work();
 	}
 	targetset_list = partition_targetset(mgr->job.targets, mgr->job.opts.thread_count);
-	assign_targetsets(mgr->workers->wrkrs, &targetset_list);
-	//run_hermes(mgr);
 	del_list(&targetset_list, 0);
+	while (mgr->stat.running == true)
+	{
+		continue;
+	}
 	return (0);
 }
 

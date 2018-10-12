@@ -13,15 +13,16 @@
 # include <netdb.h>
 # include <netinet/ip_icmp.h>
 
-# include "parser.h"
-# include "binnify.h"
-# include "defined.h"
-# include "message.h"
+#include "defined.h"
+
 
 # define HERMES_VERSION "v0.0.1"
 
-typedef struct	sockaddr_in sockaddr_in;
-typedef struct	sockaddr sockaddr;
+typedef struct sockaddr_in sockaddr_in;
+
+typedef struct in_addr	t_ip4;
+
+typedef struct sockaddr sockaddr;
 
 typedef struct			s_ip4rng
 {
@@ -29,8 +30,6 @@ typedef struct			s_ip4rng
 	in_addr_t			start;
 	in_addr_t			end;
 }						t_ip4rng;
-
-typedef struct in_addr	t_ip4;
 
 typedef struct			s_targetset
 {
@@ -69,26 +68,6 @@ typedef struct			s_portset
 	t_node				*ports;
 	t_node				*prtrngs;
 }						t_portset;
-
-typedef struct			s_wrkr_status
-{
-	uint8_t				connected:1;
-	uint8_t				working: 1;
-}						t_wstat;
-
-typedef struct			s_wrkr
-{
-	t_wstat				stat;
-	struct sockaddr_in	sin;
-	int 				sock;
-	t_targetset			*targets;
-}						t_wrkr;
-
-typedef struct			s_workerset
-{
-	uint32_t			wrkr_cnt;
-	t_node				*wrkrs;					/*t_node list containing t_wrkr structs*/
-}						t_workerset;
 
 typedef struct			s_optbitf
 {
@@ -157,13 +136,37 @@ typedef struct			s_job
 	void				*custom_payload;
 }						t_job;
 
-typedef struct			s_status
+typedef struct			t_status
 {
-	uint8_t				run: 1;
+	uint8_t				running: 1;
+	uint8_t				connected: 1;
+	uint8_t				working: 1;
 }						t_stat;
 
-typedef struct			s_manager_session
+typedef struct			s_worker
 {
+	t_stat				stat;
+	struct sockaddr_in	sin;
+	int 				sock;
+	t_job				*job;
+	int					id;
+}						t_wrkr;
+
+typedef struct			s_workerset
+{
+	uint32_t			wrkr_cnt;
+	t_node				*wrkrs;					/*t_node tree containing t_wrkr structs*/
+}						t_workerset;
+
+typedef struct			s_result
+{
+	t_ip4				ip;
+
+}						t_result;
+
+typedef struct			s_manager
+{
+	t_stat				stat;
 	t_job				job;
 	t_targetset			*exclude_targets;
 	t_portset			*exclude_ports;
@@ -171,19 +174,8 @@ typedef struct			s_manager_session
 	FILE				*resume_file;
 	FILE				*xml_file;
 	FILE				*norm_file;
-}						t_msession;
+}						t_mgr;
 
-
-/*TODO move mgr session to here*/
-
-typedef struct			s_worker_session /* worker session made by worker daemon process*/
-{
-	t_stat				stat;
-	t_job				job;
-	sockaddr_in			sin;
-	int					sock;	/* Endpoint for mgr communication */
-	int					pid;
-}						t_wsession;
 
 t_job					*new_job(void);
 
@@ -220,12 +212,12 @@ t_wrkr					*new_worker(void);
 int						worker_cmp(void *wrkr_left, void *wrkr_right);
 void					*worker_min(t_node *tree);
 
-int						sanity_check(t_msession *mgr);
-void					do_exclusions(t_msession *mgr);
+int						sanity_check(t_mgr *mgr);
+void					do_exclusions(t_mgr *mgr);
 int						worker_daemon(int port);
 
-int						worker_loop(t_wsession* session);
-int						manager_loop(t_msession *mgr);
+int						worker_loop(t_wrkr* session);
+int						manager_loop(t_mgr *mgr);
 t_node					*partition_targetset(t_targetset *targets, uint32_t parts);
 int						send_work(t_node **wrkr_tree, t_job *job);
 

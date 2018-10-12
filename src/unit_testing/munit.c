@@ -16,11 +16,13 @@ static char *ip_class_c[] = {
 
 static MunitParameterEnum ip4_cmp_test_greaterless_params[] = {
 		{ (char *)"class_a", ip_class_a },
-		{ (char *)"class_c", ip_class_c}
+		{ (char *)"class_c", ip_class_c },
+		{ NULL, NULL }
 };
 
 static MunitParameterEnum ip4_cmp_test_equal_params[] = {
-		{ (char *)"class_c", ip_class_c}
+		{ (char *)"class_c", ip_class_c},
+		{ NULL, NULL }
 };
 
 static MunitResult	test_ip4_cmp_less(const MunitParameter params[], void *user_data)
@@ -138,7 +140,7 @@ static const MunitSuite hermes_test_suites = {
 		(char *)"",				/*Add prefix-name to output of tests*/
 		(MunitTest*)ip4_tests,	/*Start of suites to use during test runs*/
 		NULL,					/*End of suites to use during test runs*/
-		1,						/*Amount of times to run tests*/
+		1,						/*Amount of times to running tests*/
 		MUNIT_SUITE_OPTION_NONE
 };
 
