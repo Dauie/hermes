@@ -23,27 +23,30 @@ static void	exclude_ip4_ip4(t_targetset *list, t_node **targets, t_node *exclude
 
 t_node *split_ip4rng_n(void **data, uint32_t splits)
 {
-	uint32_t    rem;
-	uint32_t    size;
-	in_addr_t   start;
-	t_node      *node;
+	uint32_t	end;
+	uint32_t	rem;
+	uint32_t	size;
+	uint32_t	start;
+	t_node		*node;
 
 
 	node = new_node(data);
 	size = ((t_ip4rng*)data)->size / splits;
-	start = ((t_ip4rng*)data)->start;
-	while (start < ((t_ip4rng*)data)->end)
+	start = ntohl(((t_ip4rng*)data)->start);
+	end = ntohl(((t_ip4rng*)data)->end);
+	while (start < end)
 	{
 		((t_ip4rng*)node->data)->size = size;
-		((t_ip4rng*)node->data)->start = start;
-		((t_ip4rng*)node->data)->end = start + size;
+		((t_ip4rng*)node->data)->start = htonl(start);
+		((t_ip4rng*)node->data)->end = htonl(start + size);
 		add_list_head(&node, node->data);
-		start = ip4_increment(start, size);
+		start += size;
 	}
 	if ((rem = ((t_ip4rng*)data)->size % splits))
 	{
 		((t_ip4rng*)node->data)->size += rem;
-		((t_ip4rng*)node->data)->end  += rem;
+		((t_ip4rng*)node->data)->end =
+				htonl(ntohl(((t_ip4rng*)node->data)->end) + rem);
 	}
 	return (node);
 }
@@ -351,7 +354,7 @@ static int				do_port_exclusions(t_portset *target, t_portset *exclude)
 	return (SUCCESS);
 }
 
-void			do_exclusions(t_msession *mgr)
+void			do_exclusions(t_manager *mgr)
 {
 	do_target_exclusions(mgr->job.targets, mgr->exclude_targets);
 	do_port_exclusions(mgr->job.ports, mgr->exclude_ports);

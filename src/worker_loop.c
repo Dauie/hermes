@@ -1,7 +1,7 @@
 # include "../incl/hermes.h"
 
 /* TODO fix everything you fucked up */
-int				handle_obj_offer(t_wsession *session,
+int				handle_obj_offer(t_session *session,
 		uint8_t code, uint8_t *msg, ssize_t msglen)
 {
 	uint16_t	tc;
@@ -36,6 +36,7 @@ int				handle_obj_offer(t_wsession *session,
 	}
 	tc = msg_tc(T_OBJ_RPLY, C_RECV_CNFRM);
 	hermes_sendmsgf(session->sock, tc, NULL);
+
 	if (code == C_OBJ_OPTS)
 		unbinnify_opts(&session->job.opts, obj);
 	else if (code == C_OBJ_TARGETS)
@@ -48,11 +49,12 @@ int				handle_obj_offer(t_wsession *session,
 		unbinnify_portset(session->job.syn_ports, obj);
 	else
 		unbinnify_portset(session->job.udp_ports, obj);
+
 	free(obj);
 	return (SUCCESS);
 }
 
-int				process_message(t_wsession *session,
+int				process_message(t_session *session,
 								   uint8_t *msgbuff, ssize_t msglen)
 {
 	t_msg_hdr	*hdr;
@@ -68,7 +70,7 @@ int				process_message(t_wsession *session,
 	return (SUCCESS);
 }
 
-int				worker_loop(t_wsession *session)
+int				worker_loop(t_session *session)
 {
 	ssize_t		ret;
 	uint8_t		msgbuff[PKT_SIZE];

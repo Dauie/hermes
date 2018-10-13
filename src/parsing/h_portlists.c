@@ -1,6 +1,6 @@
 #include "../../incl/hermes.h"
 
-int			h_ack_portset(t_msession *mgr, char *input)
+int			h_ack_portset(t_manager *mgr, char *input)
 {
 	if (!mgr->job.ack_ports)
 		mgr->job.ack_ports = new_portset();
@@ -10,7 +10,7 @@ int			h_ack_portset(t_msession *mgr, char *input)
 	return (SUCCESS);
 }
 
-int			h_scan_portset(t_msession *mgr, char *input)
+int			h_scan_portset(t_manager *mgr, char *input)
 {
 	if (!mgr->job.ports)
 		mgr->job.ports = new_portset();
@@ -19,7 +19,7 @@ int			h_scan_portset(t_msession *mgr, char *input)
 	return (SUCCESS);
 }
 
-int			h_syn_portset(t_msession *mgr, char *input)
+int			h_syn_portset(t_manager *mgr, char *input)
 {
 	if (!mgr->job.syn_ports)
 		mgr->job.syn_ports = new_portset();
@@ -29,7 +29,7 @@ int			h_syn_portset(t_msession *mgr, char *input)
 	return (SUCCESS);
 }
 
-int			h_udp_portset(t_msession *mgr, char *input)
+int			h_udp_portset(t_manager *mgr, char *input)
 {
 	if (!mgr->job.udp_ports)
 		mgr->job.udp_ports = new_portset();
@@ -39,7 +39,7 @@ int			h_udp_portset(t_msession *mgr, char *input)
 	return (SUCCESS);
 }
 
-int			h_exclude_ports(t_msession *mgr, char *input)
+int			h_exclude_ports(t_manager *mgr, char *input)
 {
 	if (!mgr->exclude_ports)
 		mgr->exclude_ports = new_portset();
@@ -48,7 +48,7 @@ int			h_exclude_ports(t_msession *mgr, char *input)
 	return (SUCCESS);
 }
 
-int			h_dont_randomize_ports(t_msession *mgr)
+int			h_dont_randomize_ports(t_manager *mgr)
 {
 	mgr->job.opts.bitops.no_rand_ports = true;
 	return (SUCCESS);

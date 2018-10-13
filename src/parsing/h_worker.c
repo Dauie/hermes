@@ -31,7 +31,7 @@ int				parse_worker(t_workerset *set, char *input)
 	return (SUCCESS);
 }
 
-int				h_worker(t_msession *mgr, char *input)
+int				h_worker(t_manager *mgr, char *input)
 {
 	if (!input)
 		return (hermes_error(FAILURE, 1, "no wrkrs specified"));
@@ -40,7 +40,7 @@ int				h_worker(t_msession *mgr, char *input)
 	return (parse_worker(mgr->workers, input));
 }
 
-int				h_daemon(t_msession *mgr, char *input)
+int				h_daemon(t_manager *mgr, char *input)
 {
 	uint16_t	port;
 

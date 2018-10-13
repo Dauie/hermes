@@ -3,7 +3,7 @@
 
 
 
-static int				accept_wrapper(t_wsession *session, int lsock)
+static int				accept_wrapper(t_session *session, int lsock)
 {
 	uint				cslen;
 
@@ -14,7 +14,7 @@ static int				accept_wrapper(t_wsession *session, int lsock)
 	return (SUCCESS);
 }
 
-static int				daemon_loop(t_wsession *session, int lsock)
+static int				daemon_loop(t_session *session, int lsock)
 {
 	while (session->stat.run)
 	{
@@ -47,10 +47,10 @@ static void				setsockopt_wrapper(int lsock)
 int						worker_daemon(int port)
 {
 	int					lsock;
-	t_wsession			*session;
+	t_session			*session;
 	struct protoent		*proto;
 
-	if (!(session = memalloc(sizeof(t_wsession))))
+	if (!(session = memalloc(sizeof(t_session))))
 		return (hermes_error(EXIT_FAILURE, 2, "malloc()", strerror(errno)));
 	session->stat.run = true;
 	/* TODO add signal handlers */

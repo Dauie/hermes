@@ -75,13 +75,7 @@ typedef struct			s_wrkr_status
 	uint8_t				working: 1;
 }						t_wstat;
 
-typedef struct			s_wrkr
-{
-	t_wstat				stat;
-	struct sockaddr_in	sin;
-	int 				sock;
-	t_targetset			*targets;
-}						t_wrkr;
+
 
 typedef struct			s_workerset
 {
@@ -161,18 +155,6 @@ typedef struct			s_status
 	uint8_t				run: 1;
 }						t_stat;
 
-typedef struct			s_manager_session
-{
-	t_job				job;
-	t_targetset			*exclude_targets;
-	t_portset			*exclude_ports;
-	t_workerset			*workers;
-	FILE				*resume_file;
-	FILE				*xml_file;
-	FILE				*norm_file;
-}						t_msession;
-
-
 /*TODO move mgr session to here*/
 typedef struct			s_status
 {
@@ -180,14 +162,44 @@ typedef struct			s_status
 	uint8_t				working: 1;
 }						t_status;
 
-typedef struct			s_worker_session /* worker session made by worker daemon process*/
+typedef struct			s_wrkr
+{
+	t_wstat				stat;
+	t_targetset			*targets;
+	t_connection		conn;
+}						t_wrkr;
+
+typedef struct			s_manager /* worker session made by worker daemon process*/
 {
 	t_stat				stat;
 	t_job				job;
-	sockaddr_in			sin;
-	int					sock;	/* Endpoint for mgr communication */
 	int					pid;
-}						t_wsession;
+	t_connection		conn;
+}						t_manager;
+
+
+typedef struct 			s_connection
+{
+	struct	sockaddr_in	sin;
+	int 				sock;
+}						t_connection;
+
+
+
+typedef struct			s_sets
+{
+	t_targetset			*exclude_targets;
+	t_portset			*exclude_ports;
+}						t_sets;
+
+typedef struct			s_manager
+{
+	t_sets				*sets;
+	t_workerset			*workers;
+	FILE				*resume_file;
+	FILE				*xml_file;
+	FILE				*norm_file;
+}						t_manager;
 
 t_job					*new_job(void);
 
@@ -224,12 +236,12 @@ t_wrkr					*new_worker(void);
 int						worker_cmp(void *wrkr_left, void *wrkr_right);
 void					*worker_min(t_node *tree);
 
-int						sanity_check(t_msession *mgr);
-void					do_exclusions(t_msession *mgr);
+int						sanity_check(t_manager *mgr);
+void					do_exclusions(t_manager *mgr);
 int						worker_daemon(int port);
 
-int						worker_loop(t_wsession* session);
-int						manager_loop(t_msession *mgr);
+int						worker_loop(t_session* session);
+int						manager_loop(t_manager *mgr);
 t_node					*partition_targetset(t_targetset *targets, uint32_t parts);
 int						send_work(t_node **wrkr_tree, t_job *job);
 

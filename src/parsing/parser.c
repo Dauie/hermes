@@ -70,7 +70,7 @@ t_dtab_wopt g_disp_wopt[] = {
 };
 
 /* TODO start here*/
-int			dtab_loop(t_msession *mgr, char *arg, t_dtab *tab)
+int			dtab_loop(t_manager *mgr, char *arg, t_dtab *tab)
 {
 	int		i;
 	size_t	len;
@@ -86,7 +86,7 @@ int			dtab_loop(t_msession *mgr, char *arg, t_dtab *tab)
 	return (ERR_PARAM);
 }
 
-int			dtab_wopt_loop(t_msession *mgr, char *arg, char *opt,
+int			dtab_wopt_loop(t_manager *mgr, char *arg, char *opt,
 							  t_dtab_wopt *tab)
 {
 	int		i;
@@ -103,7 +103,7 @@ int			dtab_wopt_loop(t_msession *mgr, char *arg, char *opt,
 	return (ERR_PARAM);
 }
 
-int			parse_opts(t_msession *mgr, int ac, char **args)
+int			parse_opts(t_manager *mgr, int ac, char **args)
 {
 	int		i;
 	int		ret;

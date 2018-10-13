@@ -3,6 +3,9 @@
 ## Woot 
  - [ ] compiles
 
+### WORKER
+
+### MANAGER
 
 ### TARGET SPECIFICATION
  - [x] Struct representation
@@ -92,12 +95,14 @@
  - [ ] Send packets with a bogus TCP/UDP/(BONUS: SCTP) checksum (--badsum)
 
 ### OUTPUT
- - [x] Struct representation
+ - [ ] MMap to file
+    - [ ] JSON output (TODO)
+    - [ ] XML output (-oX)
+    - [ ] Append to rather than clobber specified output files (--append-output)
+ - [ ] Struct representation
  - [ ] Verbose output (-v, increase verbosity -vv)
  - [ ] Normal output (-oN) (default)
- - [ ] XML output (-oX)
  - [ ] Only show open (or possibly open) ports (--open)
- - [ ] Append to rather than clobber specified output files (--append-output)
  - [ ] BONUS: Resume an aborted scan (--resume <filename>)
  - [ ] BONUS: Print host interfaces and routes (for debugging) (--iflist)
  - [ ] help screen

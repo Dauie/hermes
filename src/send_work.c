@@ -23,7 +23,6 @@ void	distribute_obj(t_node **wrkr_tree, uint8_t type, binn *obj)
 	wrkr = (*wrkr_tree)->data;
 
 
-
 	if ((*wrkr_tree)->right)
 		distribute_obj(&(*wrkr_tree)->right, type, obj);
 }

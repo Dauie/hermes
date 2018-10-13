@@ -36,19 +36,18 @@ void				assign_targetsets(t_node *wrkr_tree, t_node **job_lst)
 		return ;
 	if (wrkr_tree->left)
 		assign_targetsets(wrkr_tree->left, job_lst);
-	wrkr_tree->data = (*job_lst)->data;
-//	if (send_work(wrkr_tree->data, (t_job*)(*job_lst)->data) == FAILURE)
-//		;
+	((t_wrkr*)wrkr_tree->data)->targets = (*job_lst)->data;
 	remove_list_head(job_lst, false);
 	if (wrkr_tree->right)
 		assign_targetsets(wrkr_tree->right, job_lst);
 }
 
 /* TODO manager is left without work atm */
-int					manager_loop(t_msession *mgr)
+int					manager_loop(t_manager *mgr)
 {
 	struct protoent	*proto;
 	t_node			*targetset_list;
+	t_results		*results;
 
 	if ((proto = getprotobyname("tcp")) == 0)
 		return (FAILURE);
@@ -65,9 +64,18 @@ int					manager_loop(t_msession *mgr)
 		/* TODO track all memory used up to this point and refactor accordingly */
 	}
 	targetset_list = partition_targetset(mgr->job.targets, mgr->job.opts.thread_count);
-	assign_targetsets(mgr->workers->wrkrs, &targetset_list);
 	//run_hermes(mgr);
 	del_list(&targetset_list, 0);
+	//spawn threads
+	while (true)
+	{
+		if (results)
+			output_results();
+		// for each worker, check socket for result
+		// if mgr->session.run == FALSE
+		//	cleanup(mg);
+
+	}
 	return (0);
 }
 
