@@ -29,7 +29,6 @@ t_node *split_ip4rng_n(void **data, uint32_t splits)
 	uint32_t	start;
 	t_node		*node;
 
-
 	node = new_node(data);
 	size = ((t_ip4rng*)data)->size / splits;
 	start = ntohl(((t_ip4rng*)data)->start);
