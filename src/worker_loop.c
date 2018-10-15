@@ -14,7 +14,7 @@ int				handle_obj_offer(t_wrkr *session, uint8_t code, uint8_t *msg, ssize_t msg
 	if (msglen < OBJ_MSG_HDRSZ || *objlen <= 0 ||
 		(code != C_OBJ_OPTS && code != C_OBJ_TARGETS &&
 		code != C_OBJ_PS_NRM && code != C_OBJ_PS_ACK &&
-		code != C_OBJ_PS_SYN && code !=C_OBJ_PS_UDP))
+		code != C_OBJ_PS_SYN && code != C_OBJ_PS_UDP))
 	{
 		tc = msg_tc(T_OBJ_RPLY, C_PARAM_ERR);
 		hermes_sendmsgf(session->sock, tc, NULL);

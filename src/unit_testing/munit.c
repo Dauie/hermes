@@ -22,7 +22,7 @@ static MunitParameterEnum ip4_cmp_test_greaterless_params[] = {
 };
 
 static MunitParameterEnum ip4_cmp_test_equal_params[] = {
-		{ (char *)"class_c", ip_class_c},
+		{ (char *)"class_c", ip_class_c },
 		{ NULL, NULL }
 };
 
@@ -128,6 +128,33 @@ static MunitResult	test_ip4_decrement(const MunitParameter params[], void *user_
 	return (MUNIT_OK);
 }
 
+static MunitResult	test_ip4_diff(const MunitParameter params[], void *user_data)
+{
+	in_addr_t l;
+	in_addr_t r;
+	int 	ans;
+	int test_count = 3;
+	static char  *diff_left[] = {  "192.168.1.0", "192.168.1.0", "192.168.1.0", "192.168.0.0", NULL };
+	static char  *diff_right[] = { "192.168.1.1", "192.168.2.0", "192.168.1.0", "192.168.255.255", NULL };
+	static char  *diff_answers[] = {    "1",          "256",          "0",           "65536", NULL };
+	const char *left;
+	const char *right;
+	const char *answer;
+
+	(void)user_data;
+	(void)params;
+	for (int i = 0; i < test_count; i ++) {
+		left = diff_left[i];
+		right = diff_right[i];
+		answer = diff_answers[i];
+		parse_ip(&l, (char *) left);
+		parse_ip(&r, (char *) right);
+		ans = atoi(answer);
+		munit_assert_int(ans, ==, ip4_diff(l, r));
+	}
+	return (MUNIT_OK);
+}
+
 static MunitResult test_split_ip4rng_n(const MunitParameter params[], void *user_data)
 {
 
@@ -158,29 +185,33 @@ static MunitResult test_split_ip4rng_n(const MunitParameter params[], void *user
 	parse_cidr_mask(&mask, cidr);
 	set_ip4range(&range, &start, &mask);
 	printf("%u\n", range.size);
-	tree = split_ip4rng_n(&range, 7);
+	tree = split_ip4rng_n(&range, 4);
 	char s[20], e[20];
-//	while (tree) {
-//		inet_ntop(AF_INET, &((t_ip4rng*)tree->data)->start, s, 20);
-//		inet_ntop(AF_INET, &((t_ip4rng*)tree->data)->end, e, 20);
-//		printf("%s --> %s, size == %u\n", s, e, ((t_ip4rng*)tree->data)->size);
-//		tree = tree->right;
-//	}
-	while (i < 8 && tree) {
-		munit_assert_uint32(((t_ip4rng*)tree->data)->start, ==, r[i++].s_addr);
-		munit_assert_uint32(((t_ip4rng*)tree->data)->end, ==, r[i++].s_addr);
-		tree = tree->right;
+	t_node *tmp = tree;
+	while (tmp) {
+		inet_ntop(AF_INET, &((t_ip4rng*)tmp->data)->start, s, 20);
+		inet_ntop(AF_INET, &((t_ip4rng*)tmp->data)->end, e, 20);
+		printf("%s --> %s, size == %u\n", s, e, ((t_ip4rng*)tmp->data)->size);
+		tmp = tmp->right;
 	}
+	tmp = tree;
+	while (i < 8 && tmp) {
+		munit_assert_uint32(((t_ip4rng*)tmp->data)->start, ==, r[i++].s_addr);
+		munit_assert_uint32(((t_ip4rng*)tmp->data)->end, ==, r[i++].s_addr);
+		tmp = tmp->right;
+	}
+	del_list(&tree, true);
 	return (MUNIT_OK);
 }
 
 static const MunitTest ip4_tests[] = {
+		{ (char *)"ip4_diff", test_ip4_diff, NULL, NULL, MUNIT_TEST_OPTION_SINGLE_ITERATION, NULL},
 		{ (char *)"ip4_cmp less-than", test_ip4_cmp_less, NULL, NULL, MUNIT_TEST_OPTION_NONE, ip4_cmp_test_greaterless_params},
 		{ (char *)"ip4_cmp greater-than", test_ip4_cmp_great, NULL, NULL, MUNIT_TEST_OPTION_NONE, ip4_cmp_test_greaterless_params},
 		{ (char *)"ip4_cmp equal", test_ip4_cmp_equal, NULL, NULL, MUNIT_TEST_OPTION_NONE, ip4_cmp_test_equal_params},
-		{ (char *)"ip4_cmp increment", test_ip4_increment, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
-		{ (char *)"ip4_cmp decrement", test_ip4_decrement, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
-		{ (char *)"test_split ip4rng_n", test_split_ip4rng_n, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
+		{ (char *)"ip4_cmp increment", test_ip4_increment, NULL, NULL, MUNIT_TEST_OPTION_SINGLE_ITERATION, NULL},
+		{ (char *)"ip4_cmp decrement", test_ip4_decrement, NULL, NULL, MUNIT_TEST_OPTION_SINGLE_ITERATION, NULL},
+		{ (char *)"test_split ip4rng_n", test_split_ip4rng_n, NULL, NULL, MUNIT_TEST_OPTION_SINGLE_ITERATION, NULL},
 		{ NULL, NULL, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL },
 };
 

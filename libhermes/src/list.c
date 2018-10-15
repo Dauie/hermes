@@ -49,8 +49,13 @@ void			del_list(t_node **list, bool deldata)
 	while (*list)
 	{
 		tmp = (*list)->right;
-		*list = NULL;
+		if (deldata && (*list)->data)
+		{
+			free((*list)->data);
+			(*list)->data = NULL;
+		}
 		free(*list);
+		*list = NULL;
 		*list = tmp;
 	}
 }
