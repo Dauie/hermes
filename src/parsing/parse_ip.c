@@ -1,7 +1,6 @@
-# include "limits.h"
 # include "../../incl/hermes.h"
 
-static void			set_ip4range(t_ip4rng *data, const in_addr_t *ip, const in_addr_t *subn_m)
+void			set_ip4range(t_ip4rng *data, const in_addr_t *ip, const in_addr_t *subn_m)
 {
 	in_addr_t		wildcard;
 	in_addr_t		netid;
@@ -10,7 +9,7 @@ static void			set_ip4range(t_ip4rng *data, const in_addr_t *ip, const in_addr_t 
 	netid = (*ip) & (*subn_m);
 	if (*subn_m != 0xFFFFFFFF)
 	{
-		data->size = htonl(wildcard);
+		data->size = htonl(wildcard) + 1;
 		data->start = ntohl(htonl(netid));
 		data->end = ntohl(ntohl(netid | wildcard));
 	}
@@ -22,7 +21,7 @@ static void			set_ip4range(t_ip4rng *data, const in_addr_t *ip, const in_addr_t 
 	}
 }
 
-static int			parse_cidr_mask(in_addr_t *subn_m, char *cidr_str)
+int			parse_cidr_mask(in_addr_t *subn_m, char *cidr_str)
 {
 	int				cidr_m;
 

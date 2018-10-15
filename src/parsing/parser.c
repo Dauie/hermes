@@ -69,8 +69,7 @@ t_dtab_wopt g_disp_wopt[] = {
 		{ NULL, NULL}
 };
 
-/* TODO start here*/
-int			dtab_loop(t_manager *mgr, char *arg, t_dtab *tab)
+int			dtab_loop(t_mgr *mgr, char *arg, t_dtab *tab)
 {
 	int		i;
 	size_t	len;
@@ -81,12 +80,12 @@ int			dtab_loop(t_manager *mgr, char *arg, t_dtab *tab)
 	while ((tab[++i]).name)
 	{
 		if (strncmp(arg, tab[i].name, len) == 0)
-			return (tab[i].function(mgr) == FAILURE);
+			return (tab[i].function(mgr));
 	}
-	return (ERR_PARAM);
+	return (FAILURE);
 }
 
-int			dtab_wopt_loop(t_manager *mgr, char *arg, char *opt,
+int			dtab_wopt_loop(t_mgr *mgr, char *arg, char *opt,
 							  t_dtab_wopt *tab)
 {
 	int		i;
@@ -98,12 +97,16 @@ int			dtab_wopt_loop(t_manager *mgr, char *arg, char *opt,
 	while ((tab[++i]).name)
 	{
 		if (strncmp(arg, tab[i].name, len) == 0)
-			return (tab[i].function(mgr, opt));
+		{
+			tab[i].function(mgr, opt);
+			return (SUCCESS);
+		}
+
 	}
-	return (ERR_PARAM);
+	return (FAILURE);
 }
 
-int			parse_opts(t_manager *mgr, int ac, char **args)
+int			parse_opts(t_mgr *mgr, int ac, char **args)
 {
 	int		i;
 	int		ret;
@@ -113,16 +116,12 @@ int			parse_opts(t_manager *mgr, int ac, char **args)
 	{
 		if (args[i][0] == '-')
 		{
-			if ((ret = dtab_loop(mgr, args[i], g_disp)) == ERR_PARAM)
+			if ((ret = dtab_loop(mgr, args[i], g_disp)) == FAILURE)
 			{
-				if ((ret = dtab_wopt_loop(mgr, args[i], args[i + 1], g_disp_wopt)) == ERR_PARAM)
-					return (hermes_error(FAILURE, 2, "invalid option", args[i]));
-				if (ret == FAILURE)
-					return (FAILURE);
-				i++; 
+				if (dtab_wopt_loop(mgr, args[i], args[i + 1], g_disp_wopt) == FAILURE)
+					return (hermes_error(EXIT_FAILURE, 2, "invalid option", args[i]));
+				i++;
 			}
-			if (ret == FAILURE)
-				return (FAILURE);
 		}
 		else
 		{

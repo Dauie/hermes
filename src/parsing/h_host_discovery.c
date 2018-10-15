@@ -1,4 +1,4 @@
-#include "../../incl/job.h"
+#include "../../incl/hermes.h"
 
 int			h_icmp_host_discovery(t_mgr *mgr)
 {

@@ -1,6 +1,7 @@
 
 #include "../../munit/munit.h"
 #include "../../incl/hermes.h"
+#include "../../incl/parser.h"
 
 static char *ip_class_a[] = {
 		(char *)"10.21.7.80", (char *)"10.34.25.3", (char *)"10.42.42.1", NULL
@@ -16,11 +17,13 @@ static char *ip_class_c[] = {
 
 static MunitParameterEnum ip4_cmp_test_greaterless_params[] = {
 		{ (char *)"class_a", ip_class_a },
-		{ (char *)"class_c", ip_class_c}
+		{ (char *)"class_c", ip_class_c },
+		{ NULL, NULL }
 };
 
 static MunitParameterEnum ip4_cmp_test_equal_params[] = {
-		{ (char *)"class_c", ip_class_c}
+		{ (char *)"class_c", ip_class_c},
+		{ NULL, NULL }
 };
 
 static MunitResult	test_ip4_cmp_less(const MunitParameter params[], void *user_data)
@@ -125,12 +128,59 @@ static MunitResult	test_ip4_decrement(const MunitParameter params[], void *user_
 	return (MUNIT_OK);
 }
 
+static MunitResult test_split_ip4rng_n(const MunitParameter params[], void *user_data)
+{
+
+	struct in_addr r[8];
+	int i = 0;
+	t_ip4rng	range;
+	in_addr_t start;
+	in_addr_t mask;
+	char *ip = "192.168.1.0";
+	char *cidr = "24";
+
+	(void)params;
+	(void)user_data;
+	parse_ip(&r[0].s_addr,"192.168.1.0");
+	parse_ip(&r[1].s_addr,"192.168.1.63");
+
+	parse_ip(&r[2].s_addr,"192.168.1.64");
+	parse_ip(&r[3].s_addr,"192.168.1.127");
+
+	parse_ip(&r[4].s_addr,"192.168.1.128");
+	parse_ip(&r[5].s_addr,"192.168.1.191");
+
+	parse_ip(&r[6].s_addr,"192.168.1.192");
+	parse_ip(&r[7].s_addr,"192.168.1.255");
+
+	t_node *tree;
+	parse_ip(&start, ip);
+	parse_cidr_mask(&mask, cidr);
+	set_ip4range(&range, &start, &mask);
+	printf("%u\n", range.size);
+	tree = split_ip4rng_n(&range, 7);
+	char s[20], e[20];
+	while (tree) {
+		inet_ntop(AF_INET, &((t_ip4rng*)tree->data)->start, s, 20);
+		inet_ntop(AF_INET, &((t_ip4rng*)tree->data)->end, e, 20);
+		printf("%s --> %s, size == %u\n", s, e, ((t_ip4rng*)tree->data)->size);
+		tree = tree->right;
+	}
+	while (i < 8 && tree) {
+		munit_assert_uint32(((t_ip4rng*)tree->data)->start, ==, r[i++].s_addr);
+		munit_assert_uint32(((t_ip4rng*)tree->data)->end, ==, r[i++].s_addr);
+		tree = tree->right;
+	}
+	return (MUNIT_OK);
+}
+
 static const MunitTest ip4_tests[] = {
 		{ (char *)"ip4_cmp less-than", test_ip4_cmp_less, NULL, NULL, MUNIT_TEST_OPTION_NONE, ip4_cmp_test_greaterless_params},
 		{ (char *)"ip4_cmp greater-than", test_ip4_cmp_great, NULL, NULL, MUNIT_TEST_OPTION_NONE, ip4_cmp_test_greaterless_params},
 		{ (char *)"ip4_cmp equal", test_ip4_cmp_equal, NULL, NULL, MUNIT_TEST_OPTION_NONE, ip4_cmp_test_equal_params},
 		{ (char *)"ip4_cmp increment", test_ip4_increment, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
 		{ (char *)"ip4_cmp decrement", test_ip4_decrement, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
+		{ (char *)"test_split ip4rng_n", test_split_ip4rng_n, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
 		{ NULL, NULL, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL },
 };
 
@@ -138,7 +188,7 @@ static const MunitSuite hermes_test_suites = {
 		(char *)"",				/*Add prefix-name to output of tests*/
 		(MunitTest*)ip4_tests,	/*Start of suites to use during test runs*/
 		NULL,					/*End of suites to use during test runs*/
-		1,						/*Amount of times to run tests*/
+		1,						/*Amount of times to running tests*/
 		MUNIT_SUITE_OPTION_NONE
 };
 

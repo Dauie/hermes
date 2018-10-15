@@ -71,7 +71,7 @@
 	- [ ] XMAS (-sX)
 	- [ ] UDP (-sU)
 	- [ ] if not specified use all six
-	- [ ] can run any combination of scans
+	- [ ] can running any combination of scans
 
 ### OS DETECTION
  - [x] Struct representation

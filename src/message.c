@@ -1,4 +1,5 @@
 #include "../incl/hermes.h"
+#include "../incl/message.h"
 
 uint16_t		msg_tc(uint8_t type, uint8_t code)
 {
@@ -126,7 +127,6 @@ static ssize_t negotiate_transfer(int sock, uint8_t code, ssize_t objlen)
 	return (FAILURE);
 }
 
-
 ssize_t			hermes_send_binn(int sock, uint8_t code, binn *obj)
 {
 	ssize_t		objlen;
@@ -158,19 +158,17 @@ ssize_t			hermes_recvmsg(int sock, uint8_t *msgbuff)
 	ssize_t		hdrlen;
 	ssize_t		msglen;
 
-	hdr = (t_msg_hdr*)msgbuff;
 	msglen = 0;
-	if ((hdrlen = recv(sock, msgbuff, MSG_HDRSZ, MSG_WAITALL)) <= 0)
+	hdr = (t_msg_hdr*)msgbuff;
+	if ((hdrlen = recv(sock, msgbuff, MSG_HDRSZ, MSG_WAITALL)) <= 0 || hdrlen < MSG_HDRSZ)
 	{
 		if (hdrlen == 0)
 			return (ERR_DISCON);
 		else if (errno == EWOULDBLOCK || errno == EAGAIN)
 			return (0);
 		else
-			return (FAILURE);
+			return (hermes_error(FAILURE, 2, "recv()", strerror(errno)));
 	}
-	if (hdrlen < MSG_HDRSZ)
-		return (FAILURE);
 	hdr->msglen = ntohs(hdr->msglen);
 	if (hdr->msglen > 0)
 	{
@@ -181,7 +179,7 @@ ssize_t			hermes_recvmsg(int sock, uint8_t *msgbuff)
 			else if (errno == EWOULDBLOCK || errno == EAGAIN)
 				return (0);
 			else
-				return (FAILURE);
+				return (hermes_error(FAILURE, 2, "recv()", strerror(errno)));
 		}
 	}
 	return (hdrlen + msglen);

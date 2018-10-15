@@ -1,4 +1,4 @@
-# include "../../incl/job.h"
+# include "../../incl/hermes.h"
 
 t_job		*new_job(void)
 {

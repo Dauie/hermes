@@ -1,5 +1,6 @@
-# include "../../incl/job.h"
-# include "../../incl/parser.h"
+#include "../../incl/hermes.h"
+#include "../../incl/parser.h"
+
 
 int			parse_ip_file(t_targetset *set, char *filename)
 {

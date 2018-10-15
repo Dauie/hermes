@@ -273,7 +273,6 @@ void			unbinnify_portset(t_portset *set, binn *obj)
 	binn_object_get_uint16(obj, "port_cnt", &set->port_cnt);
 	binn_object_get_uint16(obj, "rng_cnt", &set->rng_cnt);
 
-	/* TODO This may not work */
 
 	binn_object_get_list(obj, "ports", (void **)&portlist);
 	binn_object_get_list(obj, "prtrngs", (void**)&prtrnglist);
@@ -291,7 +290,6 @@ void			unbinnify_targetset(t_targetset *set, binn *obj)
 	binn_object_get_uint32(obj, "ip_cnt", &set->ip_cnt);
 	binn_object_get_uint32(obj, "rng_cnt", &set->rng_cnt);
 
-	/* TODO This may not work */
 
 	binn_object_get_list(obj, "ips", (void **)&ip4list);
 	binn_object_get_list(obj, "iprngs", (void**)&ip4rnglist);

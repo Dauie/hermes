@@ -1,9 +1,7 @@
 #include "../incl/hermes.h"
-#include "../incl/defined.h"
 
 
-
-static int				accept_wrapper(t_session *session, int lsock)
+static int				accept_wrapper(t_wrkr *session, int lsock)
 {
 	uint				cslen;
 
@@ -14,15 +12,15 @@ static int				accept_wrapper(t_session *session, int lsock)
 	return (SUCCESS);
 }
 
-static int				daemon_loop(t_session *session, int lsock)
+static int				daemon_loop(t_wrkr *session, int lsock)
 {
-	while (session->stat.run)
+	while (session->stat.running)
 	{
 		if (accept_wrapper(session, lsock) == FAILURE)
 			continue;
-		if ((session->pid = fork()) < 0)
+		if ((session->id = fork()) < 0)
 			hermes_error(EXIT_FAILURE, 2, "fork()", strerror(errno));
-		else if (session->pid > 0)
+		else if (session->id > 0)
 			close(session->sock);
 		/*TODO: add wait() to protect from zombie children*/
 		else
@@ -47,12 +45,12 @@ static void				setsockopt_wrapper(int lsock)
 int						worker_daemon(int port)
 {
 	int					lsock;
-	t_session			*session;
+	t_wrkr			*session;
 	struct protoent		*proto;
 
-	if (!(session = memalloc(sizeof(t_session))))
+	if (!(session = memalloc(sizeof(t_wrkr))))
 		return (hermes_error(EXIT_FAILURE, 2, "malloc()", strerror(errno)));
-	session->stat.run = true;
+	session->stat.running = true;
 	/* TODO add signal handlers */
 	if ((proto = getprotobyname("tcp")) == NULL)
 		hermes_error(EXIT_FAILURE, 2, "getprotobyname()", strerror(errno));
@@ -67,6 +65,5 @@ int						worker_daemon(int port)
 		hermes_error(EXIT_FAILURE, 2, "bind()", strerror(errno));
 	if (listen(lsock, 1) == -1)
 		hermes_error(EXIT_FAILURE, 2, "listen()", strerror(errno));
-	printf("starting daemon\n");
 	return (daemon_loop(session, lsock));
 }

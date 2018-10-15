@@ -1,5 +1,4 @@
-# include "../../incl/job.h"
-# include "../../incl/parser.h"
+#include "../../incl/hermes.h"
 
 int			h_append_output(t_mgr *mgr)
 {

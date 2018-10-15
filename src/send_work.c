@@ -1,4 +1,6 @@
 #include "../incl/hermes.h"
+#include "../incl/binnify.h"
+
 
 /*
 **	func | send_work()
@@ -11,8 +13,6 @@
 **	sent, else error is thrown. Job should be saved and re-distributed;
 */
 
-/*TODO send sections of job separately*/
-
 void	distribute_obj(t_node **wrkr_tree, uint8_t type, binn *obj)
 {
 	t_wrkr *wrkr;
@@ -21,7 +21,7 @@ void	distribute_obj(t_node **wrkr_tree, uint8_t type, binn *obj)
 		distribute_obj(&(*wrkr_tree)->left, type, obj);
 
 	wrkr = (*wrkr_tree)->data;
-
+	(void)wrkr;
 
 	if ((*wrkr_tree)->right)
 		distribute_obj(&(*wrkr_tree)->right, type, obj);
@@ -35,11 +35,16 @@ int			send_work(t_node **wrkr_tree, t_job *job)
 	binn	*syn_ports;
 	binn	*udp_ports;
 
+	(void)wrkr_tree;
 	opts = binnify_opts(&job->opts);
 	ports = binnify_portset(job->ports);
 	ack_ports = binnify_portset(job->ack_ports);
 	syn_ports = binnify_portset(job->syn_ports);
 	udp_ports = binnify_portset(job->udp_ports);
-
-	return(SUCCESS);
+	(void)opts;
+	(void)ports;
+	(void)ack_ports;
+	(void)syn_ports;
+	(void)udp_ports;
+	return (SUCCESS);
 }

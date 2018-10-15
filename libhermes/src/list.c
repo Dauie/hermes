@@ -2,6 +2,31 @@
 #include "sys/errno.h"
 #include "../incl/libhermes.h"
 
+bool			enqueue(t_node **list, t_node *node)
+{
+	if (!list || !node)
+		return (false);
+	(*list)->left->left = node;
+	node->right = (*list)->left;
+	(*list)->left = node;
+	if (!(*list)->right)
+		(*list)->right = node;
+	return (true);
+}
+
+t_node			*pop_queue(t_node **list)
+{
+	t_node		*tmp;
+
+	if (!list)
+		return (NULL);
+	if (&(*list)->left == &(*list)->right)
+		return (*list);
+	tmp = (*list)->right;
+	(*list)->right = (*list)->right->left;
+	return (tmp);
+}
+
 void			del_list(t_node **list, bool deldata)
 {
 	t_node		*tmp;

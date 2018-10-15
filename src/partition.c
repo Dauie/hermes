@@ -1,6 +1,5 @@
 #include "../incl/hermes.h"
 
-// TODO : function pointers to cmp, min in struct?
 void			partition_ip4_tree(t_node **ip4tree, t_node *w_targetsets)
 {
 	t_targetset *set;
