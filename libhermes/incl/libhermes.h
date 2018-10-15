@@ -10,6 +10,7 @@
 # include <stdarg.h>
 # include <stdbool.h>
 # include <stdbool.h>
+# include <pthread.h>
 
 # include "error_codes.h"
 
@@ -22,6 +23,20 @@ typedef struct		s_node
 	struct s_node	*right;
 	void			*data;
 }					t_node;
+
+typedef struct 			s_thread
+{
+	uint16_t 			id;
+	pthread_t 			thread;
+	uint8_t 			alive: 1;
+	uint8_t 			working: 1;
+}						t_thread;
+
+typedef struct 			s_thrpool
+{
+	uint16_t 			thr_count;
+	t_thread			**threads;
+}						t_thrpool;
 
 /*
 **	Integer helper functions
@@ -67,6 +82,13 @@ bool				add_list_end(t_node **list, void **node);
 bool				add_list_head(t_node **list, void **data);
 bool				remove_node_list(t_node **node, bool deldata);
 bool				remove_list_head(t_node **list, bool deldata);
+
+/*
+**	Queue Functions
+*/
+t_node				*pop_queue(t_node **list);
+void				*peek_queue(t_node **list);
+bool				enqueue(t_node **list, t_node *node);
 
 /*
 **	Error Management Functions

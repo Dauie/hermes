@@ -160,12 +160,12 @@ static MunitResult test_split_ip4rng_n(const MunitParameter params[], void *user
 	printf("%u\n", range.size);
 	tree = split_ip4rng_n(&range, 7);
 	char s[20], e[20];
-	while (tree) {
-		inet_ntop(AF_INET, &((t_ip4rng*)tree->data)->start, s, 20);
-		inet_ntop(AF_INET, &((t_ip4rng*)tree->data)->end, e, 20);
-		printf("%s --> %s, size == %u\n", s, e, ((t_ip4rng*)tree->data)->size);
-		tree = tree->right;
-	}
+//	while (tree) {
+//		inet_ntop(AF_INET, &((t_ip4rng*)tree->data)->start, s, 20);
+//		inet_ntop(AF_INET, &((t_ip4rng*)tree->data)->end, e, 20);
+//		printf("%s --> %s, size == %u\n", s, e, ((t_ip4rng*)tree->data)->size);
+//		tree = tree->right;
+//	}
 	while (i < 8 && tree) {
 		munit_assert_uint32(((t_ip4rng*)tree->data)->start, ==, r[i++].s_addr);
 		munit_assert_uint32(((t_ip4rng*)tree->data)->end, ==, r[i++].s_addr);

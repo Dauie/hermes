@@ -6,12 +6,25 @@ bool			enqueue(t_node **list, t_node *node)
 {
 	if (!list || !node)
 		return (false);
+	if (!(*list)->left && !(*list)->right)
+	{
+		(*list)->left = node;
+		(*list)->right = node;
+		return (true);
+	}
 	(*list)->left->left = node;
 	node->right = (*list)->left;
 	(*list)->left = node;
-	if (!(*list)->right)
-		(*list)->right = node;
 	return (true);
+}
+
+void			*peek_queue(t_node **list)
+{
+	if (!list)
+		return (NULL);
+	if ((*list)->right)
+		return ((*list)->right->data);
+	return (NULL);
 }
 
 t_node			*pop_queue(t_node **list)

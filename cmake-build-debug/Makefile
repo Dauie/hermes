@@ -555,6 +555,33 @@ libhermes/src/swap.c.s:
 	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/libhermes/src/swap.c.s
 .PHONY : libhermes/src/swap.c.s
 
+libhermes/src/thread.o: libhermes/src/thread.c.o
+
+.PHONY : libhermes/src/thread.o
+
+# target to build an object file
+libhermes/src/thread.c.o:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/libhermes/src/thread.c.o
+.PHONY : libhermes/src/thread.c.o
+
+libhermes/src/thread.i: libhermes/src/thread.c.i
+
+.PHONY : libhermes/src/thread.i
+
+# target to preprocess a source file
+libhermes/src/thread.c.i:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/libhermes/src/thread.c.i
+.PHONY : libhermes/src/thread.c.i
+
+libhermes/src/thread.s: libhermes/src/thread.c.s
+
+.PHONY : libhermes/src/thread.s
+
+# target to generate assembly for a file
+libhermes/src/thread.c.s:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/libhermes/src/thread.c.s
+.PHONY : libhermes/src/thread.c.s
+
 munit/example.o: munit/example.c.o
 
 .PHONY : munit/example.o
@@ -1176,6 +1203,33 @@ src/sanity_check.c.s:
 	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/sanity_check.c.s
 .PHONY : src/sanity_check.c.s
 
+src/scan.o: src/scan.c.o
+
+.PHONY : src/scan.o
+
+# target to build an object file
+src/scan.c.o:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/scan.c.o
+.PHONY : src/scan.c.o
+
+src/scan.i: src/scan.c.i
+
+.PHONY : src/scan.i
+
+# target to preprocess a source file
+src/scan.c.i:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/scan.c.i
+.PHONY : src/scan.c.i
+
+src/scan.s: src/scan.c.s
+
+.PHONY : src/scan.s
+
+# target to generate assembly for a file
+src/scan.c.s:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/scan.c.s
+.PHONY : src/scan.c.s
+
 src/send_work.o: src/send_work.c.o
 
 .PHONY : src/send_work.o
@@ -1310,6 +1364,33 @@ src/type_helper/worker.s: src/type_helper/worker.c.s
 src/type_helper/worker.c.s:
 	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/type_helper/worker.c.s
 .PHONY : src/type_helper/worker.c.s
+
+src/unit_testing/ip_operations.o: src/unit_testing/ip_operations.c.o
+
+.PHONY : src/unit_testing/ip_operations.o
+
+# target to build an object file
+src/unit_testing/ip_operations.c.o:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/unit_testing/ip_operations.c.o
+.PHONY : src/unit_testing/ip_operations.c.o
+
+src/unit_testing/ip_operations.i: src/unit_testing/ip_operations.c.i
+
+.PHONY : src/unit_testing/ip_operations.i
+
+# target to preprocess a source file
+src/unit_testing/ip_operations.c.i:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/unit_testing/ip_operations.c.i
+.PHONY : src/unit_testing/ip_operations.c.i
+
+src/unit_testing/ip_operations.s: src/unit_testing/ip_operations.c.s
+
+.PHONY : src/unit_testing/ip_operations.s
+
+# target to generate assembly for a file
+src/unit_testing/ip_operations.c.s:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/unit_testing/ip_operations.c.s
+.PHONY : src/unit_testing/ip_operations.c.s
 
 src/unit_testing/munit.o: src/unit_testing/munit.c.o
 
@@ -1449,6 +1530,9 @@ help:
 	@echo "... libhermes/src/swap.o"
 	@echo "... libhermes/src/swap.i"
 	@echo "... libhermes/src/swap.s"
+	@echo "... libhermes/src/thread.o"
+	@echo "... libhermes/src/thread.i"
+	@echo "... libhermes/src/thread.s"
 	@echo "... munit/example.o"
 	@echo "... munit/example.i"
 	@echo "... munit/example.s"
@@ -1518,6 +1602,9 @@ help:
 	@echo "... src/sanity_check.o"
 	@echo "... src/sanity_check.i"
 	@echo "... src/sanity_check.s"
+	@echo "... src/scan.o"
+	@echo "... src/scan.i"
+	@echo "... src/scan.s"
 	@echo "... src/send_work.o"
 	@echo "... src/send_work.i"
 	@echo "... src/send_work.s"
@@ -1533,6 +1620,9 @@ help:
 	@echo "... src/type_helper/worker.o"
 	@echo "... src/type_helper/worker.i"
 	@echo "... src/type_helper/worker.s"
+	@echo "... src/unit_testing/ip_operations.o"
+	@echo "... src/unit_testing/ip_operations.i"
+	@echo "... src/unit_testing/ip_operations.s"
 	@echo "... src/unit_testing/munit.o"
 	@echo "... src/unit_testing/munit.i"
 	@echo "... src/unit_testing/munit.s"

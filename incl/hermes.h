@@ -143,18 +143,6 @@ typedef struct			t_status
 	uint8_t				working: 1;
 }						t_stat;
 
-typedef struct 			s_thread
-{
-	pthread_t 			*thread;
-	t_stat				*status;
-}						t_thread;
-
-typedef struct 			s_thrpool
-{
-	uint16_t 			thr_count;
-	t_node				*threads;
-}						t_thrpool;
-
 typedef struct			s_worker
 {
 	t_stat				stat;

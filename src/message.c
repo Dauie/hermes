@@ -142,7 +142,7 @@ ssize_t			hermes_send_binn(int sock, uint8_t code, binn *obj)
 	if (ret != objlen)
 		return (hermes_error(FAILURE, 1, "hermes_send_binn() failed to send entire obj"));
 	if ((ret = hermes_recvmsg(sock, recvbuff)) < SUCCESS)
-		return (hermes_error(ret, 1, "hermes_send_binn didn't receive confirmation"));
+		return (hermes_error((int)ret, 1, "hermes_send_binn didn't receive confirmation"));
 	// TODO chk ret msg
 	else
 		return (SUCCESS);

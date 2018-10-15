@@ -63,6 +63,6 @@ t_node			*partition_targetset(t_targetset *targets, uint32_t parts)
 	while (targets->ips)
 		partition_ip4_tree(&targets->ips, targetset_list);
 	while (targets->iprngs)
-		partition_ip4rng_tree(NULL, 0, NULL);
+		partition_ip4rng_tree(&targets->iprngs, parts, targetset_list);
 	return (targetset_list);
 }

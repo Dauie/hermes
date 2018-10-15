@@ -7,7 +7,8 @@ SRC_DIR = src
 
 TEST_FLAGS = -Wall -Werror -Wextra
 
-CFLAGS  = -Wall -Werror -Wextra -g -fsanitize=address
+CFLAGS  = -Wall -Werror -Wextra -g
+#-fsanitize=address
 
 LIBHERMES = libhermes/
 

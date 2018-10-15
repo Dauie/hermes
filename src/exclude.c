@@ -49,33 +49,6 @@ t_node			*split_ip4rng_n(t_ip4rng *data, uint32_t splits)
 	return (node);
 }
 
-t_node			*split_prtrng_n(void **data, uint32_t splits)
-{
-	uint32_t	rem;
-	uint32_t	size;
-	in_addr_t	start;
-	t_node		*node;
-
-
-	node = new_node(data);
-	size = ((t_prtrng*)data)->size / splits;
-	start = ((t_prtrng*)data)->start;
-	while (start < ((t_ip4rng*)data)->end)
-	{
-		((t_ip4rng*)node->data)->size = size;
-		((t_ip4rng*)node->data)->start = start;
-		((t_ip4rng*)node->data)->end = start + size;
-		add_list_head(&node, node->data);
-		start += size;
-	}
-	if ((rem = ((t_ip4rng*)data)->size % splits))
-	{
-		((t_ip4rng*)node->data)->size += rem;
-		((t_ip4rng*)node->data)->end  += rem;
-	}
-	return (node);
-}
-
 static int		split_ip4range(t_ip4rng *target, t_ip4rng *exclude, t_ip4rng **l, t_ip4rng **r)
 {
 	*l = NULL;
