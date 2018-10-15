@@ -68,7 +68,7 @@ t_node			*partition_targetset(t_targetset *targets, uint32_t parts)
 
 	if (!targets)
 		return (NULL);
-	if (parts <=1)
+	if (parts <= 1)
 		return (new_node((void **)&targets));
 	targetset_list = new_targetset_list(parts);
 	while (targets->ips)

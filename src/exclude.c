@@ -15,29 +15,36 @@ static void		exclude_ip4_ip4(t_targetset *set, t_node **targets, t_node *exclude
 		exclude_ip4_ip4(set, targets, exclude->right);
 }
 
-t_node			*split_ip4rng_n(void **data, uint32_t splits)
+t_node			*split_ip4rng_n(t_ip4rng *data, uint32_t splits)
 {
 	uint32_t	rem;
+	uint32_t	end;
 	uint32_t	size;
-	in_addr_t	start;
+	uint32_t	start;
 	t_node		*node;
+	t_ip4rng	*iprng;
 
-
-	node = new_node(data);
-	size = ((t_ip4rng*)data)->size / splits;
-	start = ((t_ip4rng*)data)->start;
-	while (start < ((t_ip4rng*)data)->end)
+	node = NULL;
+	iprng = NULL;
+	size = data->size / splits;
+	start = ntohl(data->start);
+	end = ntohl(data->end);
+	while ((start + size) < end)
 	{
-		((t_ip4rng*)node->data)->size = size;
-		((t_ip4rng*)node->data)->start = start;
-		((t_ip4rng*)node->data)->end = start + size;
-		add_list_head(&node, node->data);
-		start = ip4_increment(start, size);
+		iprng = new_ip4range();
+		iprng->size = size;
+		iprng->start = htonl(start);
+		iprng->end = htonl(start + size - 1);
+		add_list_end(&node, (void**)&iprng);
+		start += size;
 	}
-	if ((rem = ((t_ip4rng*)data)->size % splits))
+	if ((rem = (data->size % splits)))
 	{
-		((t_ip4rng*)node->data)->size += rem;
-		((t_ip4rng*)node->data)->end  += rem;
+		iprng = new_ip4range();
+		iprng->size = rem;
+		iprng->start = htonl(start);
+		iprng->end = htonl(start + rem - 1);
+		add_list_end(&node, (void**)&iprng);
 	}
 	return (node);
 }

@@ -156,20 +156,21 @@ binn			*binnify_opts(t_opts *opts)
 	binn_object_set_uint32(obj, "host_timeo", opts->host_timeo);
 	binn_object_set_uint32(obj, "scan_delay", opts->scan_delay);
 	binn_object_set_uint32(obj, "max_scan_delay", opts->max_scan_delay);
-	binn_object_set_uint32(obj, "min_packet_rate", opts->min_packet_rate);
-	binn_object_set_uint32(obj, "max_packet_rate", opts->max_packet_rate);
-	binn_object_set_uint32(obj, "max_retries", opts->max_retries);
-	binn_object_set_uint32(obj, "min_parallel", opts->min_parallel);
-	binn_object_set_uint32(obj, "max_parallel", opts->max_parallel);
-	binn_object_set_uint32(obj, "min_hostgroup", opts->min_hostgroup);
-	binn_object_set_uint32(obj, "max_hostgroup", opts->max_hostgroup);
-	binn_object_set_uint32(obj, "spoofed_srcaddr", opts->spoofed_srcaddr);
-	binn_object_set_uint16(obj, "spoofed_srcport", opts->spoofed_srcport);
-	binn_object_set_uint16(obj, "rpayload_len", opts->rpayload_len);
-	binn_object_set_uint8(obj, "fragment_mtu", opts->fragment_mtu);
-	binn_object_set_uint8(obj, "ip_ttl", opts->ip_ttl);
-	binn_object_set_uint8(obj, "thread_count", opts->thread_count);
-	binn_object_set_uint8(obj, "verbose_level", opts->verbose_level);
+	// TODO -> heap overflow
+//	binn_object_set_uint32(obj, "min_packet_rate", opts->min_packet_rate);
+//	binn_object_set_uint32(obj, "max_packet_rate", opts->max_packet_rate);
+//	binn_object_set_uint32(obj, "max_retries", opts->max_retries);
+//	binn_object_set_uint32(obj, "min_parallel", opts->min_parallel);
+//	binn_object_set_uint32(obj, "max_parallel", opts->max_parallel);
+//	binn_object_set_uint32(obj, "min_hostgroup", opts->min_hostgroup);
+//	binn_object_set_uint32(obj, "max_hostgroup", opts->max_hostgroup);
+//	binn_object_set_uint32(obj, "spoofed_srcaddr", opts->spoofed_srcaddr);
+//	binn_object_set_uint16(obj, "spoofed_srcport", opts->spoofed_srcport);
+//	binn_object_set_uint16(obj, "rpayload_len", opts->rpayload_len);
+//	binn_object_set_uint8(obj, "fragment_mtu", opts->fragment_mtu);
+//	binn_object_set_uint8(obj, "ip_ttl", opts->ip_ttl);
+//	binn_object_set_uint8(obj, "thread_count", opts->thread_count);
+//	binn_object_set_uint8(obj, "verbose_level", opts->verbose_level);
 	return (obj);
 }
 

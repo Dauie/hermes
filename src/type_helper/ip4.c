@@ -56,99 +56,27 @@ int				ip4_cmp(void *left, void *right)
 
 uint32_t			ip4_diff(in_addr_t left, in_addr_t right)
 {
-	uint32_t		diff;
-	long long		ret;
-	t_ip4bytes		*l;
-	t_ip4bytes		*r;
+	in_addr_t		*l;
+	in_addr_t		*r;
 
-	diff = 0;
-	l = (t_ip4bytes *)&left;
-	r = (t_ip4bytes *)&right;
-	ret = l->b1 - r->b1;
-	if (ret < 0)
-		ret *= -1;
-	diff += ret * (255 * 255 * 255);
-	ret = l->b2 - r->b2;
-	if (ret < 0)
-		ret *= -1;
-	diff += ret * (255 * 255);
-	ret = l->b3 - r->b3;
-	if (ret < 0)
-		ret *= -1;
-	diff += ret * 255;
-	ret = l->b4 - r->b4;
-	if (ret < 0)
-		ret *= -1;
-	diff += ret;
-	return (diff);
+	l = &left;
+	r = &right;
+	if (left < right)
+	{
+		l = &right;
+		r = &left;
+	}
+	return (ntohl(*l) - ntohl(*r));
 }
 
-/*TODO: do this without looping, its quick and dirty right now*/
 in_addr_t		ip4_increment(in_addr_t ip, uint32_t increase)
 {
-	t_ip4bytes	*b;
-
-	b = (t_ip4bytes *)&ip;
-	while (increase--)
-	{
-		if (b->b4 < 255)
-			b->b4 += 1;
-		else
-		{
-			b->b4 = 0;
-			if (b->b3 < 255)
-				b->b3 += 1;
-			else
-			{
-				b->b3 = 0;
-				if (b->b2 < 255)
-					b->b2 += 1;
-				else
-				{
-					b->b2 = 0;
-					if (b->b1 < 255)
-						b->b1 += 1;
-					else
-						b->b1 = 0;
-				}
-			}
-		}
-	}
-	return (ip);
+	return (htonl(ntohl(ip) + increase));
 }
 
-/*TODO: do this without looping, its quick and dirty right now*/
 in_addr_t		ip4_decrement(in_addr_t ip, uint32_t decrease)
 {
-	t_ip4bytes	*b;
-
-	b = (t_ip4bytes *)&ip;
-	while (decrease--)
-	{
-		if (b->b4 > 0)
-			b->b4 -= 1;
-		else
-		{
-			b->b4 = 255;
-			if (b->b3 > 0)
-				b->b3 -= 1;
-			else
-			{
-				b->b3 = 255;
-				if (b->b2 > 0)
-					b->b2 -= 1;
-				else
-				{
-					b->b2 = 255;
-					if (b->b1 > 0)
-						b->b1 -= 1;
-					else
-						b->b1 = 255;
-				}
-			}
-		}
-	}
-	return (ip);
+	return (htonl(ntohl(ip) - decrease));
 }
 
 void			*ip4_min(t_node *tree)
@@ -171,16 +99,16 @@ int				ip4rng_cmp(void *ipr_left, void *ipr_right)
 
 	left = (t_ip4rng*)ipr_left;
 	right = (t_ip4rng*)ipr_right;
-	if (left->start == right->start)
+	if (ip4_cmp(&left->start, &right->start) == 0)
 	{
-		if (left->end < right->end)
+		if (ip4_cmp(&left->end, &right->end) < 0)
 			return (-1);
-		if (left->end > right->end)
+		if (ip4_cmp(&left->end, &right->end) > 0)
 			return (1);
 		else
 			return (0);
 	}
-	else if (left->start > right->start)
+	else if (ip4_cmp(&left->start, &right->start) > 0)
 		return (1);
 	else
 		return (-1);

@@ -42,7 +42,7 @@ bool		add_node_bst(t_node **root, void **data, int (*cmp)(void *, void *))
 	if (*root == NULL)
 	{
 		*root = node;
-		return (SUCCESS);
+		return (true);
 	}
 	while (curr != NULL)
 	{
@@ -55,14 +55,14 @@ bool		add_node_bst(t_node **root, void **data, int (*cmp)(void *, void *))
 		else
 		{
 			del_node(&node, NULL);
-			return (FAILURE);
+			return (false);
 		}
 	}
 	if (cmp(data, parent->data) < 0)
 		parent->left = node;
 	else
 		parent->right = node;
-	return (SUCCESS);
+	return (true);
 }
 
 void		remove_search_key(t_node **curr, t_node **parent, void *key,

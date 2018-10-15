@@ -56,7 +56,7 @@ int					manager_loop(t_mgr *mgr)
 		send_workers_binn(&mgr->workers->wrkrs, mgr->workers, opts, C_OBJ_OPTS);
 		ports = binnify_portset(mgr->job.ports);
 		send_workers_binn(&mgr->workers->wrkrs, mgr->workers, ports, C_OBJ_PS_NRM);
-		if ()
+//		if ()
 	}
 	/* TODO Spawn thread pool */
 	while (mgr->stat.running == true)

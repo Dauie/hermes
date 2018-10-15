@@ -5,6 +5,8 @@ CC = gcc
 
 SRC_DIR = src
 
+TEST_FLAGS = -Wall -Werror -Wextra -g -fsanitize=address
+
 CFLAGS  = -Wall -Werror -Wextra -g -fsanitize=address
 
 LIBHERMES = libhermes/
@@ -49,7 +51,7 @@ all: $(NAME)
 test:
 		$(MAKE) -C $(LIBBINN)
 		$(MAKE) -C $(LIBHERMES)
-		$(CC) $(CFLAGS) $(UNIT_SRC) -o hermes_test
+		$(CC) $(TEST_FLAGS) $(UNIT_SRC) -o hermes_test
 clean:
 		$(RM) $(NAME)
 

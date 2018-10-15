@@ -17,7 +17,7 @@ void			del_node(t_node **node, bool deldata)
 {
 	if (!node || !*node)
 		return ;
-	if ((*node)->data)
+	if (deldata && (*node)->data)
 	{
 		free((*node)->data);
 		(*node)->data = NULL;

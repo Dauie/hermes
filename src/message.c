@@ -108,7 +108,7 @@ ssize_t			hermes_send_binn(int sock, uint8_t code, binn *obj)
 	ssize_t		objlen;
 	ssize_t		ret;
 	void		*run;
-	uint8_t		recvbuff[PKT_SIZE];
+//	uint8_t		recvbuff[PKT_SIZE];
 
 	objlen = binn_size(obj);
 	hermes_sendmsgf(sock, code, "u32", objlen);

@@ -33,6 +33,8 @@ int				parse_port(uint16_t *port, char *input);
 int				parse_time(uint32_t *opt_time, char *input);
 int				parse_worker(t_workerset *set, char *input);
 int				parse_worker_file(t_workerset *set, char *filename);
+int				parse_cidr_mask(in_addr_t *subn_m, char *cidr_str);
+void			set_ip4range(t_ip4rng *data, const in_addr_t *ip, const in_addr_t *subn_m);
 
 /*
 **	boolean user opts

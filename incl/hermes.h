@@ -143,6 +143,18 @@ typedef struct			t_status
 	uint8_t				working: 1;
 }						t_stat;
 
+typedef struct 			s_thread
+{
+	pthread_t 			*thread;
+	t_stat				*status;
+}						t_thread;
+
+typedef struct 			s_thrpool
+{
+	uint16_t 			thr_count;
+	t_node				*threads;
+}						t_thrpool;
+
 typedef struct			s_worker
 {
 	t_stat				stat;
@@ -191,7 +203,7 @@ int						ip4rng_cmp(void *ipr_left, void *ipr_right);
 int						ip4rng_overlap_cmp(void *left, void *right);
 int						ip4_ip4rng_overlap_cmp(void *ip, void *iprng);
 void					*ip4rng_min(t_node *tree);
-t_node					*split_ip4rng_n(void **data, uint32_t splits);
+t_node					*split_ip4rng_n(t_ip4rng *data, uint32_t splits);
 
 t_targetset				*new_targetset(void);
 

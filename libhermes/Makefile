@@ -16,7 +16,7 @@ CC = gcc
 
 OBJ = obj/*.o
 
-CCFLAGS = -Wall -Wextra -c -g -fsanitize=address
+CCFLAGS = -Wall -Wextra -c
 
 RM = -rm -fr
 

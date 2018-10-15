@@ -71,6 +71,10 @@ int				process_message(t_wrkr *session,
 	return (SUCCESS);
 }
 
+//void 			run_hermes()
+//{
+//}
+
 int				worker_loop(t_wrkr *session)
 {
 	ssize_t		ret;
