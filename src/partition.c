@@ -1,15 +1,24 @@
 #include "../incl/hermes.h"
 
-void			partition_ip4_tree(t_node **ip4tree, t_node *w_targetsets)
+/* TODO this function probably needs to take a count, to keep all ips from being distributed if total is over a certain size */
+void			partition_ip4_tree(t_targetset *src_set, t_node *dst_sets)
 {
 	t_targetset *set;
 
-	while (w_targetsets && *ip4tree)
+	while (dst_sets && src_set->ips)
 	{
-		set = w_targetsets->data;
-		add_node_bst(&set->ips, &(*ip4tree)->data, ip4_cmp);
-		remove_node_bst(ip4tree, (*ip4tree)->data, ip4_cmp, ip4_min);
-		w_targetsets = w_targetsets->right;
+		set = dst_sets->data;
+		if (add_node_bst(&set->ips, src_set->ips->data, ip4_cmp) == true)
+		{
+			set->ip_cnt += 1;
+			set->total += 1;
+		}
+		if (remove_node_bst(&src_set->ips, src_set->ips->data, ip4_cmp, ip4_min) == true)
+		{
+			src_set->total -= 1;
+			src_set->ips -= 1;
+		}
+		dst_sets = dst_sets->right;
 	}
 }
 
@@ -51,6 +60,8 @@ t_node			*new_targetset_list(uint32_t count)
 	return (set_list);
 }
 
+/* TODO: all functions that operate on a targetset's contents should not be
+ * TODO: passed the tree, but the targetset itself, to help track its members ^ eg partition_ip4_tree() */
 t_node			*partition_targetset(t_targetset *targets, uint32_t parts)
 {
 	t_node		*targetset_list;
@@ -61,7 +72,7 @@ t_node			*partition_targetset(t_targetset *targets, uint32_t parts)
 		return (new_node((void **)&targets));
 	targetset_list = new_targetset_list(parts);
 	while (targets->ips)
-		partition_ip4_tree(&targets->ips, targetset_list);
+		partition_ip4_tree(targets, targetset_list);
 	while (targets->iprngs)
 		partition_ip4rng_tree(NULL, 0, NULL);
 	return (targetset_list);

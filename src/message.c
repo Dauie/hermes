@@ -103,30 +103,6 @@ int				hermes_sendmsgf(int sock, uint16_t type_code, char *format, ...)
 	return (SUCCESS);
 }
 
-/* TODO improve error handling */
-static ssize_t negotiate_transfer(int sock, uint8_t code, ssize_t objlen)
-{
-	ssize_t		ret;
-	uint16_t	tc;
-	uint8_t		recvbuff[PKT_SIZE];
-	t_msg_hdr	*hdr;
-
-	tc = msg_tc(T_OBJ, code);
-	if (hermes_sendmsgf(sock, tc, "u32", objlen) < SUCCESS)
-		return (FAILURE);
-	if ((ret = hermes_recvmsg(sock, recvbuff)) < SUCCESS)
-		return (ret);
-	hdr = (t_msg_hdr*)recvbuff;
-	if (hdr->type == T_OBJ_RPLY)
-	{
-		if (hdr->code == C_ACCEPT)
-			return (SUCCESS);
-		else
-			return (FAILURE);
-	}
-	return (FAILURE);
-}
-
 ssize_t			hermes_send_binn(int sock, uint8_t code, binn *obj)
 {
 	ssize_t		objlen;
@@ -135,16 +111,12 @@ ssize_t			hermes_send_binn(int sock, uint8_t code, binn *obj)
 	uint8_t		recvbuff[PKT_SIZE];
 
 	objlen = binn_size(obj);
-	if ((ret = negotiate_transfer(sock, code, objlen) < SUCCESS))
-		return (ret);
+	hermes_sendmsgf(sock, code, "u32", objlen);
 	if ((ret = send(sock, &run, (size_t)objlen, MSG_DONTWAIT)) < 0)
 		return (hermes_error(FAILURE, 2, "send()", strerror(errno)));
 	if (ret != objlen)
-		return (hermes_error(FAILURE, 1, "hermes_send_binn() failed to send entire obj"));
-	if ((ret = hermes_recvmsg(sock, recvbuff)) < SUCCESS)
-		return (hermes_error(ret, 1, "hermes_send_binn didn't receive confirmation"));
-	else
-		return (SUCCESS);
+		return (FAILURE);
+	return (SUCCESS);
 }
 
 /*

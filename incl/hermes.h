@@ -168,6 +168,7 @@ typedef struct			s_manager
 {
 	t_stat				stat;
 	t_job				job;
+	t_targetset			*cwork;
 	t_targetset			*exclude_targets;
 	t_portset			*exclude_ports;
 	t_workerset			*workers;
@@ -175,7 +176,6 @@ typedef struct			s_manager
 	FILE				*xml_file;
 	FILE				*norm_file;
 }						t_mgr;
-
 
 t_job					*new_job(void);
 

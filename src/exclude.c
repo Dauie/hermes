@@ -6,7 +6,7 @@ static void		exclude_ip4_ip4(t_targetset *set, t_node **targets, t_node *exclude
 		return ;
 	if (exclude->left)
 		exclude_ip4_ip4(set, targets, exclude->left);
-	if (remove_node_bst(targets, exclude->data, ip4_cmp, ip4_min) == SUCCESS)
+	if (remove_node_bst(targets, exclude->data, ip4_cmp, ip4_min) == true)
 	{
 		set->ip_cnt--;
 		set->total--;
@@ -236,7 +236,7 @@ static void		exclude_port_port(t_portset *set, t_node **target, t_node *exclude)
 		return ;
 	if (exclude->left)
 		exclude_port_port(set, target, exclude->left);
-	if (remove_node_bst(target, exclude->data, port_cmp, port_min) == SUCCESS)
+	if (remove_node_bst(target, exclude->data, port_cmp, port_min) == true)
 	{
 		set->port_cnt--;
 		set->total--;
