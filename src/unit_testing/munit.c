@@ -185,7 +185,7 @@ static MunitResult test_split_ip4rng_n(const MunitParameter params[], void *user
 	parse_cidr_mask(&mask, cidr);
 	set_ip4range(&range, &start, &mask);
 	printf("%u\n", range.size);
-	tree = split_ip4rng_n(&range, 4);
+	tree = split_ip4rng_portions(&range, 4);
 	char s[20], e[20];
 	t_node *tmp = tree;
 	while (tmp) {

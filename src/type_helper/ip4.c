@@ -28,7 +28,7 @@ t_targetset		*new_targetset(void)
 {
 	t_targetset *new;
 
-	if (!(new = (t_targetset *)memalloc(sizeof(t_targetset))))
+	if (!(new = (t_targetset*)memalloc(sizeof(t_targetset))))
 		hermes_error(FAILURE, 2, "malloc()", strerror(errno));
 	return (new);
 }

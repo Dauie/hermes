@@ -61,11 +61,33 @@ int					manager_loop(t_mgr *mgr)
 	/* TODO Spawn thread pool */
 	while (mgr->stat.running == true)
 	{
+
 		/* TODO grab "normal" chunk of ips from mgr->job and assign them to mgr->workers, and mgr->cwork */
 		/* TODO split mgr->cwork into smaller target_sets and assign to targetset_list for threads */
 		/* TODO pass divided work to threads */
+
+		while (mgr->workers->wrkrs)
+		{
+			if (!TYPE_WORKER(mgr)->stat.working)
+			{
+				partition_targetset(
+					&(TYPE_WORKER(mgr)->job->targets,
+					&mgr->job.targets,
+					/*whatever amount is*/
+				);
+				hermes_send_binn(
+						TYPE_WORKER(mgr)->sock,
+						C_OBJ_TARGETS,
+						binnify_targetset(
+						TYPE_WORKER(mgr)->job->targets
+					)
+				);
+			}
+			mgr->workers->wrkrs = mgr->workers->wrkrs->right;
+		}
 		if (mgr->job.targets->total == 0)
 			mgr->stat.running = false;
+
 	}
 	return (0);
 }

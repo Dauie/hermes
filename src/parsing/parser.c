@@ -109,14 +109,13 @@ int			dtab_wopt_loop(t_mgr *mgr, char *arg, char *opt,
 int			parse_opts(t_mgr *mgr, int ac, char **args)
 {
 	int		i;
-	int		ret;
 
 	i = 0;
 	while (++i < ac)
 	{
 		if (args[i][0] == '-')
 		{
-			if ((ret = dtab_loop(mgr, args[i], g_disp)) == FAILURE)
+			if (dtab_loop(mgr, args[i], g_disp) == FAILURE)
 			{
 				if (dtab_wopt_loop(mgr, args[i], args[i + 1], g_disp_wopt) == FAILURE)
 					return (hermes_error(EXIT_FAILURE, 2, "invalid option", args[i]));
