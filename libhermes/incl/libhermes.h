@@ -32,6 +32,7 @@ typedef struct 		s_root
 
 typedef struct		s_node
 {
+	struct s_node	*parent;
 	struct s_node	*left;
 	struct s_node	*right;
 	void			*data;
