@@ -17,6 +17,19 @@
 /*
 **	Structs
 */
+
+/*
+** Wrapper Struct for different data structures
+*/
+typedef struct 		s_root
+{
+	size_t 			size;
+	struct s_node	*left;
+	struct s_node	*right;
+	struct s_node	*min;
+	struct s_node	*max;
+}					t_root;
+
 typedef struct		s_node
 {
 	struct s_node	*left;
