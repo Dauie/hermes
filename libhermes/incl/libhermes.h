@@ -86,9 +86,9 @@ bool				remove_list_head(t_node **list, bool deldata);
 /*
 **	Queue Functions
 */
-t_node				*pop_queue(t_node **list);
-void				*peek_queue(t_node **list);
-bool				enqueue(t_node **list, t_node *node);
+t_node				*pop(t_node **list);
+void				*peek(t_node **list);
+bool				enqueue(t_node **list, void **data);
 
 /*
 **	Error Management Functions

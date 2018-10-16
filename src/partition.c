@@ -1,48 +1,57 @@
 #include "../incl/hermes.h"
 
-/* TODO this function probably needs to take a cnt, to keep all ips from being distributed if total is over a certain size */
-void			partition_ip4_tree(t_targetset *src_set, t_node *dst_sets)
+/* TODO this function probably needs to take a count, to keep all ips from being distributed if total is over a certain size */
+uint32_t		partition_ip4(t_targetset **dst, t_targetset **src,
+							  uint32_t amt)
 {
-	t_targetset *set;
-
-	while (dst_sets && src_set->ips)
+	while ((*src)->ips && amt)
 	{
-		set = dst_sets->data;
-		if (add_node_bst(&set->ips, src_set->ips->data, ip4_cmp) == true)
+		if (add_list_head(&(*dst)->ips, &(*src)->ips->data) == true)
 		{
-			set->ip_cnt += 1;
-			set->total += 1;
+			(*dst)->ip_cnt++;
+			(*dst)->total++;
 		}
-		if (remove_node_bst(&src_set->ips, src_set->ips->data, ip4_cmp, ip4_min) == true)
+		if (remove_node_bst(&(*dst)->ips, (*dst)->ips->data, ip4_cmp, ip4_min) == true)
 		{
-			src_set->total -= 1;
-			src_set->ips -= 1;
+			(*src)->ip_cnt--;
+			(*src)->total--;
 		}
-		dst_sets = dst_sets->right;
+		amt--;
 	}
+	return (amt);
 }
 
-void			partition_ip4rng_tree(t_node **iprngtree, uint32_t parts, t_node *targetsets)
+uint32_t		partition_ip4rng(t_targetset **dst, t_targetset **src,
+								 uint32_t amt)
 {
-	t_targetset	*set;
-	t_node		*fragment_lst;
-	t_node		*tmp;
-
-	if (!targetsets)
-		return ;
-	tmp = targetsets;
-	fragment_lst = split_ip4rng_n((*iprngtree)->data, parts);
-	while (fragment_lst)
+	t_ip4rng *slice;
+	while ((*src)->iprngs && amt)
 	{
-		if (!tmp)
-			tmp = targetsets;
-		set = targetsets->data;
-		add_node_bst(&set->iprngs, &fragment_lst->data, ip4rng_cmp);
-		/*TODO make a remove_node_head take a bool to delete data or not*/
-		remove_list_head(&fragment_lst, 0);
-		tmp = tmp->right;
+		if (TYPE_IP4RNG((*src))->size > amt)
+		{
+			if (!(slice = slice_ip4rng(src, amt)))
+				hermes_error(SUCCESS, 1, "no src or amt provided for slice_ip4rng(src, amt)");
+			if (add_list_head(&(*dst)->iprngs, (void**)slice) == true)
+			{
+				(*dst)->ip_cnt += amt;
+				(*dst)->total++;
+			}
+		}
+		else
+		{
+			if (add_list_head(&(*src)->iprngs, (*src)->iprngs->data))
+			{
+				(*dst)->ip_cnt += TYPE_IP4RNG((*dst))->size;
+				(*dst)->total++;
+			}
+			if (remove_node_bst(&(*src)->iprngs, (*src)->iprngs->data, ip4rng_cmp, ip4rng_min) == true)
+			{
+				(*src)->ip_cnt--;
+				(*src)->total--;
+			}
+		}
 	}
-	remove_node_bst(iprngtree, (*iprngtree)->data, ip4rng_cmp, ip4rng_min);
+	return (amt);
 }
 
 t_node			*new_targetset_list(uint32_t count)
@@ -54,26 +63,20 @@ t_node			*new_targetset_list(uint32_t count)
 	while (count)
 	{
 		newset = new_targetset();
-		add_list_head(&set_list, (void **) &newset);
+		enqueue(&set_list, (void*)&newset);
 		count--;
 	}
 	return (set_list);
 }
 
 /* TODO: all functions that operate on a targetset's contents should not be
- * TODO: passed the tree, but the targetset itself, to help track its members ^ eg partition_ip4_tree() */
-t_node			*partition_targetset(t_targetset *targets, uint32_t parts)
+ * TODO: passed the tree, but the targetset itself, to help track its members ^ eg partition_ip4() */
+void partition_targetset(t_targetset **dst, t_targetset **src, uint32_t amt)
 {
-	t_node		*targetset_list;
-
-	if (!targets)
-		return (NULL);
-	if (parts <= 1)
-		return (new_node((void **)&targets));
-	targetset_list = new_targetset_list(parts);
-	while (targets->ips)
-		partition_ip4_tree(targets, targetset_list);
-	while (targets->iprngs)
-		partition_ip4rng_tree(&targets->iprngs, parts, targetset_list);
-	return (targetset_list);
+	if (!src || !amt || !dst)
+		return;
+	if (!(amt = partition_ip4(dst, src, amt)))
+		return;
+	if ((amt = partition_ip4rng(dst, src, amt)))
+		partition_targetset(dst, src, amt);
 }

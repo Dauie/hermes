@@ -2,10 +2,13 @@
 #include "sys/errno.h"
 #include "../incl/libhermes.h"
 
-bool			enqueue(t_node **list, t_node *node)
+bool			enqueue(t_node **list, void **data)
 {
-	if (!list || !node)
+	t_node *node;
+
+	if (!list || !data)
 		return (false);
+	node = new_node(data);
 	if (!(*list)->left && !(*list)->right)
 	{
 		(*list)->left = node;
@@ -18,7 +21,26 @@ bool			enqueue(t_node **list, t_node *node)
 	return (true);
 }
 
-void			*peek_queue(t_node **list)
+bool			push(t_node **list, void **data)
+{
+	t_node *node;
+
+	if (!list || !data)
+		return (false);
+	node = new_node(data);
+	if (!(*list)->left && !(*list)->right)
+	{
+		(*list)->left = node;
+		(*list)->right = node;
+		return (true);
+	}
+	(*list)->right->right = node;
+	node->left = (*list)->right;
+	(*list)->right = node;
+	return (true);
+}
+
+void			*peek(t_node **list)
 {
 	if (!list)
 		return (NULL);
@@ -27,7 +49,7 @@ void			*peek_queue(t_node **list)
 	return (NULL);
 }
 
-t_node			*pop_queue(t_node **list)
+t_node			*pop(t_node **list)
 {
 	t_node		*tmp;
 

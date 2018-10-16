@@ -1,5 +1,19 @@
 #include "../incl/hermes.h"
 
+t_ip4rng		*slice_ip4rng(t_targetset **src, uint32_t amt)
+{
+	t_ip4rng *iprng;
+
+	if (!src || !amt)
+		return (NULL);
+	iprng = new_ip4range();
+	iprng->size = amt;
+	iprng->start = ((t_ip4rng*)(*src)->iprngs->data)->start;
+	iprng->end = BYTORD_SUM(((t_ip4rng*)(*src)->iprngs->data)->end, -amt);
+	((t_ip4rng*)(*src)->iprngs->data)->start = BYTORD_SUM(iprng->end, 1);
+	return (iprng);
+}
+
 static void		exclude_ip4_ip4(t_targetset *set, t_node **targets, t_node *exclude)
 {
 	if (!exclude)
@@ -15,7 +29,7 @@ static void		exclude_ip4_ip4(t_targetset *set, t_node **targets, t_node *exclude
 		exclude_ip4_ip4(set, targets, exclude->right);
 }
 
-t_node			*split_ip4rng_n(t_ip4rng *data, uint32_t splits)
+t_node			*split_ip4rng_portions(t_ip4rng *data, uint32_t splits)
 {
 	uint32_t	rem;
 	uint32_t	end;

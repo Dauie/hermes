@@ -6,10 +6,12 @@ void		connect_workers(t_node **workers, t_workerset *set, int proto)
 {
 	t_wrkr		*worker;
 
-	if (!*workers)
+	if (!(*workers))
 		return ;
 	if ((*workers)->left)
 		connect_workers(&(*workers)->left, set, proto);
+	if ((*workers)->right)
+		connect_workers(&(*workers)->right, set, proto);
 	worker = (t_wrkr*)(*workers)->data;
 	if ((worker->sock = socket(PF_INET, SOCK_STREAM, proto)) == -1)
 		hermes_error(EXIT_FAILURE, 2, "socket()", strerror(errno));
@@ -24,8 +26,6 @@ void		connect_workers(t_node **workers, t_workerset *set, int proto)
 		worker->stat.connected = true;
 		printf("connected to %s.\n", inet_ntoa(worker->sin.sin_addr));
 	}
-	if ((*workers)->right)
-		connect_workers(&(*workers)->right, set, proto);
 }
 
 void				send_workers_binn(t_node **workers, t_workerset *set, binn *obj, uint8_t code)
