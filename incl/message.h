@@ -56,7 +56,7 @@ typedef union	u_mval
 **	Hermes Message Types
 */
 # define T_OBJ (0)
-# define T_OBJ_RPLY (1)
+# define T_DISCONNECT (1)
 # define T_START (2)
 
 /*
@@ -68,15 +68,6 @@ typedef union	u_mval
 # define C_OBJ_PS_ACK (3)
 # define C_OBJ_PS_SYN (4)
 # define C_OBJ_PS_UDP (5)
-
-/*
-**	T_OBJ_RPLY Message Codes
-*/
-# define C_ACCEPT (0)
-# define C_PARAM_ERR (1)
-# define C_DENY_OOM (3)
-# define C_RECV_CNFRM (4)
-# define C_RECV_FAIL (5)
 
 /*
 **	T_START Message Codes
