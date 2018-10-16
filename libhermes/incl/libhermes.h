@@ -69,10 +69,14 @@ void				del_node(t_node **node, bool deldata);
 /*
 **	BST Functions
 */
+t_node				*tree_to_list(t_node **tree);
+void 				del_tree_nodes(t_node **tree);
 bool				add_node_bst(t_node **tree, void **data, int (*cmp)(void *, void *));
 bool				remove_node_bst(t_node **tree, void *key, int (*cmp)(void *, void *), void *(*min)(t_node *));
 t_node				*bst_search(t_node **tree, void *data, int (*cmp)(void *, void *));
 t_node				*tree_search(t_node **tree, void *data, int (*cmp)(void *, void *));
+
+void serialize(t_node **tree, t_node **list);
 
 /*
 **	List Functions

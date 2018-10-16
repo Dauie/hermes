@@ -81,6 +81,11 @@ int					manager_loop(t_mgr *mgr)
 			free(udp_ports);
 		}
 	}
+
+	t_node *head;
+	t_wrkr *targ;
+
+	mgr->workers->wrkrs = tree_to_list(&mgr->workers->wrkrs);
 	/* TODO Spawn thread pool */
 	while (mgr->stat.running == true)
 	{
@@ -90,7 +95,9 @@ int					manager_loop(t_mgr *mgr)
 		if (mgr->job.targets->total == 0)
 		{
 			if (mgr->workers && mgr->workers->wrking_cnt > 0)
-				;
+			{
+
+			}
 			else
 				mgr->stat.running = false;
 		}
@@ -98,6 +105,23 @@ int					manager_loop(t_mgr *mgr)
 //		{
 //			mgr->cwork =
 //		}
+		head = mgr->workers->wrkrs;
+		while (mgr->workers->wrkrs)
+		{
+			targ = WORKER_DATA(mgr);
+			partition_targetset(
+					&WORKER_DATA(mgr)->job->targets,
+					&mgr->job.targets,
+					32
+			);
+			hermes_send_binn(
+					WORKER_DATA(mgr)->sock,
+					C_OBJ_TARGETS,
+					binnify_targetset(WORKER_DATA(mgr)->job->targets)
+			);
+			mgr->workers->wrkrs = mgr->workers->wrkrs->right;
+		}
+		mgr->workers->wrkrs = head;
 	}
 	return (0);
 }

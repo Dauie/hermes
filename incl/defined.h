@@ -33,12 +33,12 @@
 **	Quick Access to Node Types
 */
 
-#ifndef TYPE_WORKER
-#define TYPE_WORKER(x) ((t_wrkr*)x->workers->wrkrs->data)
+#ifndef WORKER_DATA
+#define WORKER_DATA(x) ((t_wrkr*)x->workers->wrkrs->data)
 #endif
 
-#ifndef TYPE_IP4RNG
-#define TYPE_IP4RNG(x) ((t_ip4rng*)x->iprngs->data)
+#ifndef IP4RNG_DATA
+#define IP4RNG_DATA(x) ((t_ip4rng*)x->iprngs->data)
 #endif
 
 #endif

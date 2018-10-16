@@ -18,6 +18,66 @@ t_node		*bst_search(t_node **tree, void *data, int (*cmp)(void *, void *))
 	return (NULL);
 }
 
+void		del_tree(t_node **tree)
+{
+	if (!tree)
+		return;
+	if (!*tree)
+		return;
+	del_tree_nodes(&(*tree)->left);
+	del_tree_nodes(&(*tree)->right);
+	(*tree)->data = NULL;
+	free((*tree)->data);
+	(*tree) = NULL;
+	free(*tree);
+}
+
+
+
+t_node		**tree_to_array(t_node **tree)
+{
+	t_node **w_list;
+
+	w_list =
+	serialize(tree, &w_list, append);
+	del_tree(tree);
+	return (w_list);
+}
+
+void 		serialize(t_node **list, t_node **tree, bool (*append) (t_node **, void *))
+{
+	if (!tree || !*tree)
+		return;
+	//enqueue(list, (*tree)->data);
+	append(list, (*tree)->data);
+	//add_list_head(list, (*tree)->data);
+	serialize(list, &(*tree)->left, append);
+	serialize(list, &(*tree)->right, append);
+}
+
+t_node		*tree_to_list(t_node **tree)
+{
+	t_node *w_list;
+
+	serialize(&w_list, tree, add_list_head);
+	del_tree(tree);
+	return (w_list);
+}
+
+void		del_tree_nodes(t_node **tree)
+{
+	if (!tree)
+		return;
+	if (!*tree)
+		return;
+	del_tree_nodes(&(*tree)->left);
+	del_tree_nodes(&(*tree)->right);
+	(*tree)->data = NULL;
+	free((*tree)->data);
+	(*tree) = NULL;
+	free(*tree);
+}
+
 t_node		*tree_search(t_node **tree, void *data, int (*cmp)(void *, void *))
 {
 	if (!*tree)

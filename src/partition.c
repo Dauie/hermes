@@ -4,6 +4,9 @@
 uint32_t		partition_ip4(t_targetset **dst, t_targetset **src,
 							  uint32_t amt)
 {
+	uint32_t portion;
+
+	portion = amt;
 	while ((*src)->ips && amt)
 	{
 		if (add_list_head(&(*dst)->ips, &(*src)->ips->data) == true)
@@ -18,16 +21,20 @@ uint32_t		partition_ip4(t_targetset **dst, t_targetset **src,
 		}
 		amt--;
 	}
-	return (amt);
+	portion -= amt;
+	return (portion);
 }
 
 uint32_t		partition_ip4rng(t_targetset **dst, t_targetset **src,
 								 uint32_t amt)
 {
 	t_ip4rng *slice;
+	uint32_t portion;
+
+	portion = amt;
 	while ((*src)->iprngs && amt)
 	{
-		if (TYPE_IP4RNG((*src))->size > amt)
+		if (IP4RNG_DATA((*src))->size > amt)
 		{
 			if (!(slice = slice_ip4rng(src, amt)))
 				hermes_error(SUCCESS, 1, "no src or amt provided for slice_ip4rng(src, amt)");
@@ -41,7 +48,7 @@ uint32_t		partition_ip4rng(t_targetset **dst, t_targetset **src,
 		{
 			if (add_list_head(&(*src)->iprngs, (*src)->iprngs->data))
 			{
-				(*dst)->ip_cnt += TYPE_IP4RNG((*dst))->size;
+				(*dst)->ip_cnt += IP4RNG_DATA((*dst))->size;
 				(*dst)->total++;
 			}
 			if (remove_node_bst(&(*src)->iprngs, (*src)->iprngs->data, ip4rng_cmp, ip4rng_min) == true)
@@ -51,7 +58,8 @@ uint32_t		partition_ip4rng(t_targetset **dst, t_targetset **src,
 			}
 		}
 	}
-	return (amt);
+	portion -= amt;
+	return (portion);
 }
 
 t_node			*new_targetset_list(uint32_t count)
@@ -75,8 +83,7 @@ void partition_targetset(t_targetset **dst, t_targetset **src, uint32_t amt)
 {
 	if (!src || !amt || !dst)
 		return;
-	if (!(amt = partition_ip4(dst, src, amt)))
+	if (!(amt -= partition_ip4(dst, src, amt / 2)))
 		return;
-	if ((amt = partition_ip4rng(dst, src, amt)))
-		partition_targetset(dst, src, amt);
+	partition_ip4rng(dst, src, amt);
 }

@@ -2,6 +2,8 @@
 #include "sys/errno.h"
 #include "../incl/libhermes.h"
 
+
+
 bool			enqueue(t_node **list, void **data)
 {
 	t_node *node;
