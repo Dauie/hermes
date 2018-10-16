@@ -154,7 +154,8 @@ typedef struct			s_worker
 
 typedef struct			s_workerset
 {
-	uint32_t			wrkr_cnt;
+	uint32_t			cnt;
+	uint32_t			wrking_cnt;
 	t_node				*wrkrs;					/*t_node tree containing t_wrkr structs*/
 }						t_workerset;
 

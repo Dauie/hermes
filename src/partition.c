@@ -1,6 +1,6 @@
 #include "../incl/hermes.h"
 
-/* TODO this function probably needs to take a count, to keep all ips from being distributed if total is over a certain size */
+/* TODO this function probably needs to take a cnt, to keep all ips from being distributed if total is over a certain size */
 void			partition_ip4_tree(t_targetset *src_set, t_node *dst_sets)
 {
 	t_targetset *set;

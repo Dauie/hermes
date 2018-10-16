@@ -5,7 +5,6 @@
 int				handle_obj_offer(t_wrkr *session, uint8_t code, uint8_t *msg)
 {
 	ssize_t		ret;
-	uint16_t	tc;
 	uint32_t 	*objlen;
 	binn		*obj;
 
@@ -20,7 +19,7 @@ int				handle_obj_offer(t_wrkr *session, uint8_t code, uint8_t *msg)
 	{
 		free(obj);
 		session->stat.running = false;
-		return (ERR_DISCON);
+		return (FAILURE);
 	}
 	if (code == C_OBJ_OPTS)
 		unbinnify_opts(&session->job->opts, obj);

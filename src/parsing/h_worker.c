@@ -27,7 +27,7 @@ int				parse_worker(t_workerset *set, char *input)
 		data->sin.sin_port = htons(port);
 		data->sin.sin_family = AF_INET;
 		if (add_node_bst(&set->wrkrs, (void **) &data, worker_cmp) == true)
-			set->wrkr_cnt++;
+			set->cnt++;
 	}
 	return (SUCCESS);
 }
