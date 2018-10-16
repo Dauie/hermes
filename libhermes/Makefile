@@ -16,7 +16,7 @@ CC = gcc
 
 OBJ = obj/*.o
 
-CCFLAGS = -Wall -Wextra -c
+CCFLAGS = -Wall -Wextra -c -g
 
 RM = -rm -fr
 

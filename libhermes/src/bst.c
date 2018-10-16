@@ -47,7 +47,7 @@ bool		add_node_bst(t_node **root, void **data, int (*cmp)(void *, void *))
 	while (curr != NULL)
 	{
 		parent = curr;
-		ret = cmp(data, curr->data);
+		ret = cmp(*data, curr->data);
 		if (ret < 0)
 			curr = curr->left;
 		else if (ret > 0)

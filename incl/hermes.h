@@ -220,7 +220,8 @@ int						worker_daemon(int port);
 
 int						worker_loop(t_wrkr* session);
 int						manager_loop(t_mgr *mgr);
-void					partition_targetset(t_targetset *dst, t_targetset *src,
+void					partition_targetset(t_targetset **dst,
+											t_targetset **src,
 											uint32_t amt);
 int						send_work(t_node **wrkr_tree, t_job *job);
 
