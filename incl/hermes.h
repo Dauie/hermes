@@ -154,7 +154,8 @@ typedef struct			s_worker
 
 typedef struct			s_workerset
 {
-	uint32_t			wrkr_cnt;
+	uint32_t			cnt;
+	uint32_t			wrking_cnt;
 	t_node				*wrkrs;					/*t_node tree containing t_wrkr structs*/
 }						t_workerset;
 
@@ -220,7 +221,8 @@ int						worker_daemon(int port);
 
 int						worker_loop(t_wrkr* session);
 int						manager_loop(t_mgr *mgr);
-void					partition_targetset(t_targetset *dst, t_targetset *src,
+void					partition_targetset(t_targetset **dst,
+											t_targetset **src,
 											uint32_t amt);
 int						send_work(t_node **wrkr_tree, t_job *job);
 
