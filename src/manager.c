@@ -10,25 +10,20 @@ uint32_t connect_workers(t_workerset **set, int proto)
 		return (0);
 	while ((*set)->wrkrs)
 	{
-		worker = (t_wrkr*)((*set)->wrkrs)->data;
-		if (worker)
-		{
-			if ((worker->sock = socket(PF_INET, SOCK_STREAM, proto)) == -1)
-				hermes_error(EXIT_FAILURE, 2, "socket()", strerror(errno));
-			if (connect(worker->sock, (const struct sockaddr *) &worker->sin,
-						sizeof(worker->sin)) == -1) {
-				hermes_error(FAILURE, 2,
-							 "could not connect to worker. dropping:",
-							 inet_ntoa(worker->sin.sin_addr));
-				if (remove_node_list(&(*set)->wrkrs, worker) == true)
-					(*set)->cnt -= 1;
-			} else {
-				worker->stat.connected = true;
-				printf("connected to %s.\n", inet_ntoa(worker->sin.sin_addr));
-			}
+		worker = (t_wrkr*)(*set)->wrkrs->data;
+		if ((worker->sock = socket(PF_INET, SOCK_STREAM, proto)) == -1)
+			hermes_error(EXIT_FAILURE, 2, "socket()", strerror(errno));
+		if (connect(worker->sock, (const struct sockaddr *) &worker->sin,
+					sizeof(worker->sin)) == -1) {
+			hermes_error(FAILURE, 2,
+						 "could not connect to worker. dropping:",
+						 inet_ntoa(worker->sin.sin_addr));
+			if (rm_node(&(*set)->wrkrs, true) == true)
+				(*set)->cnt -= 1;
+		} else {
+			worker->stat.connected = true;
+			printf("connected to %s.\n", inet_ntoa(worker->sin.sin_addr));
 		}
-		else if (remove_node_list(&(*set)->wrkrs, worker) == true)
-			(*set)->cnt -= 1;
 		(*set)->wrkrs = (*set)->wrkrs->right;
 	}
 	return ((*set)->cnt);
@@ -98,9 +93,6 @@ int					manager_loop(t_mgr *mgr)
 			send_opts(mgr);
 		}
 	}
-
-	t_node *head;
-	t_job *targ;
 
 	/* TODO Spawn thread pool */
 	while (mgr->stat.running == true)

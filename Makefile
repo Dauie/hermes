@@ -5,7 +5,8 @@ CC = gcc
 
 SRC_DIR = src
 
-TEST_FLAGS = -Wall -Werror -Wextra -g -fsanitize=address
+TEST_FLAGS = -Wall -Werror -Wextra -g
+#-fsanitize=address
 
 CFLAGS  = -Wall -Werror -Wextra -g
 #-fsanitize=address

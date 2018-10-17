@@ -22,8 +22,10 @@ void		del_tree(t_node **tree, bool deldata)
 {
 	if (!tree || !*tree)
 		return;
-	del_tree(&(*tree)->left, deldata);
-	del_tree(&(*tree)->right, deldata);
+	if ((*tree)->left)
+		del_tree(&(*tree)->left, deldata);
+	if ((*tree)->right)
+		del_tree(&(*tree)->right, deldata);
 	del_node(tree, deldata);
 }
 
@@ -50,16 +52,11 @@ t_node		*tree_to_list(t_node **tree)
 
 t_node		*list_to_tree(t_node **list)
 {
-	if (!tree)
-		return;
-	if (!*tree)
-		return;
-	del_tree_nodes(&(*tree)->left);
-	del_tree_nodes(&(*tree)->right);
-	(*tree)->data = NULL;
-	free((*tree)->data);
-	(*tree) = NULL;
-	free(*tree);
+	if (!list)
+		return (NULL);
+	if (!*list)
+		return (*list);
+	return (NULL);
 }
 
 t_node		*tree_search(t_node **tree, void *data, int (*cmp)(void *, void *))

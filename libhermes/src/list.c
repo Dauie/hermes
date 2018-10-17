@@ -2,7 +2,6 @@
 #include "sys/errno.h"
 #include "../incl/libhermes.h"
 
-
 bool			enqueue(t_node **queue, void **data)
 {
 	t_node *node;
@@ -10,21 +9,15 @@ bool			enqueue(t_node **queue, void **data)
 
 	if (!queue || !data || !*data)
 		return (false);
-	if (!*queue)
-		*queue = new_node(data);
 	node = new_node(data);
 	if (!*queue)
 	{
 		*queue = node;
 		(*queue)->left = *queue;
 		(*queue)->right = *queue;
-		(*queue) = node;
-		node->left = node;
-		node->right = node;
 		return (true);
 	}
 	end = (*queue)->left;
-
 	(*queue)->left->right = node;
 	(*queue)->right->left = node;
 	node->left = (*queue)->left;
@@ -35,7 +28,7 @@ bool			enqueue(t_node **queue, void **data)
 
 t_node			*dequeue(t_node **queue)
 {
-
+	return (*queue);
 }
 
 
