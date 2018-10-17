@@ -27,34 +27,35 @@ void		del_tree(t_node **tree, bool deldata)
 	del_node(tree, deldata);
 }
 
-t_node		**tree_to_array(t_node **tree)
-{
-	t_node **w_list;
-
-	w_list =
-	serialize(tree, &w_list, append);
-	del_tree(tree);
-	return (w_list);
-}
-
-void 		serialize(t_node **list, t_node **tree, bool (*append) (t_node **, void *))
+void		loop_tree_to_list(t_node **list, t_node **tree)
 {
 	if (!tree || !*tree)
-		return;
-	//enqueue(list, (*tree)->data);
-	append(list, (*tree)->data);
-	//add_list_head(list, (*tree)->data);
-	serialize(list, &(*tree)->left, append);
-	serialize(list, &(*tree)->right, append);
+		return ;
+	if ((*tree)->left)
+		loop_tree_to_list(&(*tree)->left, list);
+	add_list_head(list, (*tree)->data);
+	if ((*tree)->right)
+		loop_tree_to_list(&(*tree)->right, list);
 }
 
 t_node		*tree_to_list(t_node **tree)
 {
-	t_node *w_list;
+	t_node	*list;
 
-	serialize(&w_list, tree, add_list_head);
-	del_tree(tree);
-	return (w_list);
+	list = NULL;
+	loop_tree_to_list(&list, tree);
+	del_tree(tree, false);
+	return (list);
+}
+
+t_node		*list_to_tree(t_node **list)
+{
+	t_node *tree;
+	t_node *lst;
+
+	tree = NULL;
+	lst = list;
+	while
 }
 
 t_node		*tree_search(t_node **tree, void *data, int (*cmp)(void *, void *))

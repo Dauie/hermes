@@ -15,7 +15,6 @@
 
 #include "defined.h"
 
-
 # define HERMES_VERSION "v0.0.1"
 
 typedef struct sockaddr_in sockaddr_in;
