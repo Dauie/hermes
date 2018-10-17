@@ -21,18 +21,17 @@
 /*
 ** Wrapper Struct for different data structures
 */
-typedef struct 		s_root
+typedef struct 		s_list
 {
 	size_t 			size;
 	struct s_node	*start;
 	struct s_node	*end;
 	struct s_node	*min;
 	struct s_node	*max;
-}					t_root;
+}					t_list;
 
 typedef struct		s_node
 {
-	struct s_node	*parent;
 	struct s_node	*left;
 	struct s_node	*right;
 	void			*data;
