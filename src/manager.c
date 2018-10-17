@@ -2,42 +2,42 @@
 #include "../incl/binnify.h"
 #include "../incl/message.h"
 
-void		connect_workers(t_list **workers, t_workerset *set, int proto)
+void		connect_workers(t_swis **workers, t_workerset *set, int proto)
 {
 	t_wrkr		*worker;
 
 	if (!(*workers))
 		return ;
-	if ((*workers)->prev)
-		connect_workers(&(*workers)->prev, set, proto);
-	if ((*workers)->next)
-		connect_workers(&(*workers)->next, set, proto);
-	worker = (t_wrkr*)(*workers)->data;
-	if ((worker->sock = socket(PF_INET, SOCK_STREAM, proto)) == -1)
-		hermes_error(EXIT_FAILURE, 2, "socket()", strerror(errno));
-	if (connect(worker->sock, (const struct sockaddr *)&worker->sin, sizeof(worker->sin)) == -1)
+	while (!LIST_END(workers))
 	{
-		hermes_error(FAILURE, 2, "could not connect to worker. dropping:", inet_ntoa(worker->sin.sin_addr));
-		if (remove_node_bst(&set->wrkrs, worker, worker_cmp, worker_min) == true)
-			set->cnt -= 1;
+		worker = (t_wrkr *) (*workers)->slist->start->next->data;
+		if ((worker->sock = socket(PF_INET, SOCK_STREAM, proto)) == -1)
+			hermes_error(EXIT_FAILURE, 2, "socket()", strerror(errno));
+		if (connect(worker->sock, (const struct sockaddr *) &worker->sin,
+					sizeof(worker->sin)) == -1) {
+			hermes_error(FAILURE, 2, "could not connect to worker. dropping:",
+						 inet_ntoa(worker->sin.sin_addr));
+			if (remove_node_bst(&set->wrkrs->stree->root, worker, worker_cmp, worker_min) ==
+				true)
+				set->cnt -= 1;
+		} else {
+			worker->stat.connected = true;
+			printf("connected to %s.\n", inet_ntoa(worker->sin.sin_addr));
+		}
+		LIST_LOOP(workers);
 	}
-	else
-	{
-		worker->stat.connected = true;
-		printf("connected to %s.\n", inet_ntoa(worker->sin.sin_addr));
-	}
+	LIST_RESET(workers);
 }
 
-void				send_workers_binn(t_list **workers, t_workerset *set, binn *obj, uint8_t code)
+void				send_workers_binn(t_swis **workers, t_workerset *set, binn *obj, uint8_t code)
 {
-	t_wrkr			*wrkr;
 
-	if ((*workers)->prev)
-		send_workers_binn(&(*workers)->prev, set, obj, code);
-	wrkr = (*workers)->data;
-	hermes_send_binn(wrkr->sock, code, obj);
-	if ((*workers)->next)
-		send_workers_binn(&(*workers)->next, set, obj, code);
+	while (!LIST_END(workers))
+	{
+		hermes_send_binn(((t_wrkr*)LIST_DATA(workers))->sock, code, obj);
+		LIST_LOOP(workers);
+	}
+	LIST_END(workers);
 }
 
 int					manager_loop(t_mgr *mgr)
@@ -49,7 +49,7 @@ int					manager_loop(t_mgr *mgr)
 	binn			*syn_ports;
 	binn			*udp_ports;
 
-	tree_to_deque(mgr->workers->wrkrs);
+	mgr->workers->wrkrs = tree_to_deque(&mgr->workers->wrkrs->stree);
 	mgr->stat.running = true;
 	if ((proto = getprotobyname("tcp")) == 0)
 		return (FAILURE);
@@ -78,7 +78,7 @@ int					manager_loop(t_mgr *mgr)
 		if (mgr->job.udp_ports)
 		{
 			udp_ports = binnify_portset(mgr->job.udp_ports);
-			send_workers_binn(&mgr->workers->workers.tree wrkrs, mgr->workers, udp_ports, C_OBJ_PS_ACK);
+			send_workers_binn(&mgr->workers->wrkrs, mgr->workers, udp_ports, C_OBJ_PS_ACK);
 			free(udp_ports);
 		}
 	}
@@ -86,7 +86,7 @@ int					manager_loop(t_mgr *mgr)
 
 	while (mgr->stat.running == true)
 	{
-		/* TODO grab "normal" chunk of ips from mgr->job and assign them to mgr->workers, and mgr->cwork */
+		/* TODO grab "normal" chunk of ips from mgr->job and assign them to mgr->wrkrs, and mgr->cwork */
 		/* TODO split mgr->cwork into smaller target_sets and assign to targetset_list for threads */
 		/* TODO pass divided work to threads */
 		if (mgr->job.targets->total == 0)

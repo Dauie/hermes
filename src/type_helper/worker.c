@@ -28,15 +28,15 @@ int			worker_cmp(void *wrkr_left, void *wrk_right)
 	return (ip4_cmp(&left->sin.sin_addr, &right->sin.sin_addr));
 }
 
-void		*worker_min(t_list *tree)
+void		*worker_min(t_node *tree)
 {
 	t_wrkr	*save;
 
 	if (!tree)
 		return (NULL);
 	save = new_worker();
-	while (tree->prev)
-		tree = tree->next;
+	while (tree->right)
+		tree = tree->left;
 	memcpy(save, tree->data, sizeof(t_wrkr));
 	return (save);
 }

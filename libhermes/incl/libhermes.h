@@ -9,9 +9,7 @@
 # include <stdio.h>
 # include <stdarg.h>
 # include <stdbool.h>
-# include <stdbool.h>
 # include <pthread.h>
-
 # include "error_codes.h"
 
 /*
@@ -21,37 +19,44 @@
 /*
 ** Wrapper Struct for different data structures
 */
-//typedef union 			s_data
-//{
-//	struct s_swislist 	*slist;
-//	struct s_swistree 	*tree;
-//}						t_data;
+typedef union			s_swis
+{
+	struct s_swislist 	*slist;
+	struct s_swistree 	*stree;
+}						t_swis;
+
+typedef struct		s_swistree
+{
+	size_t 			size;
+	struct s_node	*root;
+	struct s_node	*min;
+	struct s_node	*max;
+	void			*data;
+}					t_tree;
 
 typedef struct 		s_swislist
 {
 	size_t 			size;
-	struct s_list	*start;
-	struct s_list	*end;
-	struct s_list	*min;
-	struct s_list	*max;
+	struct s_item	*start;
+	struct s_item	*end;
+	struct s_item	*min;
+	struct s_item	*max;
 	void			*data; /* auxiliary data */
 }					t_deque;
-
-
 
 typedef struct		s_node
 {
 	struct s_node	*left;
 	struct s_node	*right;
 	void			*data;
-}					s_node;
+}					t_node;
 
-typedef struct		s_list
+typedef struct		s_item
 {
-	struct s_list	*prev;
-	struct s_list	*next;
+	struct s_item	*prev;
+	struct s_item	*next;
 	void			*data;
-}					t_list;
+}					t_item;
 
 typedef struct 			s_thread
 {
@@ -92,29 +97,32 @@ void				*memalloc(size_t size);
 /*
 **	Node helper functions
 */
-t_list				*new_node(void **data);
-void				del_node(t_list **node, bool deldata);
+t_node				*new_node(void **data);
+void				del_node(t_node **node, bool deldata);
 
 /*
 **	BST Functions
 */
-bool				add_node_bst(t_list **tree, void **data, int (*cmp)(void *, void *));
-bool				remove_node_bst(t_list **tree, void *key, int (*cmp)(void *, void *), void *(*min)(t_list *));
-t_list				*bst_search(t_list **tree, void *data, int (*cmp)(void *, void *));
-t_list				*tree_search(t_list **tree, void *data, int (*cmp)(void *, void *));
+t_deque				*tree_to_deque(t_tree **tree);
+bool				add_node_bst(t_node **tree, void **data, int (*cmp)(void *, void *));
+bool				remove_node_bst(t_node **node, void *key, int (*cmp)(void *, void *),
+									void *(*min)(t_node *));
+t_node				*bst_search(t_node **tree, void *data, int (*cmp)(void *, void *));
+t_node				*tree_search(t_node **tree, void *data, int (*cmp)(void *, void *));
 
 /*
 **	List Functions
 */
 void				del_list(t_deque **list, bool deldata);
-bool				add_list_end(t_list **list, void **node);
-bool				add_list_head(t_list **list, void **data);
-bool				remove_node_list(t_list **node, bool deldata);
-bool				remove_list_head(t_list **list, bool deldata);
-t_list				*pop(t_deque **list);
+//bool				add_list_end(t_list **list, void **node);
+//bool				add_list_head(t_list **list, void **data);
+//bool				remove_node_list(t_list **node, bool deldata);
+//bool				remove_list_head(t_list **list, bool deldata);
+t_node				*pop(t_deque **list);
 void				*peek(t_deque **list);
 bool				enqueue(t_deque **list, void **data);
 bool				push(t_deque **list, void **data);
+t_deque				*new_deque(void);
 
 /*
 **	Error Management Functions

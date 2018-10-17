@@ -36,8 +36,8 @@ typedef struct			s_targetset
 	uint32_t			total;
 	uint32_t			ip_cnt;
 	uint32_t			rng_cnt;
-	t_list				*ips;						/*t_list tree containing t_ip4 structs*/
-	t_list				*iprngs;					/*t_list tree containing t_ip4rng structs*/
+	t_swis				*ips;						/*t_swis tree containing t_ip4 structs*/
+	t_swis				*iprngs;					/*t_swis tree containing t_ip4rng structs*/
 }						t_targetset;
 
 typedef struct			s_ip4bytes
@@ -65,8 +65,8 @@ typedef struct			s_portset
 	uint16_t			total;
 	uint16_t			port_cnt;
 	uint16_t			rng_cnt;
-	t_list				*ports;
-	t_list				*prtrngs;
+	t_swis				*ports;
+	t_swis				*prtrngs;
 }						t_portset;
 
 typedef struct			s_optbitf
@@ -156,7 +156,7 @@ typedef struct			s_workerset
 {
 	uint32_t			cnt;
 	uint32_t			wrking_cnt;
-	t_data				workers;				/*t_list tree containing t_wrkr structs*/
+	t_swis				*wrkrs;				/*t_swis tree containing t_wrkr structs*/
 }						t_workerset;
 
 typedef struct			s_result
@@ -182,7 +182,7 @@ t_job					*new_job(void);
 
 t_ip4					*new_ip4(void);
 int						ip4_cmp(void *left, void *right);
-void					*ip4_min(t_list *tree);
+void					*ip4_min(t_swis *tree);
 in_addr_t				ip4_increment(in_addr_t ip, uint32_t increase);
 in_addr_t				ip4_decrement(in_addr_t ip, uint32_t decrease);
 uint32_t				ip4_diff(in_addr_t left, in_addr_t right);
@@ -191,8 +191,8 @@ t_ip4rng				*new_ip4range(void);
 int						ip4rng_cmp(void *ipr_left, void *ipr_right);
 int						ip4rng_overlap_cmp(void *left, void *right);
 int						ip4_ip4rng_overlap_cmp(void *ip, void *iprng);
-void					*ip4rng_min(t_list *tree);
-t_list					*split_ip4rng_portions(t_ip4rng *data,
+void					*ip4rng_min(t_swis *tree);
+t_swis					*split_ip4rng_portions(t_ip4rng *data,
 												 uint32_t splits);
 t_ip4rng				*slice_ip4rng(t_targetset **src, uint32_t amt);
 
@@ -200,20 +200,20 @@ t_targetset				*new_targetset(void);
 
 t_port					*new_port(void);
 int						port_cmp(void *prt_left, void *prt_right);
-void					*port_min(t_list *tree);
+void					*port_min(t_swis *tree);
 
 t_prtrng				*new_portrange(void);
 t_portset				*new_portset();
 int						portrng_cmp(void *rng_left, void *rng_right);
 int						port_prtrng_overlap_cmp(void *prt, void *rng);
 int						portrng_overlap_cmp(void *rng_left, void *rng_right);
-void					*portrng_min(t_list *tree);
+void					*portrng_min(t_swis *tree);
 
 t_workerset				*new_workerset();
 
 t_wrkr					*new_worker(void);
 int						worker_cmp(void *wrkr_left, void *wrkr_right);
-void					*worker_min(t_list *tree);
+void					*worker_min(t_node *tree);
 
 int						sanity_check(t_mgr *mgr);
 void					do_exclusions(t_mgr *mgr);
@@ -224,6 +224,6 @@ int						manager_loop(t_mgr *mgr);
 void					partition_targetset(t_targetset **dst,
 											t_targetset **src,
 											uint32_t amt);
-int						send_work(t_list **wrkr_tree, t_job *job);
+int						send_work(t_swis **wrkr_tree, t_job *job);
 
 #endif

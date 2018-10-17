@@ -18,6 +18,22 @@
 #define BYTORD_SUM(x, y) ((htonl(ntohl(x) + ntohl(y))))
 #endif
 
+#ifndef LIST_END
+#define LIST_END(x) ((*x)->slist->start == (*x)->slist->end)
+#endif
+
+#ifndef LIST_LOOP
+#define LIST_LOOP(x) ((*x)->slist->start = (*x)->slist->start->next)
+#endif
+
+#ifndef LIST_RESET
+#define LIST_RESET(x) ((*x)->slist->start = (*x)->slist->end->next)
+#endif
+
+#ifndef LIST_DATA
+#define LIST_DATA(x) ((*x)->slist->start->data)
+#endif
+
 # define DEF_TCP_PROBE_PORT (80)
 # define DEF_SCTP_PROBE_PORT (80)
 # define DEF_UDP_PROBE_PORT (40125)
