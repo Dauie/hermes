@@ -49,10 +49,13 @@ void 		serialize(t_node **list, t_node **tree, bool (*append) (t_node **, void *
 	if (!tree || !*tree)
 		return;
 	//enqueue(list, (*tree)->data);
-	append(list, (*tree)->data);
-	//add_list_head(list, (*tree)->data);
 	serialize(list, &(*tree)->left, append);
+
+	append(list, (*tree)->data);
+
 	serialize(list, &(*tree)->right, append);
+	//add_list_head(list, (*tree)->data);
+
 }
 
 t_node		*tree_to_list(t_node **tree)

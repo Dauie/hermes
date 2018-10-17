@@ -339,6 +339,33 @@ binn/test/test_binn_json.c.s:
 	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/binn/test/test_binn_json.c.s
 .PHONY : binn/test/test_binn_json.c.s
 
+libhermes/src/array.o: libhermes/src/array.c.o
+
+.PHONY : libhermes/src/array.o
+
+# target to build an object file
+libhermes/src/array.c.o:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/libhermes/src/array.c.o
+.PHONY : libhermes/src/array.c.o
+
+libhermes/src/array.i: libhermes/src/array.c.i
+
+.PHONY : libhermes/src/array.i
+
+# target to preprocess a source file
+libhermes/src/array.c.i:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/libhermes/src/array.c.i
+.PHONY : libhermes/src/array.c.i
+
+libhermes/src/array.s: libhermes/src/array.c.s
+
+.PHONY : libhermes/src/array.s
+
+# target to generate assembly for a file
+libhermes/src/array.c.s:
+	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/libhermes/src/array.c.s
+.PHONY : libhermes/src/array.c.s
+
 libhermes/src/bst.o: libhermes/src/bst.c.o
 
 .PHONY : libhermes/src/bst.o
@@ -1365,33 +1392,6 @@ src/type_helper/worker.c.s:
 	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/type_helper/worker.c.s
 .PHONY : src/type_helper/worker.c.s
 
-src/unit_testing/ip_operations.o: src/unit_testing/ip_operations.c.o
-
-.PHONY : src/unit_testing/ip_operations.o
-
-# target to build an object file
-src/unit_testing/ip_operations.c.o:
-	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/unit_testing/ip_operations.c.o
-.PHONY : src/unit_testing/ip_operations.c.o
-
-src/unit_testing/ip_operations.i: src/unit_testing/ip_operations.c.i
-
-.PHONY : src/unit_testing/ip_operations.i
-
-# target to preprocess a source file
-src/unit_testing/ip_operations.c.i:
-	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/unit_testing/ip_operations.c.i
-.PHONY : src/unit_testing/ip_operations.c.i
-
-src/unit_testing/ip_operations.s: src/unit_testing/ip_operations.c.s
-
-.PHONY : src/unit_testing/ip_operations.s
-
-# target to generate assembly for a file
-src/unit_testing/ip_operations.c.s:
-	$(MAKE) -f CMakeFiles/ft_nmap.dir/build.make CMakeFiles/ft_nmap.dir/src/unit_testing/ip_operations.c.s
-.PHONY : src/unit_testing/ip_operations.c.s
-
 src/unit_testing/munit.o: src/unit_testing/munit.c.o
 
 .PHONY : src/unit_testing/munit.o
@@ -1506,6 +1506,9 @@ help:
 	@echo "... binn/test/test_binn_json.o"
 	@echo "... binn/test/test_binn_json.i"
 	@echo "... binn/test/test_binn_json.s"
+	@echo "... libhermes/src/array.o"
+	@echo "... libhermes/src/array.i"
+	@echo "... libhermes/src/array.s"
 	@echo "... libhermes/src/bst.o"
 	@echo "... libhermes/src/bst.i"
 	@echo "... libhermes/src/bst.s"
@@ -1620,9 +1623,6 @@ help:
 	@echo "... src/type_helper/worker.o"
 	@echo "... src/type_helper/worker.i"
 	@echo "... src/type_helper/worker.s"
-	@echo "... src/unit_testing/ip_operations.o"
-	@echo "... src/unit_testing/ip_operations.i"
-	@echo "... src/unit_testing/ip_operations.s"
 	@echo "... src/unit_testing/munit.o"
 	@echo "... src/unit_testing/munit.i"
 	@echo "... src/unit_testing/munit.s"
