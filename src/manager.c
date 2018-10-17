@@ -71,7 +71,7 @@ int					manager_loop(t_mgr *mgr)
 			if (!TYPE_WORKER(mgr)->stat.working)
 			{
 				partition_targetset(
-					&(TYPE_WORKER(mgr)->job->targets,
+					&TYPE_WORKER(mgr)->job->targets,
 					&mgr->job.targets,
 					/*whatever amount is*/
 				);
