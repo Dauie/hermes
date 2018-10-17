@@ -34,10 +34,10 @@ void		loop_tree_to_list(t_node **list, t_node **tree)
 	if (!tree || !*tree)
 		return ;
 	if ((*tree)->left)
-		loop_tree_to_list(&(*tree)->left, list);
-	enqueue(list, (*tree)->data);
+		loop_tree_to_list(list, &(*tree)->left);
+	enqueue(list, &(*tree)->data);
 	if ((*tree)->right)
-		loop_tree_to_list(&(*tree)->right, list);
+		loop_tree_to_list(list, &(*tree)->right);
 }
 
 t_node		*tree_to_list(t_node **tree)

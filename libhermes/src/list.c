@@ -81,13 +81,17 @@ void			del_list(t_node **list, bool deldata)
 
 bool			rm_node(t_node **node, bool deldata)
 {
+	t_node *tmp;
+
 	if (!node || !*node)
 		return (false);
-	if ((*node)->left)
-		(*node)->left->right = (*node)->right;
-	if ((*node)->right)
-		(*node)->right->left = (*node)->left;
-	del_node(node, deldata);
+	tmp = *node;
+	*node = (*node)->right;
+	if (tmp->left)
+		tmp->left->right = tmp->right;
+	if (tmp->right)
+		tmp->right->left = tmp->left;
+	del_node(&tmp, deldata);
 	return (true);
 }
 

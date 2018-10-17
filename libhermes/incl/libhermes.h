@@ -9,7 +9,6 @@
 # include <stdio.h>
 # include <stdarg.h>
 # include <stdbool.h>
-# include <stdbool.h>
 # include <pthread.h>
 
 # include "error_codes.h"
