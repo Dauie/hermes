@@ -13,7 +13,7 @@
 **	sent, else error is thrown. Job should be saved and re-distributed;
 */
 
-void	distribute_obj(t_node **wrkr_tree, uint8_t type, binn *obj)
+void	distribute_obj(t_list **wrkr_tree, uint8_t type, binn *obj)
 {
 	t_wrkr *wrkr;
 
@@ -27,7 +27,7 @@ void	distribute_obj(t_node **wrkr_tree, uint8_t type, binn *obj)
 		distribute_obj(&(*wrkr_tree)->right, type, obj);
 }
 
-int			send_work(t_node **wrkr_tree, t_job *job)
+int			send_work(t_list **wrkr_tree, t_job *job)
 {
 	binn	*opts;
 	binn	*ports;

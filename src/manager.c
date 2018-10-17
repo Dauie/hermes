@@ -2,16 +2,16 @@
 #include "../incl/binnify.h"
 #include "../incl/message.h"
 
-void		connect_workers(t_node **workers, t_workerset *set, int proto)
+void		connect_workers(t_list **workers, t_workerset *set, int proto)
 {
 	t_wrkr		*worker;
 
 	if (!(*workers))
 		return ;
-	if ((*workers)->left)
-		connect_workers(&(*workers)->left, set, proto);
-	if ((*workers)->right)
-		connect_workers(&(*workers)->right, set, proto);
+	if ((*workers)->prev)
+		connect_workers(&(*workers)->prev, set, proto);
+	if ((*workers)->next)
+		connect_workers(&(*workers)->next, set, proto);
 	worker = (t_wrkr*)(*workers)->data;
 	if ((worker->sock = socket(PF_INET, SOCK_STREAM, proto)) == -1)
 		hermes_error(EXIT_FAILURE, 2, "socket()", strerror(errno));
@@ -28,16 +28,16 @@ void		connect_workers(t_node **workers, t_workerset *set, int proto)
 	}
 }
 
-void				send_workers_binn(t_node **workers, t_workerset *set, binn *obj, uint8_t code)
+void				send_workers_binn(t_list **workers, t_workerset *set, binn *obj, uint8_t code)
 {
 	t_wrkr			*wrkr;
 
-	if ((*workers)->left)
-		send_workers_binn(&(*workers)->left, set, obj, code);
+	if ((*workers)->prev)
+		send_workers_binn(&(*workers)->prev, set, obj, code);
 	wrkr = (*workers)->data;
 	hermes_send_binn(wrkr->sock, code, obj);
-	if ((*workers)->right)
-		send_workers_binn(&(*workers)->right, set, obj, code);
+	if ((*workers)->next)
+		send_workers_binn(&(*workers)->next, set, obj, code);
 }
 
 int					manager_loop(t_mgr *mgr)
@@ -49,6 +49,7 @@ int					manager_loop(t_mgr *mgr)
 	binn			*syn_ports;
 	binn			*udp_ports;
 
+	tree_to_deque(mgr->workers->wrkrs);
 	mgr->stat.running = true;
 	if ((proto = getprotobyname("tcp")) == 0)
 		return (FAILURE);
@@ -77,11 +78,12 @@ int					manager_loop(t_mgr *mgr)
 		if (mgr->job.udp_ports)
 		{
 			udp_ports = binnify_portset(mgr->job.udp_ports);
-			send_workers_binn(&mgr->workers->wrkrs, mgr->workers, udp_ports, C_OBJ_PS_ACK);
+			send_workers_binn(&mgr->workers->workers.tree wrkrs, mgr->workers, udp_ports, C_OBJ_PS_ACK);
 			free(udp_ports);
 		}
 	}
 	/* TODO Spawn thread pool */
+
 	while (mgr->stat.running == true)
 	{
 		/* TODO grab "normal" chunk of ips from mgr->job and assign them to mgr->workers, and mgr->cwork */

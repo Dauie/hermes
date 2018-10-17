@@ -41,7 +41,7 @@ int				port_cmp(void *prt_left, void *prt_right)
 		return (-1);
 }
 
-void			*port_min(t_node *tree)
+void			*port_min(t_list *tree)
 {
 	t_port		*save;
 
@@ -104,7 +104,7 @@ int				portrng_overlap_cmp(void *rng_left, void *rng_right)
 
 }
 
-void			*portrng_min(t_node *tree)
+void			*portrng_min(t_list *tree)
 {
 	t_prtrng	*save;
 

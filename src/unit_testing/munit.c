@@ -180,14 +180,14 @@ static MunitResult test_split_ip4rng_n(const MunitParameter params[], void *user
 	parse_ip(&r[6].s_addr,"192.168.1.192");
 	parse_ip(&r[7].s_addr,"192.168.1.255");
 
-	t_node *tree;
+	t_list *tree;
 	parse_ip(&start, ip);
 	parse_cidr_mask(&mask, cidr);
 	set_ip4range(&range, &start, &mask);
 	printf("%u\n", range.size);
 	tree = split_ip4rng_portions(&range, 4);
 	char s[20], e[20];
-	t_node *tmp = tree;
+	t_list *tmp = tree;
 	while (tmp) {
 		inet_ntop(AF_INET, &((t_ip4rng*)tmp->data)->start, s, 20);
 		inet_ntop(AF_INET, &((t_ip4rng*)tmp->data)->end, e, 20);

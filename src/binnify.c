@@ -1,6 +1,6 @@
 #include "../incl/hermes.h"
 
-static void		get_porttree_from_binnlist(t_node **tree, binn *list)
+static void		get_porttree_from_binnlist(t_list **tree, binn *list)
 {
 	int			i;
 	int			cnt;
@@ -16,7 +16,7 @@ static void		get_porttree_from_binnlist(t_node **tree, binn *list)
 	}
 }
 
-static void		get_ip4tree_from_binnlist(t_node **tree, binn *list)
+static void		get_ip4tree_from_binnlist(t_list **tree, binn *list)
 {
 	int			i;
 	int			cnt;
@@ -32,7 +32,7 @@ static void		get_ip4tree_from_binnlist(t_node **tree, binn *list)
 	}
 }
 
-static void		get_prtrngtree_from_binnlist(t_node **tree, binn *list)
+static void		get_prtrngtree_from_binnlist(t_list **tree, binn *list)
 {
 	int			i;
 	int			cnt;
@@ -52,7 +52,7 @@ static void		get_prtrngtree_from_binnlist(t_node **tree, binn *list)
 	}
 }
 
-static void		get_ip4rngtree_from_binnlist(t_node **tree, binn *list)
+static void		get_ip4rngtree_from_binnlist(t_list **tree, binn *list)
 {
 	int			i;
 	int			cnt;
@@ -72,7 +72,7 @@ static void		get_ip4rngtree_from_binnlist(t_node **tree, binn *list)
 	}
 }
 
-static void		add_ip4tree_to_binnlist(binn **list, t_node *ips)
+static void		add_ip4tree_to_binnlist(binn **list, t_list *ips)
 {
 	if (ips->left)
 		add_ip4tree_to_binnlist(list, ips->left);
@@ -83,7 +83,7 @@ static void		add_ip4tree_to_binnlist(binn **list, t_node *ips)
 		add_ip4tree_to_binnlist(list, ips->right);
 }
 
-static void		add_ip4rngtree_to_binnlist(binn **list, t_node *ip4rng)
+static void		add_ip4rngtree_to_binnlist(binn **list, t_list *ip4rng)
 {
 	t_ip4rng	*rng;
 	binn		*obj;
@@ -104,7 +104,7 @@ static void		add_ip4rngtree_to_binnlist(binn **list, t_node *ip4rng)
 		add_ip4rngtree_to_binnlist(list, ip4rng->right);
 }
 
-static void		add_porttree_to_binnlist(binn **list, t_node *ports)
+static void		add_porttree_to_binnlist(binn **list, t_list *ports)
 {
 	if (ports->left)
 		add_porttree_to_binnlist(list, ports->left);
@@ -115,7 +115,7 @@ static void		add_porttree_to_binnlist(binn **list, t_node *ports)
 		add_porttree_to_binnlist(list, ports->right);
 }
 
-static void		add_prtrngtree_to_binnlist(binn **list, t_node *prtrngs)
+static void		add_prtrngtree_to_binnlist(binn **list, t_list *prtrngs)
 {
 	t_prtrng	*rng;
 	binn		*obj;

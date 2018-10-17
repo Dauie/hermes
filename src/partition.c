@@ -54,10 +54,10 @@ uint32_t		partition_ip4rng(t_targetset **dst, t_targetset **src,
 	return (amt);
 }
 
-t_node			*new_targetset_list(uint32_t count)
+t_list			*new_targetset_list(uint32_t count)
 {
 	t_targetset	*newset;
-	t_node		*set_list;
+	t_list		*set_list;
 
 	set_list = NULL;
 	while (count)

@@ -2,94 +2,121 @@
 #include "sys/errno.h"
 #include "../incl/libhermes.h"
 
-bool			enqueue(t_node **list, void **data)
+t_deque			*new_deque(void)
 {
-	t_node *node;
+	t_deque *deq;
 
-	if (!list || !data)
+	if (!(deq = (t_deque*)memalloc(sizeof(t_deque))))
+		hermes_error(FAILURE, 2, "malloc()", strerror(errno));
+	return (deq);
+}
+
+bool			enqueue(t_deque **deq, void **data)
+{
+	t_list *node;
+
+	if (!deq || !*data)
 		return (false);
 	node = new_node(data);
-	if (!(*list)->left && !(*list)->right)
+	if (!*deq)
+		*deq = new_deque();
+	if (!(*deq)->start && !(*deq)->end)
 	{
-		(*list)->left = node;
-		(*list)->right = node;
+		(*deq)->start = node;
+		(*deq)->end = node;
+		node->next = node;
+		node->prev = node;
 		return (true);
 	}
-	(*list)->left->left = node;
-	node->right = (*list)->left;
-	(*list)->left = node;
+	(*deq)->end->next = node;
+	(*deq)->start->prev = node;
+	(*deq)->start = node;
+	(*deq)->size++;
+	if (node > (*deq)->max)
+		(*deq)->max = node;
+	else if (node < (*deq)->min)
+		(*deq)->min = node;
 	return (true);
 }
 
-bool			push(t_node **list, void **data)
+bool			push(t_deque **deq, void **data)
 {
-	t_node *node;
+	t_list *node;
 
-	if (!list || !data)
+	if (!deq || !data)
 		return (false);
 	node = new_node(data);
-	if (!(*list)->left && !(*list)->right)
+	if (!(*deq)->start && !(*deq)->end)
 	{
-		(*list)->left = node;
-		(*list)->right = node;
+		(*deq)->start = node;
+		(*deq)->end = node;
+		node->next = node;
+		node->prev = node;
 		return (true);
 	}
-	(*list)->right->right = node;
-	node->left = (*list)->right;
-	(*list)->right = node;
+	(*deq)->end->next = node;
+	(*deq)->start->prev = node;
+	(*deq)->end = node;
+	(*deq)->size++;
+	if (node > (*deq)->max)
+		(*deq)->max = node;
+	else if (node < (*deq)->min)
+		(*deq)->min = node;
 	return (true);
 }
 
-void			*peek(t_node **list)
+void			*peek(t_deque **deq)
 {
-	if (!list)
+	if (!deq)
 		return (NULL);
-	if ((*list)->right)
-		return ((*list)->right->data);
+	if ((*deq)->end)
+		return ((*deq)->end->data);
 	return (NULL);
 }
 
-t_node			*pop(t_node **list)
+t_list			*pop(t_deque **deq)
 {
-	t_node		*tmp;
+	t_list		*tmp;
 
-	if (!list)
+	if (!deq)
 		return (NULL);
-	if (&(*list)->left == &(*list)->right)
-		return (*list);
-	tmp = (*list)->right;
-	(*list)->right = (*list)->right->left;
+	if (&(*deq)->end == &(*deq)->start)
+		return ((*deq)->start);
+	tmp = (*deq)->end;
+	(*deq)->end = tmp->prev;
+	(*deq)->end->next = (*deq)->start;
+	(*deq)->start->prev = (*deq)->end;
 	return (tmp);
 }
 
-void			del_list(t_node **list, bool deldata)
+void			del_list(t_deque **deq, bool deldata)
 {
-	t_node		*tmp;
+	t_list		*tmp;
 
-	if (!list)
+	if (!deq)
 		return ;
-	while (*list)
+	tmp = (*deq)->start;
+	while (tmp)
 	{
-		tmp = (*list)->right;
-		if (deldata && (*list)->data)
+		if (deldata && tmp->data)
 		{
-			free((*list)->data);
-			(*list)->data = NULL;
+			free(tmp->data);
+			tmp->data = NULL;
 		}
-		free(*list);
-		*list = NULL;
-		*list = tmp;
+		tmp = tmp->next;
+		free(tmp->prev);
+		tmp->prev = NULL;
 	}
 }
 
-bool			remove_node_list(t_node **node, bool deldata)
+bool			remove_node_list(t_list **node, bool deldata)
 {
 	if (!node || !*node)
 		return (false);
-	if ((*node)->left)
-		(*node)->left->right = (*node)->right;
-	if ((*node)->right)
-		(*node)->right->left = (*node)->left;
+	if ((*node)->prev)
+		(*node)->prev->next = (*node)->next;
+	if ((*node)->next)
+		(*node)->next->prev = (*node)->prev;
 	if (deldata && (*node)->data)
 	{
 		free((*node)->data);
@@ -100,55 +127,55 @@ bool			remove_node_list(t_node **node, bool deldata)
 	return (true);
 }
 
-bool			remove_list_head(t_node **list, bool deldata)
+bool			remove_list_head(t_list **deq, bool deldata)
 {
-	t_node		*node;
+	t_list		*node;
 
-	if (!list)
+	if (!deq)
 		return (false);
-	node = *list;
-	(*list) = (*list)->right;
+	node = *deq;
+	(*deq) = (*deq)->next;
 	if (deldata && node->data)
 		free(node->data);
 	free(node);
 	return (true);
 }
 
-bool			add_list_head(t_node **list, void **data)
+bool			add_list_head(t_list **deq, void **data)
 {
-	t_node		*node;
+	t_list		*node;
 
-	if (!list || !data || !*data)
+	if (!deq || !data || !*data)
 		return (false);
 	node = new_node(data);
-	if (*list == NULL)
-		*list = node;
+	if (*deq == NULL)
+		*deq = node;
 	else
 	{
-		node->right = *list;
-		*list = node;
-		(*list)->right->left = *list;
+		node->next = *deq;
+		*deq = node;
+		(*deq)->next->prev = *deq;
 	}
 	return (true);
 }
 
-bool			add_list_end(t_node **list, void **data)
+bool			add_list_end(t_list **deq, void **data)
 {
-	t_node		*tmp;
-	t_node		*node;
+	t_list		*tmp;
+	t_list		*node;
 
-	if (!list || !data || !*data)
+	if (!deq || !data || !*data)
 		return (false);
 	node = new_node(data);
-	if (*list == NULL)
-		*list = node;
+	if (*deq == NULL)
+		*deq = node;
 	else
 	{
-		tmp = *list;
-		while (tmp->right)
-			tmp = tmp->right;
-		tmp->right = node;
-		node->left = tmp;
+		tmp = *deq;
+		while (tmp->next)
+			tmp = tmp->next;
+		tmp->next = node;
+		node->prev = tmp;
 	}
 	return (true);
 }
@@ -158,28 +185,28 @@ typedef struct  s_data {
 	int         value;
 }               t_data;
 
-void        print_tree(t_node *tree)
+void        print_tree(t_list *tree)
 {
 	if (tree && tree->data)
 	{
 		printf("current value -> %i\n", ((t_data*)tree->data)->value);
-		print_tree(tree->left);
-		print_tree(tree->right);
+		print_tree(tree->prev);
+		print_tree(tree->next);
 	}
 	else
 		printf("Branch done!\n");
 	return;
 }
 
-void    *test_min(t_node *tree)
+void    *test_min(t_list *tree)
 {
 	t_data  *save;
 
 	if (!tree)
 		return (NULL);
 	save = (t_data*)memalloc(sizeof(t_data));
-	while (tree->left)
-		tree = tree->left;
+	while (tree->prev)
+		tree = tree->prev;
 	memcpy(save, tree->data, sizeof(t_data));
 	return (save);
 }
@@ -193,8 +220,8 @@ int     test_cmp(void *l, void* r)
 int     main(void)
 {
 	t_data      *data;
-	t_node      *node;
-	t_node      *tree;
+	t_list      *node;
+	t_list      *tree;
 	char        input[20];
 
 	tree = new_node();
