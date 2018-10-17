@@ -84,7 +84,7 @@ bool				add_list_end(t_node **list, void **node);
 bool				add_list_head(t_node **list, void **data);
 bool				remove_node_list(t_node **node, bool deldata);
 bool				remove_list_head(t_node **list, bool deldata);
-void				serialize(t_node **list, t_node **tree, bool (*append)(t_node **, void **));
+void serialize(t_node **list, t_node **tree);
 
 
 /*

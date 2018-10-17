@@ -195,7 +195,7 @@ int						ip4_ip4rng_overlap_cmp(void *ip, void *iprng);
 void					*ip4rng_min(t_node *tree);
 t_node					*split_ip4rng_portions(t_ip4rng *data,
 												 uint32_t splits);
-t_ip4rng				*slice_ip4rng(t_targetset **src, uint32_t amt);
+t_ip4rng				*slice_ip4rng(t_node **src, uint32_t amt);
 
 t_targetset				*new_targetset(void);
 

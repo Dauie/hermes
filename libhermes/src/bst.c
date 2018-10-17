@@ -39,25 +39,21 @@ void		del_tree(t_node **tree)
 //	return (w_list);
 //}
 
-void 		serialize(t_node **list, t_node **tree, bool (*add)(t_node **, void **))
+void		serialize(t_node **list, t_node **tree)
 {
 	if (!tree || !*tree)
 		return;
 	//enqueue(list, (*tree)->data);
-	serialize(list, &(*tree)->left, add);
-
-	add(list, (*tree)->data);
-
-	serialize(list, &(*tree)->right, add);
-	//add_list_head(list, (*tree)->data);
-
+	serialize(list, &(*tree)->left);
+	enqueue(list, (*tree)->data);
+	serialize(list, &(*tree)->right);
 }
 
 t_node		*tree_to_list(t_node **tree)
 {
 	t_node *w_list;
 
-	serialize(&w_list, tree, enqueue);
+	serialize(&w_list, tree);
 	del_tree(tree);
 	return (w_list);
 }

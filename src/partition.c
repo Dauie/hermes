@@ -1,65 +1,38 @@
 #include "../incl/hermes.h"
 
 /* TODO this function probably needs to take a count, to keep all ips from being distributed if total is over a certain size */
-uint32_t		partition_ip4(t_targetset **dst, t_targetset **src,
+uint32_t		partition_ip4(t_node **dst, t_node **src,
 							  uint32_t amt)
 {
-	uint32_t portion;
-
-	portion = amt;
-	while ((*src)->ips && amt)
-	{
-		if (add_list_head(&(*dst)->ips, &(*src)->ips->data) == true)
-		{
-			(*dst)->ip_cnt++;
-			(*dst)->total++;
-		}
-		if (remove_node_bst(&(*dst)->ips, (*dst)->ips->data, ip4_cmp, ip4_min) == true)
-		{
-			(*src)->ip_cnt--;
-			(*src)->total--;
-		}
+	if (!dst || !amt)
+		return (amt);
+	partition_ip4(dst, &(*src)->left, amt);
+	if (add_node_bst(dst, &(*src)->data, ip4_cmp) == true)
 		amt--;
-	}
-	portion -= amt;
-	return (portion);
+	partition_ip4(dst, &(*src)->right, amt);
+	return (amt);
 }
 
-uint32_t		partition_ip4rng(t_targetset **dst, t_targetset **src,
+uint32_t		partition_ip4rng(t_node **dst, t_node **src,
 								 uint32_t amt)
 {
 	t_ip4rng *slice;
-	uint32_t portion;
 
-	portion = amt;
-	while ((*src)->iprngs && amt)
+	if (!dst || !amt)
+		return (amt);
+	if (((t_ip4rng*)(*src)->data)->size > amt)
 	{
-		if (IP4RNG_DATA((*src))->size > amt)
-		{
-			if (!(slice = slice_ip4rng(src, amt)))
-				hermes_error(SUCCESS, 1, "no src or amt provided for slice_ip4rng(src, amt)");
-			if (add_list_head(&(*dst)->iprngs, (void**)slice) == true)
-			{
-				(*dst)->ip_cnt += amt;
-				(*dst)->total++;
-			}
-		}
-		else
-		{
-			if (add_list_head(&(*src)->iprngs, (*src)->iprngs->data))
-			{
-				(*dst)->ip_cnt += IP4RNG_DATA((*dst))->size;
-				(*dst)->total++;
-			}
-			if (remove_node_bst(&(*src)->iprngs, (*src)->iprngs->data, ip4rng_cmp, ip4rng_min) == true)
-			{
-				(*src)->ip_cnt--;
-				(*src)->total--;
-			}
-		}
+		if (!(slice = slice_ip4rng(src, amt)))
+			hermes_error(SUCCESS, 1, "no src or amt provided for slice_ip4rng(src, amt)");
+		if (add_node_bst(&(*dst), (void**)slice, ip4rng_cmp) == true)
+			amt--;
 	}
-	portion -= amt;
-	return (portion);
+	else
+	{
+		if (add_node_bst(dst, (*src)->data, ip4rng_cmp))
+			amt--;
+	}
+	return (amt);
 }
 
 t_node			*new_targetset_list(uint32_t count)
@@ -83,7 +56,7 @@ void partition_targetset(t_targetset **dst, t_targetset **src, uint32_t amt)
 {
 	if (!src || !amt || !dst)
 		return;
-	if (!(amt -= partition_ip4(dst, src, amt / 2)))
+	if (!(amt = partition_ip4(&(*dst)->ips, &(*src)->ips, amt / 2)))
 		return;
-	partition_ip4rng(dst, src, amt);
+	partition_ip4rng(&(*dst)->iprngs, &(*src)->iprngs, amt);
 }
