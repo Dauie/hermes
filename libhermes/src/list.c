@@ -2,89 +2,80 @@
 #include "sys/errno.h"
 #include "../incl/libhermes.h"
 
-
-
-bool			enqueue(t_node **list, void **data)
+bool			enqueue(t_node **queue, void **data)
 {
 	t_node *node;
+	t_node *end;
 
-	if (!list || !data)
+	if (!queue || !data || !*data)
 		return (false);
 	node = new_node(data);
-	if (!(*list)->left && !(*list)->right)
+	if (!*queue)
 	{
-		(*list)->left = node;
-		(*list)->right = node;
+		*queue = node;
+		(*queue)->left = *queue;
+		(*queue)->right = *queue;
 		return (true);
 	}
-	(*list)->left->left = node;
-	node->right = (*list)->left;
-	(*list)->left = node;
+	end = (*queue)->left;
+
 	return (true);
 }
 
-bool			push(t_node **list, void **data)
+t_node			*dequeue(t_node **queue)
 {
-	t_node *node;
 
-	if (!list || !data)
+}
+
+
+bool			push_stack(t_node **stack, void **data)
+{
+	t_node		*node;
+
+	if (!stack || !data)
 		return (false);
-	node = new_node(data);
-	if (!(*list)->left && !(*list)->right)
+	if (!(node = new_node(data)))
+		return (false);
+	if (*stack == NULL)
+		*stack = node;
+	else
 	{
-		(*list)->left = node;
-		(*list)->right = node;
-		return (true);
+		node->right = *stack;
+		*stack = node;
+		(*stack)->right->left = *stack;
 	}
-	(*list)->right->right = node;
-	node->left = (*list)->right;
-	(*list)->right = node;
 	return (true);
 }
 
-void			*peek(t_node **list)
-{
-	if (!list)
-		return (NULL);
-	if ((*list)->right)
-		return ((*list)->right->data);
-	return (NULL);
-}
-
-t_node			*pop(t_node **list)
+void			*pop_stack(t_node **stack)
 {
 	t_node		*tmp;
+	void		*data;
 
-	if (!list)
+	if (!stack || !*stack)
 		return (NULL);
-	if (&(*list)->left == &(*list)->right)
-		return (*list);
-	tmp = (*list)->right;
-	(*list)->right = (*list)->right->left;
-	return (tmp);
+	data = (*stack)->data;
+	tmp = *stack;
+	*stack = (*stack)->right;
+	del_node(&tmp, false);
+	return (data);
 }
 
 void			del_list(t_node **list, bool deldata)
 {
 	t_node		*tmp;
 
-	if (!list)
+	if (!list || !*list)
 		return ;
 	while (*list)
 	{
 		tmp = (*list)->right;
-		if (deldata && (*list)->data)
-		{
-			free((*list)->data);
-			(*list)->data = NULL;
-		}
-		free(*list);
-		*list = NULL;
+		del_node(list, deldata);
 		*list = tmp;
 	}
 }
 
-bool			remove_node_list(t_node **node, bool deldata)
+bool			rm_node(t_node **node, bool deldata)
 {
 	if (!node || !*node)
 		return (false);
@@ -92,27 +83,19 @@ bool			remove_node_list(t_node **node, bool deldata)
 		(*node)->left->right = (*node)->right;
 	if ((*node)->right)
 		(*node)->right->left = (*node)->left;
-	if (deldata && (*node)->data)
-	{
-		free((*node)->data);
-		(*node)->data = NULL;
-	}
-	free(*node);
-	*node = NULL;
+	del_node(node, deldata);
 	return (true);
 }
 
-bool			remove_list_head(t_node **list, bool deldata)
+bool			rm_list_head(t_node **list, bool deldata)
 {
 	t_node		*node;
 
-	if (!list)
+	if (!list || !*list)
 		return (false);
 	node = *list;
 	(*list) = (*list)->right;
-	if (deldata && node->data)
-		free(node->data);
-	free(node);
+	del_node(&node, deldata);
 	return (true);
 }
 
@@ -122,7 +105,8 @@ bool			add_list_head(t_node **list, void **data)
 
 	if (!list || !data || !*data)
 		return (false);
-	node = new_node(data);
+	if (!(node = new_node(data)))
+		return (false);
 	if (*list == NULL)
 		*list = node;
 	else

@@ -14,7 +14,7 @@ uint32_t		partition_ip4(t_targetset **dst, t_targetset **src,
 			(*dst)->ip_cnt++;
 			(*dst)->total++;
 		}
-		if (remove_node_bst(&(*dst)->ips, (*dst)->ips->data, ip4_cmp, ip4_min) == true)
+		if (rm_node_bst(&(*dst)->ips, (*dst)->ips->data, ip4_cmp, ip4_min) == true)
 		{
 			(*src)->ip_cnt--;
 			(*src)->total--;
@@ -28,8 +28,8 @@ uint32_t		partition_ip4(t_targetset **dst, t_targetset **src,
 uint32_t		partition_ip4rng(t_targetset **dst, t_targetset **src,
 								 uint32_t amt)
 {
-	t_ip4rng *slice;
-	uint32_t portion;
+	t_ip4rng	*slice;
+	uint32_t	portion;
 
 	portion = amt;
 	while ((*src)->iprngs && amt)
@@ -51,7 +51,8 @@ uint32_t		partition_ip4rng(t_targetset **dst, t_targetset **src,
 				(*dst)->ip_cnt += IP4RNG_DATA((*dst))->size;
 				(*dst)->total++;
 			}
-			if (remove_node_bst(&(*src)->iprngs, (*src)->iprngs->data, ip4rng_cmp, ip4rng_min) == true)
+			if (rm_node_bst(&(*src)->iprngs, (*src)->iprngs->data, ip4rng_cmp,
+							ip4rng_min) == true)
 			{
 				(*src)->ip_cnt--;
 				(*src)->total--;
@@ -62,24 +63,9 @@ uint32_t		partition_ip4rng(t_targetset **dst, t_targetset **src,
 	return (portion);
 }
 
-t_node			*new_targetset_list(uint32_t count)
-{
-	t_targetset	*newset;
-	t_node		*set_list;
-
-	set_list = NULL;
-	while (count)
-	{
-		newset = new_targetset();
-		enqueue(&set_list, (void*)&newset);
-		count--;
-	}
-	return (set_list);
-}
-
 /* TODO: all functions that operate on a targetset's contents should not be
  * TODO: passed the tree, but the targetset itself, to help track its members ^ eg partition_ip4() */
-void partition_targetset(t_targetset **dst, t_targetset **src, uint32_t amt)
+void 		partition_targetset(t_targetset **dst, t_targetset **src, uint32_t amt)
 {
 	if (!src || !amt || !dst)
 		return;

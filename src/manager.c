@@ -18,7 +18,7 @@ void		connect_workers(t_node **workers, t_workerset *set, int proto)
 	if (connect(worker->sock, (const struct sockaddr *)&worker->sin, sizeof(worker->sin)) == -1)
 	{
 		hermes_error(FAILURE, 2, "could not connect to worker. dropping:", inet_ntoa(worker->sin.sin_addr));
-		if (remove_node_bst(&set->wrkrs, worker, worker_cmp, worker_min) == true)
+		if (rm_node_bst(&set->wrkrs, worker, worker_cmp, worker_min) == true)
 			set->cnt -= 1;
 	}
 	else
@@ -81,10 +81,6 @@ int					manager_loop(t_mgr *mgr)
 			free(udp_ports);
 		}
 	}
-
-	t_node *head;
-	t_wrkr *targ;
-
 	mgr->workers->wrkrs = tree_to_list(&mgr->workers->wrkrs);
 	/* TODO Spawn thread pool */
 	while (mgr->stat.running == true)
@@ -105,23 +101,10 @@ int					manager_loop(t_mgr *mgr)
 //		{
 //			mgr->cwork =
 //		}
-		head = mgr->workers->wrkrs;
 		while (mgr->workers->wrkrs)
 		{
-			targ = WORKER_DATA(mgr);
-			partition_targetset(
-					&WORKER_DATA(mgr)->job->targets,
-					&mgr->job.targets,
-					32
-			);
-			hermes_send_binn(
-					WORKER_DATA(mgr)->sock,
-					C_OBJ_TARGETS,
-					binnify_targetset(WORKER_DATA(mgr)->job->targets)
-			);
-			mgr->workers->wrkrs = mgr->workers->wrkrs->right;
+
 		}
-		mgr->workers->wrkrs = head;
 	}
 	return (0);
 }
