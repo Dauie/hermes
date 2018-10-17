@@ -79,6 +79,7 @@ t_node				*tree_search(t_node **tree, void *data, int (*cmp)(void *, void *));
 /*
 **	List Functions
 */
+t_node				*new_list(void);
 void				del_list(t_node **list, bool deldata);
 bool				add_list_end(t_node **list, void **node);
 bool				add_list_head(t_node **list, void **data);

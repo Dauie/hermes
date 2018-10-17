@@ -27,6 +27,12 @@ bool			enqueue(t_node **list, void **data)
 		node->right = node;
 		return (true);
 	}
+	if (!(*list)->left)
+	{
+		node->left = node;
+		(*list)->right->left = node;
+		return (true);
+	}
 	(*list)->left->right = node;
 	(*list)->right->left = node;
 	node->left = (*list)->left;

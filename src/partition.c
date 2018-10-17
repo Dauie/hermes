@@ -56,7 +56,10 @@ void partition_targetset(t_targetset **dst, t_targetset **src, uint32_t amt)
 {
 	if (!src || !amt || !dst)
 		return;
+	(*dst)->ip_cnt = amt;
+	(*dst)->total = amt;
 	if (!(amt = partition_ip4(&(*dst)->ips, &(*src)->ips, amt / 2)))
 		return;
+	(*dst)->rng_cnt = amt;
 	partition_ip4rng(&(*dst)->iprngs, &(*src)->iprngs, amt);
 }

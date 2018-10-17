@@ -53,6 +53,7 @@ t_node		*tree_to_list(t_node **tree)
 {
 	t_node *w_list;
 
+	w_list = new_list();
 	serialize(&w_list, tree);
 	del_tree(tree);
 	return (w_list);

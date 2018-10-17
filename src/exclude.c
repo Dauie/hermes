@@ -9,8 +9,8 @@ t_ip4rng		*slice_ip4rng(t_node **src, uint32_t amt)
 	iprng = new_ip4range();
 	iprng->size = amt;
 	iprng->start = ((t_ip4rng*)(*src)->data)->start;
-	iprng->end = BYTORD_SUM(((t_ip4rng*)(*src)->data)->end, -amt);
-	((t_ip4rng*)(*src)->data)->start = BYTORD_SUM(iprng->end, 1);
+	iprng->end = ip4_decrement(((t_ip4rng*)(*src)->data)->end, amt);
+	((t_ip4rng*)(*src)->data)->start = ip4_increment(iprng->end, 1);
 	return (iprng);
 }
 
