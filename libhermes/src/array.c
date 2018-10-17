@@ -1,10 +1,12 @@
+#include "../incl/libhermes.h"
+
 t_node 		**new_array(size_t size)
 {
 	t_node **array;
 
 	if (!size)
 		return (NULL);
-	array =
+	array = (t_node**)
 }
 
 bool		insert(t_node **array, size_t index, void *data)

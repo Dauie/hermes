@@ -92,7 +92,7 @@ bool				rm_head_list(t_node **list, bool deldata);
 /*
 **	Queue Functions
 */
-void * pop_stack(t_node **stack);
+void 				*pop_stack(t_node **stack);
 void				*peek_stack(t_node **stack);
 bool				enqueue(t_node **queue, void **data);
 

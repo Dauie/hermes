@@ -1,6 +1,6 @@
 #include "../incl/hermes.h"
 
-t_ip4rng		*slice_ip4rng(t_targetset **src, uint32_t amt)
+t_ip4rng		*slice_ip4rng(t_node **src, uint32_t amt)
 {
 	t_ip4rng *iprng;
 
@@ -8,9 +8,9 @@ t_ip4rng		*slice_ip4rng(t_targetset **src, uint32_t amt)
 		return (NULL);
 	iprng = new_ip4range();
 	iprng->size = amt;
-	iprng->start = ((t_ip4rng*)(*src)->iprngs->data)->start;
-	iprng->end = BYTORD_SUM(((t_ip4rng*)(*src)->iprngs->data)->end, amt);
-	((t_ip4rng*)(*src)->iprngs->data)->start = BYTORD_SUM(iprng->end, 1);
+	iprng->start = ((t_ip4rng*)(*src)->data)->start;
+	iprng->end = BYTORD_SUM(((t_ip4rng*)(*src)->data)->end, -amt);
+	((t_ip4rng*)(*src)->data)->start = BYTORD_SUM(iprng->end, 1);
 	return (iprng);
 }
 
