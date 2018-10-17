@@ -32,8 +32,6 @@ void		del_tree(t_node **tree)
 	free(*tree);
 }
 
-
-
 t_node		**tree_to_array(t_node **tree)
 {
 	t_node **w_list;
