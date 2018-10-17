@@ -83,7 +83,7 @@ int					manager_loop(t_mgr *mgr)
 	}
 
 	t_node *head;
-	t_wrkr *targ;
+	t_job *targ;
 
 	mgr->workers->wrkrs = tree_to_list(&mgr->workers->wrkrs);
 	/* TODO Spawn thread pool */
@@ -108,7 +108,7 @@ int					manager_loop(t_mgr *mgr)
 		head = mgr->workers->wrkrs;
 		while (mgr->workers->wrkrs)
 		{
-			targ = WORKER_DATA(mgr);
+			targ = WORKER_DATA(mgr)->job;
 			partition_targetset(
 					&WORKER_DATA(mgr)->job->targets,
 					&mgr->job.targets,

@@ -150,6 +150,7 @@ typedef struct			s_worker
 	int 				sock;
 	t_job				*job;
 	int					id;
+	uint32_t 			send_size;
 }						t_wrkr;
 
 typedef struct			s_workerset

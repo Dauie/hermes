@@ -24,23 +24,20 @@ void		del_tree(t_node **tree)
 		return;
 	if (!*tree)
 		return;
-	del_tree_nodes(&(*tree)->left);
-	del_tree_nodes(&(*tree)->right);
-	(*tree)->data = NULL;
-	free((*tree)->data);
-	(*tree) = NULL;
-	free(*tree);
+	del_tree(&(*tree)->left);
+	del_tree(&(*tree)->right);
+	del_node(tree, true);
 }
 
-t_node		**tree_to_array(t_node **tree)
-{
-	t_node **w_list;
-
-	w_list = (t_node*)
-	serialize(tree, &w_list, append);
-	del_tree(tree);
-	return (w_list);
-}
+//t_node		**tree_to_array(t_node **tree)
+//{
+//	t_node **w_list;
+//
+//	w_list = (t_node*)
+//	serialize(tree, &w_list, append);
+//	del_tree(tree);
+//	return (w_list);
+//}
 
 void 		serialize(t_node **list, t_node **tree, bool (*add)(t_node **, void **))
 {

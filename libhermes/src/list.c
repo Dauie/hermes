@@ -2,23 +2,36 @@
 #include "sys/errno.h"
 #include "../incl/libhermes.h"
 
+t_node			*new_list(void)
+{
+	t_node *list;
+
+	if (!(list = (t_node*)memalloc(sizeof(t_node))))
+		hermes_error(FAILURE, 2, "malloc()", strerror(errno));
+	return (list);
+}
+
 bool			enqueue(t_node **list, void **data)
 {
 	t_node *node;
 
 	if (!list || !data)
 		return (false);
+	if (!*list)
+		*list = new_list();
 	node = new_node(data);
 	if (!(*list)->left && !(*list)->right)
 	{
 		(*list) = node;
-		(*list)->left = node;
-		(*list)->right = node;
+		node->left = node;
+		node->right = node;
 		return (true);
 	}
-	(*list)->left->left = node;
-	node->right = (*list)->left;
-	(*list)->left = node;
+	(*list)->left->right = node;
+	(*list)->right->left = node;
+	node->left = (*list)->left;
+	node->right = (*list)->right;
+	(*list) = node;
 	return (true);
 }
 
