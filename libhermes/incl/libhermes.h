@@ -76,8 +76,6 @@ bool				remove_node_bst(t_node **tree, void *key, int (*cmp)(void *, void *), vo
 t_node				*bst_search(t_node **tree, void *data, int (*cmp)(void *, void *));
 t_node				*tree_search(t_node **tree, void *data, int (*cmp)(void *, void *));
 
-void serialize(t_node **tree, t_node **list);
-
 /*
 **	List Functions
 */
@@ -86,6 +84,8 @@ bool				add_list_end(t_node **list, void **node);
 bool				add_list_head(t_node **list, void **data);
 bool				remove_node_list(t_node **node, bool deldata);
 bool				remove_list_head(t_node **list, bool deldata);
+void				serialize(t_node **list, t_node **tree, bool (*append)(t_node **, void **));
+
 
 /*
 **	Queue Functions

@@ -36,22 +36,22 @@ t_node		**tree_to_array(t_node **tree)
 {
 	t_node **w_list;
 
-	w_list =
+	w_list = (t_node*)
 	serialize(tree, &w_list, append);
 	del_tree(tree);
 	return (w_list);
 }
 
-void 		serialize(t_node **list, t_node **tree, bool (*append) (t_node **, void *))
+void 		serialize(t_node **list, t_node **tree, bool (*add)(t_node **, void **))
 {
 	if (!tree || !*tree)
 		return;
 	//enqueue(list, (*tree)->data);
-	serialize(list, &(*tree)->left, append);
+	serialize(list, &(*tree)->left, add);
 
-	append(list, (*tree)->data);
+	add(list, (*tree)->data);
 
-	serialize(list, &(*tree)->right, append);
+	serialize(list, &(*tree)->right, add);
 	//add_list_head(list, (*tree)->data);
 
 }
@@ -60,7 +60,7 @@ t_node		*tree_to_list(t_node **tree)
 {
 	t_node *w_list;
 
-	serialize(&w_list, tree, add_list_head);
+	serialize(&w_list, tree, enqueue);
 	del_tree(tree);
 	return (w_list);
 }
