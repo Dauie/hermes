@@ -97,7 +97,7 @@ void				*memalloc(size_t size);
 /*
 **	Node helper functions
 */
-t_node				*new_node(void **data);
+t_node * new_node(void **data);
 void				del_node(t_node **node, bool deldata);
 
 /*
@@ -118,7 +118,7 @@ void				del_list(t_deque **list, bool deldata);
 //bool				add_list_head(t_list **list, void **data);
 //bool				remove_node_list(t_list **node, bool deldata);
 //bool				remove_list_head(t_list **list, bool deldata);
-t_node				*pop(t_deque **list);
+t_item				*pop(t_deque **deq);
 void				*peek(t_deque **list);
 bool				enqueue(t_deque **list, void **data);
 bool				push(t_deque **list, void **data);

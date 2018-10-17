@@ -9,7 +9,7 @@ t_item			*new_item(void *data)
 	if (!(item = (t_item*)memalloc(sizeof(t_item))))
 		hermes_error(FAILURE, 2, "malloc()", strerror(errno));
 	item->data = data;
-	return (item)
+	return (item);
 }
 
 t_deque			*new_deque(void)
@@ -91,7 +91,12 @@ t_item			*pop(t_deque **deq)
 	if (!deq)
 		return (NULL);
 	if (&(*deq)->end == &(*deq)->start)
-		return ((*deq)->start);
+	{
+		tmp = (*deq)->start;
+		(*deq)->start = NULL;
+		(*deq)->end = NULL;
+		return (tmp);
+	}
 	tmp = (*deq)->end;
 	(*deq)->end = tmp->prev;
 	(*deq)->end->next = (*deq)->start;
@@ -119,23 +124,23 @@ void			del_list(t_deque **deq, bool deldata)
 	}
 }
 
-bool			remove_node_list(t_slist **item, bool deldata)
-{
-	if (!item || !*item)
-		return (false);
-	if ((*item)->prev)
-		(*item)->prev->next = (*item)->next;
-	if ((*item)->next)
-		(*item)->next->prev = (*item)->prev;
-	if (deldata && (*item)->data)
-	{
-		free((*item)->data);
-		(*item)->data = NULL;
-	}
-	free(*item);
-	*item = NULL;
-	return (true);
-}
+//bool			remove_node_list(t_slist **item, bool deldata)
+//{
+//	if (!item || !*item)
+//		return (false);
+//	if ((*item)->root->next )
+//		(*item)->root->prev->next = (*item)->next;
+//	if ((*item)->next)
+//		(*item)->next->prev = (*item)->prev;
+//	if (deldata && (*item)->data)
+//	{
+//		free((*item)->data);
+//		(*item)->data = NULL;
+//	}
+//	free(*item);
+//	*item = NULL;
+//	return (true);
+//}
 
 //bool			remove_list_head(t_list **deq, bool deldata)
 //{

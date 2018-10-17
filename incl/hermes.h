@@ -182,7 +182,7 @@ t_job					*new_job(void);
 
 t_ip4					*new_ip4(void);
 int						ip4_cmp(void *left, void *right);
-void					*ip4_min(t_swis *tree);
+void					*ip4_min(t_node *tree);
 in_addr_t				ip4_increment(in_addr_t ip, uint32_t increase);
 in_addr_t				ip4_decrement(in_addr_t ip, uint32_t decrease);
 uint32_t				ip4_diff(in_addr_t left, in_addr_t right);
@@ -191,7 +191,7 @@ t_ip4rng				*new_ip4range(void);
 int						ip4rng_cmp(void *ipr_left, void *ipr_right);
 int						ip4rng_overlap_cmp(void *left, void *right);
 int						ip4_ip4rng_overlap_cmp(void *ip, void *iprng);
-void					*ip4rng_min(t_swis *tree);
+void					*ip4rng_min(t_node *tree);
 t_swis					*split_ip4rng_portions(t_ip4rng *data,
 												 uint32_t splits);
 t_ip4rng				*slice_ip4rng(t_targetset **src, uint32_t amt);
@@ -224,6 +224,6 @@ int						manager_loop(t_mgr *mgr);
 void					partition_targetset(t_targetset **dst,
 											t_targetset **src,
 											uint32_t amt);
-int						send_work(t_swis **wrkr_tree, t_job *job);
+int						send_work(t_node **wrkr_tree, t_job *job);
 
 #endif

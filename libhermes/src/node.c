@@ -1,10 +1,10 @@
 #include "../incl/libhermes.h"
 
-t_list			*new_node(void **data)
+t_node 		*new_node(void **data)
 {
-	t_list		*node;
+	t_node		*node;
 
-	if (!(node = (t_list*)memalloc(sizeof(t_list))))
+	if (!(node = (t_node*)memalloc(sizeof(t_node))))
 	{
 		hermes_error(errno, true, 2, "malloc()", strerror(errno));
 		return (NULL);
@@ -13,7 +13,7 @@ t_list			*new_node(void **data)
 	return (node);
 }
 
-void			del_node(t_list **node, bool deldata)
+void		del_node(t_node **node, bool deldata)
 {
 	if (!node || !*node)
 		return ;

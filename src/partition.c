@@ -6,12 +6,12 @@ uint32_t		partition_ip4(t_targetset **dst, t_targetset **src,
 {
 	while ((*src)->ips && amt)
 	{
-		if (add_list_head(&(*dst)->ips, &(*src)->ips->data) == true)
+		if (enqueue(&(*dst)->ips->slist, &(*src)->ips->slist->data) == true)
 		{
 			(*dst)->ip_cnt++;
 			(*dst)->total++;
 		}
-		if (remove_node_bst(&(*dst)->ips, (*dst)->ips->data, ip4_cmp, ip4_min) == true)
+		if (remove_node_bst(&(*dst)->ips->stree->root, TREE_DATA((*dst)->ips), ip4_cmp, ip4_min) == true)
 		{
 			(*src)->ip_cnt--;
 			(*src)->total--;
@@ -25,9 +25,10 @@ uint32_t		partition_ip4rng(t_targetset **dst, t_targetset **src,
 								 uint32_t amt)
 {
 	t_ip4rng *slice;
-	while ((*src)->iprngs && amt)
+
+	while ((*src)->iprngs->stree->root && amt)
 	{
-		if (TYPE_IP4RNG((*src))->size > amt)
+		if ((*src)->iprngs->stree->root > amt)
 		{
 			if (!(slice = slice_ip4rng(src, amt)))
 				hermes_error(SUCCESS, 1, "no src or amt provided for slice_ip4rng(src, amt)");
