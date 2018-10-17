@@ -17,6 +17,7 @@
 /*
 **	Structs
 */
+
 typedef struct		s_node
 {
 	struct s_node	*left;
@@ -70,11 +71,14 @@ void				del_node(t_node **node, bool deldata);
 **	BST Functions
 */
 t_node				*tree_to_list(t_node **tree);
-void 				del_tree_nodes(t_node **tree);
+void 				del_tree(t_node **tree, bool deldata);
 bool				add_node_bst(t_node **tree, void **data, int (*cmp)(void *, void *));
-bool				remove_node_bst(t_node **tree, void *key, int (*cmp)(void *, void *), void *(*min)(t_node *));
+bool				rm_node_bst(t_node **tree, void *key, int (*cmp)(void *, void *), void *(*min)(t_node *));
 t_node				*bst_search(t_node **tree, void *data, int (*cmp)(void *, void *));
-t_node				*tree_search(t_node **tree, void *data, int (*cmp)(void *, void *));
+t_node				*tree_search(t_node **tree, void *data,
+								   int (*cmp)(void *, void *));
+
+void serialize(t_node **tree, t_node **list);
 
 /*
 **	List Functions
@@ -83,17 +87,16 @@ t_node				*new_list(void);
 void				del_list(t_node **list, bool deldata);
 bool				add_list_end(t_node **list, void **node);
 bool				add_list_head(t_node **list, void **data);
-bool				remove_node_list(t_node **node, bool deldata);
-bool				remove_list_head(t_node **list, bool deldata);
-void serialize(t_node **list, t_node **tree);
-
+bool				rm_node(t_node **node, bool deldata);
+void				del_list(t_node **list, bool deldata);
+bool				rm_head_list(t_node **list, bool deldata);
 
 /*
 **	Queue Functions
 */
-t_node				*pop(t_node **list);
-void				*peek(t_node **list);
-bool				enqueue(t_node **list, void **data);
+void 				*pop_stack(t_node **stack);
+void				*peek_stack(t_node **stack);
+bool				enqueue(t_node **queue, void **data);
 
 /*
 **	Error Management Functions

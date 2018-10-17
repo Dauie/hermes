@@ -18,48 +18,37 @@ t_node		*bst_search(t_node **tree, void *data, int (*cmp)(void *, void *))
 	return (NULL);
 }
 
-void		del_tree(t_node **tree)
-{
-	if (!tree)
-		return;
-	if (!*tree)
-		return;
-	del_tree(&(*tree)->left);
-	del_tree(&(*tree)->right);
-	del_node(tree, true);
-}
-
-//t_node		**tree_to_array(t_node **tree)
-//{
-//	t_node **w_list;
-//
-//	w_list = (t_node*)
-//	serialize(tree, &w_list, append);
-//	del_tree(tree);
-//	return (w_list);
-//}
-
-void		serialize(t_node **list, t_node **tree)
+void		del_tree(t_node **tree, bool deldata)
 {
 	if (!tree || !*tree)
 		return;
-	//enqueue(list, (*tree)->data);
-	serialize(list, &(*tree)->left);
+	del_tree(&(*tree)->left, deldata);
+	del_tree(&(*tree)->right, deldata);
+	del_node(tree, deldata);
+}
+
+void		loop_tree_to_list(t_node **list, t_node **tree)
+{
+	if (!tree || !*tree)
+		return ;
+	if ((*tree)->left)
+		loop_tree_to_list(&(*tree)->left, list);
 	enqueue(list, (*tree)->data);
-	serialize(list, &(*tree)->right);
+	if ((*tree)->right)
+		loop_tree_to_list(&(*tree)->right, list);
 }
 
 t_node		*tree_to_list(t_node **tree)
 {
-	t_node *w_list;
+	t_node	*list;
 
-	w_list = new_list();
-	serialize(&w_list, tree);
-	del_tree(tree);
-	return (w_list);
+	list = NULL;
+	loop_tree_to_list(&list, tree);
+	del_tree(tree, false);
+	return (list);
 }
 
-void		del_tree_nodes(t_node **tree)
+t_node		*list_to_tree(t_node **list)
 {
 	if (!tree)
 		return;
@@ -75,7 +64,7 @@ void		del_tree_nodes(t_node **tree)
 
 t_node		*tree_search(t_node **tree, void *data, int (*cmp)(void *, void *))
 {
-	if (!*tree)
+	if (!(*tree))
 		return (NULL);
 	if ((*tree)->left)
 		return (tree_search(&(*tree)->left, data, cmp));
@@ -120,27 +109,28 @@ bool		add_node_bst(t_node **root, void **data, int (*cmp)(void *, void *))
 	return (true);
 }
 
-void		remove_search_key(t_node **curr, t_node **parent, void *key,
-					int (*cmp)(void *, void *))
+static void		remove_node_bst_search_key(t_node **cur, t_node **prnt, void *key,
+							int (*cmp)(void *, void *))
 {
-	while (*curr != NULL && cmp((*curr)->data, key) != 0)
+	while (*cur != NULL && cmp((*cur)->data, key) != 0)
 	{
-		*parent = *curr;
-		if (cmp(key, (*curr)->data) < 0)
-			*curr = (*curr)->left;
+		*prnt = *cur;
+		if (cmp(key, (*cur)->data) < 0)
+			*cur = (*cur)->left;
 		else
-			*curr = (*curr)->right;
+			*cur = (*cur)->right;
 	}
 }
 
-bool		remove_node_bst(t_node **tree, void *key, int (*cmp)(void *, void *), void *(*min)(t_node *))
+bool		rm_node_bst(t_node **tree, void *key,
+						int (*cmp)(void *, void *), void *(*min)(t_node *))
 {
 	t_node	*parent = NULL;
 	t_node	*curr = *tree;
 	t_node	*child;
 	void	*successor;
 
-	remove_search_key(&curr, &parent, key, cmp);
+	remove_node_bst_search_key(&curr, &parent, key, cmp);
 	if (curr == NULL)
 		return (false);
 	if (curr->left == NULL && curr->right == NULL)
@@ -159,7 +149,7 @@ bool		remove_node_bst(t_node **tree, void *key, int (*cmp)(void *, void *), void
 	else if (curr->left && curr->right)
 	{
 		successor  = min(curr->right);
-		remove_node_bst(tree, successor, cmp, min);
+		rm_node_bst(tree, successor, cmp, min);
 		curr->data = successor;
 	}
 	else

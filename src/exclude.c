@@ -4,7 +4,7 @@ t_ip4rng		*slice_ip4rng(t_node **src, uint32_t amt)
 {
 	t_ip4rng *iprng;
 
-	if (!src || !amt)
+	if (!src || !*src || !amt)
 		return (NULL);
 	iprng = new_ip4range();
 	iprng->size = amt;
@@ -20,7 +20,7 @@ static void		exclude_ip4_ip4(t_targetset *set, t_node **targets, t_node *exclude
 		return ;
 	if (exclude->left)
 		exclude_ip4_ip4(set, targets, exclude->left);
-	if (remove_node_bst(targets, exclude->data, ip4_cmp, ip4_min) == true)
+	if (rm_node_bst(targets, exclude->data, ip4_cmp, ip4_min) == true)
 	{
 		set->ip_cnt--;
 		set->total--;
@@ -134,7 +134,7 @@ static void		exclude_ip4_ip4rng(t_targetset *set, t_node **targets, t_node *excl
 		tmp.size = 1;
 		range = new_ip4range();
 		memcpy(range, conflict->data, sizeof(t_ip4rng));
-		remove_node_bst(targets, conflict->data, ip4rng_cmp, ip4rng_min);
+		rm_node_bst(targets, conflict->data, ip4rng_cmp, ip4rng_min);
 		split_ip4range(range, &tmp, &left, &right);
 		correct_targetset_totals(set, range, left, right);
 		free(range);
@@ -162,7 +162,8 @@ static void		exclude_ip4rng_ip4rng(t_targetset *set, t_node **targets, t_node *e
 	{
 		range = new_ip4range();
 		memcpy(range, (t_ip4rng*)conflict->data, sizeof(t_ip4rng));
-		remove_node_bst(targets, (t_ip4rng*)conflict->data, ip4rng_cmp, ip4rng_min);
+		rm_node_bst(targets, (t_ip4rng *) conflict->data, ip4rng_cmp,
+					ip4rng_min);
 		split_ip4range(range, (t_ip4rng*)exclude->data, &left, &right);
 		correct_targetset_totals(set, range, left, right);
 		free(range);
@@ -230,7 +231,7 @@ static void		exclude_port_port(t_portset *set, t_node **target, t_node *exclude)
 		return ;
 	if (exclude->left)
 		exclude_port_port(set, target, exclude->left);
-	if (remove_node_bst(target, exclude->data, port_cmp, port_min) == true)
+	if (rm_node_bst(target, exclude->data, port_cmp, port_min) == true)
 	{
 		set->port_cnt--;
 		set->total--;
@@ -277,7 +278,7 @@ static void		exclude_port_prtrng(t_portset *set, t_node **targets, t_node *exclu
 		tmp.size = 1;
 		range = new_portrange();
 		memcpy(range, (t_ip4*)conflict->data, sizeof(t_prtrng));
-		remove_node_bst(targets, (t_ip4*)conflict->data, portrng_cmp, portrng_min);
+		rm_node_bst(targets, (t_ip4 *) conflict->data, portrng_cmp, portrng_min);
 		split_portrange(range, &tmp, &left, &right);
 		correct_portrange_totals(set, range, left, right);
 		free(range);
@@ -306,7 +307,8 @@ static void		exclude_prtrng_prtrng(t_portset *set, t_node **targets,
 	{
 		range = new_portrange();
 		memcpy(range, (t_prtrng*)conflict->data, sizeof(t_prtrng));
-		remove_node_bst(targets, (t_prtrng*)conflict->data, portrng_cmp, portrng_min);
+		rm_node_bst(targets, (t_prtrng *) conflict->data, portrng_cmp,
+					portrng_min);
 		split_portrange(range, (t_prtrng*)exclude->data, &left, &right);
 		correct_portrange_totals(set, range, left, right);
 		free(range);

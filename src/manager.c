@@ -121,23 +121,10 @@ int					manager_loop(t_mgr *mgr)
 //		{
 //			mgr->cwork =
 //		}
-		head = mgr->workers->wrkrs;
 		while (mgr->workers->wrkrs)
 		{
-			targ = WORKER_DATA(mgr)->job;
-			partition_targetset(
-					&WORKER_DATA(mgr)->job->targets,
-					&mgr->job.targets,
-					32
-			);
-			hermes_send_binn(
-					WORKER_DATA(mgr)->sock,
-					C_OBJ_TARGETS,
-					binnify_targetset(WORKER_DATA(mgr)->job->targets)
-			);
-			mgr->workers->wrkrs = mgr->workers->wrkrs->right;
+
 		}
-		mgr->workers->wrkrs = head;
 	}
 	return (0);
 }

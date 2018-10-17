@@ -15,7 +15,6 @@
 
 #include "defined.h"
 
-
 # define HERMES_VERSION "v0.0.1"
 
 typedef struct sockaddr_in sockaddr_in;
@@ -39,14 +38,6 @@ typedef struct			s_targetset
 	t_node				*ips;						/*t_node tree containing t_ip4 structs*/
 	t_node				*iprngs;					/*t_node tree containing t_ip4rng structs*/
 }						t_targetset;
-
-typedef struct			s_ip4bytes
-{
-	uint8_t				b1;
-	uint8_t				b2;
-	uint8_t				b3;
-	uint8_t				b4;
-}						t_ip4bytes;
 
 typedef struct			s_port
 {
