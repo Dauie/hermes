@@ -141,7 +141,7 @@ bool		remove_node_bst(t_node **tree, void *key, int (*cmp)(void *, void *), void
 
 	remove_search_key(&curr, &parent, key, cmp);
 	if (curr == NULL)
-		return (FAILURE);
+		return (false);
 	if (curr->left == NULL && curr->right == NULL)
 	{
 		if (cmp(curr->data, (*tree)->data) != 0)
@@ -175,5 +175,5 @@ bool		remove_node_bst(t_node **tree, void *key, int (*cmp)(void *, void *), void
 			*tree = child;
 		del_node(&curr, NULL);
 	}
-	return (SUCCESS);
+	return (true);
 }
