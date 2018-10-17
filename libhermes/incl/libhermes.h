@@ -24,8 +24,8 @@
 typedef struct 		s_root
 {
 	size_t 			size;
-	struct s_node	*left;
-	struct s_node	*right;
+	struct s_node	*start;
+	struct s_node	*end;
 	struct s_node	*min;
 	struct s_node	*max;
 }					t_root;
