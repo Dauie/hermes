@@ -106,6 +106,8 @@ static void		add_ip4rngtree_to_binnlist(binn **list, t_node *ip4rng)
 
 static void		add_porttree_to_binnlist(binn **list, t_node *ports)
 {
+	if (!ports)
+		return;
 	if (ports->left)
 		add_porttree_to_binnlist(list, ports->left);
 
@@ -120,6 +122,8 @@ static void		add_prtrngtree_to_binnlist(binn **list, t_node *prtrngs)
 	t_prtrng	*rng;
 	binn		*obj;
 
+	if (!prtrngs)
+		return ;
 	if (prtrngs->left)
 		add_prtrngtree_to_binnlist(list, prtrngs->left);
 

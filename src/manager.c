@@ -103,6 +103,8 @@ int					manager_loop(t_mgr *mgr)
 			printf("connected to %i workers.\n", mgr->workers->cnt);
 			send_opts(mgr);
 		}
+		else
+			printf("failed to connected to any workers...\n");
 	}
 
 	/* TODO Spawn thread pool */

@@ -83,7 +83,7 @@ void serialize(t_node **tree, t_node **list);
 **	List Functions
 */
 bool				clist_add_head(t_node **clist, void **data);
-bool				clist_add_end(t_node **clist, void **data);
+bool				clist_add_tail(t_node **clist, void **data);
 bool				clist_add_inorder(t_node **clist, void **data);
 bool				clist_rm_head(t_node **clist, bool deldata);
 bool				clist_rm_tail(t_node **clist, bool deldata);

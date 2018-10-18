@@ -24,7 +24,7 @@ bool			clist_add_head(t_node **clist, void **data)
 	return (true);
 }
 
-bool			clist_add_end(t_node **clist, void **data)
+bool			clist_add_tail(t_node **clist, void **data)
 {
 	t_node		*end;
 	t_node		*nw_node;
