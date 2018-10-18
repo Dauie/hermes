@@ -2,7 +2,17 @@
 #include "../incl/binnify.h"
 #include "../incl/message.h"
 
-uint32_t connect_workers(t_workerset *set, int proto)
+void		pprint_ip(char *str, uint32_t ip)
+{
+	char ipstr[20];
+
+
+	if (!inet_ntop(AF_INET, &ip, ipstr, 20))
+		return;
+	printf("%s%s\n", str, ipstr);
+}
+
+uint32_t	connect_workers(t_workerset *set, int proto)
 {
 	t_wrkr		*wrkr;
 	uint32_t 	iter;
@@ -15,6 +25,7 @@ uint32_t connect_workers(t_workerset *set, int proto)
 		wrkr = (t_wrkr*)set->wrkrs->data;
 		if ((wrkr->sock = socket(PF_INET, SOCK_STREAM, proto)) == -1)
 			hermes_error(EXIT_FAILURE, 2, "socket()", strerror(errno));
+		pprint_ip("connecting to worker: ", wrkr->sin.sin_addr.s_addr);
 		if (connect(wrkr->sock, (const struct sockaddr *) &wrkr->sin,
 					sizeof(wrkr->sin)) == -1)
 		{
