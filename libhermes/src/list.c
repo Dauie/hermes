@@ -4,7 +4,7 @@
 
 bool			clist_add_head(t_node **clist, void **data)
 {
-	t_node		*old_head;
+	t_node		*last;
 	t_node		*nw_node;
 
 	if (!*data)
@@ -16,10 +16,10 @@ bool			clist_add_head(t_node **clist, void **data)
 		*clist = nw_node;
 		return (true);
 	}
-	old_head = *clist;
-	nw_node->right = old_head;
-	old_head->left = nw_node;
-	nw_node->left = old_head->left;
+	last = (*clist)->left;
+	nw_node->right = *clist;
+	nw_node->left = last;
+	last->right = (*clist)->left = nw_node;
 	*clist = nw_node;
 	return (true);
 }
