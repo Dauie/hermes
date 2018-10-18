@@ -24,14 +24,12 @@ uint32_t	connect_workers(t_workerset *set, int proto)
 	{
 		wrkr = (t_wrkr*)set->wrkrs->data;
 		if ((wrkr->sock = socket(PF_INET, SOCK_STREAM, proto)) == -1)
-			hermes_error(EXIT_FAILURE, 2, "socket()", strerror(errno));
+			hermes_error(EXIT_FAILURE, "socket() %s", strerror(errno));
 		pprint_ip("connecting to worker: ", wrkr->sin.sin_addr.s_addr);
 		if (connect(wrkr->sock, (const struct sockaddr *) &wrkr->sin,
 					sizeof(wrkr->sin)) == -1)
 		{
-			hermes_error(FAILURE, 2,
-						 "could not connect to worker. dropping:",
-						 inet_ntoa(wrkr->sin.sin_addr));
+			hermes_error(FAILURE, "could not connect to worker. dropping: %s", inet_ntoa(wrkr->sin.sin_addr));
 			set->wrkrs = set->wrkrs->right;
 			if (clist_rm_tail(&set->wrkrs, false) == true)
 				set->cnt -= 1;

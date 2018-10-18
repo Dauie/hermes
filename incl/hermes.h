@@ -6,6 +6,7 @@
 
 # include <pthread.h>
 # include <sys/socket.h>
+# include <sys/poll.h>
 # include <sys/time.h>
 # include <arpa/inet.h>
 # include <netinet/ip.h>

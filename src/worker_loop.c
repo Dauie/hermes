@@ -2,11 +2,11 @@
 # include "../incl/message.h"
 # include "../incl/binnify.h"
 
-int				handle_obj_offer(t_wrkr *session, uint8_t code, uint8_t *msg)
+int					handle_obj_offer(t_wrkr *session, uint8_t code, uint8_t *msg)
 {
-	ssize_t		ret;
-	uint32_t 	*objlen;
-	binn		*obj;
+	ssize_t			ret;
+	uint32_t 		*objlen;
+	binn			*obj;
 
 	objlen = (uint32_t*)(msg + MSG_HDRSZ);
 	*objlen = ntohl(*objlen);
@@ -49,9 +49,9 @@ int				handle_obj_offer(t_wrkr *session, uint8_t code, uint8_t *msg)
 	return (SUCCESS);
 }
 
-int				process_message(t_wrkr *session, uint8_t *msgbuff, ssize_t recvsz)
+int					process_message(t_wrkr *session, uint8_t *msgbuff, ssize_t recvsz)
 {
-	t_msg_hdr	*hdr;
+	t_msg_hdr		*hdr;
 
 	hdr = (t_msg_hdr*)msgbuff;
 	if (hdr->type == T_OBJ && recvsz >= OBJ_MSG_HDRSZ)
@@ -65,21 +65,41 @@ int				process_message(t_wrkr *session, uint8_t *msgbuff, ssize_t recvsz)
 //{
 //}
 
-int				worker_loop(t_wrkr *session)
+int					worker_loop(t_wrkr *session)
 {
-	ssize_t		recvsz;
-	uint8_t		msgbuff[PKT_SIZE];
+	ssize_t			rc;
+	uint8_t			msgbuff[PKT_SIZE];
+	int				timeout;
+	struct pollfd	fds[1] = {0};
 
+	fds[0].fd = session->sock;
+	fds[0].events = POLLIN;
+	timeout = (500);	/* 1/2 sec */
 	while (session->stat.running == true)
 	{
-		bzero(msgbuff, PKT_SIZE);
-		if ((recvsz = hermes_recvmsg(session->sock, msgbuff)) < 0)
+		rc = poll(fds, 1, timeout);
+		if (rc < 0)
 		{
-			hermes_error(FAILURE, 1, "manager disconnected unexpectedly");
-			session->stat.running = false;
+			if (errno != EAGAIN && errno != EINTR)
+			{
+				session->stat.running = false;
+				hermes_error(FAILURE, "poll()", strerror(errno));
+			}
 		}
-		else if (recvsz > 0)
-			process_message(session, msgbuff, recvsz);
+		else if (rc > 0)
+		{
+			if ((rc = hermes_recvmsg(session->sock, msgbuff)) < 0)
+			{
+				session->stat.running = false;
+				hermes_error(FAILURE, "manager disconnected unexpectedly");
+			}
+			else if (rc > 0)
+			{
+				process_message(session, msgbuff, rc);
+				bzero(msgbuff, PKT_SIZE);
+			}
+		}
+		/* Do work with threads */
 	}
 	return (SUCCESS);
 }

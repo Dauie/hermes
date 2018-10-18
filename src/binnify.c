@@ -149,7 +149,7 @@ binn			*binnify_opts(t_opts *opts)
 		return (NULL);
 	if (!(obj = binn_object()))
 	{
-		hermes_error(FAILURE, 1, "binn_object() failed");
+		hermes_error(FAILURE, "binn_object() failed");
 		return (NULL);
 	}
 	bitops = (uint64_t*)&opts->bitops;
@@ -189,17 +189,17 @@ binn			*binnify_portset(t_portset *set)
 
 	if (!(obj = binn_object()))
 	{
-		hermes_error(FAILURE, 1, "binn_object() failed");
+		hermes_error(FAILURE, "binn_object() failed");
 		return (NULL);
 	}
 	if (!(port = binn_list()))
 	{
-		hermes_error(FAILURE, 1, "binn_list() failed");
+		hermes_error(FAILURE, "binn_list() failed");
 		return (NULL);
 	}
 	if (!(prtrng = binn_list()))
 	{
-		hermes_error(FAILURE, 1, "binn_list() failed");
+		hermes_error(FAILURE, "binn_list() failed");
 		return (NULL);
 	}
 	binn_object_set_uint16(obj, "total", set->total);

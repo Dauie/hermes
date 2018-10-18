@@ -5,7 +5,7 @@ t_workerset	*new_workerset()
 	t_workerset *set;
 
 	if (!(set = (t_workerset*)memalloc(sizeof(t_workerset))))
-		hermes_error(FAILURE, 2, "malloc()", strerror(errno));
+		hermes_error(FAILURE, "malloc() %s", strerror(errno));
 	return (set);
 }
 
@@ -14,7 +14,7 @@ t_wrkr		*new_worker(void)
 	t_wrkr	*worker;
 
 	if (!(worker = (t_wrkr*)memalloc(sizeof(t_wrkr))))
-		hermes_error(FAILURE, 2, "malloc()", strerror(errno));
+		hermes_error(FAILURE, "malloc() %s", strerror(errno));
 	return (worker);
 }
 

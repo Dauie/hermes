@@ -6,7 +6,7 @@ t_ip4			*new_ip4(void)
 
 	if (!(data = (t_ip4*)memalloc(sizeof(t_ip4))))
 	{
-		hermes_error(FAILURE, 2, "malloc()", strerror(errno));
+		hermes_error(FAILURE, "malloc() %s", strerror(errno));
 		return (NULL);
 	}
 	return (data);
@@ -18,7 +18,7 @@ t_ip4rng		*new_ip4range(void)
 
 	if (!(data = (t_ip4rng*)memalloc(sizeof(t_ip4rng))))
 	{
-		hermes_error(FAILURE, 2, "malloc()", strerror(errno));
+		hermes_error(FAILURE, "malloc() %s", strerror(errno));
 		return (NULL);
 	}
 	return (data);
@@ -29,7 +29,7 @@ t_targetset		*new_targetset(void)
 	t_targetset *new;
 
 	if (!(new = (t_targetset*)memalloc(sizeof(t_targetset))))
-		hermes_error(FAILURE, 2, "malloc()", strerror(errno));
+		hermes_error(FAILURE, "malloc() %s", strerror(errno));
 	return (new);
 }
 

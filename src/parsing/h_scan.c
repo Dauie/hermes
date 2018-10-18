@@ -61,9 +61,9 @@ int				h_custom_ip_ttl(t_mgr *mgr, char *input)
 	int			ttl;
 
 	if (!input)
-		return (hermes_error(EXIT_FAILURE, 1, "-ttl not specified"));
+		return (hermes_error(EXIT_FAILURE, "-ttl not specified"));
 	if ((ttl = atoi(input)) <= 0 || ttl > TTL_MAX)
-		return (hermes_error(EXIT_FAILURE, 1, "bad ttl specified"));
+		return (hermes_error(EXIT_FAILURE, "bad ttl specified"));
 	mgr->job.opts.ip_ttl = (uint8_t)ttl;
 	return (SUCCESS);
 }
@@ -73,9 +73,9 @@ int				h_fragment_mtu(t_mgr *mgr, char *input)
 	int			mtu;
 
 	if (!input)
-		return (hermes_error(EXIT_FAILURE, 1, "--fragment-mtu not specified"));
+		return (hermes_error(EXIT_FAILURE, "--fragment-mtu not specified"));
 	if ((mtu = atoi(input)) <= 0 || mtu > MTU_MAX)
-		return (hermes_error(EXIT_FAILURE, 1, "bad fragment-mtu specified"));
+		return (hermes_error(EXIT_FAILURE, "bad fragment-mtu specified"));
 	mgr->job.opts.fragment_mtu = (uint8_t)mtu;
 	return (SUCCESS);
 }
@@ -85,9 +85,9 @@ int				h_spoof_srcip(t_mgr *mgr, char *input)
 	uint32_t	ip;
 
 	if (!input)
-		return (hermes_error(EXIT_FAILURE, 1, "spoof ips address not specified"));
+		return (hermes_error(EXIT_FAILURE, "spoof ips address not specified"));
 	if (parse_ip(&ip, input) < 0)
-		return (hermes_error(EXIT_FAILURE, 1, "bad spoof ips address specified"));
+		return (hermes_error(EXIT_FAILURE, "bad spoof ips address specified"));
 	mgr->job.opts.spoofed_srcaddr = ip;
 	return (SUCCESS);
 }
@@ -97,9 +97,9 @@ int				h_spoof_srcport(t_mgr *mgr, char *input)
 	uint16_t	port;
 
 	if (!input)
-		return (hermes_error(EXIT_FAILURE, 1, "spoof ports not specified"));
+		return (hermes_error(EXIT_FAILURE, "spoof ports not specified"));
 	if (parse_port(&port, input) == FAILURE)
-		return (hermes_error(EXIT_FAILURE, 1, "bad spoof ports specified"));
+		return (hermes_error(EXIT_FAILURE, "bad spoof ports specified"));
 	mgr->job.opts.spoofed_srcport = port;
 	return (SUCCESS);
 }
@@ -107,10 +107,10 @@ int				h_spoof_srcport(t_mgr *mgr, char *input)
 int				h_exclude_targets(t_mgr *mgr, char *input)
 {
 	if (!input)
-		return (hermes_error(EXIT_FAILURE, 1, "--exclude-targets not specified"));
+		return (hermes_error(EXIT_FAILURE, "--exclude-targets not specified"));
 	if (!mgr->exclude_targets)
 		mgr->exclude_targets = new_targetset();
 	if (handle_ip(mgr->exclude_targets, input) == FAILURE)
-		return (hermes_error(EXIT_FAILURE, 1, "bad exclude target ips(s)"));
+		return (hermes_error(EXIT_FAILURE, "bad exclude target ips(s)"));
 	return (SUCCESS);
 }

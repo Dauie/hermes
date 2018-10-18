@@ -5,6 +5,6 @@ t_job		*new_job(void)
 	t_job	*job;
 
 	if (!(job = (t_job*)memalloc(sizeof(t_job))))
-		hermes_error(FAILURE, 2, "malloc()", strerror(errno));
+		hermes_error(FAILURE, "malloc() %s", strerror(errno));
 	return (job);
 }

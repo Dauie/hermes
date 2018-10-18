@@ -26,9 +26,9 @@ int			parse_cidr_mask(in_addr_t *subn_m, char *cidr_str)
 	int				cidr_m;
 
 	if (!cidr_str)
-		return (hermes_error(FAILURE, 1, "no cidr mask provided"));
+		return (hermes_error(FAILURE, "no cidr mask provided"));
 	if ((cidr_m = atoi(cidr_str)) > 32 || cidr_m < 0)
-		return (hermes_error(FAILURE, 2, "bad cidr mask:", cidr_str));
+		return (hermes_error(FAILURE, "bad cidr mask: %s", cidr_str));
 	*subn_m = 0;
 	if (cidr_m > 0)
 	{
@@ -46,7 +46,7 @@ int			parse_cidr_mask(in_addr_t *subn_m, char *cidr_str)
 int					parse_ip(in_addr_t *ip, char *ip_str)
 {
 	if (inet_pton(AF_INET, ip_str, ip) <= 0)
-		return (hermes_error(FAILURE, 1, "inet_pton()", strerror(errno)));
+		return (hermes_error(FAILURE, "inet_pton() %s", strerror(errno)));
 	return (SUCCESS);
 }
 
