@@ -21,18 +21,30 @@ int				handle_obj_offer(t_wrkr *session, uint8_t code, uint8_t *msg)
 		session->stat.running = false;
 		return (FAILURE);
 	}
-	if (code == C_OBJ_OPTS)
+	if (code == C_OBJ_OPTS) {
 		unbinnify_opts(&session->job->opts, obj);
-	else if (code == C_OBJ_TARGETS)
+		printf("received options");
+	}
+	else if (code == C_OBJ_TARGETS) {
 		unbinnify_targetset(session->job->targets, obj);
-	else if (code == C_OBJ_PS_NRM)
+		printf("received targetset\n");
+	}
+	else if (code == C_OBJ_PS_NRM) {
 		unbinnify_portset(session->job->ports, obj);
-	else if (code == C_OBJ_PS_ACK)
+		printf("received scan portset\n");
+	}
+	else if (code == C_OBJ_PS_ACK) {
 		unbinnify_portset(session->job->ack_ports, obj);
-	else if (code == C_OBJ_PS_SYN)
+		printf("received ack portset\n");
+	}
+	else if (code == C_OBJ_PS_SYN) {
 		unbinnify_portset(session->job->syn_ports, obj);
-	else if (code == C_OBJ_PS_UDP)
+		printf("received syn portset\n");
+	}
+	else if (code == C_OBJ_PS_UDP) {
 		unbinnify_portset(session->job->udp_ports, obj);
+		printf("received udp portset\n");
+	}
 	free(obj);
 	return (SUCCESS);
 }

@@ -133,4 +133,3 @@ int					manager_loop(t_mgr *mgr)
 	}
 	return (0);
 }
-
