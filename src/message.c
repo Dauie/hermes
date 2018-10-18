@@ -86,7 +86,7 @@ int				hermes_sendmsgf(int sock, uint16_t type_code, char *format, ...)
 	uint8_t		msgbuff[PKT_SIZE] = {0};
 	ssize_t		ret;
 
-	msglen = MSG_HDRSZ;
+	msglen = 0;
 	hp = msgbuff;
 	dp = msgbuff + MSG_HDRSZ;
 	if (format)
@@ -95,8 +95,8 @@ int				hermes_sendmsgf(int sock, uint16_t type_code, char *format, ...)
 		msglen += msg_pack_data(dp, &ap, format);
 		va_end(ap);
 	}
-	msg_pack_header(hp, type_code, (uint16_t) msglen);
-	if ((ret = send(sock, msgbuff, (size_t)msglen, MSG_DONTWAIT)) < 0)
+	msg_pack_header(hp, type_code, (uint16_t)msglen);
+	if ((ret = send(sock, msgbuff, (size_t)msglen, MSG_WAITALL)) < 0)
 		return (hermes_error(FAILURE, "send() %s", strerror(errno)));
 	else if (ret != msglen)
 		return (hermes_error(FAILURE, "hermes_sendmsgf()"));
@@ -105,13 +105,17 @@ int				hermes_sendmsgf(int sock, uint16_t type_code, char *format, ...)
 
 ssize_t			hermes_send_binn(int sock, uint8_t code, binn *obj)
 {
-	ssize_t		objlen;
+	uint32_t	objlen;
 	ssize_t		ret;
 	void		*run;
+	uint16_t	tc;
 
-	objlen = binn_size(obj);
-	hermes_sendmsgf(sock, code, "u32", objlen);
-	if ((ret = send(sock, &run, (size_t)objlen, MSG_DONTWAIT)) < 0)
+	objlen = (uint32_t)binn_size(obj);
+	printf("sending object of len %u\n", objlen);
+	tc = msg_tc(T_OBJ, code);
+	hermes_sendmsgf(sock, tc, "u32", objlen);
+
+	if ((ret = send(sock, &run, (size_t)objlen, MSG_WAITALL)) < 0)
 		return (hermes_error(FAILURE, "send() %s", strerror(errno)));
 	if (ret != objlen)
 		return (FAILURE);
@@ -130,7 +134,7 @@ ssize_t			hermes_recvmsg(int sock, uint8_t *msgbuff)
 
 	msglen = 0;
 	hdr = (t_msg_hdr*)msgbuff;
-	if ((hdrlen = recv(sock, msgbuff, MSG_HDRSZ, MSG_DONTWAIT)) <= 0 || hdrlen < MSG_HDRSZ)
+	if ((hdrlen = recv(sock, msgbuff, MSG_HDRSZ, MSG_WAITALL)) <= 0 || hdrlen < MSG_HDRSZ)
 	{
 		if (hdrlen == 0)
 			return (ERR_DISCON);
@@ -139,10 +143,12 @@ ssize_t			hermes_recvmsg(int sock, uint8_t *msgbuff)
 		else
 			return (hermes_error(FAILURE, "recv() %s", strerror(errno)));
 	}
+	printf("hdrlen %zu\n", hdrlen);
 	hdr->msglen = ntohs(hdr->msglen);
+	printf("msglen %u\n", hdr->msglen);
 	if (hdr->msglen > 0)
 	{
-		if ((msglen = recv(sock, msgbuff + MSG_HDRSZ, hdr->msglen, MSG_DONTWAIT)) <= 0)
+		if ((msglen = recv(sock, msgbuff + MSG_HDRSZ, hdr->msglen, MSG_WAITALL)) <= 0)
 		{
 			if (msglen == 0)
 				return (ERR_DISCON);
@@ -151,6 +157,7 @@ ssize_t			hermes_recvmsg(int sock, uint8_t *msgbuff)
 			else
 				return (hermes_error(FAILURE, "recv() %s", strerror(errno)));
 		}
+		printf("recved %zu\n", msglen);
 	}
 	return (hdrlen + msglen);
 }
