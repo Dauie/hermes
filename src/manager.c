@@ -5,16 +5,14 @@
 uint32_t connect_workers(t_workerset *set, int proto)
 {
 	t_wrkr		*wrkr;
-	t_node		*head;
-	t_node		*workers;
+	uint32_t 	iter;
 
 	if (!set)
 		return (0);
-	head = set->wrkrs;
-	workers = set->wrkrs;
-	do
+	iter = set->cnt;
+	while (iter)
 	{
-		wrkr = (t_wrkr*)workers->data;
+		wrkr = (t_wrkr*)set->wrkrs->data;
 		if ((wrkr->sock = socket(PF_INET, SOCK_STREAM, proto)) == -1)
 			hermes_error(EXIT_FAILURE, 2, "socket()", strerror(errno));
 		if (connect(wrkr->sock, (const struct sockaddr *) &wrkr->sin,
@@ -23,31 +21,34 @@ uint32_t connect_workers(t_workerset *set, int proto)
 			hermes_error(FAILURE, 2,
 						 "could not connect to worker. dropping:",
 						 inet_ntoa(wrkr->sin.sin_addr));
-			workers = workers->right;
-			if (clist_rm_head(&workers->left, false) == true)
+			set->wrkrs = set->wrkrs->right;
+			if (clist_rm_tail(&set->wrkrs, false) == true)
 				set->cnt -= 1;
 		}
 		else
 		{
-			workers = workers->right;
+			set->wrkrs = set->wrkrs->right;
 			wrkr->stat.connected = true;
-			printf("connected to %s.\n", inet_ntoa(wrkr->sin.sin_addr));
+			printf("connected to %s\n", inet_ntoa(wrkr->sin.sin_addr));
 		}
+		iter--;
 	}
-	while (workers != head);
 	return (set->cnt);
 }
 
-void				send_workers_binn(t_node **workers, t_workerset *set, binn *obj, uint8_t code)
+void send_workers_binn(t_workerset *set, binn *obj, uint8_t code)
 {
 	t_wrkr			*wrkr;
+	uint32_t 		iter;
 
-	if ((*workers)->left)
-		send_workers_binn(&(*workers)->left, set, obj, code);
-	wrkr = (*workers)->data;
-	hermes_send_binn(wrkr->sock, code, obj);
-	if ((*workers)->right)
-		send_workers_binn(&(*workers)->right, set, obj, code);
+	iter = set->cnt;
+	while (iter)
+	{
+		wrkr = set->wrkrs->data;
+		hermes_send_binn(wrkr->sock, code, obj);
+		set->wrkrs = set->wrkrs->right;
+		iter--;
+	}
 }
 
 void				send_opts(t_mgr *mgr)
@@ -59,28 +60,28 @@ void				send_opts(t_mgr *mgr)
 	binn			*udp_ports;
 
 	opts = binnify_opts(&mgr->job.opts);
-	send_workers_binn(&mgr->workers->wrkrs, mgr->workers, opts,
+	send_workers_binn(mgr->workers, opts,
 					  C_OBJ_OPTS);
 	free(opts);
 	ports = binnify_portset(mgr->job.ports);
-	send_workers_binn(&mgr->workers->wrkrs, mgr->workers, ports,
+	send_workers_binn(mgr->workers, ports,
 					  C_OBJ_PS_NRM);
 	free(ports);
 	if (mgr->job.ack_ports) {
 		ack_ports = binnify_portset(mgr->job.ack_ports);
-		send_workers_binn(&mgr->workers->wrkrs, mgr->workers, ack_ports,
+		send_workers_binn(mgr->workers, ack_ports,
 						  C_OBJ_PS_ACK);
 		free(ack_ports);
 	}
 	if (mgr->job.syn_ports) {
 		syn_ports = binnify_portset(mgr->job.syn_ports);
-		send_workers_binn(&mgr->workers->wrkrs, mgr->workers, syn_ports,
+		send_workers_binn(mgr->workers, syn_ports,
 						  C_OBJ_PS_SYN);
 		free(syn_ports);
 	}
 	if (mgr->job.udp_ports) {
 		udp_ports = binnify_portset(mgr->job.udp_ports);
-		send_workers_binn(&mgr->workers->wrkrs, mgr->workers, udp_ports,
+		send_workers_binn(mgr->workers, udp_ports,
 						  C_OBJ_PS_ACK);
 		free(udp_ports);
 	}
