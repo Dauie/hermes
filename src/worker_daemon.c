@@ -65,5 +65,6 @@ int						worker_daemon(int port)
 		hermes_error(EXIT_FAILURE, 2, "bind()", strerror(errno));
 	if (listen(lsock, 1) == -1)
 		hermes_error(EXIT_FAILURE, 2, "listen()", strerror(errno));
+	printf("Daemon running on port: %d\n", port);
 	return (daemon_loop(session, lsock));
 }

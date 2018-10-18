@@ -2,33 +2,40 @@
 #include "../incl/binnify.h"
 #include "../incl/message.h"
 
-uint32_t connect_workers(t_workerset **set, int proto)
+uint32_t connect_workers(t_workerset *set, int proto)
 {
 	t_wrkr		*wrkr;
+	t_node		*head;
 	t_node		*workers;
 
 	if (!set)
 		return (0);
-	workers = (*set)->wrkrs;
-	while (workers)
+	head = set->wrkrs;
+	workers = set->wrkrs;
+	do
 	{
 		wrkr = (t_wrkr*)workers->data;
 		if ((wrkr->sock = socket(PF_INET, SOCK_STREAM, proto)) == -1)
 			hermes_error(EXIT_FAILURE, 2, "socket()", strerror(errno));
 		if (connect(wrkr->sock, (const struct sockaddr *) &wrkr->sin,
-					sizeof(wrkr->sin)) == -1) {
+					sizeof(wrkr->sin)) == -1)
+		{
 			hermes_error(FAILURE, 2,
 						 "could not connect to worker. dropping:",
 						 inet_ntoa(wrkr->sin.sin_addr));
-			if (clist_rm_head(&workers, true) == true)
-				(*set)->cnt -= 1;
-		} else {
+			workers = workers->right;
+			if (clist_rm_head(&workers->left, false) == true)
+				set->cnt -= 1;
+		}
+		else
+		{
+			workers = workers->right;
 			wrkr->stat.connected = true;
 			printf("connected to %s.\n", inet_ntoa(wrkr->sin.sin_addr));
 		}
-		workers = workers->right;
 	}
-	return ((*set)->cnt);
+	while (workers != head);
+	return (set->cnt);
 }
 
 void				send_workers_binn(t_node **workers, t_workerset *set, binn *obj, uint8_t code)
@@ -90,7 +97,7 @@ int					manager_loop(t_mgr *mgr)
 	if (mgr->workers && mgr->workers->cnt > 0)
 	{
 		if ((mgr->workers->cnt = connect_workers(
-				&mgr->workers, proto->p_proto)) > 0)
+				mgr->workers, proto->p_proto)) > 0)
 		{
 			printf("connected to %i workers.\n", mgr->workers->cnt);
 			send_opts(mgr);
