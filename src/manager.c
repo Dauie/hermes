@@ -76,19 +76,22 @@ void				send_opts(t_mgr *mgr)
 	send_workers_binn(mgr->workers, ports,
 					  C_OBJ_PS_NRM);
 	free(ports);
-	if (mgr->job.ack_ports) {
+	if (mgr->job.ack_ports)
+	{
 		ack_ports = binnify_portset(mgr->job.ack_ports);
 		send_workers_binn(mgr->workers, ack_ports,
 						  C_OBJ_PS_ACK);
 		free(ack_ports);
 	}
-	if (mgr->job.syn_ports) {
+	if (mgr->job.syn_ports)
+	{
 		syn_ports = binnify_portset(mgr->job.syn_ports);
 		send_workers_binn(mgr->workers, syn_ports,
 						  C_OBJ_PS_SYN);
 		free(syn_ports);
 	}
-	if (mgr->job.udp_ports) {
+	if (mgr->job.udp_ports)
+	{
 		udp_ports = binnify_portset(mgr->job.udp_ports);
 		send_workers_binn(mgr->workers, udp_ports,
 						  C_OBJ_PS_ACK);
@@ -109,7 +112,9 @@ int					manager_loop(t_mgr *mgr)
 		if ((mgr->workers->cnt = connect_workers(
 				mgr->workers, proto->p_proto)) > 0)
 		{
-			printf("connected to %i workers.\n", mgr->workers->cnt);
+			printf("connected to %i worker%s\n",
+					mgr->workers->cnt,
+				   (mgr->workers->cnt == 1)? "s.":".");
 			send_opts(mgr);
 		}
 		else

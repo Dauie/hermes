@@ -86,7 +86,7 @@ int				hermes_sendmsgf(int sock, uint16_t type_code, char *format, ...)
 	uint8_t		msgbuff[PKT_SIZE] = {0};
 	ssize_t		ret;
 
-	msglen = MSG_HDRSZ;
+	msglen = 0;
 	hp = msgbuff;
 	dp = msgbuff + MSG_HDRSZ;
 	if (format)
