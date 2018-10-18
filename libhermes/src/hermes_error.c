@@ -8,9 +8,9 @@ int				hermes_error(int errcode, char *fmt, ...) {
 	if (fmt)
 	{
 		va_start(ap, fmt);
-		sprintf(buff, fmt, ap);
+		vsprintf(buff, fmt, ap);
+		dprintf(STDERR_FILENO, "hermes: Error - %s.\n", buff);
 		va_end(ap);
-		dprintf(STDERR_FILENO, "hermese: Error - %s.\n", buff);
 	}
 	if (errcode == EXIT_FAILURE)
 		exit(errcode);

@@ -8,8 +8,10 @@ int					handle_obj_offer(t_wrkr *session, uint8_t code, uint8_t *msg)
 	uint32_t 		*objlen;
 	binn			*obj;
 
+	printf("handling obj offer\n");
 	objlen = (uint32_t*)(msg + MSG_HDRSZ);
 	*objlen = ntohl(*objlen);
+	printf("getting object from socked of size: %i\n", *objlen);
 	if (*objlen <= 0)
 		return (FAILURE);
 	if (!(obj = (binn *)malloc(sizeof(uint8_t) * *objlen)))
@@ -17,13 +19,15 @@ int					handle_obj_offer(t_wrkr *session, uint8_t code, uint8_t *msg)
 	ret = recv(session->sock, obj, *objlen, MSG_WAITALL);
 	if (ret == 0)
 	{
+		printf("failed to recv obj\n");
 		free(obj);
 		session->stat.running = false;
 		return (FAILURE);
 	}
+	printf("recved obj %zu\n", ret);
 	if (code == C_OBJ_OPTS) {
 		unbinnify_opts(&session->job->opts, obj);
-		printf("received options");
+		printf("received options\n");
 	}
 	else if (code == C_OBJ_TARGETS) {
 		unbinnify_targetset(session->job->targets, obj);
@@ -49,12 +53,14 @@ int					handle_obj_offer(t_wrkr *session, uint8_t code, uint8_t *msg)
 	return (SUCCESS);
 }
 
-int					process_message(t_wrkr *session, uint8_t *msgbuff, ssize_t recvsz)
+int process_message(t_wrkr *session, uint8_t *msgbuff)
 {
 	t_msg_hdr		*hdr;
 
+	printf("processing message\n");
 	hdr = (t_msg_hdr*)msgbuff;
-	if (hdr->type == T_OBJ && recvsz >= OBJ_MSG_HDRSZ)
+	printf("type: %i code: %i\n", hdr->type, hdr->code);
+	if (hdr->type == T_OBJ)
 		handle_obj_offer(session, hdr->code, msgbuff);
 	else
 		return (FAILURE);
@@ -76,6 +82,7 @@ int					worker_loop(t_wrkr *session)
 	fds[0].fd = session->sock;
 	fds[0].events = POLLIN;
 	timeout = (500);	/* 1/2 sec */
+	printf("worker loop start\n");
 	while (session->stat.running == true)
 	{
 		rc = poll(fds, 1, timeout);
@@ -87,6 +94,10 @@ int					worker_loop(t_wrkr *session)
 				hermes_error(FAILURE, "poll()", strerror(errno));
 			}
 		}
+		else if (rc == 0)
+		{
+			printf("timeout\n");
+		}
 		else if (rc > 0)
 		{
 			if ((rc = hermes_recvmsg(session->sock, msgbuff)) < 0)
@@ -96,7 +107,7 @@ int					worker_loop(t_wrkr *session)
 			}
 			else if (rc > 0)
 			{
-				process_message(session, msgbuff, rc);
+				process_message(session, msgbuff);
 				bzero(msgbuff, PKT_SIZE);
 			}
 		}
