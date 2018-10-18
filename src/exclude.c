@@ -39,25 +39,24 @@ t_node			*split_ip4rng_portions(t_ip4rng *data, uint32_t splits)
 	t_ip4rng	*iprng;
 
 	node = NULL;
-	iprng = NULL;
 	size = data->size / splits;
-	start = ntohl(data->start);
-	end = ntohl(data->end);
-	while ((start + size) < end)
+	start = data->start;
+	end = data->end;
+	while (ip4_increment(start, size) < end)
 	{
 		iprng = new_ip4range();
 		iprng->size = size;
-		iprng->start = htonl(start);
-		iprng->end = htonl(start + size - 1);
+		iprng->start = start;
+		iprng->end = ip4_increment(start, size - 1);
 		add_list_end(&node, (void**)&iprng);
-		start += size;
+		ip4_increment(start, size);
 	}
 	if ((rem = (data->size % splits)))
 	{
 		iprng = new_ip4range();
 		iprng->size = rem;
-		iprng->start = htonl(start);
-		iprng->end = htonl(start + rem - 1);
+		iprng->start = start;
+		iprng->end = ip4_increment(start, rem - 1);
 		add_list_end(&node, (void**)&iprng);
 	}
 	return (node);
@@ -79,21 +78,21 @@ static int		split_ip4range(t_ip4rng *target, t_ip4rng *exclude, t_ip4rng **l, t_
 		(*r)->end = target->end;
 		(*r)->size = ip4_diff((*r)->start, (*r)->end);
 	}
-	else if (ip4_cmp(&exclude->end, &target->start) >= 0 &&
-			ip4_cmp(&exclude->end, &target->end) < 0)
-	{
-		*r = new_ip4range();
-		(*r)->start = ip4_increment(exclude->end, 1);
-		(*r)->end = target->end;
-		(*r)->size = ip4_diff((*r)->start, (*r)->end);
-	}
-	else if (ip4_cmp(&exclude->start, &target->start) >= 0 &&
-			ip4_cmp(&exclude->start, &target->end) > 0)
+	else if (ip4_cmp(&exclude->start, &target->end) <= 0 &&
+				ip4_cmp(&exclude->end, &target->end) >= 0)
 	{
 		*l = new_ip4range();
 		(*l)->start = target->start;
 		(*l)->end = ip4_decrement(exclude->start, 1);
 		(*l)->size = ip4_diff((*l)->start, (*l)->end);
+	}
+	else if (ip4_cmp(&exclude->end, &target->start) <= 0 &&
+				ip4_cmp(&exclude->start, &target->start) >= 0)
+	{
+		*r = new_ip4range();
+		(*r)->start = ip4_increment(exclude->end, 1);
+		(*r)->end = target->end;
+		(*r)->size = ip4_diff((*r)->start, (*r)->end);
 	}
 	return (SUCCESS);
 }

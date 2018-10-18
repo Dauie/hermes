@@ -45,7 +45,7 @@ static int		add_range(t_portset *list, char **range)
 	data->start = start;
 	data->end = end;
 	data->size = end - start;
-	if (add_node_bst(&list->prtrngs, (void **) &data, portrng_cmp) == SUCCESS)
+	if (add_node_bst(&list->prtrngs, (void **) &data, portrng_cmp) == true)
 	{
 		list->rng_cnt++;
 		return (SUCCESS);

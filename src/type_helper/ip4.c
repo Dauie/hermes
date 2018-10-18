@@ -54,10 +54,10 @@ int				ip4_cmp(void *left, void *right)
 	return (0);
 }
 
-uint32_t			ip4_diff(in_addr_t left, in_addr_t right)
+uint32_t		ip4_diff(in_addr_t left, in_addr_t right)
 {
-	in_addr_t		*l;
-	in_addr_t		*r;
+	in_addr_t	*l;
+	in_addr_t	*r;
 
 	l = &left;
 	r = &right;
@@ -134,7 +134,7 @@ int				ip4_ip4rng_overlap_cmp(void *ip, void *iprng)
 
 	p = (t_ip4*)ip;
 	rng = (t_ip4rng*)iprng;
-	if (p->s_addr >= rng->start && p->s_addr <= rng->end)
+	if (ip4_cmp(&p->s_addr, &rng->start) >= 0 && ip4_cmp(&p->s_addr, &rng->end) <=0)
 		return (0);
 	return (-1);
 }
@@ -146,14 +146,14 @@ int				ip4rng_overlap_cmp(void *left, void *right)
 
 	l = (t_ip4rng*)left;
 	r = (t_ip4rng*)right;
-	if (ip4_cmp(&l->start, &r->start) >= 0 &&
-		ip4_cmp(&l->end, &r->end) <= 0)
+	if (ip4_cmp(&l->start, &r->start) > 0 &&
+		ip4_cmp(&l->end, &r->end) < 0)
 		return (0);
-	else if (ip4_cmp(&l->end, &r->start) >= 0 &&
-			 ip4_cmp(&l->end, &r->end) < 0)
+	else if (ip4_cmp(&l->start, &r->end) <= 0 &&
+			 ip4_cmp(&l->end, &r->end) >= 0)
 		return (0);
-	else if (ip4_cmp(&l->start, &r->start) >= 0 &&
-			 ip4_cmp(&l->start, &r->end) > 0)
+	else if (ip4_cmp(&l->end, &r->start) <= 0 &&
+			 ip4_cmp(&l->start, &r->start) >= 0)
 		return (0);
 	else
 		return (-1);
