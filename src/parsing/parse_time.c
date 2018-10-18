@@ -7,8 +7,10 @@ int			parse_time(uint32_t *opt_time, char *input)
 {
 	long	time;
 
+	if (!input)
+		hermes_error(FAILURE, "time not specified for parse_time()");
 	if ((time = atoi(input)) < 0)
-		return (hermes_error(FAILURE, 1, "bad time specified"));
+		return (hermes_error(FAILURE, "bad time specified"));
 	*opt_time = (uint32_t)time;
 	return (SUCCESS);
 }

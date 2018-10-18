@@ -97,9 +97,9 @@ int				hermes_sendmsgf(int sock, uint16_t type_code, char *format, ...)
 	}
 	msg_pack_header(hp, type_code, (uint16_t) msglen);
 	if ((ret = send(sock, msgbuff, (size_t)msglen, MSG_DONTWAIT)) < 0)
-		return (hermes_error(FAILURE, 2, "send()", strerror(errno)));
+		return (hermes_error(FAILURE, "send() %s", strerror(errno)));
 	else if (ret != msglen)
-		return (hermes_error(FAILURE, 1, "hermes_sendmsgf()"));
+		return (hermes_error(FAILURE, "hermes_sendmsgf()"));
 	return (SUCCESS);
 }
 
@@ -112,7 +112,7 @@ ssize_t			hermes_send_binn(int sock, uint8_t code, binn *obj)
 	objlen = binn_size(obj);
 	hermes_sendmsgf(sock, code, "u32", objlen);
 	if ((ret = send(sock, &run, (size_t)objlen, MSG_DONTWAIT)) < 0)
-		return (hermes_error(FAILURE, 2, "send()", strerror(errno)));
+		return (hermes_error(FAILURE, "send() %s", strerror(errno)));
 	if (ret != objlen)
 		return (FAILURE);
 	return (SUCCESS);
@@ -130,26 +130,26 @@ ssize_t			hermes_recvmsg(int sock, uint8_t *msgbuff)
 
 	msglen = 0;
 	hdr = (t_msg_hdr*)msgbuff;
-	if ((hdrlen = recv(sock, msgbuff, MSG_HDRSZ, MSG_WAITALL)) <= 0 || hdrlen < MSG_HDRSZ)
+	if ((hdrlen = recv(sock, msgbuff, MSG_HDRSZ, MSG_DONTWAIT)) <= 0 || hdrlen < MSG_HDRSZ)
 	{
 		if (hdrlen == 0)
 			return (ERR_DISCON);
 		else if (errno == EWOULDBLOCK || errno == EAGAIN)
 			return (0);
 		else
-			return (hermes_error(FAILURE, 2, "recv()", strerror(errno)));
+			return (hermes_error(FAILURE, "recv() %s", strerror(errno)));
 	}
 	hdr->msglen = ntohs(hdr->msglen);
 	if (hdr->msglen > 0)
 	{
-		if ((msglen = recv(sock, msgbuff + MSG_HDRSZ, hdr->msglen, MSG_WAITALL)) <= 0)
+		if ((msglen = recv(sock, msgbuff + MSG_HDRSZ, hdr->msglen, MSG_DONTWAIT)) <= 0)
 		{
 			if (msglen == 0)
 				return (ERR_DISCON);
 			else if (errno == EWOULDBLOCK || errno == EAGAIN)
 				return (0);
 			else
-				return (hermes_error(FAILURE, 2, "recv()", strerror(errno)));
+				return (hermes_error(FAILURE, "recv() %s", strerror(errno)));
 		}
 	}
 	return (hdrlen + msglen);

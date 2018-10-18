@@ -5,7 +5,7 @@ t_port			*new_port()
 	t_port		*port;
 
 	if (!(port = (t_port *)memalloc(sizeof(t_port))))
-		hermes_error(FAILURE, 2, "malloc()", strerror(errno));
+		hermes_error(FAILURE, "malloc() %s", strerror(errno));
 	return (port);
 }
 
@@ -14,7 +14,7 @@ t_prtrng		*new_portrange()
 	t_prtrng	*range;
 
 	if (!(range = (t_prtrng *)memalloc(sizeof(t_prtrng))))
-		hermes_error(FAILURE, 2, "malloc()", strerror(errno));
+		hermes_error(FAILURE, "malloc() %s", strerror(errno));
 	return (range);
 }
 
@@ -23,7 +23,7 @@ t_portset		*new_portset()
 	t_portset	*set;
 
 	if (!(set = (t_portset *)memalloc(sizeof(t_portset))))
-		hermes_error(FAILURE, 2, "malloc()", strerror(errno));
+		hermes_error(FAILURE, "malloc() %s", strerror(errno));;
 	return (set);
 }
 int				port_cmp(void *prt_left, void *prt_right)

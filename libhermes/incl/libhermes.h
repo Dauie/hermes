@@ -95,6 +95,6 @@ bool				rm_node(t_node **node, bool deldata);
 /*
 **	Error Management Functions
 */
-int					hermes_error(int errcode, int str_amt, ...);
+int					hermes_error(int errcode, char *fmt, ...);
 
-#endif //hermes_hermes_H
+#endif //LIB_HERMES_H

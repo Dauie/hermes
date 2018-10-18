@@ -21,7 +21,7 @@ int			 main(int ac, char **av)
 	if (ac < 2)
 		return (FAILURE); // usage();
 	if (!(mgr = (t_mgr*)memalloc(sizeof(t_mgr))))
-		hermes_error(FAILURE, 2, "malloc()", strerror(errno));
+		hermes_error(FAILURE, "malloc() %s", strerror(errno));
 	if (parse_opts(mgr, ac, av) == FAILURE)
 		exit(EXIT_FAILURE);
 	sanity_check(mgr);

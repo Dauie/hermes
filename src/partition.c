@@ -23,7 +23,7 @@ uint32_t		partition_ip4rng(t_node **dst, t_node **src,
 	if (((t_ip4rng*)(*src)->data)->size > amt)
 	{
 		if (!(slice = slice_ip4rng(src, amt)))
-			hermes_error(SUCCESS, 1, "no src or amt provided for slice_ip4rng(src, amt)");
+			return (0);
 		if (add_node_bst(&(*dst), (void**)slice, ip4rng_cmp) == true)
 			amt--;
 	}

@@ -1,23 +1,16 @@
 
 # include "../incl/libhermes.h"
 
-int				hermes_error(int errcode, int str_amt, ...)
-{
-	va_list		ap;
-	size_t 		i;
-	char		buff[512] = {0};
-	int			strcnt;
+int				hermes_error(int errcode, char *fmt, ...) {
+	va_list ap;
+	char buff[512] = {0};
 
-	i = 0;
-	strcnt = -1;
-
-	if (str_amt > 0)
+	if (fmt)
 	{
-		va_start(ap, str_amt);
-		while (++strcnt < str_amt)
-			i += sprintf(buff + i, " %s", va_arg(ap, char *));
+		va_start(ap, fmt);
+		sprintf(buff, fmt, ap);
 		va_end(ap);
-		dprintf(STDERR_FILENO, "hermese: Error -%s.\n", buff);
+		dprintf(STDERR_FILENO, "hermese: Error - %s.\n", buff);
 	}
 	if (errcode == EXIT_FAILURE)
 		exit(errcode);

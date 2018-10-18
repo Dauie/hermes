@@ -118,7 +118,7 @@ int			parse_opts(t_mgr *mgr, int ac, char **args)
 			if (dtab_loop(mgr, args[i], g_disp) == FAILURE)
 			{
 				if (dtab_wopt_loop(mgr, args[i], args[i + 1], g_disp_wopt) == FAILURE)
-					return (hermes_error(EXIT_FAILURE, 2, "invalid option", args[i]));
+					return (hermes_error(EXIT_FAILURE, "invalid option %s", args[i]));
 				i++;
 			}
 		}
@@ -127,7 +127,7 @@ int			parse_opts(t_mgr *mgr, int ac, char **args)
 			if (!mgr->job.targets)
 				mgr->job.targets = new_targetset();
 			if (handle_ip(mgr->job.targets, args[i]) == FAILURE)
-				return (hermes_error(FAILURE, 1, "issue parsing targets"));
+				return (hermes_error(FAILURE, "issue parsing targets"));
 		}
 	}
 	return (SUCCESS);
