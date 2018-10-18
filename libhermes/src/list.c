@@ -2,86 +2,114 @@
 #include "sys/errno.h"
 #include "../incl/libhermes.h"
 
-bool			enqueue(t_node **queue, void **data)
-{
-	t_node *node;
-	t_node *end;
-
-	if (!queue || !data || !*data)
-		return (false);
-	node = new_node(data);
-	if (!*queue)
-	{
-		*queue = node;
-		(*queue)->left = *queue;
-		(*queue)->right = *queue;
-		return (true);
-	}
-	end = (*queue)->left;
-	(*queue)->left->right = node;
-	(*queue)->right->left = node;
-	node->left = (*queue)->left;
-	node->right = (*queue)->right;
-	(*queue) = node;
-	return (true);
-}
-
-t_node			*dequeue(t_node **queue)
-{
-	return (*queue);
-}
-
-
-bool			push_stack(t_node **stack, void **data)
+bool			clist_add_head(t_node **clist, void **data)
 {
 	t_node		*node;
+//	t_node		*end;
 
-	if (!stack || !data)
+	if (!clist || !data || !*data)
 		return (false);
-	if (!(node = new_node(data)))
-		return (false);
-	if (*stack == NULL)
-		*stack = node;
-	else
+	node = new_node(data);
+	if (!*clist)
 	{
-		node->right = *stack;
-		*stack = node;
-		(*stack)->right->left = *stack;
+		*clist = node;
+		(*clist)->left = *clist;
+		(*clist)->right = *clist;
+		return (true);
 	}
+//	end = (*clist)->left;
+	(*clist)->left->right = node;
+	(*clist)->right->left = node;
+	node->left = (*clist)->left;
+	node->right = (*clist)->right;
+	(*clist) = node;
 	return (true);
 }
 
-void			*pop_stack(t_node **stack)
+bool			clist_add_end(t_node **clist, void **data)
 {
-	t_node		*tmp;
-	void		*data;
-
-	if (!stack || !*stack)
-		return (NULL);
-	data = (*stack)->data;
-	tmp = *stack;
-	*stack = (*stack)->right;
-	del_node(&tmp, false);
-	return (data);
+	(void)clist;
+	(void)data;
+	return (true);
 }
 
-void			del_list(t_node **list, bool deldata)
+bool			clist_add_inorder(t_node **clist, void **data)
 {
+	(void)clist;
+	(void)data;
+	return (true);
+}
+
+bool			clist_rm_head(t_node **clist)
+{
+	t_node		*head;
 	t_node		*tmp;
 
-	if (!list || !*list)
-		return ;
-	while (*list)
+	head = *clist;
+	if (!head)
+		return (false);
+	if (head->left == head && head->right == head)
 	{
-		tmp = (*list)->right;
-		del_node(list, deldata);
-		*list = tmp;
+		del_node(clist, true);
+		return (true);
+	}
+	tmp = head;
+	head->left->right = head->right;
+	head->right->left = head->left;
+	del_node(&tmp, true);
+	return (true);
+}
+
+bool			clist_rm_tail(t_node **clist)
+{
+	t_node		*tail;
+	t_node		*head;
+	t_node		*tmp;
+
+	head = *clist;
+	if (!head)
+		return (false);
+	if (head->left == head && head->right == head)
+	{
+		del_node(clist, true);
+		return (true);
+	}
+	tail = head->left;
+	tmp = tail;
+	tail->left->right = tail->right;
+	tail->right->left = tail->left;
+	del_node(&tmp, true);
+	return (true);
+}
+
+bool			clist_rm(t_node **clist, void *data, int (*cmp)(void *, void *))
+{
+	(void)clist;
+	(void)data;
+	(void)cmp;
+	return (true);
+}
+
+void			del_clist(t_node **clist, bool deldata)
+{
+	t_node		*list;
+	t_node		*tmp;
+
+	if (!clist || !*clist)
+		return ;
+	list = *clist;
+	list->left = NULL;
+	while (list)
+	{
+		tmp = list;
+		list = list->right;
+		del_node(&tmp, deldata);
 	}
 }
 
 bool			rm_node(t_node **node, bool deldata)
 {
-	t_node *tmp;
+	t_node		*tmp;
 
 	if (!node || !*node)
 		return (false);
@@ -92,58 +120,6 @@ bool			rm_node(t_node **node, bool deldata)
 	if (tmp->right)
 		tmp->right->left = tmp->left;
 	del_node(&tmp, deldata);
-	return (true);
-}
-
-bool			rm_list_head(t_node **list, bool deldata)
-{
-	t_node		*node;
-
-	if (!list || !*list)
-		return (false);
-	node = *list;
-	(*list) = (*list)->right;
-	del_node(&node, deldata);
-	return (true);
-}
-
-bool			add_list_head(t_node **list, void **data)
-{
-	t_node		*node;
-
-	if (!list || !data || !*data)
-		return (false);
-	if (!(node = new_node(data)))
-		return (false);
-	if (*list == NULL)
-		*list = node;
-	else
-	{
-		node->right = *list;
-		*list = node;
-		(*list)->right->left = *list;
-	}
-	return (true);
-}
-
-bool			add_list_end(t_node **list, void **data)
-{
-	t_node		*tmp;
-	t_node		*node;
-
-	if (!list || !data || !*data)
-		return (false);
-	node = new_node(data);
-	if (*list == NULL)
-		*list = node;
-	else
-	{
-		tmp = *list;
-		while (tmp->right)
-			tmp = tmp->right;
-		tmp->right = node;
-		node->left = tmp;
-	}
 	return (true);
 }
 

@@ -82,20 +82,15 @@ void serialize(t_node **tree, t_node **list);
 /*
 **	List Functions
 */
-t_node				*new_list(void);
-void				del_list(t_node **list, bool deldata);
-bool				add_list_end(t_node **list, void **node);
-bool				add_list_head(t_node **list, void **data);
+bool				clist_add_head(t_node **clist, void **data);
+bool				clist_add_end(t_node **clist, void **data);
+bool				clist_add_inorder(t_node **clist, void **data);
+bool				clist_rm_head(t_node **clist);
+bool				clist_rm_tail(t_node **clist);
+bool				clist_rm(t_node **clist, void *data, int (*cmp)(void *, void *));
+void				del_clist(t_node **clist, bool deldata);
 bool				rm_node(t_node **node, bool deldata);
-void				del_list(t_node **list, bool deldata);
-bool				rm_head_list(t_node **list, bool deldata);
 
-/*
-**	Queue Functions
-*/
-void 				*pop_stack(t_node **stack);
-void				*peek_stack(t_node **stack);
-bool				enqueue(t_node **queue, void **data);
 
 /*
 **	Error Management Functions

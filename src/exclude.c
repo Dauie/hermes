@@ -48,7 +48,7 @@ t_node			*split_ip4rng_portions(t_ip4rng *data, uint32_t splits)
 		iprng->size = size;
 		iprng->start = start;
 		iprng->end = ip4_increment(start, size - 1);
-		add_list_end(&node, (void**)&iprng);
+		clist_add_head(&node, (void**)&iprng);
 		ip4_increment(start, size);
 	}
 	if ((rem = (data->size % splits)))
@@ -57,7 +57,7 @@ t_node			*split_ip4rng_portions(t_ip4rng *data, uint32_t splits)
 		iprng->size = rem;
 		iprng->start = start;
 		iprng->end = ip4_increment(start, rem - 1);
-		add_list_end(&node, (void**)&iprng);
+		clist_add_head(&node, (void**)&iprng);
 	}
 	return (node);
 }

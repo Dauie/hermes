@@ -27,4 +27,3 @@ void			del_node(t_node **node, bool deldata)
 	free(*node);
 	*node = NULL;
 }
-

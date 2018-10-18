@@ -35,7 +35,7 @@ void		loop_tree_to_list(t_node **list, t_node **tree)
 		return ;
 	if ((*tree)->left)
 		loop_tree_to_list(list, &(*tree)->left);
-	enqueue(list, &(*tree)->data);
+	clist_add_head(list, &(*tree)->data);
 	if ((*tree)->right)
 		loop_tree_to_list(list, &(*tree)->right);
 }

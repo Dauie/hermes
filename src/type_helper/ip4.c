@@ -33,7 +33,6 @@ t_targetset		*new_targetset(void)
 	return (new);
 }
 
-
 int				ip4_cmp(void *left, void *right)
 {
 	uint32_t	shift;

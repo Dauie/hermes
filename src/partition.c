@@ -44,7 +44,7 @@ t_node			*new_targetset_list(uint32_t count)
 	while (count)
 	{
 		newset = new_targetset();
-		enqueue(&set_list, (void*)&newset);
+		clist_add_head(&set_list, (void *) &newset);
 		count--;
 	}
 	return (set_list);
