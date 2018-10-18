@@ -20,7 +20,7 @@ uint32_t connect_workers(t_workerset **set, int proto)
 			hermes_error(FAILURE, 2,
 						 "could not connect to worker. dropping:",
 						 inet_ntoa(wrkr->sin.sin_addr));
-			if (rm_node(&workers, true) == true)
+			if (clist_rm_head(&workers, true) == true)
 				(*set)->cnt -= 1;
 		} else {
 			wrkr->stat.connected = true;

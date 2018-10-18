@@ -4,32 +4,46 @@
 
 bool			clist_add_head(t_node **clist, void **data)
 {
-	t_node		*node;
-//	t_node		*end;
+	t_node		*old_head;
+	t_node		*nw_node;
 
-	if (!clist || !data || !*data)
+	if (!*data)
 		return (false);
-	node = new_node(data);
+	nw_node = new_node(data);
+	nw_node->data = *data;
 	if (!*clist)
 	{
-		*clist = node;
-		(*clist)->left = *clist;
-		(*clist)->right = *clist;
+		nw_node->left = nw_node->right = nw_node;
+		*clist = nw_node;
 		return (true);
 	}
-//	end = (*clist)->left;
-	(*clist)->left->right = node;
-	(*clist)->right->left = node;
-	node->left = (*clist)->left;
-	node->right = (*clist)->right;
-	(*clist) = node;
+	old_head = *clist;
+	nw_node->right = old_head;
+	old_head->left = nw_node;
+	nw_node->left = old_head->left;
 	return (true);
 }
 
 bool			clist_add_end(t_node **clist, void **data)
 {
-	(void)clist;
-	(void)data;
+	t_node		*end;
+	t_node		*nw_node;
+
+	if (!*data)
+		return (false);
+	nw_node = new_node(data);
+	nw_node->data = *data;
+	if (!*clist)
+	{
+		nw_node->left = nw_node->right = nw_node;
+		*clist = nw_node;
+		return (true);
+	}
+	end = (*clist)->left;
+	nw_node->right = *clist;
+	(*clist)->left = nw_node;
+	nw_node->left = end;
+	end->right = nw_node;
 	return (true);
 }
 
@@ -40,7 +54,7 @@ bool			clist_add_inorder(t_node **clist, void **data)
 	return (true);
 }
 
-bool			clist_rm_head(t_node **clist)
+bool			clist_rm_head(t_node **clist, bool deldata)
 {
 	t_node		*head;
 	t_node		*tmp;
@@ -50,17 +64,17 @@ bool			clist_rm_head(t_node **clist)
 		return (false);
 	if (head->left == head && head->right == head)
 	{
-		del_node(clist, true);
+		del_node(clist, deldata);
 		return (true);
 	}
 	tmp = head;
 	head->left->right = head->right;
 	head->right->left = head->left;
-	del_node(&tmp, true);
+	del_node(&tmp, deldata);
 	return (true);
 }
 
-bool			clist_rm_tail(t_node **clist)
+bool			clist_rm_tail(t_node **clist, bool deldata)
 {
 	t_node		*tail;
 	t_node		*head;
@@ -71,14 +85,14 @@ bool			clist_rm_tail(t_node **clist)
 		return (false);
 	if (head->left == head && head->right == head)
 	{
-		del_node(clist, true);
+		del_node(clist, deldata);
 		return (true);
 	}
 	tail = head->left;
 	tmp = tail;
 	tail->left->right = tail->right;
 	tail->right->left = tail->left;
-	del_node(&tmp, true);
+	del_node(&tmp, deldata);
 	return (true);
 }
 
