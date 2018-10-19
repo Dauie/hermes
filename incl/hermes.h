@@ -147,7 +147,7 @@ typedef struct			s_worker
 
 typedef struct 			s_warray
 {
-	t_wrkr				*array;
+	t_node				*array;
 }						t_warray;
 
 typedef struct			s_workerset

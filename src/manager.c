@@ -154,15 +154,15 @@ int 				man_proc_msg(t_mgr *mgr, t_wrkr *wrkr, uint8_t *msgbuff)
 	return (SUCCESS);
 }
 
-void				loop_tree_to_warray(t_warray **warray, t_node **tree)
+void				loop_tree_to_array(t_node **array, t_node **tree)
 {
 	if (!tree || !*tree)
 		return ;
 	if ((*tree)->left)
-		loop_tree_to_warray(warray, &(*tree)->left);
-	(*warray)->array[((t_wrkr*)(*tree)->data)->sock] = *(t_wrkr*)(*tree)->data;
+		loop_tree_to_array(array, &(*tree)->left);
+	(*array)[((t_wrkr*)(*tree)->data)->sock] = *(*tree);
 	if ((*tree)->right)
-		loop_tree_to_warray(warray, &(*tree)->right);
+		loop_tree_to_array(array, &(*tree)->right);
 }
 
 uint16_t			get_max_fd(t_workerset *set)
@@ -181,16 +181,15 @@ uint16_t			get_max_fd(t_workerset *set)
 	return (max);
 }
 
-void				tree_to_warray(t_warray **warray, t_workerset *set)
+t_node				*tree_to_array(t_node **tree, size_t size)
 {
-	uint16_t max;
+	t_node	*array;
 
-	if (!(max = get_max_fd(set)))
-		hermes_error(FAILURE, "get_max_fd()");
-	if (!((*warray) = (t_warray*)memalloc(sizeof(t_warray) * max)))
+	if (!((array) = (t_node*)memalloc(sizeof(t_node) * size)))
 		hermes_error(FAILURE, "malloc()", strerror(errno));
-	loop_tree_to_warray(warray, &set->wrkrs);
-	del_tree(&set->wrkrs, false);
+	loop_tree_to_array(&array, tree);
+	del_tree(tree, false);
+	return (array);
 }
 
 void				check_workers(t_mgr *mgr, struct pollfd *fds)
@@ -222,7 +221,7 @@ void				check_workers(t_mgr *mgr, struct pollfd *fds)
 				if (hermes_recvmsg(fds[iter].fd, msgbuff) > 0)
 					man_proc_msg(
 							mgr,
-							&((t_warray*)mgr->workers->wrkrs->data)->array[fds[iter].fd],
+							((t_wrkr*)mgr->workers->wrkrs[fds[iter].fd].data),
 							msgbuff);
 			/* TODO : else () worker did not send anything */
 			iter--;
@@ -232,15 +231,16 @@ void				check_workers(t_mgr *mgr, struct pollfd *fds)
 
 int					manager_loop(t_mgr *mgr)
 {
+	uint16_t		max;
 	struct pollfd 	*fds;
 	struct protoent	*proto;
-	t_warray		*wrkrs;
 
 	mgr->stat.running = true;
 	if ((proto = getprotobyname("tcp")) == 0)
 		return (FAILURE);
-	tree_to_warray(&wrkrs, mgr->workers);
-	mgr->workers->wrkrs->data = wrkrs;
+	if (!(max = get_max_fd(mgr->workers)))
+		hermes_error(FAILURE, "get_max_fd()");
+	mgr->workers->wrkrs = tree_to_array(&mgr->workers->wrkrs, max);
 	if (mgr->workers && mgr->workers->cnt > 0)
 	{
 		if ((mgr->workers->cnt = connect_workers(
