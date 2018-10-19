@@ -5,18 +5,18 @@
 int					handle_obj_offer(t_wrkr *session, uint8_t code, uint8_t *msg)
 {
 	ssize_t			ret;
-	uint32_t 		*objlen;
 	binn			*obj;
+	t_obj_hdr		*hdr;
 
 	printf("handling obj offer\n");
-	objlen = (uint32_t*)(msg + MSG_HDRSZ);
-	*objlen = ntohl(*objlen);
-	printf("getting object from socked of size: %i\n", *objlen);
-	if (*objlen <= 0)
+	hdr = (t_obj_hdr *)msg;
+	hdr->objlen = ntohl(hdr->objlen);
+	printf("%i %i %i %u\n", hdr->type, hdr->code, hdr->msglen, hdr->objlen);
+	if (hdr->objlen <= 0)
 		return (FAILURE);
-	if (!(obj = (binn *)malloc(sizeof(uint8_t) * *objlen)))
+	if (!(obj = (binn *)malloc(sizeof(uint8_t) * hdr->objlen)))
 		return (FAILURE);
-	ret = recv(session->sock, obj, *objlen, MSG_WAITALL);
+	ret = recv(session->sock, obj, hdr->objlen, MSG_WAITALL);
 	if (ret == 0)
 	{
 		printf("failed to recv obj\n");
@@ -25,27 +25,51 @@ int					handle_obj_offer(t_wrkr *session, uint8_t code, uint8_t *msg)
 		return (FAILURE);
 	}
 	printf("recved obj %zu\n", ret);
-	if (code == C_OBJ_OPTS) {
+	if (session->job == NULL)
+		if (!(session->job = new_job()))
+			return (hermes_error(FAILURE, "malloc() %s", strerror(errno)));
+	if (code == C_OBJ_OPTS)
+	{
 		unbinnify_opts(&session->job->opts, obj);
 		printf("received options\n");
 	}
-	else if (code == C_OBJ_TARGETS) {
+	else if (code == C_OBJ_TARGETS)
+	{
+		if (!session->job->targets)
+			if (!(session->job->targets = new_targetset()))
+				return (hermes_error(FAILURE, "malloc() %s", strerror(errno)));
 		unbinnify_targetset(session->job->targets, obj);
 		printf("received targetset\n");
 	}
-	else if (code == C_OBJ_PS_NRM) {
+	else if (code == C_OBJ_PS_NRM)
+	{
+		if (!session->job->ports)
+			if (!(session->job->ports = new_portset()))
+				return (hermes_error(FAILURE, "malloc() %s", strerror(errno)));
 		unbinnify_portset(session->job->ports, obj);
 		printf("received scan portset\n");
 	}
-	else if (code == C_OBJ_PS_ACK) {
+	else if (code == C_OBJ_PS_ACK)
+	{
+		if (!(session->job->ack_ports))
+			if (!(session->job->ack_ports = new_portset()))
+				return (hermes_error(FAILURE, "malloc() %s", strerror(errno)));
 		unbinnify_portset(session->job->ack_ports, obj);
 		printf("received ack portset\n");
 	}
-	else if (code == C_OBJ_PS_SYN) {
+	else if (code == C_OBJ_PS_SYN)
+	{
+		if (!session->job->syn_ports)
+			if (!(session->job->syn_ports = new_portset()))
+				return (hermes_error(FAILURE, "malloc() %s", strerror(errno)));
 		unbinnify_portset(session->job->syn_ports, obj);
 		printf("received syn portset\n");
 	}
-	else if (code == C_OBJ_PS_UDP) {
+	else if (code == C_OBJ_PS_UDP)
+	{
+		if (!session->job->udp_ports)
+			if (!(session->job->udp_ports = new_portset()))
+				return (hermes_error(FAILURE, "malloc() %s", strerror(errno)));
 		unbinnify_portset(session->job->udp_ports, obj);
 		printf("received udp portset\n");
 	}

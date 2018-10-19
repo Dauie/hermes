@@ -12,6 +12,14 @@ typedef	struct	s_msg_hdr
 	uint16_t	msglen;
 }				t_msg_hdr;
 
+typedef struct s_obj_hdr
+{
+	uint8_t		type;
+	uint8_t		code;
+	uint16_t	msglen;
+	uint32_t	objlen;
+}				t_obj_hdr;
+
 typedef union	u_mval
 {
 	uint8_t		u8;
@@ -83,7 +91,7 @@ typedef union	u_mval
 
 uint16_t	msg_tc(uint8_t type, uint8_t code);
 ssize_t		hermes_recvmsg(int sock, uint8_t *msgbuff);
-int			hermes_sendmsgf(int sock, uint16_t type_code, char *format, ...);
+int			hermes_sendmsgf(int sock, uint16_t type_code, char *fmt, ...);
 ssize_t		hermes_send_binn(int sock, uint8_t code, binn *obj);
 
 #endif //HERMES_MESSAGE_H
