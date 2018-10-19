@@ -145,6 +145,11 @@ typedef struct			s_worker
 	uint32_t 			send_size;
 }						t_wrkr;
 
+typedef struct 			s_warray
+{
+	t_wrkr				*array;
+}						t_warray;
+
 typedef struct			s_workerset
 {
 	uint32_t			cnt;
@@ -214,9 +219,10 @@ int						worker_daemon(int port);
 
 int						worker_loop(t_wrkr* session);
 int						manager_loop(t_mgr *mgr);
-void					partition_targetset(t_targetset **dst,
-											t_targetset **src,
-											uint32_t amt);
-int						send_work(t_node **wrkr_tree, t_job *job);
+uint32_t				partition_targetset(t_targetset **dst,
+							 t_targetset **src,
+							 uint32_t amt);
+bool					send_work(t_mgr *mgr, t_wrkr *wrkr)
+
 
 #endif

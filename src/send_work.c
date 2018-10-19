@@ -1,6 +1,6 @@
 #include "../incl/hermes.h"
 #include "../incl/binnify.h"
-
+#include "../incl/message.h"
 
 /*
 **	func | send_work()
@@ -27,24 +27,21 @@ void	distribute_obj(t_node **wrkr_tree, uint8_t type, binn *obj)
 		distribute_obj(&(*wrkr_tree)->right, type, obj);
 }
 
-int			send_work(t_node **wrkr_tree, t_job *job)
+bool		send_work(t_mgr *mgr, t_wrkr *wrkr)
 {
-	binn	*opts;
-	binn	*ports;
-	binn	*ack_ports;
-	binn	*syn_ports;
-	binn	*udp_ports;
+	binn		*targets;
 
-	(void)wrkr_tree;
-	opts = binnify_opts(&job->opts);
-	ports = binnify_portset(job->ports);
-	ack_ports = binnify_portset(job->ack_ports);
-	syn_ports = binnify_portset(job->syn_ports);
-	udp_ports = binnify_portset(job->udp_ports);
-	(void)opts;
-	(void)ports;
-	(void)ack_ports;
-	(void)syn_ports;
-	(void)udp_ports;
-	return (SUCCESS);
+	if (!wrkr || !mgr)
+		return (false);
+	mgr->job.targets->total -= partition_targetset(
+			&wrkr->job->targets,
+			&mgr->job.targets,
+			wrkr->send_size);
+	targets = binnify_targetset(wrkr->job->targets);
+	if (hermes_send_binn(
+		wrkr->sock,
+		C_OBJ_TARGETS,
+		targets) < 0)
+		hermes_error(SUCCESS, "hermes_send_binn() failed");
+	// TODO : increment wrkr->send_size by an amount (double?)
 }

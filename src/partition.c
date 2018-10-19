@@ -1,4 +1,7 @@
 #include "../incl/hermes.h"
+#include "../incl/binnify.h"
+#include "../incl/message.h"
+
 
 /* TODO this function probably needs to take a count, to keep all ips from being distributed if total is over a certain size */
 uint32_t		partition_ip4(t_node **dst, t_node **src,
@@ -52,14 +55,19 @@ t_node			*new_targetset_list(uint32_t count)
 
 /* TODO: all functions that operate on a targetset's contents should not be
  * TODO: passed the tree, but the targetset itself, to help track its members ^ eg partition_ip4() */
-void partition_targetset(t_targetset **dst, t_targetset **src, uint32_t amt)
+uint32_t partition_targetset(t_targetset **dst, t_targetset **src, uint32_t amt)
 {
+	uint32_t	parts;
+
 	if (!src || !amt || !dst)
-		return;
+		return (0);
+	parts = amt;
 	(*dst)->ip_cnt = amt;
 	(*dst)->total = amt;
-	if (!(amt = partition_ip4(&(*dst)->ips, &(*src)->ips, amt / 2)))
-		return;
+	if (!(parts -= partition_ip4(&(*dst)->ips, &(*src)->ips, amt / 2)))
+		return (amt);
 	(*dst)->rng_cnt = amt;
-	partition_ip4rng(&(*dst)->iprngs, &(*src)->iprngs, amt);
+	partition_ip4rng(&(*dst)->iprngs, &(*src)->iprngs, parts);
+	amt -= parts;
+	return (amt);
 }
