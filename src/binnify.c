@@ -161,21 +161,49 @@ binn			*binnify_opts(t_opts *opts)
 	binn_object_set_uint32(obj, "scan_delay", opts->scan_delay);
 	binn_object_set_uint32(obj, "max_scan_delay", opts->max_scan_delay);
 	// TODO -> heap overflow
-//	binn_object_set_uint32(obj, "min_packet_rate", opts->min_packet_rate);
-//	binn_object_set_uint32(obj, "max_packet_rate", opts->max_packet_rate);
-//	binn_object_set_uint32(obj, "max_retries", opts->max_retries);
-//	binn_object_set_uint32(obj, "min_parallel", opts->min_parallel);
-//	binn_object_set_uint32(obj, "max_parallel", opts->max_parallel);
-//	binn_object_set_uint32(obj, "min_hostgroup", opts->min_hostgroup);
-//	binn_object_set_uint32(obj, "max_hostgroup", opts->max_hostgroup);
-//	binn_object_set_uint32(obj, "spoofed_srcaddr", opts->spoofed_srcaddr);
-//	binn_object_set_uint16(obj, "spoofed_srcport", opts->spoofed_srcport);
-//	binn_object_set_uint16(obj, "rpayload_len", opts->rpayload_len);
-//	binn_object_set_uint8(obj, "fragment_mtu", opts->fragment_mtu);
-//	binn_object_set_uint8(obj, "ip_ttl", opts->ip_ttl);
-//	binn_object_set_uint8(obj, "thread_count", opts->thread_count);
-//	binn_object_set_uint8(obj, "verbose_level", opts->verbose_level);
+	binn_object_set_uint32(obj, "min_packet_rate", opts->min_packet_rate);
+	binn_object_set_uint32(obj, "max_packet_rate", opts->max_packet_rate);
+	binn_object_set_uint32(obj, "max_retries", opts->max_retries);
+	binn_object_set_uint32(obj, "min_parallel", opts->min_parallel);
+	binn_object_set_uint32(obj, "max_parallel", opts->max_parallel);
+	binn_object_set_uint32(obj, "min_hostgroup", opts->min_hostgroup);
+	binn_object_set_uint32(obj, "max_hostmax_hostgroupgroup", opts->max_hostgroup);
+	binn_object_set_uint32(obj, "spoofed_srcaddr", opts->spoofed_srcaddr);
+	binn_object_set_uint16(obj, "spoofed_srcport", opts->spoofed_srcport);
+	binn_object_set_uint16(obj, "rpayload_len", opts->rpayload_len);
+	binn_object_set_uint8(obj, "fragment_mtu", opts->fragment_mtu);
+	binn_object_set_uint8(obj, "ip_ttl", opts->ip_ttl);
+	binn_object_set_uint8(obj, "thread_count", opts->thread_count);
+	binn_object_set_uint8(obj, "verbose_level", opts->verbose_level);
 	return (obj);
+}
+
+void			unbinnify_opts(t_opts *opts, binn *obj)
+{
+	printf("unbinnify ops started\n");
+	printf("bin obj len %i\n", binn_size(obj));
+	binn_object_get_uint64(obj,"bitops", (uint64 *)&opts->bitops);
+	binn_object_get_uint32(obj, "min_rtt_timeout", &opts->min_rtt_timeo);
+	binn_object_get_uint32(obj, "init_rtt_timeo", &opts->init_rtt_timeo);
+	binn_object_get_uint32(obj, "max_rtt_timeo", &opts->max_rtt_timeo);
+	binn_object_get_uint32(obj, "host_timeo", &opts->host_timeo);
+	binn_object_get_uint32(obj, "scan_delay", &opts->scan_delay);
+	binn_object_get_uint32(obj, "max_scan_delay", &opts->max_scan_delay);
+	binn_object_get_uint32(obj, "min_packet_rate", &opts->min_packet_rate);
+	binn_object_get_uint32(obj, "max_packet_rate", &opts->max_packet_rate);
+	binn_object_get_uint32(obj, "max_retries", &opts->max_retries);
+	binn_object_get_uint32(obj, "min_parallel", &opts->min_parallel);
+	binn_object_get_uint32(obj, "max_parallel", &opts->max_parallel);
+	binn_object_get_uint32(obj, "min_hostgroup", &opts->min_hostgroup);
+	binn_object_get_uint32(obj, "max_hostgroup", &opts->max_hostgroup);
+	binn_object_get_uint32(obj, "spoofed_srcaddr", &opts->spoofed_srcaddr);
+	binn_object_get_uint16(obj, "spoofed_srcport", &opts->spoofed_srcport);
+	binn_object_get_uint16(obj, "rpayload_len", &opts->rpayload_len);
+	binn_object_get_uint8(obj, "fragment_mtu", &opts->fragment_mtu);
+	binn_object_get_uint8(obj, "ip_ttl", &opts->ip_ttl);
+	binn_object_get_uint8(obj, "thread_count", &opts->thread_count);
+	binn_object_get_uint8(obj, "verbose_level", &opts->verbose_level);
+	printf("leaving unbinnify ops\n");
 }
 
 binn			*binnify_portset(t_portset *set)
@@ -240,33 +268,6 @@ binn			*binnify_targetset(t_targetset *set)
 	binn_object_set_list(obj, "iprngs", iprng);
 	return (obj);
 }
-
-
-void			unbinnify_opts(t_opts *opts, binn *obj)
-{
-	binn_object_get_uint64(obj,"bitops", (uint64 *)&opts->bitops);
-	binn_object_get_uint32(opts, "min_rtt_timeout", &opts->min_rtt_timeo);
-	binn_object_get_uint32(opts, "init_rtt_timeo", &opts->init_rtt_timeo);
-	binn_object_get_uint32(opts, "max_rtt_timeo", &opts->max_rtt_timeo);
-	binn_object_get_uint32(opts, "host_timeo", &opts->host_timeo);
-	binn_object_get_uint32(opts, "scan_delay", &opts->scan_delay);
-	binn_object_get_uint32(opts, "max_scan_delay", &opts->max_scan_delay);
-	binn_object_get_uint32(opts, "min_packet_rate", &opts->min_packet_rate);
-	binn_object_get_uint32(opts, "max_packet_rate", &opts->max_packet_rate);
-	binn_object_get_uint32(opts, "max_retries", &opts->max_retries);
-	binn_object_get_uint32(opts, "min_parallel", &opts->min_parallel);
-	binn_object_get_uint32(opts, "max_parallel", &opts->max_parallel);
-	binn_object_get_uint32(opts, "min_hostgroup", &opts->min_hostgroup);
-	binn_object_get_uint32(opts, "max_hostgroup", &opts->max_hostgroup);
-	binn_object_get_uint32(opts, "spoofed_srcaddr", &opts->spoofed_srcaddr);
-	binn_object_get_uint16(opts, "spoofed_srcport", &opts->spoofed_srcport);
-	binn_object_get_uint16(opts, "rpayload_len", &opts->rpayload_len);
-	binn_object_get_uint8(opts, "fragment_mtu", &opts->fragment_mtu);
-	binn_object_get_uint8(opts, "ip_ttl", &opts->ip_ttl);
-	binn_object_get_uint8(opts, "thread_count", &opts->thread_count);
-	binn_object_get_uint8(opts, "verbose_level", &opts->verbose_level);
-}
-
 
 void			unbinnify_portset(t_portset *set, binn *obj)
 {
