@@ -70,6 +70,22 @@ void				del_node(t_node **node, bool deldata);
 /*
 **	BST Functions
 */
+
+/*
+**	func | tree_to_array(t_node **, size_t, int *func())
+**	param1 | tree | the tree that will be converted to an array
+**	param2 | size | the size of the array to be malloced
+**	param3 | indx | a function pointer that will return the
+** 					correct data for each index of the array
+**	return | node | returns an array of nodes of size size
+**
+**	desc: mallocs an array of t_nodes of len then recursively
+**  		serializes the tree into the array, passing the tree
+**			to a user-supplied function pointer that returns the
+**			correct data for each index;
+*/
+t_node				*tree_to_array(t_node **tree, size_t size,
+									 int (indx)(t_node *));
 t_node				*tree_to_list(t_node **tree);
 void 				del_tree(t_node **tree, bool deldata);
 bool				add_node_bst(t_node **tree, void **data, int (*cmp)(void *, void *));

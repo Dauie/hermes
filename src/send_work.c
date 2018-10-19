@@ -2,17 +2,6 @@
 #include "../incl/binnify.h"
 #include "../incl/message.h"
 
-/*
-**	func | send_work()
-**	param1 | t_wrkr | worker to send serialized job to.
-**	param2 | t_job | job to be serialized and sent to worker.
-**	return | int | SUCCESS (0) or FAILURE (-1)
-**
-**	desc: first job is serialized into a binn object, then a job offer is sent
-**	to worker. If job offer is accepted by worker, the serialized job is
-**	sent, else error is thrown. Job should be saved and re-distributed;
-*/
-
 void	distribute_obj(t_node **wrkr_tree, uint8_t type, binn *obj)
 {
 	t_wrkr *wrkr;

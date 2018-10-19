@@ -72,6 +72,29 @@ t_node		*tree_search(t_node **tree, void *data, int (*cmp)(void *, void *))
 	return (NULL);
 }
 
+void				loop_tree_to_array(t_node **array, t_node **tree, int (idx)(t_node*))
+{
+	if (!tree || !*tree)
+		return ;
+	if ((*tree)->left)
+		loop_tree_to_array(array, &(*tree)->left, idx);
+	(*array)[idx(*tree)] = *(*tree);
+	if ((*tree)->right)
+		loop_tree_to_array(array, &(*tree)->right, idx);
+}
+
+t_node				*tree_to_array(t_node **tree, size_t size,
+									 int (indx)(t_node *))
+{
+	t_node	*array;
+
+	if (!((array) = (t_node*)memalloc(sizeof(t_node) * size)))
+		hermes_error(FAILURE, "malloc()", strerror(errno));
+	loop_tree_to_array(&array, tree, indx);
+	del_tree(tree, false);
+	return (array);
+}
+
 bool		add_node_bst(t_node **root, void **data, int (*cmp)(void *, void *))
 {
 	int		ret;

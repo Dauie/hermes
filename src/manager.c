@@ -5,8 +5,7 @@
 struct pollfd	*new_fds(uint32_t count)
 {
 	struct pollfd *fds;
-	if (!fds)
-		return (NULL);
+
 	if (!(fds = (struct pollfd*)memalloc(
 			sizeof(struct pollfd) * count)))
 		hermes_error(FAILURE, "malloc()");
@@ -26,7 +25,7 @@ uint32_t connect_workers(t_workerset *set, int proto, struct pollfd **fds)
 		wrkr = (t_wrkr*)set->wrkrs->data;
 		if ((wrkr->sock = socket(PF_INET, SOCK_STREAM, proto)) == -1)
 			hermes_error(EXIT_FAILURE, "socket() %s", strerror(errno));
-		pprint_ip("connecting to worker: ", wrkr->sin.sin_addr.s_addr);
+		printf("connecting to worker: %s\n", inet_ntoa(wrkr->sin.sin_addr));
 		if (connect(wrkr->sock, (const struct sockaddr *) &wrkr->sin,
 					sizeof(wrkr->sin)) == -1)
 		{
@@ -123,7 +122,7 @@ int 				man_proc_msg(t_mgr *mgr, t_wrkr *wrkr, uint8_t *msgbuff)
 	hdr = (t_msg_hdr*)msgbuff;
 	printf("type: %i code: %i\n", hdr->type, hdr->code);
 	bzero(msgbuff, PKT_SIZE);
-	if (hdr->type == ) // TODO : if (NEEDS WORK) {send work}
+	if (hdr->type == T_WRK_REQ) // TODO : if (NEEDS WORK) {send work}
 	{
 		if (mgr->job.targets->total)
 		{
@@ -135,23 +134,12 @@ int 				man_proc_msg(t_mgr *mgr, t_wrkr *wrkr, uint8_t *msgbuff)
 			handle_disconnect(&mgr, &wrkr);
 		}
 	}
-	else if (hdr->type == T_DISCONNECT)
+	else if (hdr->type == T_SHUTDOWN)
 	{
 		if (handle_disconnect(&mgr, &wrkr) == false)
 			/* TODO : handle abandoned work */;
 	}
 	return (SUCCESS);
-}
-
-void				loop_tree_to_array(t_node **array, t_node **tree)
-{
-	if (!tree || !*tree)
-		return ;
-	if ((*tree)->left)
-		loop_tree_to_array(array, &(*tree)->left);
-	(*array)[((t_wrkr*)(*tree)->data)->sock] = *(*tree);
-	if ((*tree)->right)
-		loop_tree_to_array(array, &(*tree)->right);
 }
 
 uint16_t			get_max_fd(t_workerset *set)
@@ -168,17 +156,6 @@ uint16_t			get_max_fd(t_workerset *set)
 		iter--;
 	}
 	return (max);
-}
-
-t_node				*tree_to_array(t_node **tree, size_t size)
-{
-	t_node	*array;
-
-	if (!((array) = (t_node*)memalloc(sizeof(t_node) * size)))
-		hermes_error(FAILURE, "malloc()", strerror(errno));
-	loop_tree_to_array(&array, tree);
-	del_tree(tree, false);
-	return (array);
 }
 
 void				check_workers(t_mgr *mgr, struct pollfd *fds)
@@ -229,7 +206,7 @@ int					manager_loop(t_mgr *mgr)
 		return (FAILURE);
 	if (!(max = get_max_fd(mgr->workers)))
 		hermes_error(FAILURE, "get_max_fd()");
-	mgr->workers->wrkrs = tree_to_array(&mgr->workers->wrkrs, max);
+	mgr->workers->wrkrs = tree_to_array(&mgr->workers->wrkrs, max, fd_idx);
 	if (mgr->workers && mgr->workers->cnt > 0)
 	{
 		if ((mgr->workers->cnt = connect_workers(
