@@ -26,7 +26,7 @@ uint32_t connect_workers(t_workerset *set, int proto)
 		else
 		{
 			set->wrkrs = set->wrkrs->right;
-			wrkr->stat.connected = true;
+			wrkr->stat.running = true;
 			printf("connected to %s\n", inet_ntoa(wrkr->sin.sin_addr));
 		}
 		iter--;
@@ -57,7 +57,7 @@ void				send_opts(t_mgr *mgr)
 	binn			*syn_ports;
 	binn			*udp_ports;
 
-	opts = binnify_opts(&mgr->job.opts);
+	opts = binnify_opts(mgr->job.opts);
 	send_workers_binn(mgr->workers, opts,
 					  C_OBJ_OPTS);
 	free(opts);
@@ -98,7 +98,7 @@ int					manager_loop(t_mgr *mgr)
 		if ((mgr->workers->cnt = connect_workers(
 				mgr->workers, proto->p_proto)) > 0)
 		{
-			printf("connected to %i workers.\n", mgr->workers->cnt);
+			printf("connected to %i worker(s).\n", mgr->workers->cnt);
 			send_opts(mgr);
 		}
 		else

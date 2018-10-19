@@ -57,17 +57,17 @@ size_t			msg_pack_data(uint8_t *msgbuff, char *fmt, va_list ap)
 	{
 		if (strcmp(spec, "u8") == 0)
 		{
-			u8 = (uint8_t)va_arg(ap, int);
+			u8 = (uint8_t)va_arg(ap, uint32_t);
 			pack_uint8(&p, u8);
 		}
 		else if (strcmp(spec, "u16") == 0)
 		{
-			u16 = htons((uint16_t)va_arg(ap, int));
+			u16 = htons((uint16_t)va_arg(ap, uint32_t));
 			pack_uint16(&p, u16);
 		}
 		else if (strcmp(spec, "u32") == 0)
 		{
-			u32 = (uint32_t)va_arg(ap, unsigned int);
+			u32 = (uint32_t)va_arg(ap, uint32_t);
 			u32 = htonl(u32);
 			pack_uint32(&p, u32);
 		}

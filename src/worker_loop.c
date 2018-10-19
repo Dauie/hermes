@@ -30,7 +30,7 @@ int					handle_obj_offer(t_wrkr *session, uint8_t code, uint8_t *msg)
 			return (hermes_error(FAILURE, "malloc() %s", strerror(errno)));
 	if (code == C_OBJ_OPTS)
 	{
-		unbinnify_opts(&session->job->opts, obj);
+		unbinnify_opts(session->job->opts, obj);
 		printf("received options\n");
 	}
 	else if (code == C_OBJ_TARGETS)
@@ -39,6 +39,7 @@ int					handle_obj_offer(t_wrkr *session, uint8_t code, uint8_t *msg)
 			if (!(session->job->targets = new_targetset()))
 				return (hermes_error(FAILURE, "malloc() %s", strerror(errno)));
 		unbinnify_targetset(session->job->targets, obj);
+		session->stat.work_requested = false;
 		printf("received targetset\n");
 	}
 	else if (code == C_OBJ_PS_NRM)
@@ -47,6 +48,7 @@ int					handle_obj_offer(t_wrkr *session, uint8_t code, uint8_t *msg)
 			if (!(session->job->ports = new_portset()))
 				return (hermes_error(FAILURE, "malloc() %s", strerror(errno)));
 		unbinnify_portset(session->job->ports, obj);
+		session->stat.initilized = true;
 		printf("received scan portset\n");
 	}
 	else if (code == C_OBJ_PS_ACK)
@@ -77,7 +79,7 @@ int					handle_obj_offer(t_wrkr *session, uint8_t code, uint8_t *msg)
 	return (SUCCESS);
 }
 
-int process_message(t_wrkr *session, uint8_t *msgbuff)
+int					process_message(t_wrkr *session, uint8_t *msgbuff)
 {
 	t_msg_hdr		*hdr;
 
@@ -86,6 +88,15 @@ int process_message(t_wrkr *session, uint8_t *msgbuff)
 	printf("type: %i code: %i\n", hdr->type, hdr->code);
 	if (hdr->type == T_OBJ)
 		handle_obj_offer(session, hdr->code, msgbuff);
+	else if (hdr->type == T_SHUTDOWN)
+	{
+		if (hdr->code == C_SHUTDOWN_SFT)
+			session->stat.running = false;
+		else if (hdr->code == C_SHUTDOWN_HRD)
+			hermes_error(EXIT_FAILURE, "Manager signaled emergency shutdown.");
+		else
+			return (FAILURE);
+	}
 	else
 		return (FAILURE);
 	return (SUCCESS);
@@ -134,7 +145,12 @@ int					worker_loop(t_wrkr *session)
 				bzero(msgbuff, PKT_SIZE);
 			}
 		}
-		/* Do work with threads */
+		if (session->stat.initilized && session->job->targets->total == 0
+			&& !session->stat.work_requested)
+		{
+			hermes_sendmsgf(session->sock, msg_tc(T_WRK_REQ, C_WRK_REQ), NULL);
+			session->stat.work_requested = true;
+		}
 	}
 	return (SUCCESS);
 }
