@@ -2,10 +2,10 @@
 #include "../incl/binnify.h"
 #include "../incl/message.h"
 
-uint32_t connect_workers(t_workerset *set, int proto)
+uint32_t			connect_workers(t_workerset *set, int proto)
 {
-	t_wrkr		*wrkr;
-	uint32_t 	iter;
+	t_wrkr			*wrkr;
+	uint32_t		iter;
 
 	if (!set)
 		return (0);
@@ -34,7 +34,7 @@ uint32_t connect_workers(t_workerset *set, int proto)
 	return (set->cnt);
 }
 
-void send_workers_binn(t_workerset *set, binn *obj, uint8_t code)
+void				send_workers_binn(t_workerset *set, binn *obj, uint8_t code)
 {
 	t_wrkr			*wrkr;
 	uint32_t 		iter;
@@ -49,7 +49,7 @@ void send_workers_binn(t_workerset *set, binn *obj, uint8_t code)
 	}
 }
 
-void				send_opts(t_mgr *mgr)
+void				send_workers_initial_env(t_mgr *mgr)
 {
 	binn			*opts;
 	binn			*ports;
@@ -99,7 +99,7 @@ int					manager_loop(t_mgr *mgr)
 				mgr->workers, proto->p_proto)) > 0)
 		{
 			printf("connected to %i worker(s).\n", mgr->workers->cnt);
-			send_opts(mgr);
+			send_workers_initial_env(mgr);
 		}
 		else
 			printf("failed to connected to any workers...\n");

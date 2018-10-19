@@ -102,10 +102,6 @@ int					process_message(t_wrkr *session, uint8_t *msgbuff)
 	return (SUCCESS);
 }
 
-//void 			run_hermes()
-//{
-//}
-
 int					worker_loop(t_wrkr *session)
 {
 	ssize_t			rc;
