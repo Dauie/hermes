@@ -111,6 +111,7 @@ int			parse_opts(t_mgr *mgr, int ac, char **args)
 	int		i;
 
 	i = 0;
+
 	while (++i < ac)
 	{
 		if (args[i][0] == '-')

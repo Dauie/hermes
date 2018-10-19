@@ -119,7 +119,7 @@ typedef struct			s_ops
 
 typedef struct			s_job
 {
-	t_opts				opts;
+	t_opts				*opts;
 	t_targetset			*targets;
 	t_portset			*ports;
 	t_portset			*syn_ports;
@@ -131,7 +131,8 @@ typedef struct			s_job
 typedef struct			t_status
 {
 	uint8_t				running: 1;
-	uint8_t				connected: 1;
+	uint8_t				initilized: 1;
+	uint8_t				work_requested: 1;
 	uint8_t				working: 1;
 }						t_stat;
 
@@ -176,7 +177,10 @@ typedef struct			s_manager
 	FILE				*norm_file;
 }						t_mgr;
 
+t_mgr					*new_mgr(void);
 t_job					*new_job(void);
+t_opts					*new_opts(void);
+
 
 t_ip4					*new_ip4(void);
 int						ip4_cmp(void *left, void *right);

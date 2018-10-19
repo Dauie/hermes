@@ -64,8 +64,8 @@ typedef union	u_mval
 **	Hermes Message Types
 */
 # define T_OBJ (0)
-# define T_DISCONNECT (1)
-# define T_START (2)
+# define T_WRK_REQ (1)
+# define T_SHUTDOWN (2)
 
 /*
 **	T_OBJ Message Codes
@@ -76,6 +76,17 @@ typedef union	u_mval
 # define C_OBJ_PS_ACK (3)
 # define C_OBJ_PS_SYN (4)
 # define C_OBJ_PS_UDP (5)
+
+/*
+**	T_WRK_REQ Codes
+*/
+# define C_WRK_REQ (0)
+
+/*
+**	T_SHUTDOWN Codes
+*/
+# define C_SHUTDOWN_SFT (0)
+# define C_SHUTDOWN_HRD (1)
 
 /*
 **	T_START Message Codes

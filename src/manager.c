@@ -1,17 +1,6 @@
-#include <tclDecls.h>
 #include "../incl/hermes.h"
 #include "../incl/binnify.h"
 #include "../incl/message.h"
-
-void		pprint_ip(char *str, uint32_t ip)
-{
-	char ipstr[20];
-
-
-	if (!inet_ntop(AF_INET, &ip, ipstr, 20))
-		return;
-	printf("%s%s\n", str, ipstr);
-}
 
 struct pollfd	*new_fds(uint32_t count)
 {
@@ -49,7 +38,7 @@ uint32_t connect_workers(t_workerset *set, int proto, struct pollfd **fds)
 		else
 		{
 			set->wrkrs = set->wrkrs->right;
-			wrkr->stat.connected = true;
+			wrkr->stat.running = true;
 			printf("connected to %s\n", inet_ntoa(wrkr->sin.sin_addr));
 		}
 		iter--;
@@ -81,7 +70,7 @@ void				send_opts(t_mgr *mgr)
 	binn			*syn_ports;
 	binn			*udp_ports;
 
-	opts = binnify_opts(&mgr->job.opts);
+	opts = binnify_opts(mgr->job.opts);
 	send_workers_binn(mgr->workers, opts,
 					  C_OBJ_OPTS);
 	free(opts);
