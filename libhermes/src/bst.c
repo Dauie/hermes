@@ -72,6 +72,18 @@ t_node		*tree_search(t_node **tree, void *data, int (*cmp)(void *, void *))
 	return (NULL);
 }
 
+/* TODO look at this */
+void				loop_tree_to_array(t_node **array, t_node **tree, int (idx)(t_node*))
+{
+	if (!tree || !*tree)
+		return ;
+	if ((*tree)->left)
+		loop_tree_to_array(array, &(*tree)->left, idx);
+	(*array)[idx(*tree)] = *(*tree);
+	if ((*tree)->right)
+		loop_tree_to_array(array, &(*tree)->right, idx);
+}
+
 bool		add_node_bst(t_node **root, void **data, int (*cmp)(void *, void *))
 {
 	int		ret;
@@ -106,8 +118,7 @@ bool		add_node_bst(t_node **root, void **data, int (*cmp)(void *, void *))
 	return (true);
 }
 
-static void		remove_node_bst_search_key(t_node **cur, t_node **prnt, void *key,
-							int (*cmp)(void *, void *))
+static void		remove_node_bst_search_key(t_node **cur, t_node **prnt, void *key, int (*cmp)(void *, void *))
 {
 	while (*cur != NULL && cmp((*cur)->data, key) != 0)
 	{
@@ -119,8 +130,7 @@ static void		remove_node_bst_search_key(t_node **cur, t_node **prnt, void *key,
 	}
 }
 
-bool		rm_node_bst(t_node **tree, void *key,
-						int (*cmp)(void *, void *), void *(*min)(t_node *))
+bool		rm_node_bst(t_node **tree, void *key, int (*cmp)(void *, void *), void *(*min)(t_node *))
 {
 	t_node	*parent = NULL;
 	t_node	*curr = *tree;

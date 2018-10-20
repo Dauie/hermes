@@ -146,6 +146,11 @@ typedef struct			s_worker
 	uint32_t 			send_size;
 }						t_wrkr;
 
+typedef struct 			s_warray
+{
+	t_node				*array;
+}						t_warray;
+
 typedef struct			s_workerset
 {
 	uint32_t			cnt;
@@ -207,7 +212,7 @@ int						portrng_overlap_cmp(void *rng_left, void *rng_right);
 void					*portrng_min(t_node *tree);
 
 t_workerset				*new_workerset();
-
+int						fd_idx(t_node *access);
 t_wrkr					*new_worker(void);
 int						worker_cmp(void *wrkr_left, void *wrkr_right);
 void					*worker_min(t_node *tree);
@@ -218,9 +223,20 @@ int						worker_daemon(int port);
 
 int						worker_loop(t_wrkr* session);
 int						manager_loop(t_mgr *mgr);
-void					partition_targetset(t_targetset **dst,
-											t_targetset **src,
-											uint32_t amt);
-int						send_work(t_node **wrkr_tree, t_job *job);
+uint32_t				partition_targetset(t_targetset **dst,
+							 t_targetset **src,
+							 uint32_t amt);
+/*
+**	func | send_work()
+**	param1 | t_wrkr | worker to send serialized job to.
+**	param2 | t_job | job to be serialized and sent to worker.
+**	return | int | SUCCESS (0) or FAILURE (-1)
+**
+**	desc: first job is serialized into a binn object, then a job offer is sent
+**	to worker. If job offer is accepted by worker, the serialized job is
+**	sent, else error is thrown. Job should be saved and re-distributed;
+*/
+bool					send_work(t_mgr *mgr, t_wrkr *wrkr);
+
 
 #endif

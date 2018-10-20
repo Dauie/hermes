@@ -107,8 +107,9 @@ int					worker_loop(t_wrkr *session)
 	ssize_t			rc;
 	uint8_t			msgbuff[PKT_SIZE];
 	int				timeout;
-	struct pollfd	fds[1] = {0};
+	struct pollfd	fds[1];
 
+	memset(&fds, 0, sizeof(fds));
 	fds[0].fd = session->sock;
 	fds[0].events = POLLIN;
 	timeout = (500);	/* 1/2 sec */

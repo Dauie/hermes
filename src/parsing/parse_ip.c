@@ -25,7 +25,7 @@ int			parse_cidr_mask(in_addr_t *subn_m, char *cidr_str)
 {
 	int				cidr_m;
 
-	if (!cidr_str)
+	if (!cidr_str || strlen(cidr_str) == 0)
 		return (hermes_error(FAILURE, "no cidr mask provided"));
 	if ((cidr_m = atoi(cidr_str)) > 32 || cidr_m < 0)
 		return (hermes_error(FAILURE, "bad cidr mask: %s", cidr_str));
