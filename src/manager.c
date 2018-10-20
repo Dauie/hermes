@@ -18,7 +18,7 @@ void		connect_workers(t_node **workers, t_workerset *set, int proto)
 
 	if (!*workers)
 		return ;
-	if ((*workers)->left)
+	if (*workers && (*workers)->left)
 		connect_workers(&(*workers)->left, set, proto);
 	worker = (t_wrkr*)(*workers)->data;
 	if ((worker->sock = socket(PF_INET, SOCK_STREAM, proto)) == -1)
@@ -34,23 +34,20 @@ void		connect_workers(t_node **workers, t_workerset *set, int proto)
 		worker->stat.running = true;
 		printf("connected to %s.\n", inet_ntoa(worker->sin.sin_addr));
 	}
-	if ((*workers)->right)
+	if (*workers && (*workers)->right)
 		connect_workers(&(*workers)->right, set, proto);
 }
 
 void				send_workers_binn(t_workerset *set, binn *obj, uint8_t code)
 {
-	t_wrkr			*wrkr;
-	uint32_t 		iter;
+	t_wrkr			**wrkrs;
+	int 			iter;
 
-	iter = set->cnt;
-	while (iter)
-	{
-		wrkr = set->wrkrs->data;
-		hermes_send_binn(wrkr->sock, code, obj);
-		set->wrkrs = set->wrkrs->right;
-		iter--;
-	}
+	iter = -1;
+	wrkrs = (t_wrkr**)set->wrkrs->data;
+	while (wrkrs[++iter])
+		if (wrkrs[iter]->sock)
+			hermes_send_binn(wrkrs[iter]->sock, code, obj);
 }
 
 void				send_workers_initial_env(t_mgr *mgr)
@@ -190,7 +187,9 @@ void				check_workers(t_mgr *mgr, struct pollfd *fds)
 	ssize_t 	rc;
 	uint32_t	iter;
 	uint8_t		msgbuff[PKT_SIZE];
+	t_wrkr		*workers;
 
+	workers = mgr->workers->wrkrs->data;
 	iter = mgr->workers->cnt;
 	rc = poll(fds, mgr->workers->cnt, 500);
 	if (rc < 0)
@@ -210,19 +209,18 @@ void				check_workers(t_mgr *mgr, struct pollfd *fds)
 			 * 		recv work
 			 * 		redistribute to next available worker
 			 */
-			if (fds[iter].revents)
+			if (fds[iter].revents & POLLIN)
+			{
 				if (hermes_recvmsg(fds[iter].fd, msgbuff) > 0)
-					mgr_process_msg(
-							mgr,
-							((t_wrkr *) mgr->workers->wrkrs[fds[iter].fd].data),
-							msgbuff);
+					mgr_process_msg(mgr, &workers[fds[iter].fd], msgbuff);
+			}
 			/* TODO : else () worker did not send anything */
 			iter--;
 		}
 	}
 }
 
-void				add_wrkrs_to_array(t_node *wrkr, t_wrkr *array)
+void				add_wrkrs_to_array(t_node *wrkr, t_wrkr **array)
 {
 	t_wrkr		*w;
 
@@ -231,21 +229,25 @@ void				add_wrkrs_to_array(t_node *wrkr, t_wrkr *array)
 	if (wrkr->left)
 		add_wrkrs_to_array(wrkr->left, array);
 	w = (t_wrkr*)wrkr->data;
-	memcpy(&array[w->sock], w, sizeof(t_wrkr));
+	memcpy(array[w->sock], w, sizeof(t_wrkr));
 	if (wrkr->right)
 		add_wrkrs_to_array(wrkr->right, array);
 }
 
 t_node		*wrkrtree_to_fdinxarray(t_node **wrkrtree, int maxfd)
 {
-	t_wrkr *array;
+	t_wrkr **array;
+	int		i;
 
-	array = memalloc(sizeof(t_wrkr) * (maxfd + 1));
+	i = -1;
+	array = memalloc(sizeof(t_wrkr *) * (maxfd + 1));
 	if (!array)
 	{
 		hermes_error(FAILURE, "malloc() %s", strerror(errno));
 		return (NULL);
 	}
+	while (++i < maxfd)
+		array[i] = memalloc(sizeof(t_wrkr));
 	add_wrkrs_to_array(*wrkrtree, array);
 	del_tree(wrkrtree, true);
 	return (new_node((void **)&array));
@@ -263,6 +265,7 @@ int					manager_loop(t_mgr *mgr)
 	struct pollfd	*fds;
 	struct protoent	*proto;
 
+
 	fds = NULL;
 	mgr->stat.running = true;
 	if ((proto = getprotobyname("tcp")) == 0)
@@ -272,11 +275,11 @@ int					manager_loop(t_mgr *mgr)
 		connect_workers(&mgr->workers->wrkrs, mgr->workers, proto->p_proto);
 		if (mgr->workers->cnt > 0)
 		{
-			printf("connected to %i worker%s\n", mgr->workers->cnt, (mgr->workers->cnt == 1)? "s.":".");
-			send_workers_initial_env(mgr);
+			printf("connected to %i worker%s\n", mgr->workers->cnt, (mgr->workers->cnt == 1) ? ".":"s.");
 			if (!(maxfd = get_max_fd(mgr->workers)))
 				hermes_error(FAILURE, "get_max_fd()");
 			mgr->workers->wrkrs = wrkrtree_to_fdinxarray(&mgr->workers->wrkrs, maxfd);
+			send_workers_initial_env(mgr);
 		}
 		else
 			printf("failed to connected to any workers...\n");
@@ -299,3 +302,4 @@ int					manager_loop(t_mgr *mgr)
 	}
 	return (0);
 }
+

@@ -129,7 +129,7 @@ int					worker_loop(t_wrkr *session)
 		{
 			printf("timeout\n");
 		}
-		else if (rc > 0)
+		else if (rc > 0 && fds[0].revents & POLLIN)
 		{
 			if ((rc = hermes_recvmsg(session->sock, msgbuff)) < 0)
 			{
