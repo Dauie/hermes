@@ -110,6 +110,8 @@ bool				handle_disconnect(t_mgr **mgr, t_wrkr **wrkr)
 	 * disconnect
 	 * remove worker from list
 	 */
+	if (mgr && wrkr)
+		return (true);
 	return (true);
 }
 

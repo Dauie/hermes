@@ -33,4 +33,5 @@ bool		send_work(t_mgr *mgr, t_wrkr *wrkr)
 		targets) < 0)
 		hermes_error(SUCCESS, "hermes_send_binn() failed");
 	// TODO : increment wrkr->send_size by an amount (double?)
+	return (true);
 }
