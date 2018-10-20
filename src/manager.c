@@ -12,38 +12,30 @@ struct pollfd	*new_fds(uint32_t count)
 	return (fds);
 }
 
-uint32_t			connect_workers(t_workerset *set, int proto, struct pollfd **fds)
+void		connect_workers(t_node **workers, t_workerset *set, int proto)
 {
-	t_wrkr			*wrkr;
-	uint32_t		iter;
+	t_wrkr		*worker;
 
-	if (!set)
-		return (0);
-	iter = set->cnt;
-	while (iter)
+	if (!*workers)
+		return ;
+	if ((*workers)->left)
+		connect_workers(&(*workers)->left, set, proto);
+	worker = (t_wrkr*)(*workers)->data;
+	if ((worker->sock = socket(PF_INET, SOCK_STREAM, proto)) == -1)
+		hermes_error(EXIT_FAILURE, 2, "socket()", strerror(errno));
+	if (connect(worker->sock, (const struct sockaddr *)&worker->sin, sizeof(worker->sin)) == -1)
 	{
-		wrkr = (t_wrkr*)set->wrkrs->data;
-		if ((wrkr->sock = socket(PF_INET, SOCK_STREAM, proto)) == -1)
-			hermes_error(EXIT_FAILURE, "socket() %s", strerror(errno));
-		printf("connecting to worker: %s\n", inet_ntoa(wrkr->sin.sin_addr));
-		if (connect(wrkr->sock, (const struct sockaddr *) &wrkr->sin,
-					sizeof(wrkr->sin)) == -1)
-		{
-			hermes_error(FAILURE, "could not connect to worker. dropping: %s", inet_ntoa(wrkr->sin.sin_addr));
-			set->wrkrs = set->wrkrs->right;
-			if (clist_rm_tail(&set->wrkrs, false) == true)
-				set->cnt -= 1;
-		}
-		else
-		{
-			set->wrkrs = set->wrkrs->right;
-			wrkr->stat.running = true;
-			printf("connected to %s\n", inet_ntoa(wrkr->sin.sin_addr));
-		}
-		iter--;
+		hermes_error(FAILURE, 2, "could not connect to worker. dropping:", inet_ntoa(worker->sin.sin_addr));
+		if (rm_node_bst(&set->wrkrs, worker, worker_cmp, worker_min) == true)
+			set->cnt -= 1;
 	}
-	*fds = new_fds(set->cnt);
-	return (set->cnt);
+	else
+	{
+		worker->stat.running = true;
+		printf("connected to %s.\n", inet_ntoa(worker->sin.sin_addr));
+	}
+	if ((*workers)->right)
+		connect_workers(&(*workers)->right, set, proto);
 }
 
 void				send_workers_binn(t_workerset *set, binn *obj, uint8_t code)
@@ -171,18 +163,7 @@ int 				mgr_process_msg(t_mgr *mgr, t_wrkr *wrkr, uint8_t *msgbuff)
 
 int				get_max_fd(t_workerset *set)
 {
-	int 		max;
-	uint32_t	iter;
 
-	max = 0;
-	iter = set->cnt;
-	while (iter)
-	{
-		if (((t_wrkr*)set->wrkrs->data)->sock > max)
-			max = ((t_wrkr*)set->wrkrs->data)->sock;
-		iter--;
-	}
-	return (max);
 }
 
 void				check_workers(t_mgr *mgr, struct pollfd *fds)
@@ -251,27 +232,35 @@ t_node		*wrkrtree_to_fdinxarray(t_node **wrkrtree, int maxfd)
 	return (new_node((void **)&array));
 }
 
+/*TODO we need to heapify targets before they reach this function.
+ * 1. make all heapify functions
+ * 2. add heapify calls on ip/port trees in sanity check.
+ * 3. if no ports are specified have a port heap made.
+ *
+ * */
 int					manager_loop(t_mgr *mgr)
 {
 	int				maxfd;
 	struct pollfd	*fds;
 	struct protoent	*proto;
 
+	fds = NULL;
 	mgr->stat.running = true;
 	if ((proto = getprotobyname("tcp")) == 0)
 		return (FAILURE);
 	if (mgr->workers && mgr->workers->cnt > 0)
 	{
-		if (!(maxfd = get_max_fd(mgr->workers)))
-			hermes_error(FAILURE, "get_max_fd()");
-		mgr->workers->wrkrs = wrkrtree_to_fdinxarray(&mgr->workers->wrkrs, maxfd);
-		if ((mgr->workers->cnt = connect_workers(mgr->workers, proto->p_proto, &fds)) > 0)
+		connect_workers(&mgr->workers->wrkrs, mgr->workers, proto->p_proto);
+		if (mgr->workers->cnt > 0)
 		{
 			printf("connected to %i worker%s\n", mgr->workers->cnt, (mgr->workers->cnt == 1)? "s.":".");
 			send_workers_initial_env(mgr);
+			if (!(maxfd = get_max_fd(mgr->workers)))
+				hermes_error(FAILURE, "get_max_fd()");
+			mgr->workers->wrkrs = wrkrtree_to_fdinxarray(&mgr->workers->wrkrs, maxfd);
 		}
 		else
-			printf("failed to connected to any workers...\n");
+			printf("failed to connected to any workers...\n")
 	}
 	/* TODO : put this into a new function(mgr, fds) */
 	/* TODO Spawn thread pool */
@@ -281,19 +270,11 @@ int					manager_loop(t_mgr *mgr)
 		/* TODO split mgr->cwork into smaller target_sets and assign to targetset_list for threads */
 		/* TODO pass divided work to threads */
 		if (mgr->workers && mgr->workers->wrking_cnt > 0)
-		{
 			check_workers(mgr, fds);
-		}
-		else
+		else if (mgr->job.targets->total > 0 && !mgr->cwork)
 		{
-			mgr->stat.running = false;
-			if (fds)
-				free(fds);
+			mgr->cwork = partition_targetset(mgr->cwork, mgr->job.targets, 100);
 		}
-//		else if (mgr->job.targets->total > 0 && !mgr->cwork)
-//		{
-//			mgr->cwork =
-//		}
 	}
 	return (0);
 }

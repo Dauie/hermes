@@ -223,9 +223,9 @@ int						worker_daemon(int port);
 
 int						worker_loop(t_wrkr* session);
 int						manager_loop(t_mgr *mgr);
-uint32_t				partition_targetset(t_targetset **dst,
-							 t_targetset **src,
-							 uint32_t amt);
+uint32_t				partition_targetset(t_targetset *dst,
+											t_targetset *src,
+											uint32_t amt);
 /*
 **	func | send_work()
 **	param1 | t_wrkr | worker to send serialized job to.
