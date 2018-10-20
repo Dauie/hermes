@@ -5,60 +5,30 @@
 # include "hermes.h"
 #endif
 
-typedef	struct	s_msg_hdr
-{
-	uint8_t		type;
-	uint8_t		code;
-	uint16_t	msglen;
-}				t_msg_hdr;
-
-typedef struct s_obj_hdr
-{
-	uint8_t		type;
-	uint8_t		code;
-	uint16_t	msglen;
-	uint32_t	objlen;
-}				t_obj_hdr;
-
-typedef union	u_mval
-{
-	uint8_t		u8;
-	uint16_t	u16;
-	uint32_t	u32;
-	int			i;
-	char		*str;
-}				t_mval;
-
 /*
-**
-**
-**
 **	General Header Layout
 **
 **    0                   1                   2                   3
 **    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
 **   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-**   |     Type      |     Code     |           Msg Length           |
+**   |     Type      |     Code     |          Msg Length            |
 **   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 **   |                             Data                              |
 **   +-+-+-+-+-+-+-+-+-+-+-+-+...
 **
-**
-**	Asset Example
+**	T_OBJ Example
 **
 **    0                   1                   2                   3
 **    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
 **   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-**   |     Type      |     Code      |           Msg Length          |
+**   |    Type  (0)  |    Code  (0)  |          Msg Length  (4)      |
 **   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-**   |                           Binn Length ex. (1754)              |
+**   |                      Binn Length ex.  (1754)                  |
 **   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-**
 */
-# define MSG_HDRSZ (4)
-# define OBJ_MSG_HDRSZ (8)
-# define PKT_SIZE (256)
 
+# define MSG_HDRSZ (4)
+# define PKT_SIZE (256)
 
 /*
 **	Hermes Message Types
@@ -88,17 +58,30 @@ typedef union	u_mval
 # define C_SHUTDOWN_SFT (0)
 # define C_SHUTDOWN_HRD (1)
 
-/*
-**	T_START Message Codes
-*/
-# define C_START (0)
-/*
-**	Command Codes
-*/
-# define MC_KILL
-# define MC_KILL_NOW
 
+typedef	struct	s_msg_hdr
+{
+	uint8_t		type;
+	uint8_t		code;
+	uint16_t	msglen;
+}				t_msg_hdr;
 
+typedef struct s_obj_hdr
+{
+	uint8_t		type;
+	uint8_t		code;
+	uint16_t	msglen;
+	uint32_t	objlen;
+}				t_obj_hdr;
+
+typedef union	u_mval
+{
+	uint8_t		u8;
+	uint16_t	u16;
+	uint32_t	u32;
+	int			i;
+	char		*str;
+}				t_mval;
 
 uint16_t	msg_tc(uint8_t type, uint8_t code);
 ssize_t		hermes_recvmsg(int sock, uint8_t *msgbuff);

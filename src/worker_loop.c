@@ -102,10 +102,6 @@ int					process_message(t_wrkr *session, uint8_t *msgbuff)
 	return (SUCCESS);
 }
 
-//void 			run_hermes()
-//{
-//}
-
 int					worker_loop(t_wrkr *session)
 {
 	ssize_t			rc;
@@ -149,8 +145,10 @@ int					worker_loop(t_wrkr *session)
 		if (session->stat.initilized && session->job->targets->total == 0
 			&& !session->stat.work_requested)
 		{
+			printf("sending work request\n");
 			hermes_sendmsgf(session->sock, msg_tc(T_WRK_REQ, C_WRK_REQ), NULL);
 			session->stat.work_requested = true;
+			printf("work request sent\n");
 		}
 	}
 	return (SUCCESS);

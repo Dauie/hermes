@@ -21,8 +21,8 @@ t_wrkr		*new_worker(void)
 int 				fd_idx(t_node *access)
 {
 	if (!access)
-		hermes_error(FAILURE, "getting index");
-	return (((t_wrkr*)access->data)->sock);
+		return (hermes_error(FAILURE, "getting index"));
+	return ((((t_wrkr*)access->data)->sock));
 }
 
 int			worker_cmp(void *wrkr_left, void *wrk_right)

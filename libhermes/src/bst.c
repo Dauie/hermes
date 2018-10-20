@@ -72,6 +72,7 @@ t_node		*tree_search(t_node **tree, void *data, int (*cmp)(void *, void *))
 	return (NULL);
 }
 
+/* TODO look at this */
 void				loop_tree_to_array(t_node **array, t_node **tree, int (idx)(t_node*))
 {
 	if (!tree || !*tree)
@@ -83,16 +84,33 @@ void				loop_tree_to_array(t_node **array, t_node **tree, int (idx)(t_node*))
 		loop_tree_to_array(array, &(*tree)->right, idx);
 }
 
-t_node				*tree_to_array(t_node **tree, size_t size,
-									 int (indx)(t_node *))
+void swap_node_data(t_node *a, t_node *b)
 {
-	t_node	*array;
+	void *tmp;
 
-	if (!((array) = (t_node*)memalloc(sizeof(t_node) * size)))
-		hermes_error(FAILURE, "malloc()", strerror(errno));
-	loop_tree_to_array(&array, tree, indx);
-	del_tree(tree, false);
-	return (array);
+	tmp = a->data;
+	a->data = b->data;
+	b->data = tmp;
+}
+
+void	max_heapify(t_node **tree, t_node **prev)
+{
+	if (!tree || !*tree)
+		return ;
+	max_heapify(&(*tree)->left, tree);
+	max_heapify(&(*tree)->right, tree);
+	if (prev != NULL)
+		if (&(*tree)->data < &(*prev)->data)
+			swap_node_data(*tree, *prev);
+}
+
+void	heapify(t_node **tree)
+{
+	if (!tree || !*tree)
+		return ;
+	max_heapify(tree, NULL);
+	heapify(&(*tree)->left);
+	heapify(&(*tree)->right);
 }
 
 bool		add_node_bst(t_node **root, void **data, int (*cmp)(void *, void *))
@@ -129,8 +147,7 @@ bool		add_node_bst(t_node **root, void **data, int (*cmp)(void *, void *))
 	return (true);
 }
 
-static void		remove_node_bst_search_key(t_node **cur, t_node **prnt, void *key,
-							int (*cmp)(void *, void *))
+static void		remove_node_bst_search_key(t_node **cur, t_node **prnt, void *key, int (*cmp)(void *, void *))
 {
 	while (*cur != NULL && cmp((*cur)->data, key) != 0)
 	{
@@ -142,8 +159,7 @@ static void		remove_node_bst_search_key(t_node **cur, t_node **prnt, void *key,
 	}
 }
 
-bool		rm_node_bst(t_node **tree, void *key,
-						int (*cmp)(void *, void *), void *(*min)(t_node *))
+bool		rm_node_bst(t_node **tree, void *key, int (*cmp)(void *, void *), void *(*min)(t_node *))
 {
 	t_node	*parent = NULL;
 	t_node	*curr = *tree;

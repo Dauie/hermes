@@ -12,41 +12,33 @@ struct pollfd	*new_fds(uint32_t count)
 	return (fds);
 }
 
-uint32_t connect_workers(t_workerset *set, int proto, struct pollfd **fds)
+void		connect_workers(t_node **workers, t_workerset *set, int proto)
 {
-	t_wrkr		*wrkr;
-	uint32_t 	iter;
+	t_wrkr		*worker;
 
-	if (!set)
-		return (0);
-	iter = set->cnt;
-	while (iter)
+	if (!*workers)
+		return ;
+	if ((*workers)->left)
+		connect_workers(&(*workers)->left, set, proto);
+	worker = (t_wrkr*)(*workers)->data;
+	if ((worker->sock = socket(PF_INET, SOCK_STREAM, proto)) == -1)
+		hermes_error(EXIT_FAILURE, 2, "socket()", strerror(errno));
+	if (connect(worker->sock, (const struct sockaddr *)&worker->sin, sizeof(worker->sin)) == -1)
 	{
-		wrkr = (t_wrkr*)set->wrkrs->data;
-		if ((wrkr->sock = socket(PF_INET, SOCK_STREAM, proto)) == -1)
-			hermes_error(EXIT_FAILURE, "socket() %s", strerror(errno));
-		printf("connecting to worker: %s\n", inet_ntoa(wrkr->sin.sin_addr));
-		if (connect(wrkr->sock, (const struct sockaddr *) &wrkr->sin,
-					sizeof(wrkr->sin)) == -1)
-		{
-			hermes_error(FAILURE, "could not connect to worker. dropping: %s", inet_ntoa(wrkr->sin.sin_addr));
-			set->wrkrs = set->wrkrs->right;
-			if (clist_rm_tail(&set->wrkrs, false) == true)
-				set->cnt -= 1;
-		}
-		else
-		{
-			set->wrkrs = set->wrkrs->right;
-			wrkr->stat.running = true;
-			printf("connected to %s\n", inet_ntoa(wrkr->sin.sin_addr));
-		}
-		iter--;
+		hermes_error(FAILURE, 2, "could not connect to worker. dropping:", inet_ntoa(worker->sin.sin_addr));
+		if (rm_node_bst(&set->wrkrs, worker, worker_cmp, worker_min) == true)
+			set->cnt -= 1;
 	}
-	*fds = new_fds(set->cnt);
-	return (set->cnt);
+	else
+	{
+		worker->stat.running = true;
+		printf("connected to %s.\n", inet_ntoa(worker->sin.sin_addr));
+	}
+	if ((*workers)->right)
+		connect_workers(&(*workers)->right, set, proto);
 }
 
-void send_workers_binn(t_workerset *set, binn *obj, uint8_t code)
+void				send_workers_binn(t_workerset *set, binn *obj, uint8_t code)
 {
 	t_wrkr			*wrkr;
 	uint32_t 		iter;
@@ -61,7 +53,7 @@ void send_workers_binn(t_workerset *set, binn *obj, uint8_t code)
 	}
 }
 
-void				send_opts(t_mgr *mgr)
+void				send_workers_initial_env(t_mgr *mgr)
 {
 	binn			*opts;
 	binn			*ports;
@@ -100,7 +92,44 @@ void				send_opts(t_mgr *mgr)
 	}
 }
 
-bool				handle_disconnect(t_mgr **mgr, t_wrkr **wrkr)
+void				transfer_all_work(t_targetset *dst, t_targetset *src) {
+	t_ip4 *ip4;
+	t_ip4rng *rng;
+
+	if (!src || !dst)
+		return;
+	src->total += dst->total;
+	src->ip_cnt += dst->ip_cnt;
+	src->rng_cnt += dst->rng_cnt;
+	while (src->ips) {
+		ip4 = new_ip4();
+		memcpy(ip4, src->ips->data, sizeof(t_ip4));
+		add_node_bst(&dst->ips, (void **) &ip4, ip4_cmp);
+		rm_node_bst(&src->ips, ip4, ip4_cmp, ip4_min);
+	}
+	while (src->iprngs)
+	{
+		rng = new_ip4range();
+		memcpy(rng, src->iprngs, sizeof(t_ip4rng));
+		add_node_bst(&dst->iprngs, (void **)&rng, ip4rng_cmp);
+		rm_node_bst(&src->iprngs, rng, ip4rng_cmp, ip4rng_min);
+	}
+}
+
+//bool				handle_disconnect(t_mgr **mgr, t_wrkr **wrkr)
+//{
+//	/* TODO :
+//	 * try 				: ask worker to dump all results
+//	 * try 				: ask worker to dump all unfinished work
+//	 * if results 		: append results to results queue
+//	 * if unfin work 	: append unfinished work to another worker
+//	 * disconnect
+//	 * remove worker from list
+//	 */
+//	return (true);
+//}
+
+bool				send_work(t_mgr *mgr, t_wrkr *wrkr)
 {
 	/* TODO :
 	 * try 				: ask worker to dump all results
@@ -115,7 +144,7 @@ bool				handle_disconnect(t_mgr **mgr, t_wrkr **wrkr)
 	return (true);
 }
 
-int 				man_proc_msg(t_mgr *mgr, t_wrkr *wrkr, uint8_t *msgbuff)
+int 				mgr_process_msg(t_mgr *mgr, t_wrkr *wrkr, uint8_t *msgbuff)
 {
 	t_msg_hdr	*hdr;
 
@@ -131,33 +160,18 @@ int 				man_proc_msg(t_mgr *mgr, t_wrkr *wrkr, uint8_t *msgbuff)
 			if (send_work(mgr, wrkr) == false)
 				return (FAILURE);
 		}
-		else
-		{
-			handle_disconnect(&mgr, &wrkr);
-		}
 	}
-	else if (hdr->type == T_SHUTDOWN)
-	{
-		if (handle_disconnect(&mgr, &wrkr) == false)
-			/* TODO : handle abandoned work */;
-	}
+//	else if (hdr->type == T_SHUTDOWN)
+//	{
+//		if (handle_disconnect(&mgr, &wrkr) == false)
+//			transfer_all_work(mgr->job.targets, wrkr->job->targets);
+//	}
 	return (SUCCESS);
 }
 
-uint16_t			get_max_fd(t_workerset *set)
+int				get_max_fd(t_workerset *set)
 {
-	uint16_t max;
-	uint32_t iter;
 
-	max = 0;
-	iter = set->cnt;
-	while (iter)
-	{
-		if (((t_wrkr*)set->wrkrs->data)->sock > max)
-			max = (uint16_t)((t_wrkr*)set->wrkrs->data)->sock;
-		iter--;
-	}
-	return (max);
 }
 
 void				check_workers(t_mgr *mgr, struct pollfd *fds)
@@ -187,9 +201,9 @@ void				check_workers(t_mgr *mgr, struct pollfd *fds)
 			 */
 			if (fds[iter].revents)
 				if (hermes_recvmsg(fds[iter].fd, msgbuff) > 0)
-					man_proc_msg(
+					mgr_process_msg(
 							mgr,
-							((t_wrkr*)mgr->workers->wrkrs[fds[iter].fd].data),
+							((t_wrkr *) mgr->workers->wrkrs[fds[iter].fd].data),
 							msgbuff);
 			/* TODO : else () worker did not send anything */
 			iter--;
@@ -197,32 +211,65 @@ void				check_workers(t_mgr *mgr, struct pollfd *fds)
 	}
 }
 
+void				add_wrkrs_to_array(t_node *wrkr, t_wrkr *array)
+{
+	t_wrkr		*w;
+
+	if (!wrkr)
+		return ;
+	if (wrkr->left)
+		add_wrkrs_to_array(wrkr->left, array);
+	w = (t_wrkr*)wrkr->data;
+	memcpy(&array[w->sock], w, sizeof(t_wrkr));
+	if (wrkr->right)
+		add_wrkrs_to_array(wrkr->right, array);
+}
+
+t_node		*wrkrtree_to_fdinxarray(t_node **wrkrtree, int maxfd)
+{
+	t_wrkr *array;
+
+	array = memalloc(sizeof(t_wrkr) * (maxfd + 1));
+	if (!array)
+	{
+		hermes_error(FAILURE, "malloc() %s", strerror(errno));
+		return (NULL);
+	}
+	add_wrkrs_to_array(*wrkrtree, array);
+	del_tree(wrkrtree, true);
+	return (new_node((void **)&array));
+}
+
+/*TODO we need to heapify targets before they reach this function.
+ * 1. make all heapify functions
+ * 2. add heapify calls on ip/port trees in sanity check.
+ * 3. if no ports are specified have a port heap made.
+ *
+ * */
 int					manager_loop(t_mgr *mgr)
 {
-	uint16_t		max;
-	struct pollfd 	*fds;
+	int				maxfd;
+	struct pollfd	*fds;
 	struct protoent	*proto;
 
+	fds = NULL;
 	mgr->stat.running = true;
 	if ((proto = getprotobyname("tcp")) == 0)
 		return (FAILURE);
-	if (!(max = get_max_fd(mgr->workers)))
-		hermes_error(FAILURE, "get_max_fd()");
-	mgr->workers->wrkrs = tree_to_array(&mgr->workers->wrkrs, max, fd_idx);
 	if (mgr->workers && mgr->workers->cnt > 0)
 	{
-		if ((mgr->workers->cnt = connect_workers(
-				mgr->workers, proto->p_proto, &fds)) > 0)
+		connect_workers(&mgr->workers->wrkrs, mgr->workers, proto->p_proto);
+		if (mgr->workers->cnt > 0)
 		{
-			printf("connected to %i worker%s\n",
-					mgr->workers->cnt,
-				   (mgr->workers->cnt == 1)? "s.":".");
-			send_opts(mgr);
+			printf("connected to %i worker%s\n", mgr->workers->cnt, (mgr->workers->cnt == 1)? "s.":".");
+			send_workers_initial_env(mgr);
+			if (!(maxfd = get_max_fd(mgr->workers)))
+				hermes_error(FAILURE, "get_max_fd()");
+			mgr->workers->wrkrs = wrkrtree_to_fdinxarray(&mgr->workers->wrkrs, maxfd);
 		}
 		else
 			printf("failed to connected to any workers...\n");
 	}
-
 	/* TODO : put this into a new function(mgr, fds) */
 	/* TODO Spawn thread pool */
 	while (mgr->stat.running == true)
@@ -231,19 +278,11 @@ int					manager_loop(t_mgr *mgr)
 		/* TODO split mgr->cwork into smaller target_sets and assign to targetset_list for threads */
 		/* TODO pass divided work to threads */
 		if (mgr->workers && mgr->workers->wrking_cnt > 0)
-		{
 			check_workers(mgr, fds);
-		}
-		else
+		else if (mgr->job.targets->total > 0 && !mgr->cwork)
 		{
-			mgr->stat.running = false;
-			if (fds)
-				free(fds);
+			mgr->cwork = partition_targetset(mgr->cwork, mgr->job.targets, 100);
 		}
-//		else if (mgr->job.targets->total > 0 && !mgr->cwork)
-//		{
-//			mgr->cwork =
-//		}
 	}
 	return (0);
 }

@@ -23,8 +23,8 @@ bool		send_work(t_mgr *mgr, t_wrkr *wrkr)
 	if (!wrkr || !mgr)
 		return (false);
 	mgr->job.targets->total -= partition_targetset(
-			&wrkr->job->targets,
-			&mgr->job.targets,
+			wrkr->job->targets,
+			mgr->job.targets,
 			wrkr->send_size);
 	targets = binnify_targetset(wrkr->job->targets);
 	if (hermes_send_binn(

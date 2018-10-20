@@ -38,36 +38,21 @@ uint32_t		partition_ip4rng(t_node **dst, t_node **src,
 	return (amt);
 }
 
-t_node			*new_targetset_list(uint32_t count)
-{
-	t_targetset	*newset;
-	t_node		*set_list;
-
-	set_list = NULL;
-	while (count)
-	{
-		newset = new_targetset();
-		clist_add_head(&set_list, (void *) &newset);
-		count--;
-	}
-	return (set_list);
-}
-
 /* TODO: all functions that operate on a targetset's contents should not be
  * TODO: passed the tree, but the targetset itself, to help track its members ^ eg partition_ip4() */
-uint32_t partition_targetset(t_targetset **dst, t_targetset **src, uint32_t amt)
+uint32_t partition_targetset(t_targetset *dst, t_targetset *src, uint32_t amt)
 {
 	uint32_t	parts;
 
 	if (!src || !amt || !dst)
 		return (0);
 	parts = amt;
-	(*dst)->ip_cnt = amt;
-	(*dst)->total = amt;
-	if (!(parts -= partition_ip4(&(*dst)->ips, &(*src)->ips, amt / 2)))
+	dst->ip_cnt = amt;
+	dst->total = amt;
+	if (!(parts -= partition_ip4(&dst->ips, &src->ips, amt / 2)))
 		return (amt);
-	(*dst)->rng_cnt = amt;
-	partition_ip4rng(&(*dst)->iprngs, &(*src)->iprngs, parts);
+	dst->rng_cnt = amt;
+	partition_ip4rng(&dst->iprngs, &src->iprngs, parts);
 	amt -= parts;
 	return (amt);
 }

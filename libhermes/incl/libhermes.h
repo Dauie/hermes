@@ -86,6 +86,7 @@ void				del_node(t_node **node, bool deldata);
 */
 t_node				*tree_to_array(t_node **tree, size_t size,
 									 int (indx)(t_node *));
+void				heapify(t_node **tree);
 t_node				*tree_to_list(t_node **tree);
 void 				del_tree(t_node **tree, bool deldata);
 bool				add_node_bst(t_node **tree, void **data, int (*cmp)(void *, void *));
@@ -93,6 +94,7 @@ bool				rm_node_bst(t_node **tree, void *key, int (*cmp)(void *, void *), void *
 t_node				*bst_search(t_node **tree, void *data, int (*cmp)(void *, void *));
 t_node				*tree_search(t_node **tree, void *data,
 								   int (*cmp)(void *, void *));
+void				print_tree(t_node **tree, void (*print)(t_node*));
 
 void serialize(t_node **tree, t_node **list);
 

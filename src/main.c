@@ -25,7 +25,21 @@ int			 main(int ac, char **av)
 	if (parse_opts(mgr, ac, av) == FAILURE)
 		exit(EXIT_FAILURE);
 	sanity_check(mgr);
+
+	print_tree(&mgr->job.targets->iprngs, print_iprng_struct);
+	print_tree(&mgr->job.targets->ips, print_ip_struct);
+
 	do_exclusions(mgr);
+
+	print_tree(&mgr->job.targets->iprngs, print_iprng_struct);
+	print_tree(&mgr->job.targets->ips, print_ip_struct);
+
+	heapify(&mgr->job.targets->iprngs);
+	heapify(&mgr->job.targets->ips);
+
+	print_tree(&mgr->job.targets->iprngs, print_iprng_struct);
+	print_tree(&mgr->job.targets->ips, print_ip_struct);
+
 	manager_loop(mgr);
 	return (SUCCESS);
 }
