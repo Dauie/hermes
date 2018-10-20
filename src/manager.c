@@ -22,10 +22,10 @@ void		connect_workers(t_node **workers, t_workerset *set, int proto)
 		connect_workers(&(*workers)->left, set, proto);
 	worker = (t_wrkr*)(*workers)->data;
 	if ((worker->sock = socket(PF_INET, SOCK_STREAM, proto)) == -1)
-		hermes_error(EXIT_FAILURE, 2, "socket()", strerror(errno));
+		hermes_error(EXIT_FAILURE, "socket() %s", strerror(errno));
 	if (connect(worker->sock, (const struct sockaddr *)&worker->sin, sizeof(worker->sin)) == -1)
 	{
-		hermes_error(FAILURE, 2, "could not connect to worker. dropping:", inet_ntoa(worker->sin.sin_addr));
+		hermes_error(FAILURE, "could not connect to worker. dropping: %s", inet_ntoa(worker->sin.sin_addr));
 		if (rm_node_bst(&set->wrkrs, worker, worker_cmp, worker_min) == true)
 			set->cnt -= 1;
 	}
@@ -169,9 +169,28 @@ int 				mgr_process_msg(t_mgr *mgr, t_wrkr *wrkr, uint8_t *msgbuff)
 	return (SUCCESS);
 }
 
+void			loop_get_max_fd(t_node *wrkrs, int *fdmax)
+{
+	t_wrkr		*wrkr;
+
+	if (!wrkrs)
+		return;
+	if (wrkrs->left)
+		loop_get_max_fd(wrkrs->left, fdmax);
+	wrkr = wrkrs->data;
+	if (wrkr->sock > *fdmax)
+		*fdmax = wrkr->sock;
+	if (wrkrs->right)
+		loop_get_max_fd(wrkrs->right, fdmax);
+}
+
 int				get_max_fd(t_workerset *set)
 {
+	int			fdmax;
 
+	fdmax = -1;
+	loop_get_max_fd(set->wrkrs, &fdmax);
+	return (fdmax);
 }
 
 void				check_workers(t_mgr *mgr, struct pollfd *fds)
@@ -281,8 +300,10 @@ int					manager_loop(t_mgr *mgr)
 			check_workers(mgr, fds);
 		else if (mgr->job.targets->total > 0 && !mgr->cwork)
 		{
-			mgr->cwork = partition_targetset(mgr->cwork, mgr->job.targets, 100);
+			partition_targetset(mgr->cwork, mgr->job.targets, 100);
 		}
+		if (mgr->job.targets->total == 0 && mgr->workers && mgr->workers->wrking_cnt == 0)
+			mgr->stat.running = false;
 	}
 	return (0);
 }
