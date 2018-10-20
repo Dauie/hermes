@@ -124,16 +124,23 @@ void				transfer_all_work(t_targetset *dst, t_targetset *src) {
 	}
 }
 
-bool				handle_disconnect(t_mgr **mgr, t_wrkr **wrkr)
+//bool				handle_disconnect(t_mgr **mgr, t_wrkr **wrkr)
+//{
+//	/* TODO :
+//	 * try 				: ask worker to dump all results
+//	 * try 				: ask worker to dump all unfinished work
+//	 * if results 		: append results to results queue
+//	 * if unfin work 	: append unfinished work to another worker
+//	 * disconnect
+//	 * remove worker from list
+//	 */
+//	return (true);
+//}
+
+bool				send_work(t_mgr *mgr, t_wrkr *wrkr)
 {
-	/* TODO :
-	 * try 				: ask worker to dump all results
-	 * try 				: ask worker to dump all unfinished work
-	 * if results 		: append results to results queue
-	 * if unfin work 	: append unfinished work to another worker
-	 * disconnect
-	 * remove worker from list
-	 */
+	(void)wrkr;
+	(void)mgr;
 	return (true);
 }
 
@@ -153,16 +160,12 @@ int 				mgr_process_msg(t_mgr *mgr, t_wrkr *wrkr, uint8_t *msgbuff)
 			if (send_work(mgr, wrkr) == false)
 				return (FAILURE);
 		}
-		else
-		{
-			handle_disconnect(&mgr, &wrkr);
-		}
 	}
-	else if (hdr->type == T_SHUTDOWN)
-	{
-		if (handle_disconnect(&mgr, &wrkr) == false)
-			transfer_all_work(mgr->job.targets, wrkr->job->targets);
-	}
+//	else if (hdr->type == T_SHUTDOWN)
+//	{
+//		if (handle_disconnect(&mgr, &wrkr) == false)
+//			transfer_all_work(mgr->job.targets, wrkr->job->targets);
+//	}
 	return (SUCCESS);
 }
 
@@ -253,7 +256,6 @@ int					manager_loop(t_mgr *mgr)
 	int				maxfd;
 	struct pollfd	*fds;
 	struct protoent	*proto;
-	t_node			*wrkrs;
 
 	mgr->stat.running = true;
 	if ((proto = getprotobyname("tcp")) == 0)
