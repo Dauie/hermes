@@ -142,7 +142,7 @@ int					worker_loop(t_wrkr *session)
 				bzero(msgbuff, PKT_SIZE);
 			}
 		}
-		if (session->stat.initilized && session->job->targets->total == 0
+		if (session->stat.initilized && (!session->job->targets || session->job->targets->total == 0)
 			&& !session->stat.work_requested)
 		{
 			printf("sending work request\n");

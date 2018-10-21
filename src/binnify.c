@@ -1,6 +1,6 @@
 #include "../incl/hermes.h"
 
-static void		get_porttree_from_binnlist(t_node **tree, binn *list)
+static void		get_portclist_from_binnlist(t_node **tree, binn *list)
 {
 	int			i;
 	int			cnt;
@@ -12,11 +12,11 @@ static void		get_porttree_from_binnlist(t_node **tree, binn *list)
 	{
 		port = new_port();
 		port->port = binn_list_uint16(list, i);
-		add_node_bst(tree, (void **)&port, port_cmp);
+		clist_add_head(tree, (void **)&port);
 	}
 }
 
-static void		get_ip4tree_from_binnlist(t_node **tree, binn *list)
+static void		get_ip4clist_from_binnlist(t_node **tree, binn *list)
 {
 	int			i;
 	int			cnt;
@@ -28,11 +28,11 @@ static void		get_ip4tree_from_binnlist(t_node **tree, binn *list)
 	{
 		ip = new_ip4();
 		ip->s_addr = binn_list_uint32(list, i);
-		add_node_bst(tree, (void **)&ip, ip4_cmp);
+		clist_add_head(tree, (void **)&ip);
 	}
 }
 
-static void		get_prtrngtree_from_binnlist(t_node **tree, binn *list)
+static void		get_prtrngclist_from_binnlist(t_node **clst, binn *list)
 {
 	int			i;
 	int			cnt;
@@ -48,11 +48,11 @@ static void		get_prtrngtree_from_binnlist(t_node **tree, binn *list)
 		binn_object_get_uint16(obj, "size", &rng->size);
 		binn_object_get_uint16(obj, "start", &rng->start);
 		binn_object_get_uint16(obj, "end", &rng->end);
-		add_node_bst(tree, (void **)&rng, port_cmp);
+		clist_add_head(clst, (void **)&rng);
 	}
 }
 
-static void		get_ip4rngtree_from_binnlist(t_node **tree, binn *list)
+static void		get_ip4rngclist_from_binnlist(t_node **clst, binn *list)
 {
 	int			i;
 	int			cnt;
@@ -68,76 +68,72 @@ static void		get_ip4rngtree_from_binnlist(t_node **tree, binn *list)
 		binn_object_get_uint32(obj, "size", &rng->size);
 		binn_object_get_uint32(obj, "start", &rng->start);
 		binn_object_get_uint32(obj, "end", &rng->end);
-		add_node_bst(tree, (void **)&rng, port_cmp);
+		clist_add_head(clst, (void **)&rng);
 	}
 }
 
-static void		add_ip4tree_to_binnlist(binn **list, t_node *ips)
+static void		add_ip4clist_to_binnlist(binn *list, t_node *ips)
 {
-	if (ips->left)
-		add_ip4tree_to_binnlist(list, ips->left);
+	t_node		*head;
 
-	binn_list_add_uint32(*list, ((t_ip4 *)ips->data)->s_addr);
-
-	if (ips->right)
-		add_ip4tree_to_binnlist(list, ips->right);
+	head = ips;
+	do {
+		binn_list_add_uint32(list, ((t_ip4 *) ips->data)->s_addr);
+		head = head->right;
+	} while (head != ips);
 }
 
-static void		add_ip4rngtree_to_binnlist(binn **list, t_node *ip4rng)
+static void		add_ip4rngclist_to_binnlist(binn *list, t_node *ip4rng)
 {
+	t_node		*head;
 	t_ip4rng	*rng;
 	binn		*obj;
 
-	if (ip4rng->left)
-		add_ip4rngtree_to_binnlist(list, ip4rng->left);
+	head = ip4rng;
+	do {
+		rng = ip4rng->data;
+		obj = binn_object();
 
-	rng = ip4rng->data;
-	obj = binn_object();
+		binn_object_set_uint32(obj, "size", rng->size);
+		binn_object_set_uint32(obj, "start", rng->start);
+		binn_object_set_uint32(obj, "end", rng->end);
 
-	binn_object_set_uint32(obj, "size", rng->size);
-	binn_object_set_uint32(obj, "start", rng->start);
-	binn_object_set_uint32(obj, "end", rng->end);
+		binn_list_add_object(list, obj);
+		head = head->right;
+	} while (head != ip4rng);
 
-	binn_list_add_object(*list, obj);
-
-	if (ip4rng->right)
-		add_ip4rngtree_to_binnlist(list, ip4rng->right);
 }
 
-static void		add_porttree_to_binnlist(binn **list, t_node *ports)
+static void		add_portclist_to_binnlist(binn *list, t_node *ports)
 {
-	if (!ports)
-		return;
-	if (ports->left)
-		add_porttree_to_binnlist(list, ports->left);
+	t_node		*head;
+	t_port		*port;
 
-	binn_list_add_uint16(*list, ((t_port *)ports->data)->port);
-
-	if (ports->right)
-		add_porttree_to_binnlist(list, ports->right);
+	head = ports;
+	do {
+		port = head->data;
+		binn_list_add_uint16(list, port->port);
+		head = head->right;
+	} while (head != ports);
 }
 
-static void		add_prtrngtree_to_binnlist(binn **list, t_node *prtrngs)
+static void		add_prtrngclist_to_binnlist(binn *list, t_node *prtrngs)
 {
+	t_node		*head;
 	t_prtrng	*rng;
 	binn		*obj;
 
-	if (!prtrngs)
-		return ;
-	if (prtrngs->left)
-		add_prtrngtree_to_binnlist(list, prtrngs->left);
+	head = prtrngs;
+	do {
+		rng = prtrngs->data;
+		obj = binn_object();
+		binn_object_set_uint32(obj, "size", rng->size);
+		binn_object_set_uint32(obj, "start", rng->start);
+		binn_object_set_uint32(obj, "end", rng->end);
+		binn_list_add_object(list, obj);
 
-	rng = prtrngs->data;
-	obj = binn_object();
+	} while (head != prtrngs);
 
-	binn_object_set_uint32(obj, "size", rng->size);
-	binn_object_set_uint32(obj, "start", rng->start);
-	binn_object_set_uint32(obj, "end", rng->end);
-
-	binn_list_add_object(*list, obj);
-
-	if (prtrngs->right)
-		add_prtrngtree_to_binnlist(list, prtrngs->right);
 }
 
 binn			*binnify_opts(t_opts *opts)
@@ -160,7 +156,6 @@ binn			*binnify_opts(t_opts *opts)
 	binn_object_set_uint32(obj, "host_timeo", opts->host_timeo);
 	binn_object_set_uint32(obj, "scan_delay", opts->scan_delay);
 	binn_object_set_uint32(obj, "max_scan_delay", opts->max_scan_delay);
-	// TODO -> heap overflow
 	binn_object_set_uint32(obj, "min_packet_rate", opts->min_packet_rate);
 	binn_object_set_uint32(obj, "max_packet_rate", opts->max_packet_rate);
 	binn_object_set_uint32(obj, "max_retries", opts->max_retries);
@@ -214,36 +209,41 @@ binn			*binnify_portset(t_portset *set)
 
 	if (!set)
 		return (NULL);
-
 	if (!(obj = binn_object()))
 	{
 		hermes_error(FAILURE, "binn_object() failed");
 		return (NULL);
 	}
-	if (!(port = binn_list()))
-	{
-		hermes_error(FAILURE, "binn_list() failed");
-		return (NULL);
-	}
-	if (!(prtrng = binn_list()))
-	{
-		hermes_error(FAILURE, "binn_list() failed");
-		return (NULL);
-	}
 	binn_object_set_uint16(obj, "total", set->total);
 	binn_object_set_uint16(obj, "port_cnt", set->port_cnt);
 	binn_object_set_uint16(obj, "rng_cnt", set->rng_cnt);
+	if (set->ports)
+	{
+		if (!(port = binn_list()))
+		{
+			hermes_error(FAILURE, "binn_list() failed");
+			return (NULL);
+		}
+		add_portclist_to_binnlist(port, set->ports);
+		binn_object_set_list(obj, "ports", port);
+		binn_free(port);
 
-	add_porttree_to_binnlist(&port, set->ports);
-	add_prtrngtree_to_binnlist(&prtrng, set->prtrngs);
-
-	/* add lists to main object */
-	binn_object_set_list(obj, "ports", port);
-	binn_object_set_list(obj, "prtrngs", prtrng);
-
-	/* delete lists that were added */
-	binn_free(port);
-	binn_free(prtrng);
+	}
+	else
+		binn_object_set_null(obj, "ports");
+	if (set->prtrngs)
+	{
+		if (!(prtrng = binn_list()))
+		{
+			hermes_error(FAILURE, "binn_list() failed");
+			return (NULL);
+		}
+		add_prtrngclist_to_binnlist(prtrng, set->prtrngs);
+		binn_object_set_list(obj, "prtrngs", prtrng);
+		binn_free(prtrng);
+	}
+	else
+		binn_object_set_null(obj, "prtrngs");
 	return (obj);
 }
 
@@ -253,19 +253,32 @@ binn			*binnify_targetset(t_targetset *set)
 	binn		*ip;
 	binn		*iprng;
 
-	obj = binn_object();
-	ip = binn_list();
-	iprng = binn_list();
-
+	if (!(obj = binn_object()))
+	{
+		hermes_error(FAILURE, "binn_object()");
+		return (NULL);
+	}
 	binn_object_set_uint32(obj, "total", set->total);
 	binn_object_set_uint32(obj, "ip_cnt", set->ip_cnt);
 	binn_object_set_uint32(obj, "rng_cnt", set->rng_cnt);
-
-	add_ip4tree_to_binnlist(&ip, set->ips);
-	add_ip4rngtree_to_binnlist(&iprng, set->iprngs);
-
-	binn_object_set_list(obj, "ips", ip);
-	binn_object_set_list(obj, "iprngs", iprng);
+	if (set->ips)
+	{
+		ip = binn_list();
+		add_ip4clist_to_binnlist(ip, set->ips);
+		binn_object_set_list(obj, "ips", ip);
+		free(ip);
+	}
+	else
+		binn_object_set_null(obj, "ips");
+	if (set->iprngs)
+	{
+		iprng = binn_list();
+		add_ip4rngclist_to_binnlist(iprng, set->iprngs);
+		binn_object_set_list(obj, "iprngs", iprng);
+		free(iprng);
+	}
+	else
+		binn_object_set_null(obj, "iprngs");
 	return (obj);
 }
 
@@ -282,8 +295,8 @@ void			unbinnify_portset(t_portset *set, binn *obj)
 	binn_object_get_list(obj, "ports", (void **)&portlist);
 	binn_object_get_list(obj, "prtrngs", (void**)&prtrnglist);
 
-	get_porttree_from_binnlist(&set->ports, portlist);
-	get_prtrngtree_from_binnlist(&set->prtrngs, prtrnglist);
+	get_portclist_from_binnlist(&set->ports, portlist);
+	get_prtrngclist_from_binnlist(&set->prtrngs, prtrnglist);
 }
 
 void			unbinnify_targetset(t_targetset *set, binn *obj)
@@ -299,6 +312,6 @@ void			unbinnify_targetset(t_targetset *set, binn *obj)
 	binn_object_get_list(obj, "ips", (void **)&ip4list);
 	binn_object_get_list(obj, "iprngs", (void**)&ip4rnglist);
 
-	get_ip4tree_from_binnlist(&set->ips, ip4list);
-	get_ip4rngtree_from_binnlist(&set->iprngs, ip4rnglist);
+	get_ip4clist_from_binnlist(&set->ips, ip4list);
+	get_ip4rngclist_from_binnlist(&set->iprngs, ip4rnglist);
 }

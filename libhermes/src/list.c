@@ -46,13 +46,6 @@ bool			clist_add_tail(t_node **clist, void **data)
 	return (true);
 }
 
-bool			clist_add_inorder(t_node **clist, void **data)
-{
-	(void)clist;
-	(void)data;
-	return (true);
-}
-
 bool			clist_rm_head(t_node **clist, bool deldata)
 {
 	t_node		*head;
@@ -135,6 +128,41 @@ bool			rm_node(t_node **node, bool deldata)
 	del_node(&tmp, deldata);
 	return (true);
 }
+
+t_node		*concat_list(t_node *list_left, t_node *list_right)
+{
+	t_node *left_last;
+	t_node *right_last;
+
+	if (list_left == NULL)
+		return (list_right);
+	if (list_right == NULL)
+		return (list_right);
+	left_last = list_left->left;
+	right_last = list_right->left;
+	left_last->right = right_last;
+	right_last->left = left_last;
+	return (list_left);
+}
+
+t_node		*bst_to_clist(t_node *tree)
+{
+	t_node	*left;
+	t_node	*right;
+
+	if (tree == NULL)
+		return (NULL);
+	left = bst_to_clist(tree->left);
+	right = bst_to_clist((tree->right));
+
+	tree->left = tree->right = tree;
+	if (left)
+		tree = concat_list(left, tree);
+	if (right)
+		tree = concat_list(tree, right);
+	return (tree);
+}
+
 
 #ifdef TESTING
 typedef struct  s_data {

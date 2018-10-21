@@ -177,9 +177,9 @@ int				get_max_fd(t_workerset *set)
 {
 	int			fdmax;
 
-	fdmax = -1;
+	fdmax = INT_MIN;
 	loop_get_max_fd(set->wrkrs, &fdmax);
-	return (fdmax);
+	return (fdmax + 1);
 }
 
 void				check_workers(t_mgr *mgr, struct pollfd *fds)
