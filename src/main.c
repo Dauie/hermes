@@ -26,20 +26,27 @@ int			 main(int ac, char **av)
 		exit(EXIT_FAILURE);
 	sanity_check(mgr);
 
-	print_tree(&mgr->job.targets->iprngs, print_iprng_struct);
-	print_tree(&mgr->job.targets->ips, print_ip_struct);
+	printf("pre exclusions\n");
+
+	print_tree(mgr->job.targets->iprngs, print_iprng_struct);
+	print_tree(mgr->job.targets->ips, print_ip_struct);
 
 	do_exclusions(mgr);
 
-	print_tree(&mgr->job.targets->iprngs, print_iprng_struct);
-	print_tree(&mgr->job.targets->ips, print_ip_struct);
+	printf("\npre heapify\n");
 
-	heapify(&mgr->job.targets->iprngs);
-	heapify(&mgr->job.targets->ips);
+	print_tree(mgr->job.targets->iprngs, print_iprng_struct);
+	print_tree(mgr->job.targets->ips, print_ip_struct);
 
-	print_tree(&mgr->job.targets->iprngs, print_iprng_struct);
-	print_tree(&mgr->job.targets->ips, print_ip_struct);
+	heapify(&mgr->job.targets->iprngs, max_heapify);
+	heapify(&mgr->job.targets->ips, max_heapify);
 
-	manager_loop(mgr);
+	printf("\npost heapify\n");
+
+	print_tree(mgr->job.targets->iprngs, print_iprng_struct);
+	print_tree(mgr->job.targets->ips, print_ip_struct);
+
+
+//	manager_loop(mgr);
 	return (SUCCESS);
 }

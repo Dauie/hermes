@@ -2,13 +2,10 @@
 
 void	pprint_ip(uint32_t ip)
 {
-	int bytes[4];
+	struct in_addr addr;
 
-	bytes[0] = ip & 0xFF;
-	bytes[1] = (ip >> 8) & 0xFF;
-	bytes[2] = (ip >> 16) & 0xFF;
-	bytes[3] = (ip >> 24) & 0xFF;
-	printf("%d.%d.%d.%d", bytes[3], bytes[2], bytes[1], bytes[0]);
+	addr.s_addr = ip;
+	printf("%s", inet_ntoa(addr));
 }
 
 void	print_ip_struct(t_node *ip4)
@@ -23,7 +20,6 @@ void	print_ip_struct(t_node *ip4)
 	}
 	printf("ip: ");
 	pprint_ip(ip->s_addr);
-	printf("\n");
 }
 
 void	print_iprng_struct(t_node *iprng)
@@ -38,8 +34,8 @@ void	print_iprng_struct(t_node *iprng)
 	}
 	printf("ip range from: ");
 	pprint_ip(ipr->start);
-	printf("to: ");
+	printf(" to: ");
 	pprint_ip(ipr->end);
-	printf("of size: %d\n", ipr->size);
+	printf(" of size: %u", ipr->size);
 }
 

@@ -79,12 +79,12 @@ void				loop_tree_to_array(t_node **array, t_node **tree, int (idx)(t_node*))
 		return ;
 	if ((*tree)->left)
 		loop_tree_to_array(array, &(*tree)->left, idx);
-	(*array)[idx(*tree)] = *(*tree);
+	memcpy(&(*array)[idx(*tree)], (*tree), sizeof(*(*tree)));
 	if ((*tree)->right)
 		loop_tree_to_array(array, &(*tree)->right, idx);
 }
 
-void swap_node_data(t_node *a, t_node *b)
+void				swap_node_data(t_node *a, t_node *b)
 {
 	void *tmp;
 
@@ -93,27 +93,27 @@ void swap_node_data(t_node *a, t_node *b)
 	b->data = tmp;
 }
 
-void	max_heapify(t_node **tree, t_node **prev)
+void				max_heapify(t_node **tree, t_node **prev)
 {
 	if (!tree || !*tree)
 		return ;
 	max_heapify(&(*tree)->left, tree);
 	max_heapify(&(*tree)->right, tree);
 	if (prev != NULL)
-		if (&(*tree)->data < &(*prev)->data)
+		if (&(*tree)->data > &(*prev)->data)
 			swap_node_data(*tree, *prev);
 }
 
-void	heapify(t_node **tree)
+void	heapify(t_node **tree, void (*heaper)(t_node **, t_node **))
 {
 	if (!tree || !*tree)
 		return ;
-	max_heapify(tree, NULL);
-	heapify(&(*tree)->left);
-	heapify(&(*tree)->right);
+	heaper(tree, NULL);
+	heapify(&(*tree)->left, heaper);
+	heapify(&(*tree)->right, heaper);
 }
 
-bool		add_node_bst(t_node **root, void **data, int (*cmp)(void *, void *))
+bool				add_node_bst(t_node **root, void **data, int (*cmp)(void *, void *))
 {
 	int		ret;
 	t_node	*node;
@@ -121,6 +121,7 @@ bool		add_node_bst(t_node **root, void **data, int (*cmp)(void *, void *))
 	t_node	*parent = NULL;
 
 	node = new_node(data);
+	
 	if (*root == NULL)
 	{
 		*root = node;

@@ -129,20 +129,20 @@ void				transfer_all_work(t_targetset *dst, t_targetset *src) {
 //	return (true);
 //}
 
-bool				send_work(t_mgr *mgr, t_wrkr *wrkr)
-{
-	/* TODO :
-	 * try 				: ask worker to dump all results
-	 * try 				: ask worker to dump all unfinished work
-	 * if results 		: append results to results queue
-	 * if unfin work 	: append unfinished work to another worker
-	 * disconnect
-	 * remove worker from list
-	 */
-	if (mgr && wrkr)
-		return (true);
-	return (true);
-}
+//bool				send_work(t_mgr *mgr, t_wrkr *wrkr)
+//{
+//	/* TODO :
+//	 * try 				: ask worker to dump all results
+//	 * try 				: ask worker to dump all unfinished work
+//	 * if results 		: append results to results queue
+//	 * if unfin work 	: append unfinished work to another worker
+//	 * disconnect
+//	 * remove worker from list
+//	 */
+//	if (mgr && wrkr)
+//		return (true);
+//	return (true);
+//}
 
 int 				mgr_process_msg(t_mgr *mgr, t_wrkr *wrkr, uint8_t *msgbuff)
 {
