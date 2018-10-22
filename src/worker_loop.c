@@ -129,7 +129,7 @@ int					worker_loop(t_wrkr *session)
 		{
 			printf("timeout\n");
 		}
-		else if (rc > 0)
+		else if (rc > 0 && fds[0].revents & POLLIN)
 		{
 			if ((rc = hermes_recvmsg(session->sock, msgbuff)) < 0)
 			{
@@ -142,7 +142,7 @@ int					worker_loop(t_wrkr *session)
 				bzero(msgbuff, PKT_SIZE);
 			}
 		}
-		if (session->stat.initilized && session->job->targets->total == 0
+		if (session->stat.initilized && (!session->job->targets || session->job->targets->total == 0)
 			&& !session->stat.work_requested)
 		{
 			printf("sending work request\n");

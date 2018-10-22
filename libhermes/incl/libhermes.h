@@ -84,20 +84,14 @@ void				del_node(t_node **node, bool deldata);
 **			to a user-supplied function pointer that returns the
 **			correct data for each index;
 */
-t_node				*tree_to_array(t_node **tree, size_t size,
-									 int (indx)(t_node *));
-void				heapify(t_node **tree, void (*heaper)(t_node **, t_node **));
-t_node				*tree_to_list(t_node **tree);
 void 				del_tree(t_node **tree, bool deldata);
 bool				add_node_bst(t_node **tree, void **data, int (*cmp)(void *, void *));
 bool				rm_node_bst(t_node **tree, void *key, int (*cmp)(void *, void *), void *(*min)(t_node *));
 t_node				*bst_search(t_node **tree, void *data, int (*cmp)(void *, void *));
 t_node				*tree_search(t_node **tree, void *data,
 								   int (*cmp)(void *, void *));
-void				print_tree(t_node* tree, void (*print)(t_node*));
-void				max_heapify(t_node **tree, t_node **prev);
 
-void serialize(t_node **tree, t_node **list);
+t_node				*bst_to_clist(t_node *tree);
 
 /*
 **	List Functions

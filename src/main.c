@@ -25,28 +25,7 @@ int			 main(int ac, char **av)
 	if (parse_opts(mgr, ac, av) == FAILURE)
 		exit(EXIT_FAILURE);
 	sanity_check(mgr);
-
-	printf("pre exclusions\n");
-
-	print_tree(mgr->job.targets->iprngs, print_iprng_struct);
-	print_tree(mgr->job.targets->ips, print_ip_struct);
-
 	do_exclusions(mgr);
-
-	printf("\npre heapify\n");
-
-	print_tree(mgr->job.targets->iprngs, print_iprng_struct);
-	print_tree(mgr->job.targets->ips, print_ip_struct);
-
-	heapify(&mgr->job.targets->iprngs, max_heapify);
-	heapify(&mgr->job.targets->ips, max_heapify);
-
-	printf("\npost heapify\n");
-
-	print_tree(mgr->job.targets->iprngs, print_iprng_struct);
-	print_tree(mgr->job.targets->ips, print_ip_struct);
-
-
-//	manager_loop(mgr);
+	manager_loop(mgr);
 	return (SUCCESS);
 }

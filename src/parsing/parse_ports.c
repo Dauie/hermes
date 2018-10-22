@@ -29,7 +29,7 @@ static int		add_port(t_portset *set, char *input)
 	return (FAILURE);
 }
 
-static int		add_range(t_portset *set, char **range)
+int				add_range_portset(t_portset *set, char **range)
 {
 	uint16_t	start;
 	uint16_t	end;
@@ -47,6 +47,7 @@ static int		add_range(t_portset *set, char **range)
 	data->size = end - start;
 	if (add_node_bst(&set->prtrngs, (void **) &data, portrng_cmp) == true)
 	{
+		set->total += data->size;
 		set->rng_cnt++;
 		return (SUCCESS);
 	}
@@ -64,7 +65,7 @@ int				handle_port(t_portset *set, char *input)
 		{
 			if (!(port_range = strsplit(port, '-')))
 				return (hermes_error(FAILURE, "strsplit()"));
-			if (add_range(set, port_range) == FAILURE)
+			if (add_range_portset(set, port_range) == FAILURE)
 				return (FAILURE);
 			tbldel(&port_range);
 		}

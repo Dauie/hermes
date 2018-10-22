@@ -7,8 +7,16 @@
 uint32_t		partition_ip4(t_node **dst, t_node **src,
 							  uint32_t amt)
 {
+	t_node *head;
+
 	if (!dst || !amt)
 		return (amt);
+	head = (*src);
+	do
+	{
+
+		head = head->right;
+	} while (head != (*src))
 	partition_ip4(dst, &(*src)->left, amt);
 	if (add_node_bst(dst, &(*src)->data, ip4_cmp) == true)
 		amt--;
