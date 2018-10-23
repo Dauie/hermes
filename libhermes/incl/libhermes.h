@@ -28,16 +28,22 @@ typedef struct		s_node
 typedef struct 			s_thread
 {
 	uint16_t 			id;
-	pthread_t 			thread;
-	uint8_t 			alive: 1;
-	uint8_t 			working: 1;
+	pthread_t 			*thread;
+	struct s_thrpool	*pool;
+	volatile int		working;
+
 }						t_thread;
 
 typedef struct 			s_thrpool
 {
 	uint16_t 			thr_count;
-	t_thread			**threads;
+	t_thread			*threads;
+	void				*results;
+	void				*work_pool;
+	pthread_mutex_t		results_mutex;
+	pthread_mutex_t		work_pool_mutex;
 }						t_thrpool;
+
 
 /*
 **	Integer helper functions
@@ -74,19 +80,6 @@ t_thrpool	*thrpool_init(uint16_t num, void (go)(void*));
 
 /*
 **	BST Functions
-*/
-/*
-**	func | tree_to_array(t_node **, size_t, int *func())
-**	param1 | tree | the tree that will be converted to an array
-**	param2 | size | the size of the array to be malloced
-**	param3 | indx | a function pointer that will return the
-** 					correct data for each index of the array
-**	return | node | returns an array of nodes of size size
-**
-**	desc: mallocs an array of t_nodes of len then recursively
-**  		serializes the tree into the array, passing the tree
-**			to a user-supplied function pointer that returns the
-**			correct data for each index;
 */
 void 				del_tree(t_node **tree, bool deldata);
 bool				add_node_bst(t_node **tree, void **data, int (*cmp)(void *, void *));
