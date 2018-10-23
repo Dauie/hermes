@@ -123,6 +123,10 @@ int 				mgr_process_msg(t_mgr *mgr, t_wrkr *wrkr, uint8_t *msgbuff)
 		else
 			hermes_sendmsgf(wrkr->sock, msg_tc(T_SHUTDOWN, C_SHUTDOWN_SFT), NULL);
 	}
+	else if (hdr->type == T_OBJ && hdr->code == C_OBJ_RES)
+	{
+
+	}
 //	else if (hdr->type == T_SHUTDOWN)
 //	{
 //		if (handle_disconnect(&mgr, &wrkr) == false)
@@ -224,9 +228,14 @@ int					manager_loop(t_mgr *mgr)
 	struct pollfd	*fds;
 	struct protoent	*proto;
 	t_wrkr			**workers;
+//	t_thrpool		tpool;
+	t_targetset		*thread_work;
+//	t_result		*results;
 
 
 	fds = NULL;
+	thread_work = NULL;
+//	results = NULL;
 	mgr->workers->maxfd = 0;
 	mgr->stat.running = true;
 	if ((proto = getprotobyname("tcp")) == 0)
@@ -242,7 +251,7 @@ int					manager_loop(t_mgr *mgr)
 			mgr->workers->wrkrs = wrkrtree_to_fdinxarray(&mgr->workers->wrkrs, mgr->workers->maxfd);
 			workers = mgr->workers->wrkrs->data;
 			fds = memalloc(sizeof(struct pollfd) * mgr->workers->maxfd);
-			for (int i = 0; i < mgr->workers->maxfd; i++)
+			for (size_t i = 0; i < mgr->workers->maxfd; i++)
 			{
 				if (workers[i])
 				{
@@ -266,19 +275,20 @@ int					manager_loop(t_mgr *mgr)
 		** If our main job is not empty && our local threads do not
 		** have work, transfer work to cwork for threads to process
 		*/
-		if (mgr->job.targets->total > 0 && (!mgr->cwork || mgr->cwork->total == 0))
+		if (mgr->job.targets->total > 0 && (!thread_work || thread_work->total == 0))
 		{
-			if (!mgr->cwork)
-				mgr->cwork = new_targetset();
-			transfer_work(mgr->cwork, mgr->job.targets, 20);
+			if (!thread_work)
+				thread_work = new_targetset();
+			transfer_work(thread_work, mgr->job.targets, 20);
 		}
-		if (mgr->job.targets->total == 0 && mgr->cwork->total == 0)
+		if (mgr->job.targets->total == 0 && thread_work->total == 0)
 		{
 			if (mgr->workers && mgr->workers->wrking_cnt != 0)
 				continue;
 			else
 				mgr->stat.running = false;
 		}
+
 	}
 	return (0);
 }

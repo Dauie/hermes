@@ -46,6 +46,7 @@
 # define C_OBJ_PS_ACK (3)
 # define C_OBJ_PS_SYN (4)
 # define C_OBJ_PS_UDP (5)
+# define C_OBJ_RES (6)
 
 /*
 **	T_WRK_REQ Codes
