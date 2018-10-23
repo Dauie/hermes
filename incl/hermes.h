@@ -154,6 +154,7 @@ typedef struct 			s_warray
 typedef struct			s_workerset
 {
 	uint32_t			cnt;
+	nfds_t				maxfd;
 	uint32_t			wrking_cnt;
 	t_node				*wrkrs;					/*t_node tree containing t_wrkr structs*/
 }						t_workerset;
@@ -196,7 +197,7 @@ int						ip4_ip4rng_overlap_cmp(void *ip, void *iprng);
 void					*ip4rng_min(t_node *tree);
 t_node					*split_ip4rng_portions(t_ip4rng *data,
 												 uint32_t splits);
-t_ip4rng				*slice_ip4rng(t_node **src, uint32_t amt);
+t_ip4rng				*slice_ip4rng(t_ip4rng *src, uint32_t amt);
 
 t_targetset				*new_targetset(void);
 
@@ -220,12 +221,12 @@ void					*worker_min(t_node *tree);
 int						sanity_check(t_mgr *mgr);
 void					do_exclusions(t_mgr *mgr);
 int						worker_daemon(int port);
+void					transfer_work(t_targetset *dst, t_targetset *src, uint32_t amt);
+
 
 int						worker_loop(t_wrkr* session);
 int						manager_loop(t_mgr *mgr);
-uint32_t				partition_targetset(t_targetset *dst,
-											t_targetset *src,
-											uint32_t amt);
+void					transfer_work(t_targetset *dst, t_targetset *src, uint32_t amt);
 /*
 **	func | send_work()
 **	param1 | t_wrkr | worker to send serialized job to.
@@ -236,7 +237,7 @@ uint32_t				partition_targetset(t_targetset *dst,
 **	to worker. If job offer is accepted by worker, the serialized job is
 **	sent, else error is thrown. Job should be saved and re-distributed;
 */
-bool					send_work(t_mgr *mgr, t_wrkr *wrkr);
+int						send_work(t_wrkr *worker);
 
 
 #endif

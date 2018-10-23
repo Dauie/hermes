@@ -2,57 +2,70 @@
 #include "../incl/binnify.h"
 #include "../incl/message.h"
 
-
-/* TODO this function probably needs to take a count, to keep all ips from being distributed if total is over a certain size */
-uint32_t		partition_ip4(t_node **dst, t_node **src,
-							  uint32_t amt)
+t_ip4rng		*slice_ip4rng(t_ip4rng *src, uint32_t amt)
 {
-	if (!dst || !amt)
-		return (amt);
-	partition_ip4(dst, &(*src)->left, amt);
-	if (add_node_bst(dst, &(*src)->data, ip4_cmp) == true)
-		amt--;
-	partition_ip4(dst, &(*src)->right, amt);
-	return (amt);
+	t_ip4rng	*dst;
+
+	if (!src || amt <= 0)
+		return (NULL);
+	dst = new_ip4range();
+	dst->size = amt;
+	dst->start = src->start;
+	dst->end = ip4_decrement(src->end, amt);
+
+	src->size -= amt;
+	src->start = ip4_increment(dst->end, 1);
+	return (dst);
 }
 
-uint32_t		partition_ip4rng(t_node **dst, t_node **src,
-								 uint32_t amt)
+void			transfer_work(t_targetset *dst, t_targetset *src, uint32_t amt)
 {
-	t_ip4rng *slice;
+	t_ip4rng	*slice;
+	uint32_t	ipcnt;
+	t_ip4rng	rng;
 
-	if (!dst || !amt)
-		return (amt);
-	if (((t_ip4rng*)(*src)->data)->size > amt)
+	if (!src || amt <= 0)
+		return ;
+	ipcnt = amt / 2;
+	amt -= ipcnt;
+	while (ipcnt && src->ip_cnt > 0)
 	{
-		if (!(slice = slice_ip4rng(src, amt)))
-			return (0);
-		if (add_node_bst(&(*dst), (void**)slice, ip4rng_cmp) == true)
-			amt--;
+		if (clist_add_head(&dst->ips, &src->ips->data) == true)
+		{
+			dst->total += 1;
+			dst->ip_cnt += 1;
+		}
+		if (clist_rm_head(&src->ips, false) == true)
+		{
+			src->total -= 1;
+			src->ip_cnt -= 1;
+		}
+		ipcnt--;
 	}
-	else
+	amt += ipcnt;
+	while (amt && src->total > 0)
 	{
-		if (add_node_bst(dst, (*src)->data, ip4rng_cmp))
-			amt--;
+		memcpy(&rng, src->iprngs->data, sizeof(t_ip4rng));
+		if (rng.size < amt)
+		{
+			if (clist_add_head(&dst->iprngs, src->iprngs->data) == true)
+			{
+				dst->total += rng.size;
+				dst->rng_cnt += 1;
+			}
+			if (clist_rm_head(&src->iprngs, false) == true)
+			{
+				src->total -= rng.size;
+				src->iprngs -= 1;
+			}
+			amt -= rng.size;
+		}
+		else
+		{
+			slice = slice_ip4rng(src->iprngs->data, amt);
+			src->total -= slice->size;
+			clist_add_head(&dst->iprngs, (void **)&slice);
+			amt -= slice->size;
+		}
 	}
-	return (amt);
-}
-
-/* TODO: all functions that operate on a targetset's contents should not be
- * TODO: passed the tree, but the targetset itself, to help track its members ^ eg partition_ip4() */
-uint32_t partition_targetset(t_targetset *dst, t_targetset *src, uint32_t amt)
-{
-	uint32_t	parts;
-
-	if (!src || !amt || !dst)
-		return (0);
-	parts = amt;
-	dst->ip_cnt = amt;
-	dst->total = amt;
-	if (!(parts -= partition_ip4(&dst->ips, &src->ips, amt / 2)))
-		return (amt);
-	dst->rng_cnt = amt;
-	partition_ip4rng(&dst->iprngs, &src->iprngs, parts);
-	amt -= parts;
-	return (amt);
 }
