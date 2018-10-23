@@ -8,7 +8,7 @@ static void		get_portclist_from_binnlist(t_node **tree, binn *list)
 
 	i = 0;
 	cnt = binn_count(list);
-	while (++i <= cnt)
+	while (i++ <= cnt)
 	{
 		port = new_port();
 		port->port = binn_list_uint16(list, i);
@@ -24,7 +24,7 @@ static void		get_ip4clist_from_binnlist(t_node **tree, binn *list)
 
 	i = 0;
 	cnt = binn_count(list);
-	while (++i <= cnt)
+	while (i++ <= cnt)
 	{
 		ip = new_ip4();
 		ip->s_addr = binn_list_uint32(list, i);
@@ -41,7 +41,7 @@ static void		get_prtrngclist_from_binnlist(t_node **clst, binn *list)
 
 	i = 0;
 	cnt = binn_count(list);
-	while (++i <= cnt)
+	while (i++ <= cnt)
 	{
 		rng = new_portrange();
 		obj = binn_list_object(list, i);
@@ -61,7 +61,7 @@ static void		get_ip4rngclist_from_binnlist(t_node **clst, binn *list)
 
 	i = 0;
 	cnt = binn_count(list);
-	while (++i <= cnt)
+	while (i++ <= cnt)
 	{
 		rng = new_ip4range();
 		obj = binn_list_object(list, i);

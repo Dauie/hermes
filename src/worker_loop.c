@@ -40,6 +40,7 @@ int					handle_obj_offer(t_wrkr *session, uint8_t code, uint8_t *msg)
 				return (hermes_error(FAILURE, "malloc() %s", strerror(errno)));
 		unbinnify_targetset(session->job->targets, obj);
 		session->stat.work_requested = false;
+		session->stat.working = true;
 		printf("received targetset\n");
 	}
 	else if (code == C_OBJ_PS_NRM)
@@ -104,7 +105,7 @@ int					process_message(t_wrkr *session, uint8_t *msgbuff)
 
 int					worker_loop(t_wrkr *session)
 {
-	ssize_t			rc;
+	ssize_t			ret;
 	uint8_t			msgbuff[PKT_SIZE];
 	int				timeout;
 	struct pollfd	fds[1];
@@ -116,8 +117,8 @@ int					worker_loop(t_wrkr *session)
 	printf("worker loop start\n");
 	while (session->stat.running == true)
 	{
-		rc = poll(fds, 1, timeout);
-		if (rc < 0)
+		ret = poll(fds, 1, timeout);
+		if (ret < 0)
 		{
 			if (errno != EAGAIN && errno != EINTR)
 			{
@@ -125,25 +126,24 @@ int					worker_loop(t_wrkr *session)
 				hermes_error(FAILURE, "poll()", strerror(errno));
 			}
 		}
-		else if (rc == 0)
+		else if (ret == 0)
 		{
 			printf("timeout\n");
 		}
-		else if (rc > 0 && fds[0].revents & POLLIN)
+		else if (ret > 0 && fds[0].revents & POLLIN)
 		{
-			if ((rc = hermes_recvmsg(session->sock, msgbuff)) < 0)
+			if ((ret = hermes_recvmsg(session->sock, msgbuff)) < 0)
 			{
 				session->stat.running = false;
 				hermes_error(FAILURE, "manager disconnected unexpectedly");
 			}
-			else if (rc > 0)
+			else if (ret > 0)
 			{
 				process_message(session, msgbuff);
 				bzero(msgbuff, PKT_SIZE);
 			}
 		}
-		if (session->stat.initilized && (!session->job->targets || session->job->targets->total == 0)
-			&& !session->stat.work_requested)
+		if (session->stat.initilized && !session->stat.working && !session->stat.work_requested)
 		{
 			printf("sending work request\n");
 			hermes_sendmsgf(session->sock, msg_tc(T_WRK_REQ, C_WRK_REQ), NULL);

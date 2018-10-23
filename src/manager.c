@@ -98,8 +98,7 @@ void				transfer_all_work(t_targetset *dst, t_targetset *src) {
 	src->total += dst->total;
 	src->ip_cnt += dst->ip_cnt;
 	src->rng_cnt += dst->rng_cnt;
-	while (src->ips)
-	{
+	while (src->ips) {
 		ip4 = new_ip4();
 		memcpy(ip4, src->ips->data, sizeof(t_ip4));
 		add_node_bst(&dst->ips, (void **) &ip4, ip4_cmp);
@@ -127,20 +126,12 @@ void				transfer_all_work(t_targetset *dst, t_targetset *src) {
 //	return (true);
 //}
 
-//bool				send_work(t_mgr *mgr, t_wrkr *wrkr)
-//{
-//	/* TODO :
-//	 * try 				: ask worker to dump all results
-//	 * try 				: ask worker to dump all unfinished work
-//	 * if results 		: append results to results queue
-//	 * if unfin work 	: append unfinished work to another worker
-//	 * disconnect
-//	 * remove worker from list
-//	 */
-//	if (mgr && wrkr)
-//		return (true);
-//	return (true);
-//}
+bool				send_work(t_mgr *mgr, t_wrkr *wrkr)
+{
+	(void)wrkr;
+	(void)mgr;
+	return (true);
+}
 
 int 				mgr_process_msg(t_mgr *mgr, t_wrkr *wrkr, uint8_t *msgbuff)
 {

@@ -1,18 +1,5 @@
 #include "../incl/hermes.h"
 
-t_ip4rng		*slice_ip4rng(t_node **src, uint32_t amt)
-{
-	t_ip4rng *iprng;
-
-	if (!src || !*src || !amt)
-		return (NULL);
-	iprng = new_ip4range();
-	iprng->size = amt;
-	iprng->start = ((t_ip4rng*)(*src)->data)->start;
-	iprng->end = ip4_decrement(((t_ip4rng*)(*src)->data)->end, amt);
-	((t_ip4rng*)(*src)->data)->start = ip4_increment(iprng->end, 1);
-	return (iprng);
-}
 
 static void		exclude_ip4_ip4(t_targetset *set, t_node **targets, t_node *exclude)
 {
