@@ -2,9 +2,9 @@
 #include "../incl/binnify.h"
 #include "../incl/message.h"
 
-struct pollfd	*new_fds(uint32_t count)
+struct pollfd		*new_fds(uint32_t count)
 {
-	struct pollfd *fds;
+	struct pollfd	*fds;
 
 	if (!(fds = (struct pollfd*)memalloc(
 			sizeof(struct pollfd) * count)))
@@ -12,9 +12,9 @@ struct pollfd	*new_fds(uint32_t count)
 	return (fds);
 }
 
-void		connect_workers(t_node **workers, t_workerset *set, int proto)
+void				connect_workers(t_node **workers, t_workerset *set, int proto)
 {
-	t_wrkr		*worker;
+	t_wrkr			*worker;
 
 	if (!*workers)
 		return ;
@@ -41,13 +41,15 @@ void		connect_workers(t_node **workers, t_workerset *set, int proto)
 void				send_workers_binn(t_workerset *set, binn *obj, uint8_t code)
 {
 	t_wrkr			**wrkrs;
-	int 			iter;
+	size_t			i;
 
-	iter = -1;
-	wrkrs = (t_wrkr**)set->wrkrs->data;
-	while (wrkrs[++iter])
-		if (wrkrs[iter]->sock)
-			hermes_send_binn(wrkrs[iter]->sock, code, obj);
+	i = 0;
+	wrkrs = (t_wrkr **)set->wrkrs->data;
+	while (i++ < set->maxfd)
+	{
+		if (wrkrs[i])
+			hermes_send_binn(wrkrs[i]->sock, code, obj);
+	}
 }
 
 void				send_workers_initial_env(t_mgr *mgr)
@@ -59,96 +61,71 @@ void				send_workers_initial_env(t_mgr *mgr)
 	binn			*udp_ports;
 
 	opts = binnify_opts(mgr->job.opts);
-	send_workers_binn(mgr->workers, opts,
-					  C_OBJ_OPTS);
+	send_workers_binn(mgr->workers, opts, C_OBJ_OPTS);
 	free(opts);
 	ports = binnify_portset(mgr->job.ports);
-	send_workers_binn(mgr->workers, ports,
-					  C_OBJ_PS_NRM);
+	send_workers_binn(mgr->workers, ports, C_OBJ_PS_NRM);
 	free(ports);
 	if (mgr->job.ack_ports)
 	{
 		ack_ports = binnify_portset(mgr->job.ack_ports);
-		send_workers_binn(mgr->workers, ack_ports,
-						  C_OBJ_PS_ACK);
+		send_workers_binn(mgr->workers, ack_ports, C_OBJ_PS_ACK);
 		free(ack_ports);
 	}
 	if (mgr->job.syn_ports)
 	{
 		syn_ports = binnify_portset(mgr->job.syn_ports);
-		send_workers_binn(mgr->workers, syn_ports,
-						  C_OBJ_PS_SYN);
+		send_workers_binn(mgr->workers, syn_ports, C_OBJ_PS_SYN);
 		free(syn_ports);
 	}
 	if (mgr->job.udp_ports)
 	{
 		udp_ports = binnify_portset(mgr->job.udp_ports);
-		send_workers_binn(mgr->workers, udp_ports,
-						  C_OBJ_PS_ACK);
+		send_workers_binn(mgr->workers, udp_ports, C_OBJ_PS_ACK);
 		free(udp_ports);
 	}
 }
 
-void				transfer_all_work(t_targetset *dst, t_targetset *src) {
-	t_ip4 *ip4;
-	t_ip4rng *rng;
-
-	if (!src || !dst)
-		return;
-	src->total += dst->total;
-	src->ip_cnt += dst->ip_cnt;
-	src->rng_cnt += dst->rng_cnt;
-	while (src->ips) {
-		ip4 = new_ip4();
-		memcpy(ip4, src->ips->data, sizeof(t_ip4));
-		add_node_bst(&dst->ips, (void **) &ip4, ip4_cmp);
-		rm_node_bst(&src->ips, ip4, ip4_cmp, ip4_min);
-	}
-	while (src->iprngs)
-	{
-		rng = new_ip4range();
-		memcpy(rng, src->iprngs, sizeof(t_ip4rng));
-		add_node_bst(&dst->iprngs, (void **)&rng, ip4rng_cmp);
-		rm_node_bst(&src->iprngs, rng, ip4rng_cmp, ip4rng_min);
-	}
-}
-
-//bool				handle_disconnect(t_mgr **mgr, t_wrkr **wrkr)
-//{
-//	/* TODO :
-//	 * try 				: ask worker to dump all results
-//	 * try 				: ask worker to dump all unfinished work
-//	 * if results 		: append results to results queue
-//	 * if unfin work 	: append unfinished work to another worker
-//	 * disconnect
-//	 * remove worker from list
-//	 */
-//	return (true);
-//}
-
-bool				send_work(t_mgr *mgr, t_wrkr *wrkr)
+int					send_work(t_wrkr *worker)
 {
-	(void)wrkr;
-	(void)mgr;
-	return (true);
+	binn			*targets;
+
+	targets = binnify_targetset(worker->job->targets);
+	hermes_send_binn(worker->sock, C_OBJ_TARGETS, targets);
+	return (SUCCESS);
 }
+
 
 int 				mgr_process_msg(t_mgr *mgr, t_wrkr *wrkr, uint8_t *msgbuff)
 {
-	t_msg_hdr	*hdr;
+	t_msg_hdr		*hdr;
 
 	if (!wrkr)
 		return (FAILURE);
 	hdr = (t_msg_hdr*)msgbuff;
 	printf("type: %i code: %i\n", hdr->type, hdr->code);
-	bzero(msgbuff, PKT_SIZE);
-	if (hdr->type == T_WRK_REQ) // TODO : if (NEEDS WORK) {send work}
+	if (hdr->type == T_WRK_REQ)
 	{
-		if (mgr->job.targets->total)
+		if (mgr->job.targets->total > 0)
 		{
-			if (send_work(mgr, wrkr) == false)
-				return (FAILURE);
+			if (!wrkr->job)
+			{
+				wrkr->job = new_job();
+				wrkr->job->targets = new_targetset();
+			}
+			if (wrkr->job->targets->total == 0)
+			{
+				transfer_work(wrkr->job->targets, mgr->job.targets, 20);
+				send_work(wrkr);
+				mgr->workers->wrking_cnt += 1;
+			}
 		}
+		else
+			hermes_sendmsgf(wrkr->sock, msg_tc(T_SHUTDOWN, C_SHUTDOWN_SFT), NULL);
+	}
+	else if (hdr->type == T_OBJ && hdr->code == C_OBJ_RES)
+	{
+
 	}
 //	else if (hdr->type == T_SHUTDOWN)
 //	{
@@ -158,115 +135,108 @@ int 				mgr_process_msg(t_mgr *mgr, t_wrkr *wrkr, uint8_t *msgbuff)
 	return (SUCCESS);
 }
 
-void			loop_get_max_fd(t_node *wrkrs, int *fdmax)
+void				loop_get_max_fd(t_node *wrkrs, nfds_t *fdmax)
 {
-	t_wrkr		*wrkr;
+	t_wrkr			*wrkr;
 
 	if (!wrkrs)
 		return;
 	if (wrkrs->left)
 		loop_get_max_fd(wrkrs->left, fdmax);
 	wrkr = wrkrs->data;
-	if (wrkr->sock > *fdmax)
-		*fdmax = wrkr->sock;
+	if (wrkr->sock > (int)*fdmax)
+		*fdmax = (nfds_t)wrkr->sock;
 	if (wrkrs->right)
 		loop_get_max_fd(wrkrs->right, fdmax);
 }
 
-int				get_max_fd(t_workerset *set)
+nfds_t				get_max_fd(t_workerset *set)
 {
-	int			fdmax;
+	nfds_t			fdmax;
 
-	fdmax = INT_MIN;
+	fdmax = 0;
 	loop_get_max_fd(set->wrkrs, &fdmax);
 	return (fdmax + 1);
 }
 
-void				check_workers(t_mgr *mgr, struct pollfd *fds)
+void				check_workers(t_mgr *mgr, nfds_t fditer, struct pollfd *fds)
 {
-	ssize_t 	rc;
-	uint32_t	iter;
-	uint8_t		msgbuff[PKT_SIZE];
-	t_wrkr		*workers;
+	uint8_t			msgbuff[PKT_SIZE];
+	t_wrkr			**workers;
+	ssize_t 		ret;
 
+	printf("check workers called\n");
 	workers = mgr->workers->wrkrs->data;
-	iter = mgr->workers->cnt;
-	rc = poll(fds, mgr->workers->cnt, 500);
-	if (rc < 0)
-		return; // TODO
-	else if (rc == 0)
+	ret = poll(fds, fditer, 500);
+	if (ret < 0)
+	{
+		if (errno != EAGAIN && errno != EINTR)
+		{
+			mgr->stat.running = false;
+			hermes_error(FAILURE, "poll()", strerror(errno));
+		}
+	}
+	else if (ret == 0)
 		printf("timeout\n");
 	else
 	{
-		while (iter)
+		printf("poll says mgr got a message\n");
+		while (fditer--)
 		{
-			/*
-			 * if NEEDS WORK:
-			 * 		batch work
-			 * 		send msg
-			 * 		send work
-			 * 	if WRKR SHUT DOWN:
-			 * 		recv work
-			 * 		redistribute to next available worker
-			 */
-			if (fds[iter].revents & POLLIN)
+			if (fds[fditer].revents & POLLIN)
 			{
-				if (hermes_recvmsg(fds[iter].fd, msgbuff) > 0)
-					mgr_process_msg(mgr, &workers[fds[iter].fd], msgbuff);
+				printf("entering to recv msg\n");
+				if (hermes_recvmsg(fds[fditer].fd, msgbuff) > 0)
+					mgr_process_msg(mgr, workers[fds[fditer].fd], msgbuff);
 			}
-			/* TODO : else () worker did not send anything */
-			iter--;
 		}
 	}
 }
 
-void				add_wrkrs_to_array(t_node *wrkr, t_wrkr **array)
+void				add_wrkrstree_to_array(t_node *wrkr, t_wrkr **array)
 {
-	t_wrkr		*w;
+	t_wrkr			*w;
 
 	if (!wrkr)
 		return ;
 	if (wrkr->left)
-		add_wrkrs_to_array(wrkr->left, array);
+		add_wrkrstree_to_array(wrkr->left, array);
 	w = (t_wrkr*)wrkr->data;
-	memcpy(array[w->sock], w, sizeof(t_wrkr));
+	array[w->sock] =  w;
 	if (wrkr->right)
-		add_wrkrs_to_array(wrkr->right, array);
+		add_wrkrstree_to_array(wrkr->right, array);
 }
 
-t_node		*wrkrtree_to_fdinxarray(t_node **wrkrtree, int maxfd)
-{
-	t_wrkr **array;
-	int		i;
 
-	i = -1;
+t_node				*wrkrtree_to_fdinxarray(t_node **wrkrtree, nfds_t maxfd)
+{
+	t_wrkr			**array;
+
 	array = memalloc(sizeof(t_wrkr *) * (maxfd + 1));
 	if (!array)
 	{
 		hermes_error(FAILURE, "malloc() %s", strerror(errno));
 		return (NULL);
 	}
-	while (++i < maxfd)
-		array[i] = memalloc(sizeof(t_wrkr));
-	add_wrkrs_to_array(*wrkrtree, array);
-	del_tree(wrkrtree, true);
+	add_wrkrstree_to_array(*wrkrtree, array);
+	del_tree(wrkrtree, false);
 	return (new_node((void **)&array));
 }
 
-/*TODO we need to heapify targets before they reach this function.
- * 1. make all heapify functions
- * 2. add heapify calls on ip/port trees in sanity check.
- * 3. if no ports are specified have a port heap made.
- *
- * */
 int					manager_loop(t_mgr *mgr)
 {
-	int				maxfd;
 	struct pollfd	*fds;
 	struct protoent	*proto;
+	t_wrkr			**workers;
+//	t_thrpool		tpool;
+	t_targetset		*thread_work;
+//	t_result		*results;
 
 
 	fds = NULL;
+	thread_work = NULL;
+//	results = NULL;
+	mgr->workers->maxfd = 0;
 	mgr->stat.running = true;
 	if ((proto = getprotobyname("tcp")) == 0)
 		return (FAILURE);
@@ -276,30 +246,49 @@ int					manager_loop(t_mgr *mgr)
 		if (mgr->workers->cnt > 0)
 		{
 			printf("connected to %i worker%s\n", mgr->workers->cnt, (mgr->workers->cnt == 1) ? ".":"s.");
-			if (!(maxfd = get_max_fd(mgr->workers)))
+			if (!(mgr->workers->maxfd = get_max_fd(mgr->workers)))
 				hermes_error(FAILURE, "get_max_fd()");
-			mgr->workers->wrkrs = wrkrtree_to_fdinxarray(&mgr->workers->wrkrs, maxfd);
+			mgr->workers->wrkrs = wrkrtree_to_fdinxarray(&mgr->workers->wrkrs, mgr->workers->maxfd);
+			workers = mgr->workers->wrkrs->data;
+			fds = memalloc(sizeof(struct pollfd) * mgr->workers->maxfd);
+			for (size_t i = 0; i < mgr->workers->maxfd; i++)
+			{
+				if (workers[i])
+				{
+					fds[workers[i]->sock].fd = workers[i]->sock;
+					fds[workers[i]->sock].events = POLLIN;
+				}
+			}
 			send_workers_initial_env(mgr);
 		}
 		else
 			printf("failed to connected to any workers...\n");
 	}
-	/* TODO : put this into a new function(mgr, fds) */
-	/* TODO Spawn thread pool */
 	while (mgr->stat.running == true)
 	{
-		/* TODO grab "normal" chunk of ips from mgr->job and assign them to mgr->workers, and mgr->cwork */
-		/* TODO split mgr->cwork into smaller target_sets and assign to targetset_list for threads */
-		/* TODO pass divided work to threads */
-		if (mgr->workers && mgr->workers->wrking_cnt > 0)
-			check_workers(mgr, fds);
-		else if (mgr->job.targets->total > 0 && !mgr->cwork)
+		/* if we have workers, see if they've sent us any messages */
+		if (mgr->workers && mgr->workers->cnt > 0)
 		{
-			partition_targetset(mgr->cwork, mgr->job.targets, 100);
+			check_workers(mgr, mgr->workers->maxfd, fds);
 		}
-		if (mgr->job.targets->total == 0 && mgr->workers && mgr->workers->wrking_cnt == 0)
-			mgr->stat.running = false;
+		/*
+		** If our main job is not empty && our local threads do not
+		** have work, transfer work to cwork for threads to process
+		*/
+		if (mgr->job.targets->total > 0 && (!thread_work || thread_work->total == 0))
+		{
+			if (!thread_work)
+				thread_work = new_targetset();
+			transfer_work(thread_work, mgr->job.targets, 20);
+		}
+		if (mgr->job.targets->total == 0 && thread_work->total == 0)
+		{
+			if (mgr->workers && mgr->workers->wrking_cnt != 0)
+				continue;
+			else
+				mgr->stat.running = false;
+		}
+
 	}
 	return (0);
 }
-

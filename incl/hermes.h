@@ -154,9 +154,9 @@ typedef struct 			s_warray
 typedef struct			s_workerset
 {
 	uint32_t			cnt;
-	nfds_t				maxfd;
 	uint32_t			wrking_cnt;
-	t_node				*wrkrs;					/*t_node tree containing t_wrkr structs*/
+	nfds_t				maxfd;
+	t_node				*wrkrs;
 }						t_workerset;
 
 typedef struct			s_result
@@ -169,7 +169,6 @@ typedef struct			s_manager
 {
 	t_stat				stat;
 	t_job				job;
-	t_targetset			*cwork;
 	t_targetset			*exclude_targets;
 	t_portset			*exclude_ports;
 	t_workerset			*workers;
