@@ -228,18 +228,22 @@ int					manager_loop(t_mgr *mgr)
 	struct pollfd	*fds;
 	struct protoent	*proto;
 	t_wrkr			**workers;
-//	t_thrpool		tpool;
-	t_targetset		*thread_work;
-//	t_result		*results;
-
+	t_thrpool		tpool;
 
 	fds = NULL;
-	thread_work = NULL;
-//	results = NULL;
 	mgr->workers->maxfd = 0;
 	mgr->stat.running = true;
 	if ((proto = getprotobyname("tcp")) == 0)
 		return (FAILURE);
+	if (mgr->job.opts->thread_count > 0)
+	{
+		tpool.thr_count = mgr->job.opts->thread_count;
+		tpool.threads = memalloc(sizeof(t_thread) * tpool.thr_count);
+		for (int i = 0; i < mgr->job.opts->thread_count; i++)
+		{
+			tpool.threads[i].thread = pthread_create()
+		}
+	}
 	if (mgr->workers && mgr->workers->cnt > 0)
 	{
 		connect_workers(&mgr->workers->wrkrs, mgr->workers, proto->p_proto);
@@ -275,20 +279,19 @@ int					manager_loop(t_mgr *mgr)
 		** If our main job is not empty && our local threads do not
 		** have work, transfer work to cwork for threads to process
 		*/
-		if (mgr->job.targets->total > 0 && (!thread_work || thread_work->total == 0))
+		if (mgr->job.targets->total > 0 && (!mgr->thread_work || mgr->thread_work->total == 0))
 		{
-			if (!thread_work)
-				thread_work = new_targetset();
-			transfer_work(thread_work, mgr->job.targets, 20);
+			if (!mgr->thread_work)
+				mgr->thread_work = new_targetset();
+			transfer_work(mgr->thread_work, mgr->job.targets, 20);
 		}
-		if (mgr->job.targets->total == 0 && thread_work->total == 0)
+		if (mgr->job.targets->total == 0 && mgr->thread_work->total == 0)
 		{
 			if (mgr->workers && mgr->workers->wrking_cnt != 0)
 				continue;
 			else
 				mgr->stat.running = false;
 		}
-
 	}
 	return (0);
 }

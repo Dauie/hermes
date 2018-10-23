@@ -6,8 +6,7 @@ static int				accept_wrapper(t_wrkr *session, int lsock)
 
 	cslen = sizeof(sockaddr_in);
 	if ((session->sock = accept(lsock, (sockaddr*)&session->sin, &cslen)) == -1)
-		return (FAILURE);
-	/* ^ TODO add non-fatal hermes_error() call for max amount of connections */
+		return (hermes_error(FAILURE, "accept() %s", strerror(errno)));
 	return (SUCCESS);
 }
 
@@ -18,10 +17,12 @@ static int				daemon_loop(t_wrkr *session, int lsock)
 		if (accept_wrapper(session, lsock) == FAILURE)
 			continue;
 		if ((session->id = fork()) < 0)
-			hermes_error(FAILURE, "fork() %s", strerror(errno));
+			hermes_error(EXIT_FAILURE, "fork() %s", strerror(errno));
 		else if (session->id > 0)
+		{
+			signal(SIGCHLD,SIG_IGN);
 			close(session->sock);
-		/*TODO: add wait() to protect from zombie children*/
+		}
 		else
 		{
 			close(lsock);

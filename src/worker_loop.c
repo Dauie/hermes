@@ -1,5 +1,5 @@
 # include "../incl/hermes.h"
-# include "../incl/message.h"
+# include "../incl/message.h""
 # include "../incl/binnify.h"
 
 int					handle_obj_offer(t_wrkr *session, uint8_t code, uint8_t *msg)
@@ -107,17 +107,15 @@ int					worker_loop(t_wrkr *session)
 {
 	ssize_t			ret;
 	uint8_t			msgbuff[PKT_SIZE];
-	int				timeout;
 	struct pollfd	fds[1];
 
 	memset(&fds, 0, sizeof(fds));
 	fds[0].fd = session->sock;
 	fds[0].events = POLLIN;
-	timeout = (500);	/* 1/2 sec */
 	printf("worker loop start\n");
 	while (session->stat.running == true)
 	{
-		ret = poll(fds, 1, timeout);
+		ret = poll(fds, 1, WKRMGR_POLL_TIMEO);
 		if (ret < 0)
 		{
 			if (errno != EAGAIN && errno != EINTR)

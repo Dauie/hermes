@@ -1,6 +1,8 @@
 #ifndef HERMES_DEFINES
 # define HERMES_DEFINES
 
+# define WKRMGR_POLL_TIMEO (250)
+
 # define TTL_MAX 256
 # define MTU_MAX 1500
 # define BUFF_SIZE 1028

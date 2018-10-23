@@ -5,6 +5,7 @@
 # include "../binn/src/binn.h"
 
 # include <pthread.h>
+# include <signal.h>
 # include <sys/socket.h>
 # include <sys/poll.h>
 # include <sys/time.h>
@@ -14,7 +15,7 @@
 # include <netdb.h>
 # include <netinet/ip_icmp.h>
 
-#include "defined.h"
+# include "defined.h"
 
 # define HERMES_VERSION "v0.0.1"
 
@@ -169,6 +170,7 @@ typedef struct			s_manager
 {
 	t_stat				stat;
 	t_job				job;
+	t_targetset			*thread_work;
 	t_targetset			*exclude_targets;
 	t_portset			*exclude_ports;
 	t_workerset			*workers;
