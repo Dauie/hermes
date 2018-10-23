@@ -1,26 +1,22 @@
 #include "../incl/libhermes.h"
 
-bool		thread_do_work(t_thread *thread)
-{
 
-}
 
-int			thread_init(t_thread *thread, uint16_t id)
+int			thread_init(t_thread *thread, uint16_t id, void (go)(void*))
 {
 	thread->id = id;
 	return (pthread_create(
 				&thread->thread,
 				NULL,
-				(void*)thread_do_work,
+				(void*)go,
 				thread->thread
 			));
 }
 
-t_thrpool	*thrpool_init(uint16_t num)
+t_thrpool	*thrpool_init(uint16_t num, void (go)(t_thread*, ))
 {
 	uint16_t 	i;
 	t_thrpool	*pool;
-	uint8_t 	retries;
 
 	if (!(pool = (t_thrpool*)memalloc(sizeof(t_thread))))
 		return (NULL);
@@ -28,17 +24,9 @@ t_thrpool	*thrpool_init(uint16_t num)
 		return (NULL);
 	pool->thr_count = num;
 	i = 0;
-	retries = 3;
-	while (i < num && retries)
-	{
-		if (!thread_init(pool->threads[i], i))
-		{
+	while (i < num)
+		if (!thread_init(pool->threads[i], i, go))
 			i++;
-			retries = 3;
-		}
-		else
-			retries--;
-	}
 	return (pool);
 }
 

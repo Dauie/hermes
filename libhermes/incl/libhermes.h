@@ -68,9 +68,13 @@ t_node				*new_node(void **data);
 void				del_node(t_node **node, bool deldata);
 
 /*
+**	Threads Functions
+*/
+t_thrpool	*thrpool_init(uint16_t num, void (go)(void*));
+
+/*
 **	BST Functions
 */
-
 /*
 **	func | tree_to_array(t_node **, size_t, int *func())
 **	param1 | tree | the tree that will be converted to an array

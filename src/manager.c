@@ -223,19 +223,40 @@ t_node				*wrkrtree_to_fdinxarray(t_node **wrkrtree, nfds_t maxfd)
 	return (new_node((void **)&array));
 }
 
+void				threads_go(t_thread thread, t_result **results)
+{
+	uint16_t tcnt;
+
+	tcnt = tpool.thr_count;
+	while (--tcnt > 0)
+	{
+		if (tpool.threads[tcnt]->alive &&
+			!tpool.threads[tcnt]->working)
+		{
+			/* TODO :
+			 * lock results
+			 * run scan
+			 *
+			 *
+			 */
+		}
+	}
+}
+
 int					manager_loop(t_mgr *mgr)
 {
 	struct pollfd	*fds;
 	struct protoent	*proto;
 	t_wrkr			**workers;
-//	t_thrpool		tpool;
+	t_thrpool		tpool;
 	t_targetset		*thread_work;
-//	t_result		*results;
+	t_result		*results;
 
 
 	fds = NULL;
 	thread_work = NULL;
-//	results = NULL;
+	results = NULL;
+	tpool = *thrpool_init(mgr->job.opts->thread_count, threads_go);
 	mgr->workers->maxfd = 0;
 	mgr->stat.running = true;
 	if ((proto = getprotobyname("tcp")) == 0)
@@ -264,6 +285,8 @@ int					manager_loop(t_mgr *mgr)
 		else
 			printf("failed to connected to any workers...\n");
 	}
+
+
 	while (mgr->stat.running == true)
 	{
 		/* if we have workers, see if they've sent us any messages */
@@ -280,6 +303,7 @@ int					manager_loop(t_mgr *mgr)
 			if (!thread_work)
 				thread_work = new_targetset();
 			transfer_work(thread_work, mgr->job.targets, 20);
+			threads_go(tpool, thread_work, results);
 		}
 		if (mgr->job.targets->total == 0 && thread_work->total == 0)
 		{
