@@ -237,6 +237,10 @@ void				threads_scan(t_thread thread, t_result **results)
 	while (thread.working)
 	{
 		thread_wait(thread.waiting);
+
+
+
+
 		todo = thread.amt;
 		while (todo)
 		{
