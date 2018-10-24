@@ -117,11 +117,17 @@ int 				mgr_process_msg(t_mgr *mgr, t_wrkr *wrkr, uint8_t *msgbuff)
 			{
 				transfer_work(wrkr->job->targets, mgr->job.targets, 20);
 				send_work(wrkr);
+				wrkr->stat.working = true;
 				mgr->workers->wrking_cnt += 1;
 			}
 		}
 		else
+		{
 			hermes_sendmsgf(wrkr->sock, msg_tc(T_SHUTDOWN, C_SHUTDOWN_SFT), NULL);
+			wrkr->stat.working = false;
+			mgr->workers->wrking_cnt -= 1;
+
+		}
 	}
 	else if (hdr->type == T_OBJ && hdr->code == C_OBJ_RES)
 	{
@@ -159,7 +165,8 @@ nfds_t				get_max_fd(t_workerset *set)
 	return (fdmax + 1);
 }
 
-void				check_workers(t_mgr *mgr, nfds_t fditer, struct pollfd *fds)
+void				poll_wrkr_msgs(t_mgr *mgr, nfds_t fditer,
+								   struct pollfd *fds)
 {
 	uint8_t			msgbuff[PKT_SIZE];
 	t_wrkr			**workers;
@@ -193,18 +200,18 @@ void				check_workers(t_mgr *mgr, nfds_t fditer, struct pollfd *fds)
 	}
 }
 
-void				add_wrkrstree_to_array(t_node *wrkr, t_wrkr **array)
+void				add_wrkrtree_to_array(t_node *wrkr, t_wrkr **array)
 {
 	t_wrkr			*w;
 
 	if (!wrkr)
 		return ;
 	if (wrkr->left)
-		add_wrkrstree_to_array(wrkr->left, array);
+		add_wrkrtree_to_array(wrkr->left, array);
 	w = (t_wrkr*)wrkr->data;
 	array[w->sock] =  w;
 	if (wrkr->right)
-		add_wrkrstree_to_array(wrkr->right, array);
+		add_wrkrtree_to_array(wrkr->right, array);
 }
 
 
@@ -218,113 +225,142 @@ t_node				*wrkrtree_to_fdinxarray(t_node **wrkrtree, nfds_t maxfd)
 		hermes_error(FAILURE, "malloc() %s", strerror(errno));
 		return (NULL);
 	}
-	add_wrkrstree_to_array(*wrkrtree, array);
+	add_wrkrtree_to_array(*wrkrtree, array);
 	del_tree(wrkrtree, false);
 	return (new_node((void **)&array));
 }
 
-t_result			*run_scan()
+void				run_scan(t_job *job, t_targetset *targets, t_result **results_ptr)
 {
-
+	(void)job;
+	(void)targets;
+	(void)results_ptr;
 }
 
-void				threads_scan(t_thread thread, t_result **results)
+void				*threads_scan(void *thrd)
 {
-	uint16_t	todo;
-	t_result	*res;
-	t_targetset *work;
+	t_targetset		work;
+	t_thread		*thread;
 
-	while (thread.working)
+	thread = (t_thread *)thrd;
+	memset(&work, 0, sizeof(t_targetset));
+	while (thread->working)
 	{
-		thread_wait(thread.waiting);
-
-
-
-
-		todo = thread.amt;
-		while (todo)
+		//thread_wait(thread->waiting);
+		if (work.total == 0)
 		{
-			pthread_mutex_lock(&thread.pool->work_pool_mutex);
-			work = (t_targetset*)thread.pool->work_pool->data;
-			pthread_mutex_unlock(&thread.pool->work_pool_mutex);
-			if (work)
-			{
-				res = run_scan(*work);
-				if (res) {
-					pthread_mutex_lock(&thread.pool->results_mutex);
-					clist_add_head(results, res);
-					pthread_mutex_unlock(&thread.pool->results_mutex);
-				}
-			}
-			todo--;
+			pthread_mutex_lock(&thread->pool->work_pool_mutex);
+			transfer_work(&work, thread->pool->work_pool, thread->amt);
+			pthread_mutex_unlock(&thread->pool->work_pool_mutex);
+		}
+		if (work.total > 0)
+		{
+			run_scan(thread->pool->job, &work, &thread->pool->results);
 		}
 		// TODO : MAX thread work amount
-		thread.amt *= (thread.amt < 4096) ? 2 : 1;
+		thread->amt *= (thread->amt < 4096) ? 2 : 1;
 	}
+	return (NULL);
+}
+
+int					prepare_workers(t_mgr *mgr, struct pollfd **fds)
+{
+	struct protoent	*proto;
+	t_wrkr			**workers;
+
+	if ((proto = getprotobyname("tcp")) == 0)
+		hermes_error(EXIT_FAILURE, "getprotobyname() %s", strerror(errno));
+	connect_workers(&mgr->workers->wrkrs, mgr->workers, proto->p_proto);
+	if (mgr->workers->cnt > 0)
+	{
+		printf("connected to %i worker%s\n", mgr->workers->cnt, (mgr->workers->cnt == 1) ? ".":"s.");
+		if (!(mgr->workers->maxfd = get_max_fd(mgr->workers)))
+			hermes_error(FAILURE, "get_max_fd()");
+		mgr->workers->wrkrs = wrkrtree_to_fdinxarray(&mgr->workers->wrkrs, mgr->workers->maxfd);
+		workers = mgr->workers->wrkrs->data;
+		*fds = memalloc(sizeof(struct pollfd) * mgr->workers->maxfd);
+		for (size_t i = 0; i < mgr->workers->maxfd; i++)
+		{
+			if (workers[i])
+			{
+				(*fds)[workers[i]->sock].fd = workers[i]->sock;
+				(*fds)[workers[i]->sock].events = POLLIN;
+			}
+		}
+		send_workers_initial_env(mgr);
+	}
+	else
+	{
+		del_tree(&mgr->workers->wrkrs, true);
+		free(mgr->workers);
+		mgr->workers = NULL;
+		printf("failed to connected to any workers...\n");
+	}
+	return (SUCCESS);
+}
+
+t_thrpool			*init_threadpool(t_job *job, t_targetset **workpool, t_result **results)
+{
+	int				i;
+	t_thrpool		*pool;
+
+	i = -1;
+	if (!(pool = memalloc(sizeof(t_thrpool))))
+		return (NULL);
+	if (!(pool->threads = memalloc(sizeof(t_thread) * job->opts->thread_count)))
+		return (NULL);
+	pthread_mutex_init(&pool->work_pool_mutex, NULL);
+	pthread_mutex_init(&pool->results_mutex, NULL);
+	pool->thr_count = job->opts->thread_count;
+	pool->results = *results;
+	pool->work_pool = *workpool;
+	pool->job = job;
+	while (++i < pool->thr_count)
+	{
+		pool->threads[i].amt = 1;
+		pool->threads[i].pool = pool;
+		pool->threads[i].working = false;
+		pthread_create(&pool->threads[i].thread, NULL, threads_scan, &pool->threads[i]);
+	}
+	return (pool);
 }
 
 int					manager_loop(t_mgr *mgr)
 {
 	struct pollfd	*fds;
-	struct protoent	*proto;
-	t_wrkr			**workers;
-	t_thrpool		tpool;
+	t_thrpool		*tpool;
 	t_result		*results;
 
-
+	tpool = NULL;
 	fds = NULL;
+	results = NULL;
 	mgr->workers->maxfd = 0;
 	mgr->stat.running = true;
-	if ((proto = getprotobyname("tcp")) == 0)
-		return (FAILURE);
+
 	if (mgr->job.opts->thread_count > 0)
 	{
-		tpool = *thrpool_init(mgr->job.opts->thread_count, (void*)threads_scan);
+		mgr->thread_work = new_targetset();
+		if (!(tpool = init_threadpool(&mgr->job, &mgr->thread_work, &results)))
+			hermes_error(EXIT_FAILURE, "init_threadpool()");
 	}
-	if (mgr->workers && mgr->workers->cnt > 0)
-	{
-		connect_workers(&mgr->workers->wrkrs, mgr->workers, proto->p_proto);
-		if (mgr->workers->cnt > 0)
-		{
-			printf("connected to %i worker%s\n", mgr->workers->cnt, (mgr->workers->cnt == 1) ? ".":"s.");
-			if (!(mgr->workers->maxfd = get_max_fd(mgr->workers)))
-				hermes_error(FAILURE, "get_max_fd()");
-			mgr->workers->wrkrs = wrkrtree_to_fdinxarray(&mgr->workers->wrkrs, mgr->workers->maxfd);
-			workers = mgr->workers->wrkrs->data;
-			fds = memalloc(sizeof(struct pollfd) * mgr->workers->maxfd);
-			for (size_t i = 0; i < mgr->workers->maxfd; i++)
-			{
-				if (workers[i])
-				{
-					fds[workers[i]->sock].fd = workers[i]->sock;
-					fds[workers[i]->sock].events = POLLIN;
-				}
-			}
-			send_workers_initial_env(mgr);
-		}
-		else
-			printf("failed to connected to any workers...\n");
-	}
-
-
+	if (mgr->workers)
+		prepare_workers(mgr, &fds);
 	while (mgr->stat.running == true)
 	{
 		/* if we have workers, see if they've sent us any messages */
 		if (mgr->workers && mgr->workers->cnt > 0)
 		{
-			check_workers(mgr, mgr->workers->maxfd, fds);
+			poll_wrkr_msgs(mgr, mgr->workers->maxfd, fds);
 		}
 		/*
 		** If our main job is not empty && our local threads do not
 		** have work, transfer work to cwork for threads to process
 		*/
-		if (mgr->job.targets->total > 0 && (!mgr->thread_work || mgr->thread_work->total == 0))
+		if (mgr->job.targets->total > 0 && mgr->thread_work && mgr->thread_work->total == 0)
 		{
-			if (!mgr->thread_work)
-				mgr->thread_work = new_targetset();
 			transfer_work(mgr->thread_work, mgr->job.targets, 20);
 		}
-		if (mgr->job.targets->total == 0 && mgr->thread_work->total == 0)
+		if (mgr->job.targets->total == 0) /*TODO account for threads*/
 		{
 			if (mgr->workers && mgr->workers->wrking_cnt != 0)
 				continue;

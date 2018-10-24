@@ -1,7 +1,7 @@
 # **************************************************************************** #
 #                                                                              #
 #                                                         :::      ::::::::    #
-#    RegMakefile                                           :+:      :+:    :+:    #
+#    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
 #    By: rlutt <rlutt@student.42.us.org>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
@@ -27,7 +27,7 @@ INDEX = ranlib
 HEADDR = incl/libhermes.h
 
 FILES = list.c bst.c node.c memory.c str_tbl.c \
-        hermes_error.c conversions.c swap.c
+        hermes_error.c swap.c
 
 SRC_DIR = src
 

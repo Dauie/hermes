@@ -24,7 +24,8 @@ int			 main(int ac, char **av)
 		return (FAILURE);
 	if (parse_opts(mgr, ac, av) == FAILURE)
 		exit(EXIT_FAILURE);
-	sanity_check(mgr);
+	if (sanity_check(mgr) == FAILURE)
+		return (EXIT_FAILURE);
 	do_exclusions(mgr);
 	manager_loop(mgr);
 	return (SUCCESS);

@@ -179,6 +179,33 @@ typedef struct			s_manager
 	FILE				*norm_file;
 }						t_mgr;
 
+typedef	struct			s_sem
+{
+	pthread_cond_t		cond;
+	pthread_mutex_t		mutex;
+	int 				work;
+}						t_sem;
+
+typedef struct 			s_thread
+{
+	pthread_t			thread;
+	struct s_thrpool	*pool;
+	volatile int		working;
+//	t_sem				*waiting;
+	uint16_t			amt;
+}						t_thread;
+
+typedef struct 			s_thrpool
+{
+	uint16_t 			thr_count;
+	t_thread			*threads;
+	t_result			*results;
+	t_targetset			*work_pool;
+	t_job				*job;
+	pthread_mutex_t		results_mutex;
+	pthread_mutex_t		work_pool_mutex;
+}						t_thrpool;
+
 t_mgr					*new_mgr(void);
 t_job					*new_job(void);
 t_opts					*new_opts(void);
