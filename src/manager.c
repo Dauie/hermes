@@ -159,7 +159,8 @@ nfds_t				get_max_fd(t_workerset *set)
 	return (fdmax + 1);
 }
 
-void				check_workers(t_mgr *mgr, nfds_t fditer, struct pollfd *fds)
+void				poll_wrkr_msgs(t_mgr *mgr, nfds_t fditer,
+								   struct pollfd *fds)
 {
 	uint8_t			msgbuff[PKT_SIZE];
 	t_wrkr			**workers;
@@ -266,14 +267,17 @@ int					manager_loop(t_mgr *mgr)
 			send_workers_initial_env(mgr);
 		}
 		else
+		{
+
 			printf("failed to connected to any workers...\n");
+		}
 	}
 	while (mgr->stat.running == true)
 	{
 		/* if we have workers, see if they've sent us any messages */
 		if (mgr->workers && mgr->workers->cnt > 0)
 		{
-			check_workers(mgr, mgr->workers->maxfd, fds);
+			poll_wrkr_msgs(mgr, mgr->workers->maxfd, fds);
 		}
 		/*
 		** If our main job is not empty && our local threads do not
