@@ -37,5 +37,7 @@ int			sanity_check(t_mgr *mgr)
 		if (mgr->job.ports->prtrngs)
 			mgr->job.ports->prtrngs = bst_to_clist(mgr->job.ports->prtrngs);
 	}
+	if (mgr->job.opts->thread_count == 0)
+		mgr->job.opts->thread_count = 4;
 	return (SUCCESS);
 }

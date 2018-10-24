@@ -117,11 +117,17 @@ int 				mgr_process_msg(t_mgr *mgr, t_wrkr *wrkr, uint8_t *msgbuff)
 			{
 				transfer_work(wrkr->job->targets, mgr->job.targets, 20);
 				send_work(wrkr);
+				wrkr->stat.working = true;
 				mgr->workers->wrking_cnt += 1;
 			}
 		}
 		else
+		{
 			hermes_sendmsgf(wrkr->sock, msg_tc(T_SHUTDOWN, C_SHUTDOWN_SFT), NULL);
+			wrkr->stat.working = false;
+			mgr->workers->wrking_cnt -= 1;
+
+		}
 	}
 	else if (hdr->type == T_OBJ && hdr->code == C_OBJ_RES)
 	{
@@ -298,7 +304,7 @@ t_thrpool			*init_threadpool(t_job *job, t_targetset **workpool, t_result **resu
 	int				i;
 	t_thrpool		*pool;
 
-	i = 0;
+	i = -1;
 	if (!(pool = memalloc(sizeof(t_thrpool))))
 		return (NULL);
 	if (!(pool->threads = memalloc(sizeof(t_thread) * job->opts->thread_count)))
@@ -309,7 +315,7 @@ t_thrpool			*init_threadpool(t_job *job, t_targetset **workpool, t_result **resu
 	pool->results = *results;
 	pool->work_pool = *workpool;
 	pool->job = job;
-	while (i++ < job->opts->thread_count)
+	while (++i < pool->thr_count)
 	{
 		pool->threads[i].amt = 1;
 		pool->threads[i].pool = pool;
@@ -350,7 +356,7 @@ int					manager_loop(t_mgr *mgr)
 		** If our main job is not empty && our local threads do not
 		** have work, transfer work to cwork for threads to process
 		*/
-		if (mgr->job.targets->total > 0 && mgr->thread_work->total == 0)
+		if (mgr->job.targets->total > 0 && mgr->thread_work && mgr->thread_work->total == 0)
 		{
 			transfer_work(mgr->thread_work, mgr->job.targets, 20);
 		}
