@@ -235,6 +235,7 @@ void				run_scan(t_job *job, t_targetset *targets, t_result **results_ptr)
 	(void)job;
 	(void)targets;
 	(void)results_ptr;
+	sleep(100);
 }
 
 void				*threads_scan(void *thrd)
@@ -256,6 +257,7 @@ void				*threads_scan(void *thrd)
 		if (work.total > 0)
 		{
 			run_scan(thread->pool->job, &work, &thread->pool->results);
+			printf("Thread %ld finished work\n", thread->thread);
 		}
 		// TODO : MAX thread work amount
 		thread->amt *= (thread->amt < 4096) ? 2 : 1;

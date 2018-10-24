@@ -16,8 +16,8 @@
 # define fast_swap_ints(x, y) ((x ^= y),(y ^= x),(x ^= y))
 # endif
 
-#ifndef BYTORD_SUM
-#define BYTORD_SUM(x, y) ((htonl(ntohl(x) + ntohl(y))))
+#ifndef BYTEORDR_SUM
+#define BYTEORDR_SUM(x, y) ((htonl(ntohl(x) + ntohl(y))))
 #endif
 
 # define DEF_TCP_PROBE_PORT (80)

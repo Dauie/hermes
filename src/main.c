@@ -13,6 +13,17 @@
 #include "../incl/hermes.h"
 #include "../incl/parser.h"
 
+void		convert_assets(t_mgr *mgr)
+{
+	if (mgr->job.targets->ips)
+		mgr->job.targets->ips = bst_to_clist(mgr->job.targets->ips);
+	if (mgr->job.targets->iprngs)
+		mgr->job.targets->iprngs = bst_to_clist(mgr->job.targets->iprngs);
+	if (mgr->job.ports->ports)
+		mgr->job.ports->ports = bst_to_clist(mgr->job.ports->ports);
+	if (mgr->job.ports->prtrngs)
+		mgr->job.ports->prtrngs = bst_to_clist(mgr->job.ports->prtrngs);
+}
 
 int			 main(int ac, char **av)
 {
@@ -23,10 +34,11 @@ int			 main(int ac, char **av)
 	if (!(mgr = new_mgr()))
 		return (FAILURE);
 	if (parse_opts(mgr, ac, av) == FAILURE)
-		exit(EXIT_FAILURE);
+		return (EXIT_FAILURE);
 	if (sanity_check(mgr) == FAILURE)
 		return (EXIT_FAILURE);
 	do_exclusions(mgr);
+	convert_assets(mgr);
 	manager_loop(mgr);
 	return (SUCCESS);
 }
