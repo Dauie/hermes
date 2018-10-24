@@ -223,23 +223,39 @@ t_node				*wrkrtree_to_fdinxarray(t_node **wrkrtree, nfds_t maxfd)
 	return (new_node((void **)&array));
 }
 
-void				threads_go(t_thread thread, t_result **results)
+t_result			*run_scan()
 {
-	uint16_t tcnt;
 
-	tcnt = tpool.thr_count;
-	while (--tcnt > 0)
+}
+
+void				threads_scan(t_thread thread, t_result **results)
+{
+	uint16_t	todo;
+	t_result	*res;
+	t_targetset *work;
+
+	while (thread.working)
 	{
-		if (tpool.threads[tcnt]->alive &&
-			!tpool.threads[tcnt]->working)
+		thread_wait(thread.waiting);
+		todo = thread.amt;
+		while (todo)
 		{
-			/* TODO :
-			 * lock results
-			 * run scan
-			 *
-			 *
-			 */
+			pthread_mutex_lock(&thread.pool->work_pool_mutex);
+			work = (t_targetset*)thread.pool->work_pool->data;
+			pthread_mutex_unlock(&thread.pool->work_pool_mutex);
+			if (work)
+			{
+				res = run_scan(*work);
+				if (res) {
+					pthread_mutex_lock(&thread.pool->results_mutex);
+					clist_add_head(results, res);
+					pthread_mutex_unlock(&thread.pool->results_mutex);
+				}
+			}
+			todo--;
 		}
+		// TODO : MAX thread work amount
+		thread.amt *= (thread.amt < 4096) ? 2 : 1;
 	}
 }
 
@@ -259,12 +275,7 @@ int					manager_loop(t_mgr *mgr)
 		return (FAILURE);
 	if (mgr->job.opts->thread_count > 0)
 	{
-		tpool.thr_count = mgr->job.opts->thread_count;
-		tpool.threads = memalloc(sizeof(t_thread) * tpool.thr_count);
-		for (int i = 0; i < mgr->job.opts->thread_count; i++)
-		{
-			tpool.threads[i].thread = pthread_create()
-		}
+		tpool = *thrpool_init(mgr->job.opts->thread_count, (void*)threads_scan);
 	}
 	if (mgr->workers && mgr->workers->cnt > 0)
 	{

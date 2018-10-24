@@ -25,13 +25,21 @@ typedef struct		s_node
 	void			*data;
 }					t_node;
 
+typedef	struct			s_sem
+{
+	pthread_cond_t		cond;
+	pthread_mutex_t		mutex;
+	int 				work;
+}						t_sem;
+
 typedef struct 			s_thread
 {
 	uint16_t 			id;
 	pthread_t 			*thread;
 	struct s_thrpool	*pool;
 	volatile int		working;
-
+	t_sem				*waiting;
+	uint16_t			amt;
 }						t_thread;
 
 typedef struct 			s_thrpool
@@ -39,7 +47,7 @@ typedef struct 			s_thrpool
 	uint16_t 			thr_count;
 	t_thread			*threads;
 	void				*results;
-	void				*work_pool;
+	t_node				*work_pool;
 	pthread_mutex_t		results_mutex;
 	pthread_mutex_t		work_pool_mutex;
 }						t_thrpool;
@@ -76,7 +84,8 @@ void				del_node(t_node **node, bool deldata);
 /*
 **	Threads Functions
 */
-t_thrpool	*thrpool_init(uint16_t num, void (go)(void*));
+t_thrpool			*thrpool_init(uint16_t num, void (go)(t_thread*, void**));
+void				thread_wait(t_sem *wait);
 
 /*
 **	BST Functions
