@@ -338,6 +338,7 @@ void				kill_threadpool(t_thrpool *pool)
 		while (pool->threads[i].working &&
 				pool->work_pool->total)
 			sleep(1);
+		pool->threads[i].alive = false;
 		free(pool->threads[i].thread);
 		free(&pool->threads[i]);
 	}
