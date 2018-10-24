@@ -8,20 +8,15 @@ void		thread_wait(t_sem *wait)
 	pthread_mutex_unlock(&wait->mutex);
 }
 
-int			thread_init(t_thread *thread, uint16_t id, void (*go)(void*))
+t_thrpool		*thread_init(uint16_t id, void (*go)(void*))
 {
 	thread->id = id;
 
 	if (!(thread->waiting = (t_sem*)memalloc(sizeof(t_sem))))
-		return (FAILURE);
+		return (hermes_error(FAILURE, "malloc() %s", strerror(errno)));
 	thread->working = 0;
 	thread->amt = 2;
-	if (pthread_create(
-				thread->thread,
-				NULL,
-				(void*)go,
-				thread
-			) != 0)
+	if (pthread_create(thread->thread, NULL, (void*)go, thread) != 0)
 		return (FAILURE);
 	if (pthread_detach(*thread->thread) != 0)
 		return (FAILURE);
