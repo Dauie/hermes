@@ -237,6 +237,21 @@ void				run_scan(t_job *job, t_targetset *targets, t_result **results_ptr)
 	(void)results_ptr;
 }
 
+static void			broadcast_event(t_thrpool *thrpool)
+{
+	pthread_mutex_lock(&thrpool->sem->mutex);
+	pthread_cond_broadcast(&thrpool->sem->cond);
+	pthread_mutex_unlock(&thrpool->sem->mutex);
+}
+
+void			thread_wait(t_thrpool *thrpool)
+{
+	pthread_mutex_lock(&thrpool->sem->mutex);
+	while (thrpool->work_pool->total == 0)
+		pthread_cond_wait(&thrpool->sem->cond, &thrpool->sem->mutex);
+	pthread_mutex_unlock(&thrpool->sem->mutex);
+}
+
 void				*threads_scan(void *thrd)
 {
 	t_targetset		work;
@@ -244,21 +259,26 @@ void				*threads_scan(void *thrd)
 
 	thread = (t_thread *)thrd;
 	memset(&work, 0, sizeof(t_targetset));
-	while (thread->working)
+	while (thread->alive)
 	{
-		//thread_wait(thread->waiting);
 		if (work.total == 0)
 		{
 			pthread_mutex_lock(&thread->pool->work_pool_mutex);
 			transfer_work(&work, thread->pool->work_pool, thread->amt);
+			thread->amt *= (thread->amt < 4096) ? 2 : 1;
 			pthread_mutex_unlock(&thread->pool->work_pool_mutex);
 		}
 		if (work.total > 0)
 		{
+			thread->working = true;
 			run_scan(thread->pool->job, &work, &thread->pool->results);
 		}
+		else
+		{
+			thread->working = false;
+			thread_wait(thread->pool);
+		}
 		// TODO : MAX thread work amount
-		thread->amt *= (thread->amt < 4096) ? 2 : 1;
 	}
 	return (NULL);
 }
@@ -299,18 +319,50 @@ int					prepare_workers(t_mgr *mgr, struct pollfd **fds)
 	return (SUCCESS);
 }
 
+void				kill_threadpool(t_thrpool *pool)
+{
+	int i;
+
+	i = -1;
+	if (!pool)
+		return ;
+	/* broadcast to double check that work has
+	 * been fulfilled
+	 */
+	broadcast_event(pool);
+	while (++i < pool->thr_count)
+	{
+		/* if total remains and the thread is working
+		 * let it finish its work before freeing
+		 */
+		while (pool->threads[i].working &&
+				pool->work_pool->total)
+			sleep(1);
+		free(pool->threads[i].thread);
+		free(&pool->threads[i]);
+	}
+	/* free all */
+	free(pool->threads);
+	free(pool);
+}
+
 t_thrpool			*init_threadpool(t_job *job, t_targetset **workpool, t_result **results)
 {
-	int				i;
-	t_thrpool		*pool;
+	int					i;
+	t_thrpool			*pool;
+	pthread_condattr_t 	cond;
 
 	i = -1;
 	if (!(pool = memalloc(sizeof(t_thrpool))))
 		return (NULL);
 	if (!(pool->threads = memalloc(sizeof(t_thread) * job->opts->thread_count)))
 		return (NULL);
+	if (!(pool->sem = (t_sem*)memalloc(sizeof(t_sem))))
+		return (NULL);
 	pthread_mutex_init(&pool->work_pool_mutex, NULL);
 	pthread_mutex_init(&pool->results_mutex, NULL);
+	pthread_mutex_init(&pool->sem->mutex, NULL);
+	pthread_cond_init(&pool->sem->cond, &cond);
 	pool->thr_count = job->opts->thread_count;
 	pool->results = *results;
 	pool->work_pool = *workpool;
@@ -319,6 +371,7 @@ t_thrpool			*init_threadpool(t_job *job, t_targetset **workpool, t_result **resu
 	{
 		pool->threads[i].amt = 1;
 		pool->threads[i].pool = pool;
+		pool->threads[i].alive = true;
 		pool->threads[i].working = false;
 		pthread_create(&pool->threads[i].thread, NULL, threads_scan, &pool->threads[i]);
 	}
@@ -334,9 +387,7 @@ int					manager_loop(t_mgr *mgr)
 	tpool = NULL;
 	fds = NULL;
 	results = NULL;
-	mgr->workers->maxfd = 0;
 	mgr->stat.running = true;
-
 	if (mgr->job.opts->thread_count > 0)
 	{
 		mgr->thread_work = new_targetset();
@@ -344,7 +395,10 @@ int					manager_loop(t_mgr *mgr)
 			hermes_error(EXIT_FAILURE, "init_threadpool()");
 	}
 	if (mgr->workers)
+	{
+		mgr->workers->maxfd = 0;
 		prepare_workers(mgr, &fds);
+	}
 	while (mgr->stat.running == true)
 	{
 		/* if we have workers, see if they've sent us any messages */
@@ -358,7 +412,8 @@ int					manager_loop(t_mgr *mgr)
 		*/
 		if (mgr->job.targets->total > 0 && mgr->thread_work && mgr->thread_work->total == 0)
 		{
-			transfer_work(mgr->thread_work, mgr->job.targets, 20);
+			transfer_work(mgr->thread_work, mgr->job.targets, 20/*TODO*/);
+			broadcast_event(tpool);
 		}
 		if (mgr->job.targets->total == 0) /*TODO account for threads*/
 		{
@@ -368,5 +423,6 @@ int					manager_loop(t_mgr *mgr)
 				mgr->stat.running = false;
 		}
 	}
+	kill_threadpool(tpool);
 	return (0);
 }

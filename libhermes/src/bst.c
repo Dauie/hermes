@@ -121,7 +121,6 @@ bool				add_node_bst(t_node **root, void **data, int (*cmp)(void *, void *))
 	t_node	*parent = NULL;
 
 	node = new_node(data);
-	
 	if (*root == NULL)
 	{
 		*root = node;

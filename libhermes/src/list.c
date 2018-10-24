@@ -48,8 +48,8 @@ bool			clist_add_tail(t_node **clist, void **data)
 
 bool			clist_rm_head(t_node **clist, bool deldata)
 {
-	t_node		*head;
 	t_node		*tmp;
+	t_node		*head;
 
 	head = *clist;
 	if (!head)
@@ -60,8 +60,18 @@ bool			clist_rm_head(t_node **clist, bool deldata)
 		return (true);
 	}
 	tmp = head;
+	if (head->left == head)
+	{
+		head = head->right;
+	}
+	else if (head->right == head)
+	{
+		head = head->left;
+	}
 	head->left->right = head->right;
 	head->right->left = head->left;
+	head = head->right;
+	*clist = head;
 	del_node(&tmp, deldata);
 	return (true);
 }

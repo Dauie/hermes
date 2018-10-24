@@ -170,10 +170,10 @@ typedef struct			s_manager
 {
 	t_stat				stat;
 	t_job				job;
-	t_targetset			*thread_work;
 	t_targetset			*exclude_targets;
 	t_portset			*exclude_ports;
 	t_workerset			*workers;
+	t_targetset			*thread_work;
 	FILE				*resume_file;
 	FILE				*xml_file;
 	FILE				*norm_file;
@@ -183,15 +183,15 @@ typedef	struct			s_sem
 {
 	pthread_cond_t		cond;
 	pthread_mutex_t		mutex;
-	int 				work;
+	bool 				work;
 }						t_sem;
 
 typedef struct 			s_thread
 {
 	pthread_t			thread;
 	struct s_thrpool	*pool;
-	volatile int		working;
-//	t_sem				*waiting;
+	volatile bool		working;
+	volatile bool		alive;
 	uint16_t			amt;
 }						t_thread;
 
@@ -204,6 +204,7 @@ typedef struct 			s_thrpool
 	t_job				*job;
 	pthread_mutex_t		results_mutex;
 	pthread_mutex_t		work_pool_mutex;
+	t_sem				*sem;
 }						t_thrpool;
 
 t_mgr					*new_mgr(void);

@@ -35,7 +35,7 @@ void			transfer_work(t_targetset *dst, t_targetset *src, uint32_t amt)
 			dst->total += 1;
 			dst->ip_cnt += 1;
 		}
-		if (clist_rm_head(&src->ips, false) == true)
+		if (rm_node_bst(&src->ips, src->ips->data, ip4_cmp, ip4_min) == true)
 		{
 			src->total -= 1;
 			src->ip_cnt -= 1;
@@ -53,7 +53,7 @@ void			transfer_work(t_targetset *dst, t_targetset *src, uint32_t amt)
 				dst->total += rng.size;
 				dst->rng_cnt += 1;
 			}
-			if (clist_rm_head(&src->iprngs, false) == true)
+			if (rm_node_bst(&src->iprngs, src->iprngs->data, ip4rng_cmp, ip4rng_min) == true)
 			{
 				src->total -= rng.size;
 				src->iprngs -= 1;
