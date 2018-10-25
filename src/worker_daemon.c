@@ -1,6 +1,6 @@
 #include "../incl/hermes.h"
 
-static int				accept_wrapper(t_wrkr *session, int lsock)
+static int				accept_wrapper(t_wmgr *session, int lsock)
 {
 	uint				cslen;
 
@@ -10,7 +10,7 @@ static int				accept_wrapper(t_wrkr *session, int lsock)
 	return (SUCCESS);
 }
 
-static int				daemon_loop(t_wrkr *session, int lsock)
+static int				daemon_loop(t_wmgr *session, int lsock)
 {
 	while (session->stat.running)
 	{
@@ -45,7 +45,7 @@ static void				setsockopt_wrapper(int lsock)
 int						worker_daemon(int port)
 {
 	int					lsock;
-	t_wrkr			*session;
+	t_wmgr				*session;
 	struct protoent		*proto;
 
 	if (!(session = memalloc(sizeof(t_wrkr))))

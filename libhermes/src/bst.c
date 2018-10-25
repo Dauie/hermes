@@ -93,26 +93,6 @@ void				swap_node_data(t_node *a, t_node *b)
 	b->data = tmp;
 }
 
-void				max_heapify(t_node **tree, t_node **prev)
-{
-	if (!tree || !*tree)
-		return ;
-	max_heapify(&(*tree)->left, tree);
-	max_heapify(&(*tree)->right, tree);
-	if (prev != NULL)
-		if (&(*tree)->data > &(*prev)->data)
-			swap_node_data(*tree, *prev);
-}
-
-void	heapify(t_node **tree, void (*heaper)(t_node **, t_node **))
-{
-	if (!tree || !*tree)
-		return ;
-	heaper(tree, NULL);
-	heapify(&(*tree)->left, heaper);
-	heapify(&(*tree)->right, heaper);
-}
-
 bool				add_node_bst(t_node **root, void **data, int (*cmp)(void *, void *))
 {
 	int		ret;
@@ -121,7 +101,6 @@ bool				add_node_bst(t_node **root, void **data, int (*cmp)(void *, void *))
 	t_node	*parent = NULL;
 
 	node = new_node(data);
-	
 	if (*root == NULL)
 	{
 		*root = node;
@@ -141,7 +120,7 @@ bool				add_node_bst(t_node **root, void **data, int (*cmp)(void *, void *))
 			return (false);
 		}
 	}
-	if (cmp(data, parent->data) < 0)
+	if (cmp(*data, parent->data) < 0)
 		parent->left = node;
 	else
 		parent->right = node;

@@ -13,18 +13,14 @@ int			h_exclude_target_file(t_mgr *mgr, char *input)
 
 int			h_target_file(t_mgr *mgr, char *input)
 {
-	if (!mgr->job.targets)
-		mgr->job.targets = new_targetset();
-	if (parse_ip_file(mgr->job.targets, input) == FAILURE)
+	if (parse_ip_file(&mgr->targets, input) == FAILURE)
 		hermes_error(EXIT_FAILURE, "issue parsing targets from file");
 	return (SUCCESS);
 }
 
 int			h_worker_file(t_mgr *mgr, char *input)
 {
-	if (!mgr->workers)
-		mgr->workers = new_workerset();
-	if (parse_worker_file(mgr->workers, input) == FAILURE)
+	if (parse_worker_file(&mgr->workers, input) == FAILURE)
 		hermes_error(EXIT_FAILURE, "issue parsing workers from file");
 	return (SUCCESS);
 }

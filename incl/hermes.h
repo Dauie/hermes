@@ -60,6 +60,7 @@ typedef struct			s_portset
 	uint16_t			rng_cnt;
 	t_node				*ports;
 	t_node				*prtrngs;
+	uint16_t			*final;
 }						t_portset;
 
 typedef struct			s_optbitf
@@ -120,9 +121,8 @@ typedef struct			s_ops
 
 typedef struct			s_job
 {
-	t_opts				*opts;
-	t_targetset			*targets;
-	t_portset			*ports;
+	t_opts				opts;
+	t_portset			ports;
 	t_portset			*syn_ports;
 	t_portset			*ack_ports;
 	t_portset			*udp_ports;
@@ -142,10 +142,19 @@ typedef struct			s_worker
 	t_stat				stat;
 	struct sockaddr_in	sin;
 	int 				sock;
-	t_job				*job;
-	int					id;
+	t_targetset			*targets;
 	uint32_t 			send_size;
 }						t_wrkr;
+
+typedef struct			s_worker_manager
+{
+	t_stat				stat;
+	struct sockaddr_in	sin;
+	int 				sock;
+	t_job				*job;
+	t_targetset			targets;
+	int					id;
+}						t_wmgr;
 
 typedef struct 			s_warray
 {
@@ -170,10 +179,11 @@ typedef struct			s_manager
 {
 	t_stat				stat;
 	t_job				job;
-	t_targetset			*thread_work;
+	t_targetset			targets;
+	t_targetset			thrd_targets;
+	t_workerset			workers;
 	t_targetset			*exclude_targets;
 	t_portset			*exclude_ports;
-	t_workerset			*workers;
 	FILE				*resume_file;
 	FILE				*xml_file;
 	FILE				*norm_file;
@@ -183,27 +193,29 @@ typedef	struct			s_sem
 {
 	pthread_cond_t		cond;
 	pthread_mutex_t		mutex;
-	int 				work;
+	bool 				work;
 }						t_sem;
 
 typedef struct 			s_thread
 {
 	pthread_t			thread;
 	struct s_thrpool	*pool;
-	volatile int		working;
-//	t_sem				*waiting;
+	volatile bool		working;
+	volatile bool		alive;
 	uint16_t			amt;
 }						t_thread;
 
 typedef struct 			s_thrpool
 {
 	uint16_t 			thr_count;
+	uint16_t			reqest_amt;
 	t_thread			*threads;
 	t_result			*results;
 	t_targetset			*work_pool;
 	t_job				*job;
 	pthread_mutex_t		results_mutex;
 	pthread_mutex_t		work_pool_mutex;
+	t_sem				*sem;
 }						t_thrpool;
 
 t_mgr					*new_mgr(void);
@@ -249,20 +261,20 @@ void					*worker_min(t_node *tree);
 int						sanity_check(t_mgr *mgr);
 void					do_exclusions(t_mgr *mgr);
 int						worker_daemon(int port);
-void					transfer_work(t_targetset *dst, t_targetset *src, uint32_t amt);
+void					transfer_work(t_targetset *dst, t_targetset *src, uint32_t reqamt);
 
 
-int						worker_loop(t_wrkr* session);
+int						worker_loop(t_wmgr *session);
 int						manager_loop(t_mgr *mgr);
-void					transfer_work(t_targetset *dst, t_targetset *src, uint32_t amt);
+void					transfer_work(t_targetset *dst, t_targetset *src, uint32_t reqamt);
 /*
 **	func | send_work()
-**	param1 | t_wrkr | worker to send serialized job to.
-**	param2 | t_job | job to be serialized and sent to worker.
+**	param1 | t_wrkr | worker to send serialized targets to.
+**	param2 | t_job | targets to be serialized and sent to worker.
 **	return | int | SUCCESS (0) or FAILURE (-1)
 **
-**	desc: first job is serialized into a binn object, then a job offer is sent
-**	to worker. If job offer is accepted by worker, the serialized job is
+**	desc: first targets is serialized into a binn object, then a targets offer is sent
+**	to worker. If targets offer is accepted by worker, the serialized targets is
 **	sent, else error is thrown. Job should be saved and re-distributed;
 */
 int						send_work(t_wrkr *worker);

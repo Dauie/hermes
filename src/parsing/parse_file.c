@@ -53,4 +53,3 @@ int			parse_worker_file(t_workerset *set, char *filename)
 	fclose(fp);
 	return (SUCCESS);
 }
-

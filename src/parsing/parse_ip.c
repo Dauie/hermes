@@ -56,17 +56,16 @@ int				do_ip4range(t_targetset *targets, char *ip_str, char *cidr_str)
 	in_addr_t	subn_m;
 	t_ip4rng	*data;
 
-
 	if (parse_ip(&ip, ip_str) < 0)
 		return (FAILURE);
 	if (parse_cidr_mask(&subn_m, cidr_str) < 0)
 		return (FAILURE);
 	data = new_ip4range();
 	set_ip4range(data, &ip, &subn_m);
-	if (add_node_bst(&targets->iprngs, (void **) &data, ip4rng_cmp))
+	if (add_node_bst(&targets->iprngs, (void **)&data, ip4rng_cmp))
 	{
 		targets->rng_cnt++;
-		targets->total += ((t_ip4rng*)targets->iprngs->data)->size;
+		targets->total += data->size;
 	}
 	return (SUCCESS);
 }

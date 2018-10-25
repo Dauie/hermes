@@ -125,9 +125,7 @@ int			parse_opts(t_mgr *mgr, int ac, char **args)
 		}
 		else
 		{
-			if (!mgr->job.targets)
-				mgr->job.targets = new_targetset();
-			if (handle_ip(mgr->job.targets, args[i]) == FAILURE)
+			if (handle_ip(&mgr->targets, args[i]) == FAILURE)
 				return (hermes_error(FAILURE, "issue parsing targets"));
 		}
 	}

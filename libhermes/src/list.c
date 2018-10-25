@@ -7,7 +7,7 @@ bool			clist_add_head(t_node **clist, void **data)
 	t_node		*last;
 	t_node		*nw_node;
 
-	if (!*data)
+	if (!data || !*data)
 		return (false);
 	nw_node = new_node(data);
 	if (!*clist)
@@ -48,8 +48,8 @@ bool			clist_add_tail(t_node **clist, void **data)
 
 bool			clist_rm_head(t_node **clist, bool deldata)
 {
-	t_node		*head;
 	t_node		*tmp;
+	t_node		*head;
 
 	head = *clist;
 	if (!head)
@@ -62,6 +62,7 @@ bool			clist_rm_head(t_node **clist, bool deldata)
 	tmp = head;
 	head->left->right = head->right;
 	head->right->left = head->left;
+	*clist = head->right;
 	del_node(&tmp, deldata);
 	return (true);
 }
@@ -129,38 +130,25 @@ bool			rm_node(t_node **node, bool deldata)
 	return (true);
 }
 
-t_node		*concat_list(t_node *list_left, t_node *list_right)
+void		bst_to_clist_loop(t_node **tree, t_node **clist)
 {
-	t_node *left_last;
-	t_node *right_last;
-
-	if (list_left == NULL)
-		return (list_right);
-	if (list_right == NULL)
-		return (list_right);
-	left_last = list_left->left;
-	right_last = list_right->left;
-	left_last->right = right_last;
-	right_last->left = left_last;
-	return (list_left);
+	if (!*tree)
+		return ;
+	if ((*tree)->right)
+		bst_to_clist_loop(&(*tree)->right, clist);
+	clist_add_head(clist, &(*tree)->data);
+	if ((*tree)->left)
+		bst_to_clist_loop(&(*tree)->left, clist);
 }
 
-t_node		*bst_to_clist(t_node *tree)
+t_node		*bst_to_clist(t_node **tree)
 {
-	t_node	*left;
-	t_node	*right;
+	t_node	*clist;
 
-	if (tree == NULL)
-		return (NULL);
-	left = bst_to_clist(tree->left);
-	right = bst_to_clist((tree->right));
-
-	tree->left = tree->right = tree;
-	if (left)
-		tree = concat_list(left, tree);
-	if (right)
-		tree = concat_list(tree, right);
-	return (tree);
+	clist = NULL;
+	bst_to_clist_loop(tree, &clist);
+	del_tree(tree, false);
+	return (clist);
 }
 
 

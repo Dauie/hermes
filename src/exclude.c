@@ -320,8 +320,10 @@ static int		do_port_exclusions(t_portset *target, t_portset *exclude)
 	return (SUCCESS);
 }
 
+/* TODO exclude targets->targets->ranges from itself to make sure there's no overlap (or just drop them by altering iprng_cmp). */
+/* TODO ^same for ports */
 void			do_exclusions(t_mgr *mgr)
 {
-	do_target_exclusions(mgr->job.targets, mgr->exclude_targets);
-	do_port_exclusions(mgr->job.ports, mgr->exclude_ports);
+	do_target_exclusions(&mgr->targets, mgr->exclude_targets);
+	do_port_exclusions(&mgr->job.ports, mgr->exclude_ports);
 }

@@ -9,11 +9,6 @@ t_mgr		*new_mgr(void)
 		hermes_error(FAILURE, "malloc() %s", strerror(errno));
 		return (NULL);
 	}
-	if (!(mgr->job.opts = new_opts()))
-	{
-		hermes_error(FAILURE, "malloc() %s", strerror(errno));
-		return (NULL);
-	}
 	return (mgr);
 }
 

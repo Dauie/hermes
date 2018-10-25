@@ -15,14 +15,14 @@
 
 void		convert_assets(t_mgr *mgr)
 {
-	if (mgr->job.targets->ips)
-		mgr->job.targets->ips = bst_to_clist(mgr->job.targets->ips);
-	if (mgr->job.targets->iprngs)
-		mgr->job.targets->iprngs = bst_to_clist(mgr->job.targets->iprngs);
-	if (mgr->job.ports->ports)
-		mgr->job.ports->ports = bst_to_clist(mgr->job.ports->ports);
-	if (mgr->job.ports->prtrngs)
-		mgr->job.ports->prtrngs = bst_to_clist(mgr->job.ports->prtrngs);
+	if (mgr->targets.ips)
+		mgr->targets.ips = bst_to_clist(&mgr->targets.ips);
+	if (mgr->targets.iprngs)
+		mgr->targets.iprngs = bst_to_clist(&mgr->targets.iprngs);
+	if (mgr->job.ports.ports)
+		mgr->job.ports.ports = bst_to_clist(&mgr->job.ports.ports);
+	if (mgr->job.ports.prtrngs)
+		mgr->job.ports.prtrngs = bst_to_clist(&mgr->job.ports.prtrngs);
 }
 
 int			 main(int ac, char **av)

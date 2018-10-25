@@ -36,9 +36,7 @@ int				h_worker(t_mgr *mgr, char *input)
 {
 	if (!input)
 		return (hermes_error(EXIT_FAILURE, "no workers specified"));
-	if (!mgr->workers)
-		mgr->workers = new_workerset();
-	return (parse_worker(mgr->workers, input));
+	return (parse_worker(&mgr->workers, input));
 }
 
 int				h_daemon(t_mgr *mgr, char *input)

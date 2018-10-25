@@ -9,12 +9,6 @@ t_job		*new_job(void)
 		hermes_error(FAILURE, "malloc() %s", strerror(errno));
 		return (NULL);
 	}
-	if (!(job->opts = (t_opts *)memalloc(sizeof(t_opts))))
-	{
-		free(job);
-		hermes_error(FAILURE, "malloc() %s", strerror(errno));
-		return (NULL);
-	}
 	return (job);
 }
 

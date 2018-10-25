@@ -62,7 +62,7 @@ t_node				*bst_search(t_node **tree, void *data, int (*cmp)(void *, void *));
 t_node				*tree_search(t_node **tree, void *data,
 								   int (*cmp)(void *, void *));
 
-t_node				*bst_to_clist(t_node *tree);
+t_node				*bst_to_clist(t_node **tree);
 
 /*
 **	List Functions

@@ -2,7 +2,7 @@
 # include "../incl/message.h"
 # include "../incl/binnify.h"
 
-int					handle_obj_offer(t_wrkr *session, uint8_t code, uint8_t *msg)
+int					handle_obj_offer(t_wmgr *session, uint8_t code, uint8_t *msg)
 {
 	ssize_t			ret;
 	binn			*obj;
@@ -30,25 +30,19 @@ int					handle_obj_offer(t_wrkr *session, uint8_t code, uint8_t *msg)
 			return (hermes_error(FAILURE, "malloc() %s", strerror(errno)));
 	if (code == C_OBJ_OPTS)
 	{
-		unbinnify_opts(session->job->opts, obj);
+		unbinnify_opts(&session->job->opts, obj);
 		printf("received options\n");
 	}
 	else if (code == C_OBJ_TARGETS)
 	{
-		if (!session->job->targets)
-			if (!(session->job->targets = new_targetset()))
-				return (hermes_error(FAILURE, "malloc() %s", strerror(errno)));
-		unbinnify_targetset(session->job->targets, obj);
+		unbinnify_targetset(&session->targets, obj);
 		session->stat.work_requested = false;
 		session->stat.working = true;
 		printf("received targetset\n");
 	}
 	else if (code == C_OBJ_PS_NRM)
 	{
-		if (!session->job->ports)
-			if (!(session->job->ports = new_portset()))
-				return (hermes_error(FAILURE, "malloc() %s", strerror(errno)));
-		unbinnify_portset(session->job->ports, obj);
+		unbinnify_portset(&session->job->ports, obj);
 		session->stat.initilized = true;
 		printf("received scan portset\n");
 	}
@@ -80,7 +74,7 @@ int					handle_obj_offer(t_wrkr *session, uint8_t code, uint8_t *msg)
 	return (SUCCESS);
 }
 
-int					process_message(t_wrkr *session, uint8_t *msgbuff)
+int					process_message(t_wmgr *session, uint8_t *msgbuff)
 {
 	t_msg_hdr		*hdr;
 
@@ -103,7 +97,7 @@ int					process_message(t_wrkr *session, uint8_t *msgbuff)
 	return (SUCCESS);
 }
 
-int					worker_loop(t_wrkr *session)
+int					worker_loop(t_wmgr *session)
 {
 	ssize_t			ret;
 	uint8_t			msgbuff[PKT_SIZE];
@@ -143,6 +137,7 @@ int					worker_loop(t_wrkr *session)
 		}
 		if (session->stat.initilized && !session->stat.working && !session->stat.work_requested)
 		{
+
 			printf("sending work request\n");
 			hermes_sendmsgf(session->sock, msg_tc(T_WRK_REQ, C_WRK_REQ), NULL);
 			session->stat.work_requested = true;

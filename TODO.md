@@ -47,7 +47,7 @@
 
 ### WORKER MODE
  - [x] Struct representation (not needed)
- - [ ] Run in "worker mode", and await a job. (--worker <ports>)
+ - [ ] Run in "worker mode", and await a targets. (--worker <ports>)
 
 ###  TIMING AND PERFORMANCE
  - [x] Struct representation
