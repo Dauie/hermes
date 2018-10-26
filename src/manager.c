@@ -183,15 +183,69 @@ t_node				*wrkrtree_to_fdinxarray(t_node **wrkrtree, nfds_t maxfd)
 	return (new_node((void **)&array));
 }
 
-void				run_scan(t_job *job, t_targetset *targets, t_result **results_ptr)
+//void 				run_thr_scan(t_job *job, t_targetset *targetset, t_result **res_ptr,
+//									pthread_mutex_t *res_mtx)
+//{
+//
+//}
+
+void				run_scan(t_job *job, t_targetset *targets,
+							 t_node **res_ptr,
+							 pthread_mutex_t *res_mtx)
 {
-	(void)job;
-	(void)targets;
-	(void)results_ptr;
-	sleep(100);
+	t_ip4		*ip;
+	t_result	*result;
+	t_ip4rng	*curr;
+
+	if (!job || !targets || !res_ptr)
+		return ;
+	if (res_mtx)
+	{
+		if (targets->total > 0)
+		{
+			while (targets->ips)
+			{
+				sleep(10);
+				if (!(result = (t_result*)memalloc(sizeof(t_result))))
+					return ;
+				result->ip = *(t_ip4 *) targets->ips->data;
+				pthread_mutex_lock(res_mtx);
+				clist_add_head(res_ptr, (void**)&result);
+				pthread_mutex_unlock(res_mtx);
+				if (clist_rm_head(&targets->ips, true) == false)
+					break;
+				targets->total--;
+				targets->ip_cnt--;
+			}
+			while (targets->iprngs)
+			{
+				curr = (t_ip4rng *) targets->iprngs->data;
+				while (ntohl(curr->start) <= ntohl(curr->end))
+				{
+					ip = new_ip4();
+					ip->s_addr = curr->start;
+
+					sleep(10);
+					if (!(result = (t_result *) memalloc(sizeof(t_result))))
+						return;
+					result->ip = *ip;
+					pthread_mutex_lock(res_mtx);
+					clist_add_head(res_ptr, (void **) &result);
+					pthread_mutex_unlock(res_mtx);
+					curr->start = ip4_increment(curr->start, 1);
+					targets->total--;
+					if (ip)
+						free(ip);
+				}
+				if (clist_rm_head(&targets->iprngs, true) == false)
+					break;
+				targets->rng_cnt--;
+			}
+		}
+	}
 }
 
-void				*threads_scan(void *thrd)
+void				*thread_loop(void *thrd)
 {
 	t_targetset		work;
 	t_thread		*thread;
@@ -210,7 +264,8 @@ void				*threads_scan(void *thrd)
 				pthread_mutex_lock(&thread->pool->amt_working_mutex);
 				thread->pool->amt_working += 1;
 				pthread_mutex_unlock(&thread->pool->amt_working_mutex);
-				run_scan(thread->pool->job, &work, &thread->pool->results);
+				run_scan(thread->pool->job, &work,
+						&thread->pool->results, &thread->pool->results_mutex);
 				thread->working = false;
 				pthread_mutex_lock(&thread->pool->amt_working_mutex);
 				thread->pool->amt_working -= 1;
@@ -263,15 +318,19 @@ void				kill_threadpool(t_thrpool *pool)
 	int				i;
 
 	i = -1;
+	if (!pool)
+		return ;
 	while (++i < pool->thr_count)
 		pool->threads[i].alive = false;
-	free(pool->threads);
-	del_clist(&pool->work_pool->ips, true);
-	del_clist(&pool->work_pool->iprngs, true);
-	free(pool->work_pool);
+	sleep(1);
+	if (pool->threads)
+		free(pool->threads);
+//	del_clist(&pool->work_pool->ips, true);
+//	del_clist(&pool->work_pool->iprngs, true);
 }
 
-t_thrpool			*init_threadpool(t_job *job, t_targetset *workpool, t_result **results)
+t_thrpool			*init_threadpool(t_job *job, t_targetset *workpool,
+									  t_node **results)
 {
 	int					i;
 	t_thrpool			*pool;
@@ -295,7 +354,8 @@ t_thrpool			*init_threadpool(t_job *job, t_targetset *workpool, t_result **resul
 		pool->threads[i].pool = pool;
 		pool->threads[i].alive = true;
 		pool->threads[i].working = false;
-		pthread_create(&pool->threads[i].thread, NULL, threads_scan, &pool->threads[i]);
+		pthread_create(&pool->threads[i].thread, NULL, thread_loop,
+					   &pool->threads[i]);
 	}
 	return (pool);
 }
@@ -304,7 +364,7 @@ int					manager_loop(t_mgr *mgr)
 {
 	struct pollfd	*fds;
 	t_thrpool		*tpool;
-	t_result		*results;
+	t_node			*results;
 
 	tpool = NULL;
 	fds = NULL;

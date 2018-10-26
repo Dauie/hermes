@@ -12,7 +12,7 @@ int			sanity_check(t_mgr *mgr)
 	if (mgr->job.opts.max_retries == 0)
 		mgr->job.opts.max_retries = DEF_MAX_RETRIES;
 	if (mgr->job.opts.thread_count == 0)
-		mgr->job.opts.thread_count = 4;
+		mgr->job.opts.thread_count = 1;//4;
 	if (mgr->targets.total == 0)
 		return (hermes_error(FAILURE, "no targets specified"));
 	if (mgr->job.ports.total == 0)
