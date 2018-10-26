@@ -48,7 +48,7 @@ int						worker_daemon(int port)
 	t_wmgr				*session;
 	struct protoent		*proto;
 
-	if (!(session = memalloc(sizeof(t_wrkr))))
+	if (!(session = memalloc(sizeof(t_wmgr))))
 		return (hermes_error(FAILURE, "malloc() %s", strerror(errno)));
 	session->stat.running = true;
 	/* TODO add signal handlers */

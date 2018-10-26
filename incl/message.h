@@ -40,13 +40,14 @@
 /*
 **	T_OBJ Message Codes
 */
-# define C_OBJ_OPTS (0)
-# define C_OBJ_TARGETS (1)
-# define C_OBJ_PS_NRM (2)
-# define C_OBJ_PS_ACK (3)
-# define C_OBJ_PS_SYN (4)
-# define C_OBJ_PS_UDP (5)
-# define C_OBJ_RES (6)
+# define C_OBJ_JOB (0)
+# define C_OBJ_OPTS (1)
+# define C_OBJ_TARGETS (2)
+# define C_OBJ_PS_NRM (3)
+# define C_OBJ_PS_ACK (4)
+# define C_OBJ_PS_SYN (5)
+# define C_OBJ_PS_UDP (6)
+# define C_OBJ_RES (7)
 
 /*
 **	T_WRK_REQ Codes

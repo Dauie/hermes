@@ -46,43 +46,18 @@ void				send_workers_binn(t_workerset *set, binn *obj, uint8_t code)
 
 void				send_workers_initial_env(t_mgr *mgr)
 {
-	binn			*opts;
-	binn			*ports;
-	binn			*ack_ports;
-	binn			*syn_ports;
-	binn			*udp_ports;
+	binn 			*job;
 
-	opts = binnify_opts(&mgr->job.opts);
-	send_workers_binn(&mgr->workers, opts, C_OBJ_OPTS);
-	free(opts);
-	ports = binnify_portset(&mgr->job.ports);
-	send_workers_binn(&mgr->workers, ports, C_OBJ_PS_NRM);
-	free(ports);
-	if (mgr->job.ack_ports)
-	{
-		ack_ports = binnify_portset(mgr->job.ack_ports);
-		send_workers_binn(&mgr->workers, ack_ports, C_OBJ_PS_ACK);
-		free(ack_ports);
-	}
-	if (mgr->job.syn_ports)
-	{
-		syn_ports = binnify_portset(mgr->job.syn_ports);
-		send_workers_binn(&mgr->workers, syn_ports, C_OBJ_PS_SYN);
-		free(syn_ports);
-	}
-	if (mgr->job.udp_ports)
-	{
-		udp_ports = binnify_portset(mgr->job.udp_ports);
-		send_workers_binn(&mgr->workers, udp_ports, C_OBJ_PS_ACK);
-		free(udp_ports);
-	}
+	job = binnify_job(&mgr->job);
+	send_workers_binn(&mgr->workers, job, C_OBJ_JOB);
+	free(job);
 }
 
 int					send_work(t_wrkr *worker)
 {
 	binn			*targets;
 
-	targets = binnify_targetset(worker->targets);
+	targets = binnify_targetset(&worker->targets);
 	hermes_send_binn(worker->sock, C_OBJ_TARGETS, targets);
 	return (SUCCESS);
 }
@@ -100,20 +75,18 @@ int 				mgr_process_msg(t_mgr *mgr, t_wrkr *wrkr, uint8_t *msgbuff)
 	{
 		if (mgr->targets.total > 0)
 		{
-			if (!wrkr->targets)
-				wrkr->targets = new_targetset();
-			if (wrkr->targets->total == 0)
+			if (wrkr->targets.total == 0)
 			{
-				transfer_work(wrkr->targets, &mgr->targets, 20);
+				transfer_work(&wrkr->targets, &mgr->targets, 20);
 				send_work(wrkr);
-				wrkr->stat.working = true;
+				wrkr->stat.has_work = true;
 				mgr->workers.wrking_cnt += 1;
 			}
 		}
 		else
 		{
 			hermes_sendmsgf(wrkr->sock, msg_tc(T_SHUTDOWN, C_SHUTDOWN_SFT), NULL);
-			wrkr->stat.working = false;
+			wrkr->stat.has_work = false;
 			mgr->workers.wrking_cnt -= 1;
 
 		}
@@ -218,21 +191,6 @@ void				run_scan(t_job *job, t_targetset *targets, t_result **results_ptr)
 	sleep(100);
 }
 
-static void			broadcast_event(t_thrpool *thrpool)
-{
-	pthread_mutex_lock(&thrpool->sem->mutex);
-	pthread_cond_broadcast(&thrpool->sem->cond);
-	pthread_mutex_unlock(&thrpool->sem->mutex);
-}
-
-void			thread_wait(t_thrpool *thrpool)
-{
-	pthread_mutex_lock(&thrpool->sem->mutex);
-	while (thrpool->work_pool->total == 0)
-		pthread_cond_wait(&thrpool->sem->cond, &thrpool->sem->mutex);
-	pthread_mutex_unlock(&thrpool->sem->mutex);
-}
-
 void				*threads_scan(void *thrd)
 {
 	t_targetset		work;
@@ -242,24 +200,27 @@ void				*threads_scan(void *thrd)
 	memset(&work, 0, sizeof(t_targetset));
 	while (thread->alive)
 	{
-		if (work.total == 0)
-		{
 			pthread_mutex_lock(&thread->pool->work_pool_mutex);
-			transfer_work(&work, thread->pool->work_pool, thread->amt);
-			pthread_mutex_unlock(&thread->pool->work_pool_mutex);
-		}
-		if (work.total > 0)
-		{
-			thread->amt *= (thread->amt < 512) ? 2 : 1;
-			thread->working = true;
-			run_scan(thread->pool->job, &work, &thread->pool->results);
-			printf("Thread %ld finished work\n", thread->thread);
-		}
-		else
-		{
-			thread->working = false;
-			thread_wait(thread->pool);
-		}
+			if (thread->pool->work_pool->total > 0)
+			{
+				transfer_work(&work, thread->pool->work_pool, thread->amt);
+				pthread_mutex_unlock(&thread->pool->work_pool_mutex);
+				thread->amt *= (thread->amt < 512) ? 2 : 1;
+				thread->working = true;
+				pthread_mutex_lock(&thread->pool->amt_working_mutex);
+				thread->pool->amt_working += 1;
+				pthread_mutex_unlock(&thread->pool->amt_working_mutex);
+				run_scan(thread->pool->job, &work, &thread->pool->results);
+				thread->working = false;
+				pthread_mutex_lock(&thread->pool->amt_working_mutex);
+				thread->pool->amt_working -= 1;
+				pthread_mutex_unlock(&thread->pool->amt_working_mutex);
+			}
+			else
+			{
+				pthread_mutex_unlock(&thread->pool->work_pool_mutex);
+				sleep(1);
+			}
 	}
 	return (NULL);
 }
@@ -299,46 +260,30 @@ int					init_workers(t_mgr *mgr, struct pollfd **fds)
 
 void				kill_threadpool(t_thrpool *pool)
 {
-	int i;
+	int				i;
 
 	i = -1;
-	if (!pool)
-		return ;
-	/* broadcast to double check that work has
-	 * been fulfilled
-	 */
-	broadcast_event(pool);
 	while (++i < pool->thr_count)
-	{
-		/* if total remains and the thread is working
-		 * let it finish its work before freeing
-		 */
-		while (pool->threads[i].working && pool->work_pool->total)
-			sleep(1);
 		pool->threads[i].alive = false;
-	}
-	/* free all */
 	free(pool->threads);
-	free(pool);
+	del_clist(&pool->work_pool->ips, true);
+	del_clist(&pool->work_pool->iprngs, true);
+	free(pool->work_pool);
 }
 
 t_thrpool			*init_threadpool(t_job *job, t_targetset *workpool, t_result **results)
 {
 	int					i;
 	t_thrpool			*pool;
-	pthread_condattr_t 	cond;
 
 	i = -1;
 	if (!(pool = memalloc(sizeof(t_thrpool))))
 		return (NULL);
 	if (!(pool->threads = memalloc(sizeof(t_thread) * job->opts.thread_count)))
 		return (NULL);
-	if (!(pool->sem = (t_sem*)memalloc(sizeof(t_sem))))
-		return (NULL);
 	pthread_mutex_init(&pool->work_pool_mutex, NULL);
 	pthread_mutex_init(&pool->results_mutex, NULL);
-	pthread_mutex_init(&pool->sem->mutex, NULL);
-	pthread_cond_init(&pool->sem->cond, &cond);
+	pthread_mutex_init(&pool->amt_working_mutex, NULL);
 	pool->thr_count = job->opts.thread_count;
 	pool->reqest_amt = pool->thr_count;
 	pool->results = *results;
@@ -372,7 +317,6 @@ int					manager_loop(t_mgr *mgr)
 	}
 	if (mgr->workers.cnt > 0)
 	{
-		mgr->workers.maxfd = 0;
 		init_workers(mgr, &fds);
 	}
 	while (mgr->stat.running == true)
@@ -382,18 +326,35 @@ int					manager_loop(t_mgr *mgr)
 		{
 			poll_wrkr_msgs(mgr, mgr->workers.maxfd, fds);
 		}
-		if (tpool && mgr->targets.total > 0 && mgr->thrd_targets.total == 0)
+		if (tpool)
 		{
-			transfer_work(&mgr->thrd_targets, &mgr->targets, tpool->reqest_amt);
-			tpool->reqest_amt *= (tpool->reqest_amt < 2048) ? 2 : 1;
-			broadcast_event(tpool);
+			pthread_mutex_lock(&tpool->amt_working_mutex);
+			if (tpool->amt_working != tpool->thr_count)
+			{
+				pthread_mutex_unlock(&tpool->amt_working_mutex);
+				pthread_mutex_lock(&tpool->work_pool_mutex);
+				if (tpool->work_pool->total == 0)
+				{
+					transfer_work(&mgr->thrd_targets, &mgr->targets, tpool->reqest_amt);
+					tpool->reqest_amt *= (tpool->reqest_amt < 2048) ? 2 : 1;
+				}
+				pthread_mutex_unlock(&tpool->work_pool_mutex);
+			}
+			else
+				pthread_mutex_unlock(&tpool->amt_working_mutex);
 		}
 		if (mgr->targets.total == 0) /*TODO account for threads*/
 		{
 			if (mgr->workers.wrking_cnt != 0)
 				continue;
-			else
-				mgr->stat.running = false;
+			pthread_mutex_lock(&tpool->amt_working_mutex);
+			if (tpool->amt_working != 0)
+			{
+				pthread_mutex_unlock(&tpool->amt_working_mutex);
+				continue;
+			}
+			pthread_mutex_unlock(&tpool->amt_working_mutex);
+			mgr->stat.running = false;
 		}
 	}
 	if (tpool)

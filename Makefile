@@ -44,7 +44,7 @@ RM = rm -fr
 $(NAME):
 		$(MAKE) -C $(LIBBINN)
 		$(MAKE) -C $(LIBHERMES)
-		$(CC) $(CFLAGS) $(SRC) src/main.c -o $(NAME)
+		$(CC) $(CFLAGS) $(SRC) src/main.c -lpthread -o $(NAME)
 
 all: $(NAME)
 

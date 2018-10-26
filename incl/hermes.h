@@ -134,7 +134,7 @@ typedef struct			t_status
 	uint8_t				running: 1;
 	uint8_t				initilized: 1;
 	uint8_t				work_requested: 1;
-	uint8_t				working: 1;
+	uint8_t				has_work: 1;
 }						t_stat;
 
 typedef struct			s_worker
@@ -142,19 +142,9 @@ typedef struct			s_worker
 	t_stat				stat;
 	struct sockaddr_in	sin;
 	int 				sock;
-	t_targetset			*targets;
+	t_targetset			targets;
 	uint32_t 			send_size;
 }						t_wrkr;
-
-typedef struct			s_worker_manager
-{
-	t_stat				stat;
-	struct sockaddr_in	sin;
-	int 				sock;
-	t_job				*job;
-	t_targetset			targets;
-	int					id;
-}						t_wmgr;
 
 typedef struct 			s_warray
 {
@@ -189,13 +179,6 @@ typedef struct			s_manager
 	FILE				*norm_file;
 }						t_mgr;
 
-typedef	struct			s_sem
-{
-	pthread_cond_t		cond;
-	pthread_mutex_t		mutex;
-	bool 				work;
-}						t_sem;
-
 typedef struct 			s_thread
 {
 	pthread_t			thread;
@@ -208,15 +191,28 @@ typedef struct 			s_thread
 typedef struct 			s_thrpool
 {
 	uint16_t 			thr_count;
+	uint16_t			amt_working;
 	uint16_t			reqest_amt;
 	t_thread			*threads;
 	t_result			*results;
 	t_targetset			*work_pool;
 	t_job				*job;
+	pthread_mutex_t		amt_working_mutex;
 	pthread_mutex_t		results_mutex;
 	pthread_mutex_t		work_pool_mutex;
-	t_sem				*sem;
 }						t_thrpool;
+
+typedef struct			s_worker_manager
+{
+	t_stat				stat;
+	struct sockaddr_in	sin;
+	int 				sock;
+	t_job				job;
+	t_targetset			targets;
+	int					id;
+	t_thrpool			*thrpool;
+	t_result			*results;
+}						t_wmgr;
 
 t_mgr					*new_mgr(void);
 t_job					*new_job(void);
@@ -263,20 +259,12 @@ void					do_exclusions(t_mgr *mgr);
 int						worker_daemon(int port);
 void					transfer_work(t_targetset *dst, t_targetset *src, uint32_t reqamt);
 
+t_thrpool			*init_threadpool(t_job *job, t_targetset *workpool, t_result **results);
 
 int						worker_loop(t_wmgr *session);
 int						manager_loop(t_mgr *mgr);
 void					transfer_work(t_targetset *dst, t_targetset *src, uint32_t reqamt);
-/*
-**	func | send_work()
-**	param1 | t_wrkr | worker to send serialized targets to.
-**	param2 | t_job | targets to be serialized and sent to worker.
-**	return | int | SUCCESS (0) or FAILURE (-1)
-**
-**	desc: first targets is serialized into a binn object, then a targets offer is sent
-**	to worker. If targets offer is accepted by worker, the serialized targets is
-**	sent, else error is thrown. Job should be saved and re-distributed;
-*/
+
 int						send_work(t_wrkr *worker);
 
 void					print_ip_struct(t_node *ip4);

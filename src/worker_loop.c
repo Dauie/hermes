@@ -25,50 +25,23 @@ int					handle_obj_offer(t_wmgr *session, uint8_t code, uint8_t *msg)
 		return (FAILURE);
 	}
 	printf("recved obj %zu\n", ret);
-	if (session->job == NULL)
-		if (!(session->job = new_job()))
-			return (hermes_error(FAILURE, "malloc() %s", strerror(errno)));
-	if (code == C_OBJ_OPTS)
+	if (code == C_OBJ_JOB)
 	{
-		unbinnify_opts(&session->job->opts, obj);
-		printf("received options\n");
+		unbinnify_job(&session->job, obj);
+		if (session->job.opts.thread_count > 1)
+		{
+			if (!(session->thrpool = init_threadpool(&session->job, &session->targets, &session->results)))
+				hermes_error(EXIT_FAILURE, "init_threadpool() failure");
+		}
+		session->stat.initilized = true;
+
 	}
 	else if (code == C_OBJ_TARGETS)
 	{
 		unbinnify_targetset(&session->targets, obj);
 		session->stat.work_requested = false;
-		session->stat.working = true;
+		session->stat.has_work = true;
 		printf("received targetset\n");
-	}
-	else if (code == C_OBJ_PS_NRM)
-	{
-		unbinnify_portset(&session->job->ports, obj);
-		session->stat.initilized = true;
-		printf("received scan portset\n");
-	}
-	else if (code == C_OBJ_PS_ACK)
-	{
-		if (!(session->job->ack_ports))
-			if (!(session->job->ack_ports = new_portset()))
-				return (hermes_error(FAILURE, "malloc() %s", strerror(errno)));
-		unbinnify_portset(session->job->ack_ports, obj);
-		printf("received ack portset\n");
-	}
-	else if (code == C_OBJ_PS_SYN)
-	{
-		if (!session->job->syn_ports)
-			if (!(session->job->syn_ports = new_portset()))
-				return (hermes_error(FAILURE, "malloc() %s", strerror(errno)));
-		unbinnify_portset(session->job->syn_ports, obj);
-		printf("received syn portset\n");
-	}
-	else if (code == C_OBJ_PS_UDP)
-	{
-		if (!session->job->udp_ports)
-			if (!(session->job->udp_ports = new_portset()))
-				return (hermes_error(FAILURE, "malloc() %s", strerror(errno)));
-		unbinnify_portset(session->job->udp_ports, obj);
-		printf("received udp portset\n");
 	}
 	free(obj);
 	return (SUCCESS);
@@ -135,9 +108,8 @@ int					worker_loop(t_wmgr *session)
 				bzero(msgbuff, PKT_SIZE);
 			}
 		}
-		if (session->stat.initilized && !session->stat.working && !session->stat.work_requested)
+		if (session->stat.initilized && !session->stat.has_work && !session->stat.work_requested)
 		{
-
 			printf("sending work request\n");
 			hermes_sendmsgf(session->sock, msg_tc(T_WRK_REQ, C_WRK_REQ), NULL);
 			session->stat.work_requested = true;

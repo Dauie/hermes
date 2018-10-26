@@ -39,7 +39,7 @@ static void		get_prtrngclist_from_binnlist(t_node **clst, binn *list)
 	t_prtrng	*rng;
 	binn		*obj;
 
-	i = 0;
+	i = 1;
 	cnt = binn_count(list);
 	while (i++ <= cnt)
 	{
@@ -131,7 +131,7 @@ static void		add_prtrngclist_to_binnlist(binn *list, t_node *prtrngs)
 		binn_object_set_uint32(obj, "start", rng->start);
 		binn_object_set_uint32(obj, "end", rng->end);
 		binn_list_add_object(list, obj);
-
+		head = head->right;
 	} while (head != prtrngs);
 
 }
@@ -175,8 +175,6 @@ binn			*binnify_opts(t_opts *opts)
 
 void			unbinnify_opts(t_opts *opts, binn *obj)
 {
-	printf("unbinnify ops started\n");
-	printf("bin obj len %i\n", binn_size(obj));
 	binn_object_get_uint64(obj,"bitops", (uint64 *)&opts->bitops);
 	binn_object_get_uint32(obj, "min_rtt_timeout", &opts->min_rtt_timeo);
 	binn_object_get_uint32(obj, "init_rtt_timeo", &opts->init_rtt_timeo);
@@ -198,7 +196,6 @@ void			unbinnify_opts(t_opts *opts, binn *obj)
 	binn_object_get_uint8(obj, "ip_ttl", &opts->ip_ttl);
 	binn_object_get_uint8(obj, "thread_count", &opts->thread_count);
 	binn_object_get_uint8(obj, "verbose_level", &opts->verbose_level);
-	printf("leaving unbinnify ops\n");
 }
 
 binn			*binnify_portset(t_portset *set)
@@ -247,6 +244,40 @@ binn			*binnify_portset(t_portset *set)
 	return (obj);
 }
 
+binn			*binnify_job(t_job *job)
+{
+	binn *obj;
+	binn *member;
+
+	if (!(obj = binn_object())) {
+		hermes_error(FAILURE, "binn_object()");
+		return (NULL);
+	}
+	member = binnify_opts(&job->opts);
+	binn_object_set_object(obj, "opts", member);
+	free(member);
+	member = binnify_portset(&job->ports);
+	binn_object_set_object(obj, "ports", member);
+	free(member);
+	if (job->ack_ports) {
+		member = binnify_portset(job->ack_ports);
+		binn_object_set_object(obj, "ack_ports", member);
+		free(member);
+	}
+	if (job->syn_ports) {
+		member = binnify_portset(job->syn_ports);
+		binn_object_set_object(obj, "syn_ports", member);
+		free(member);
+	}
+	if (job->udp_ports)
+	{
+		member = binnify_portset(job->udp_ports);
+		binn_object_set_object(obj, "udp_ports", member);
+		free(member);
+	}
+	return (obj);
+}
+
 binn			*binnify_targetset(t_targetset *set)
 {
 	binn		*obj;
@@ -290,13 +321,10 @@ void			unbinnify_portset(t_portset *set, binn *obj)
 	binn_object_get_uint16(obj, "total", &set->total);
 	binn_object_get_uint16(obj, "port_cnt", &set->port_cnt);
 	binn_object_get_uint16(obj, "rng_cnt", &set->rng_cnt);
-
-
-	binn_object_get_list(obj, "ports", (void **)&portlist);
-	binn_object_get_list(obj, "prtrngs", (void**)&prtrnglist);
-
-	get_portclist_from_binnlist(&set->ports, portlist);
-	get_prtrngclist_from_binnlist(&set->prtrngs, prtrnglist);
+	if (binn_object_get_list(obj, "ports", (void **)&portlist) == true)
+		get_portclist_from_binnlist(&set->ports, portlist);
+	if (binn_object_get_list(obj, "prtrngs", (void**)&prtrnglist) == true)
+		get_prtrngclist_from_binnlist(&set->prtrngs, prtrnglist);
 }
 
 void			unbinnify_targetset(t_targetset *set, binn *obj)
@@ -314,4 +342,32 @@ void			unbinnify_targetset(t_targetset *set, binn *obj)
 
 	get_ip4clist_from_binnlist(&set->ips, ip4list);
 	get_ip4rngclist_from_binnlist(&set->iprngs, ip4rnglist);
+}
+
+void			unbinnify_job(t_job *job, binn *obj)
+{
+	binn		*member;
+
+	binn_object_get_object(obj, "opts", (void **)&member);
+	unbinnify_opts(&job->opts, member);
+	binn_object_get_object(obj, "ports", (void**)&member);
+	unbinnify_portset(&job->ports, member);
+	if (binn_object_get_object(obj, "ack_ports", (void **)&member) == true)
+	{
+		job->ack_ports = new_portset();
+		unbinnify_portset(job->ack_ports, member);
+		free(member);
+	}
+	if (binn_object_get_object(obj, "syn_ports", (void **)&member) == true)
+	{
+		job->syn_ports = new_portset();
+		unbinnify_portset(job->syn_ports, member);
+		free(member);
+	}
+	if (binn_object_get_object(obj, "udp_ports", (void **)&member) == true)
+	{
+		job->udp_ports = new_portset();
+		unbinnify_portset(job->udp_ports, member);
+		free(member);
+	}
 }

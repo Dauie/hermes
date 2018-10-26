@@ -11,9 +11,9 @@ t_ip4rng		*slice_ip4rng(t_ip4rng *src, uint32_t amt)
 	dst = new_ip4range();
 	dst->size = amt;
 	dst->start = src->start;
-	dst->end = ip4_increment(src->start, amt);
+	dst->end = ip4_increment(src->start, amt - 1);
 	src->size -= amt;
-	src->start = ip4_increment(src->start, (amt + 1));
+	src->start = ip4_increment(src->start, amt);
 	return (dst);
 }
 

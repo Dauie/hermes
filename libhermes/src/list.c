@@ -7,20 +7,28 @@ bool			clist_add_head(t_node **clist, void **data)
 	t_node		*last;
 	t_node		*nw_node;
 
+	printf("entered clist_add_head\n");
 	if (!data || !*data)
+	{
+		printf("returning from clist_add_head fucked\n");
 		return (false);
+	}
 	nw_node = new_node(data);
 	if (!*clist)
 	{
+		printf("returning from clist_add_head as head\n");
+
 		nw_node->left = nw_node->right = nw_node;
 		*clist = nw_node;
 		return (true);
+
 	}
 	last = (*clist)->left;
 	nw_node->right = *clist;
 	nw_node->left = last;
 	last->right = (*clist)->left = nw_node;
 	*clist = nw_node;
+	printf("returning from clist_add_head\n");
 	return (true);
 }
 
