@@ -115,6 +115,20 @@ int					worker_loop(t_wmgr *session)
 			session->stat.work_requested = true;
 			printf("work request sent\n");
 		}
+		if (session->thrpool)
+		{
+			pthread_mutex_lock(&session->thrpool->amt_working_mutex);
+			if (session->thrpool->amt_working != session->thrpool->thr_count)
+			{
+				pthread_mutex_unlock(&session->thrpool->amt_working_mutex);
+				pthread_mutex_lock(&session->thrpool->work_pool_mutex);
+				if (session->targets.total == 0)
+					session->stat.has_work = false;
+				pthread_mutex_unlock(&session->thrpool->work_pool_mutex);
+			}
+			else
+				pthread_mutex_unlock(&session->thrpool->amt_working_mutex);
+		}
 	}
 	return (SUCCESS);
 }
