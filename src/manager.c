@@ -118,8 +118,7 @@ void				loop_get_max_fd(t_node *wrkrs, nfds_t *fdmax)
 		loop_get_max_fd(wrkrs->right, fdmax);
 }
 
-void				poll_wrkr_msgs(t_mgr *mgr, nfds_t fditer,
-								   struct pollfd *fds)
+void				poll_wrkr_msgs(t_mgr *mgr, nfds_t fditer, struct pollfd *fds)
 {
 	uint8_t			msgbuff[PKT_SIZE];
 	t_wrkr			**workers;
