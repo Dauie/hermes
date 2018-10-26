@@ -59,9 +59,9 @@ bool			clist_rm_head(t_node **clist, bool deldata)
 	t_node		*tmp;
 	t_node		*head;
 
-	head = *clist;
-	if (!head)
+	if (!clist || !*clist)
 		return (false);
+	head = *clist;
 	if (head->left == head && head->right == head)
 	{
 		del_node(clist, deldata);

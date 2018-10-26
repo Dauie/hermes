@@ -162,7 +162,6 @@ typedef struct			s_workerset
 typedef struct			s_result
 {
 	t_ip4				ip;
-
 }						t_result;
 
 typedef struct			s_manager
@@ -194,7 +193,7 @@ typedef struct 			s_thrpool
 	uint16_t			amt_working;
 	uint16_t			reqest_amt;
 	t_thread			*threads;
-	t_result			*results;
+	t_node				*results;
 	t_targetset			*work_pool;
 	t_job				*job;
 	pthread_mutex_t		amt_working_mutex;
@@ -211,7 +210,7 @@ typedef struct			s_worker_manager
 	t_targetset			targets;
 	int					id;
 	t_thrpool			*thrpool;
-	t_result			*results;
+	t_node				*results;
 }						t_wmgr;
 
 t_mgr					*new_mgr(void);
@@ -259,7 +258,8 @@ void					do_exclusions(t_mgr *mgr);
 int						worker_daemon(int port);
 void					transfer_work(t_targetset *dst, t_targetset *src, uint32_t reqamt);
 
-t_thrpool			*init_threadpool(t_job *job, t_targetset *workpool, t_result **results);
+t_thrpool				*init_threadpool(t_job *job, t_targetset *workpool,
+										  t_node **results);
 
 int						worker_loop(t_wmgr *session);
 int						manager_loop(t_mgr *mgr);
