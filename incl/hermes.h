@@ -119,7 +119,7 @@ typedef struct			s_ops
 	uint8_t				verbose_level; /* Default 0, verbose 1, very verbose 2 TODO: possibe enum */
 }						t_opts;
 
-typedef struct			s_job
+typedef struct			s_env
 {
 	t_opts				opts;
 	t_portset			ports;
@@ -127,7 +127,7 @@ typedef struct			s_job
 	t_portset			*ack_ports;
 	t_portset			*udp_ports;
 	void				*custom_payload;
-}						t_job;
+}						t_env;
 
 typedef struct			t_status
 {
@@ -141,15 +141,11 @@ typedef struct			s_worker
 {
 	t_stat				stat;
 	struct sockaddr_in	sin;
-	int 				sock;
+	int					sock;
 	t_targetset			targets;
-	uint32_t 			send_size;
+	uint32_t			send_size;
+	struct s_workerset	*set;
 }						t_wrkr;
-
-typedef struct 			s_warray
-{
-	t_node				*array;
-}						t_warray;
 
 typedef struct			s_workerset
 {
@@ -159,17 +155,69 @@ typedef struct			s_workerset
 	t_node				*wrkrs;
 }						t_workerset;
 
+typedef struct			s_portstat
+{
+	uint16_t			port;
+	uint8_t				status;
+}						t_portstat;
+
 typedef struct			s_result
 {
 	t_ip4				ip;
+	t_node				*port_stats;
 }						t_result;
+
+typedef struct			s_resultset
+{
+	uint32_t			byte_size;
+	uint32_t			result_cnt;
+	t_node				*results;
+}						t_resultset;
+
+typedef struct 			s_thread
+{
+	uint8_t				id;
+	pthread_t			thread;
+	struct s_thread_pool*pool;
+	volatile bool		working;
+	volatile bool		alive;
+	uint16_t			amt;
+}						t_thread;
+
+typedef struct 			s_thread_pool
+{
+	uint16_t 			tcount;
+	uint16_t			amt_working;
+	uint16_t			reqest_amt;
+	t_thread			*threads;
+	t_resultset			*results;
+	t_targetset			*work_pool;
+	t_env				*env;
+	pthread_mutex_t		amt_working_mtx;
+	pthread_mutex_t		results_mtx;
+	pthread_mutex_t		work_pool_mtx;
+}						t_thread_pool;
+
+typedef struct			s_worker_manager
+{
+	t_stat				stat;
+	t_env				env;
+	t_thread_pool		*tpool;
+	t_resultset			results;
+	t_targetset			targets;
+	struct sockaddr_in	sin;
+	int					sock;
+	int					id;
+}						t_wmgr;
 
 typedef struct			s_manager
 {
 	t_stat				stat;
-	t_job				job;
+	t_env				env;
+	t_thread_pool		*tpool;
+	t_resultset			results;
 	t_targetset			targets;
-	t_targetset			thrd_targets;
+	t_targetset			thread_targets;
 	t_workerset			workers;
 	t_targetset			*exclude_targets;
 	t_portset			*exclude_ports;
@@ -178,45 +226,10 @@ typedef struct			s_manager
 	FILE				*norm_file;
 }						t_mgr;
 
-typedef struct 			s_thread
-{
-	pthread_t			thread;
-	struct s_thrpool	*pool;
-	volatile bool		working;
-	volatile bool		alive;
-	uint16_t			amt;
-}						t_thread;
-
-typedef struct 			s_thrpool
-{
-	uint16_t 			thr_count;
-	uint16_t			amt_working;
-	uint16_t			reqest_amt;
-	t_thread			*threads;
-	t_node				*results;
-	t_targetset			*work_pool;
-	t_job				*job;
-	pthread_mutex_t		amt_working_mutex;
-	pthread_mutex_t		results_mutex;
-	pthread_mutex_t		work_pool_mutex;
-}						t_thrpool;
-
-typedef struct			s_worker_manager
-{
-	t_stat				stat;
-	struct sockaddr_in	sin;
-	int 				sock;
-	t_job				job;
-	t_targetset			targets;
-	int					id;
-	t_thrpool			*thrpool;
-	t_node				*results;
-}						t_wmgr;
-
 t_mgr					*new_mgr(void);
-t_job					*new_job(void);
+t_env					*new_job(void);
 t_opts					*new_opts(void);
-
+t_result				*new_result(void);
 
 t_ip4					*new_ip4(void);
 int						ip4_cmp(void *left, void *right);
@@ -236,6 +249,7 @@ t_ip4rng				*slice_ip4rng(t_ip4rng *src, uint32_t amt);
 
 t_targetset				*new_targetset(void);
 
+t_portstat				*new_portstat();
 t_port					*new_port(void);
 int						port_cmp(void *prt_left, void *prt_right);
 void					*port_min(t_node *tree);
@@ -255,18 +269,19 @@ void					*worker_min(t_node *tree);
 
 int						sanity_check(t_mgr *mgr);
 void					do_exclusions(t_mgr *mgr);
-int						worker_daemon(int port);
+int						hermes_daemon(int port);
 void					transfer_work(t_targetset *dst, t_targetset *src, uint32_t reqamt);
 
-t_thrpool				*init_threadpool(t_job *job, t_targetset *workpool,
-										  t_node **results);
+t_thread_pool				*init_threadpool(t_env *env, t_targetset *workpool, t_resultset *results);
 
 int						worker_loop(t_wmgr *session);
 int						manager_loop(t_mgr *mgr);
 void					transfer_work(t_targetset *dst, t_targetset *src, uint32_t reqamt);
 
 int						send_work(t_wrkr *worker);
+void					run_scan(t_env *env, t_targetset *targets, t_resultset *res_ptr, pthread_mutex_t *res_mtx);
 
+void					kill_threadpool(t_thread_pool *pool);
 void					print_ip_struct(t_node *ip4);
 void					print_iprng_struct(t_node *iprng);
 

@@ -25,20 +25,19 @@ int					handle_obj_offer(t_wmgr *session, uint8_t code, uint8_t *msg)
 		return (FAILURE);
 	}
 	printf("recved obj %zu\n", ret);
-	if (code == C_OBJ_JOB)
+	if (code == C_OBJ_ENV)
 	{
-		unbinnify_job(&session->job, obj);
-		if (session->job.opts.thread_count > 1)
-		{
-			if (!(session->thrpool = init_threadpool(&session->job, &session->targets, &session->results)))
-				hermes_error(EXIT_FAILURE, "init_threadpool() failure");
-		}
+		unbinnify_env(&session->env, obj);
+		if (!(session->tpool = init_threadpool(&session->env, &session->targets, &session->results)))
+			hermes_error(EXIT_FAILURE, "init_threadpool() failure");
 		session->stat.initilized = true;
-
+		printf("worker initialized\n");
 	}
 	else if (code == C_OBJ_TARGETS)
 	{
+		pthread_mutex_lock(&session->tpool->work_pool_mtx);
 		unbinnify_targetset(&session->targets, obj);
+		pthread_mutex_unlock(&session->tpool->work_pool_mtx);
 		session->stat.work_requested = false;
 		session->stat.has_work = true;
 		printf("received targetset\n");
@@ -58,6 +57,7 @@ int					process_message(t_wmgr *session, uint8_t *msgbuff)
 		handle_obj_offer(session, hdr->code, msgbuff);
 	else if (hdr->type == T_SHUTDOWN)
 	{
+		printf("Manager sent shutdown signal\n");
 		if (hdr->code == C_SHUTDOWN_SFT)
 			session->stat.running = false;
 		else if (hdr->code == C_SHUTDOWN_HRD)
@@ -115,19 +115,22 @@ int					worker_loop(t_wmgr *session)
 			session->stat.work_requested = true;
 			printf("work request sent\n");
 		}
-		if (session->thrpool)
+		if (session->tpool)
 		{
-			pthread_mutex_lock(&session->thrpool->amt_working_mutex);
-			if (session->thrpool->amt_working != session->thrpool->thr_count)
+			pthread_mutex_lock(&session->tpool->amt_working_mtx);
+			if (session->tpool->amt_working != session->tpool->tcount)
 			{
-				pthread_mutex_unlock(&session->thrpool->amt_working_mutex);
-				pthread_mutex_lock(&session->thrpool->work_pool_mutex);
+				pthread_mutex_unlock(&session->tpool->amt_working_mtx);
+				pthread_mutex_lock(&session->tpool->work_pool_mtx);
 				if (session->targets.total == 0)
+				{
+					printf("setting has work to false\n");
 					session->stat.has_work = false;
-				pthread_mutex_unlock(&session->thrpool->work_pool_mutex);
+				}
+				pthread_mutex_unlock(&session->tpool->work_pool_mtx);
 			}
 			else
-				pthread_mutex_unlock(&session->thrpool->amt_working_mutex);
+				pthread_mutex_unlock(&session->tpool->amt_working_mtx);
 		}
 	}
 	return (SUCCESS);

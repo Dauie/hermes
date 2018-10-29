@@ -4,55 +4,55 @@
 
 int				h_list_scan(t_mgr *mgr)
 {
-	mgr->job.opts.bitops.do_list_scan = true;
+	mgr->env.opts.bitops.do_list_scan = true;
 	return (SUCCESS);
 }
 
 int				h_ping_scan(t_mgr *mgr)
 {
-	mgr->job.opts.bitops.do_ping_scan = true;
+	mgr->env.opts.bitops.do_ping_scan = true;
 	return (SUCCESS);
 }
 
 int				h_syn_scan(t_mgr *mgr)
 {
-	mgr->job.opts.bitops.do_syn_scan = true;
+	mgr->env.opts.bitops.do_syn_scan = true;
 	return (SUCCESS);
 }
 
 int				h_ack_scan(t_mgr *mgr)
 {
-	mgr->job.opts.bitops.do_ack_scan = true;
+	mgr->env.opts.bitops.do_ack_scan = true;
 	return (SUCCESS);
 }
 
 int				h_null_scan(t_mgr *mgr)
 {
-	mgr->job.opts.bitops.do_null_scan = true;
+	mgr->env.opts.bitops.do_null_scan = true;
 	return (SUCCESS);
 }
 
 int				h_fin_scan(t_mgr *mgr)
 {
-	mgr->job.opts.bitops.do_fin_scan = true;
+	mgr->env.opts.bitops.do_fin_scan = true;
 	return (SUCCESS);
 }
 
 int				h_xmas_scan(t_mgr *mgr)
 {
-	mgr->job.opts.bitops.do_xmas_scan = true;
+	mgr->env.opts.bitops.do_xmas_scan = true;
 	return (SUCCESS);
 }
 
 int				h_udp_scan(t_mgr *mgr)
 {
-	mgr->job.opts.bitops.do_udp_scan = true;
+	mgr->env.opts.bitops.do_udp_scan = true;
 	return (SUCCESS);
 }
 
 int				h_bad_checksum(t_mgr *mgr)
 {
-	mgr->job.opts.bitops.do_bad_checksum = true;
+	mgr->env.opts.bitops.do_bad_checksum = true;
 	return (SUCCESS);
 }
 
@@ -64,7 +64,7 @@ int				h_custom_ip_ttl(t_mgr *mgr, char *input)
 		return (hermes_error(EXIT_FAILURE, "-ttl not specified"));
 	if ((ttl = atoi(input)) <= 0 || ttl > TTL_MAX)
 		return (hermes_error(EXIT_FAILURE, "bad ttl specified"));
-	mgr->job.opts.ip_ttl = (uint8_t)ttl;
+	mgr->env.opts.ip_ttl = (uint8_t)ttl;
 	return (SUCCESS);
 }
 
@@ -76,7 +76,7 @@ int				h_fragment_mtu(t_mgr *mgr, char *input)
 		return (hermes_error(EXIT_FAILURE, "--fragment-mtu not specified"));
 	if ((mtu = atoi(input)) <= 0 || mtu > MTU_MAX)
 		return (hermes_error(EXIT_FAILURE, "bad fragment-mtu specified"));
-	mgr->job.opts.fragment_mtu = (uint8_t)mtu;
+	mgr->env.opts.fragment_mtu = (uint8_t)mtu;
 	return (SUCCESS);
 }
 
@@ -88,7 +88,7 @@ int				h_spoof_srcip(t_mgr *mgr, char *input)
 		return (hermes_error(EXIT_FAILURE, "spoof ips address not specified"));
 	if (parse_ip(&ip, input) < 0)
 		return (hermes_error(EXIT_FAILURE, "bad spoof ips address specified"));
-	mgr->job.opts.spoofed_srcaddr = ip;
+	mgr->env.opts.spoofed_srcaddr = ip;
 	return (SUCCESS);
 }
 
@@ -97,10 +97,10 @@ int				h_spoof_srcport(t_mgr *mgr, char *input)
 	uint16_t	port;
 
 	if (!input)
-		return (hermes_error(EXIT_FAILURE, "spoof ports not specified"));
+		return (hermes_error(EXIT_FAILURE, "spoof port_stats not specified"));
 	if (parse_port(&port, input) == FAILURE)
-		return (hermes_error(EXIT_FAILURE, "bad spoof ports specified"));
-	mgr->job.opts.spoofed_srcport = port;
+		return (hermes_error(EXIT_FAILURE, "bad spoof port_stats specified"));
+	mgr->env.opts.spoofed_srcport = port;
 	return (SUCCESS);
 }
 

@@ -13,7 +13,7 @@
 	- 1723 (pptp)
 
 ### Window Scan
-	- Similar to ACK, however, when you send a RST back from an open ports
-	the Window value will be positive, if the Window is set to zero, the ports
+	- Similar to ACK, however, when you send a RST back from an open port_stats
+	the Window value will be positive, if the Window is set to zero, the port_stats
 	is actually closed.
 

@@ -18,21 +18,21 @@
 
 ### PORT SPECIFICATION AND SCAN ORDER
  - [x] Struct representation
- - [ ] Only scan specified ports (-p <ports ranges>) (Ex: -p22; -p1-65535; -p U:53,111,137,T:21-25,80,139,8080,S:9)
- - [ ] Exclude the specified ports from scanning (--exclude-ports <ports ranges>)
- - [ ] Scan ports consecutively - don't randomize (-r)
- - [ ] BONUS: Scan <number> most common ports (--top-ports <number>)
- - [ ] BONUS: Fast mode - Scan fewer ports than the default scan (-F)
+ - [ ] Only scan specified port_stats (-p <port_stats ranges>) (Ex: -p22; -p1-65535; -p U:53,111,137,T:21-25,80,139,8080,S:9)
+ - [ ] Exclude the specified port_stats from scanning (--exclude-port_stats <port_stats ranges>)
+ - [ ] Scan port_stats consecutively - don't randomize (-r)
+ - [ ] BONUS: Scan <number> most common port_stats (--top-port_stats <number>)
+ - [ ] BONUS: Fast mode - Scan fewer port_stats than the default scan (-F)
 
 ### HOST DISCOVERY
  - [x] Struct representation
  - [ ] Ping scan (-sn)
  - [ ] List scan (-sL)
  - [ ] Skip host discovery (-Pn)
- - [ ] Host discovery methods (With ports list)
- 	- [ ] TCP SYN host discovery (-PS <ports>)
- 	- [ ] TCP ACK host discovery (-PA <ports>)
- 	- [ ] UDP host discovery (-PU <ports>)
+ - [ ] Host discovery methods (With port_stats list)
+ 	- [ ] TCP SYN host discovery (-PS <port_stats>)
+ 	- [ ] TCP ACK host discovery (-PA <port_stats>)
+ 	- [ ] UDP host discovery (-PU <port_stats>)
  	- [ ] SUPER BONUS: SCTP host discovery (-PY)
  - [ ] Host discovery (ICMP without portlists)
  	- [ ] ICMP Echo host discovery (-PE)
@@ -47,7 +47,7 @@
 
 ### WORKER MODE
  - [x] Struct representation (not needed)
- - [ ] Run in "worker mode", and await a targets. (--worker <ports>)
+ - [ ] Run in "worker mode", and await a targets. (--worker <port_stats>)
 
 ###  TIMING AND PERFORMANCE
  - [x] Struct representation
@@ -57,7 +57,7 @@
  - [ ] Specify host timeout. Give up on host after this time if scan is not complete. (--host-timeout <time>)
  - [ ] Specify lowest amount of packets sent per second (--min-rate <packet amount>)
  - [ ] Specify highest amount of packets sent per second (--max-rate <packet amount>)
- - [ ] Specify max number of probe retransmissions to a single ports (--max-retries <time>)
+ - [ ] Specify max number of probe retransmissions to a single port_stats (--max-retries <time>)
  - [ ] Specify scan delay inbetween sending any probe from a host. (--scan-delay <time>)
  - [ ] Specify max scan delay. The scan delay can grow as Nmap detects packet loss, so set a max. (--max-scan-delay <time>)
 
@@ -79,7 +79,7 @@
 
 ### SERVICE/VERSION DETECTION
  - [x] Struct representation
- - [ ] Probe open ports to determine service/version info (-sV)
+ - [ ] Probe open port_stats to determine service/version info (-sV)
 
 ### FIREWALL/IDS EVASION AND SPOOFING
  - [x] Struct representation
@@ -87,7 +87,7 @@
  - [ ] Cloak a scan with decoys (-D <decoy1,decoy2\[,ME],...>)
  - [ ] Spoof source address (-S <IP_Address>)
  - [ ] (BONUS hard to work on all hosts) Use specified interface (-e <iface>)
- - [ ] Use given ports number (-g/--source-ports <portnum>)
+ - [ ] Use given port_stats number (-g/--source-port_stats <portnum>)
  - [ ] Set IP time-to-live field (--ttl <val>)
  - [ ] Append a custom payload to sent packets (--data <hex string>)
  - [ ] Append a custom ASCII string to sent packets (--data-string <string>)
@@ -102,7 +102,7 @@
  - [ ] Struct representation
  - [ ] Verbose output (-v, increase verbosity -vv)
  - [ ] Normal output (-oN) (default)
- - [ ] Only show open (or possibly open) ports (--open)
+ - [ ] Only show open (or possibly open) port_stats (--open)
  - [ ] BONUS: Resume an aborted scan (--resume <filename>)
  - [ ] BONUS: Print host interfaces and routes (for debugging) (--iflist)
  - [ ] help screen

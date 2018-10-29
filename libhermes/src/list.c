@@ -2,55 +2,45 @@
 #include "sys/errno.h"
 #include "../incl/libhermes.h"
 
-bool			clist_add_head(t_node **clist, void **data)
+bool			clist_add_head(t_node **start, void **data)
 {
 	t_node		*last;
-	t_node		*nw_node;
+	t_node		*new;
 
-	printf("entered clist_add_head\n");
-	if (!data || !*data)
+	if (*start == NULL)
 	{
-		printf("returning from clist_add_head fucked\n");
-		return (false);
-	}
-	nw_node = new_node(data);
-	if (!*clist)
-	{
-		printf("returning from clist_add_head as head\n");
-
-		nw_node->left = nw_node->right = nw_node;
-		*clist = nw_node;
+		new = new_node(data);
+		new->right = new->left = new;
+		*start = new;
 		return (true);
-
 	}
-	last = (*clist)->left;
-	nw_node->right = *clist;
-	nw_node->left = last;
-	last->right = (*clist)->left = nw_node;
-	*clist = nw_node;
-	printf("returning from clist_add_head\n");
+	last = (*start)->left;
+	new = new_node(data);
+	new->right = *start;
+	new->left = last;
+	last->right = (*start)->left = new;
+	*start = new;
 	return (true);
 }
 
-bool			clist_add_tail(t_node **clist, void **data)
+bool			clist_add_tail(t_node **start, void **data)
 {
-	t_node		*end;
-	t_node		*nw_node;
+	t_node		*new;
+	t_node		*last;
 
-	if (!*data)
-		return (false);
-	nw_node = new_node(data);
-	if (!*clist)
+	if (*start == NULL)
 	{
-		nw_node->left = nw_node->right = nw_node;
-		*clist = nw_node;
+		new = new_node(*data);
+		new->right = new->left = new;
+		*start = new;
 		return (true);
 	}
-	end = (*clist)->left;
-	nw_node->right = *clist;
-	(*clist)->left = nw_node;
-	nw_node->left = end;
-	end->right = nw_node;
+	last = (*start)->left;
+	new = new_node(data);
+	new->right = *start;
+	(*start)->left = new;
+	new->right = last;
+	last->right = new;
 	return (true);
 }
 
@@ -113,7 +103,7 @@ void			del_clist(t_node **clist, bool deldata)
 	if (!clist || !*clist)
 		return ;
 	list = *clist;
-	list->left = NULL;
+	list->left->right = NULL;
 	while (list)
 	{
 		tmp = list;

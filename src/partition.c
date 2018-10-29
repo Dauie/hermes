@@ -17,7 +17,7 @@ t_ip4rng		*slice_ip4rng(t_ip4rng *src, uint32_t amt)
 	return (dst);
 }
 
-void			transfer_work(t_targetset *dst, t_targetset *src, uint32_t reqamt)
+void			 transfer_work(t_targetset *dst, t_targetset *src, uint32_t reqamt)
 {
 	t_ip4rng	*slice;
 	uint32_t	ipcnt;
@@ -25,9 +25,14 @@ void			transfer_work(t_targetset *dst, t_targetset *src, uint32_t reqamt)
 
 	if (!src || reqamt <= 0)
 		return ;
-	ipcnt = reqamt / 2;
+	if (reqamt > src->total)
+		reqamt = src->total;
+	if (reqamt > 2)
+		ipcnt = reqamt / 2;
+	else
+		ipcnt = reqamt;
 	reqamt -= ipcnt;
-	while (ipcnt && src->ip_cnt > 0)
+	while (ipcnt && src->ip_cnt > 0 && src->ips)
 	{
 		if (clist_add_head(&dst->ips, &src->ips->data) == true)
 		{
@@ -44,7 +49,7 @@ void			transfer_work(t_targetset *dst, t_targetset *src, uint32_t reqamt)
 		ipcnt--;
 	}
 	reqamt += ipcnt;
-	while (reqamt && src->total > 0)
+	while (reqamt && src->total > 0 && src->iprngs)
 	{
 		memcpy(&rng, src->iprngs->data, sizeof(t_ip4rng));
 		if (rng.size <= reqamt)

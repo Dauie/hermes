@@ -31,6 +31,13 @@
 # define DEF_INIT_RTT_TIMEOUT (1000) /* ms */
 # define DEF_MAX_RTT_TIMEOUT (10000) /* ms */
 
+# define STAT_OPEN (0)
+# define STAT_CLOSED (1)
+# define STAT_FILTERED (2)
+# define STAT_UNFILTERED (3)
+# define STAT_OPENFILTERED (4)
+# define STAT_CLOSEDFILTERED (5)
+
 /*
 **	Quick Access to Node Types
 */

@@ -42,14 +42,14 @@ static void				setsockopt_wrapper(int lsock)
 		hermes_error(FAILURE, "setsockopt() %s", strerror(errno));
 }
 
-int						worker_daemon(int port)
+int						hermes_daemon(int port)
 {
 	int					lsock;
 	t_wmgr				*session;
 	struct protoent		*proto;
 
 	if (!(session = memalloc(sizeof(t_wmgr))))
-		return (hermes_error(FAILURE, "malloc() %s", strerror(errno)));
+		return (hermes_error(EXIT_FAILURE, "malloc() %s", strerror(errno)));
 	session->stat.running = true;
 	/* TODO add signal handlers */
 	if ((proto = getprotobyname("tcp")) == NULL)
@@ -60,8 +60,7 @@ int						worker_daemon(int port)
 	session->sin.sin_family = AF_INET;
 	session->sin.sin_port = htons(port);
 	session->sin.sin_addr.s_addr = htonl(INADDR_ANY);
-	if (bind(lsock, (const sockaddr *)&session->sin,
-			sizeof(session->sin)) < 0)
+	if (bind(lsock, (const sockaddr *)&session->sin, sizeof(session->sin)) < 0)
 		hermes_error(EXIT_FAILURE, "bind() %s", strerror(errno));
 	if (listen(lsock, 1) == -1)
 		hermes_error(EXIT_FAILURE, "listen() %s", strerror(errno));

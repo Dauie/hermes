@@ -24,7 +24,7 @@ int				h_custom_random_payload(t_mgr *mgr, char *input)
 	if (!(payload = (uint8_t *)memalloc((size_t)len)))
 		return (hermes_error(EXIT_FAILURE, "malloc() %s", strerror(errno)));
 	fread(payload, sizeof(uint8_t), (size_t)len, devrand);
-	mgr->job.custom_payload = payload;
+	mgr->env.custom_payload = payload;
 	return (SUCCESS);
 }
 
@@ -32,7 +32,7 @@ int				h_custom_payload_ascii(t_mgr *mgr, char *input)
 {
 	if (!input)
 		return (hermes_error(EXIT_FAILURE, "--data not specified"));
-	if (!(mgr->job.custom_payload = (void *)strdup(input)))
+	if (!(mgr->env.custom_payload = (void *)strdup(input)))
 		return (hermes_error(EXIT_FAILURE, "malloc() %s", strerror(errno)));
 	return (SUCCESS);
 }

@@ -40,7 +40,7 @@
 /*
 **	T_OBJ Message Codes
 */
-# define C_OBJ_JOB (0)
+# define C_OBJ_ENV (0)
 # define C_OBJ_OPTS (1)
 # define C_OBJ_TARGETS (2)
 # define C_OBJ_PS_NRM (3)

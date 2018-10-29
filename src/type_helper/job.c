@@ -1,10 +1,10 @@
 # include "../../incl/hermes.h"
 
-t_job		*new_job(void)
+t_env		*new_job(void)
 {
-	t_job	*job;
+	t_env	*job;
 
-	if (!(job = (t_job*)memalloc(sizeof(t_job))))
+	if (!(job = (t_env*)memalloc(sizeof(t_env))))
 	{
 		hermes_error(FAILURE, "malloc() %s", strerror(errno));
 		return (NULL);
