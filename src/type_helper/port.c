@@ -26,6 +26,16 @@ t_portset		*new_portset()
 		hermes_error(FAILURE, "malloc() %s", strerror(errno));;
 	return (set);
 }
+
+t_portstat		*new_portstat()
+{
+	t_portstat	*stat;
+
+	if (!(stat = memalloc(sizeof(t_portstat))))
+		hermes_error(FAILURE, "malloc() %s", strerror(errno));
+	return (stat);
+}
+
 int				port_cmp(void *prt_left, void *prt_right)
 {
 	t_port		*left;

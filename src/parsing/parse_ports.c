@@ -18,7 +18,7 @@ static int		add_port(t_portset *set, char *input)
 	uint16_t	port;
 
 	if (parse_port(&port, input) == FAILURE)
-		return (hermes_error(FAILURE, "bad ports specified %s", input));
+		return (hermes_error(FAILURE, "bad port_stats specified %s", input));
 	data = new_port();
 	data->port = (uint16_t)port;
 	if (add_node_bst(&set->ports, (void **) &data, port_cmp) == SUCCESS)
@@ -36,9 +36,9 @@ int				add_range_portset(t_portset *set, char **range)
 	t_prtrng	*data;
 
 	if (parse_port(&start, range[0]) == FAILURE)
-		return (hermes_error(FAILURE, "bad start to ports range %s", range[0]));
+		return (hermes_error(FAILURE, "bad start to port_stats range %s", range[0]));
 	if (parse_port(&end, range[1]) == FAILURE)
-		return (hermes_error(FAILURE, "bad end to ports range %s", range[1]));
+		return (hermes_error(FAILURE, "bad end to port_stats range %s", range[1]));
 	data = new_portrange();
 	if (start > end)
 		swap_uint16(&start, &end);

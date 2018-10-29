@@ -48,8 +48,8 @@ void				send_workers_initial_env(t_mgr *mgr)
 {
 	binn 			*job;
 
-	job = binnify_job(&mgr->job);
-	send_workers_binn(&mgr->workers, job, C_OBJ_JOB);
+	job = binnify_env(&mgr->env);
+	send_workers_binn(&mgr->workers, job, C_OBJ_ENV);
 	free(job);
 }
 
@@ -63,7 +63,34 @@ int					send_work(t_wrkr *worker)
 }
 
 
-int 				mgr_process_msg(t_mgr *mgr, t_wrkr *wrkr, uint8_t *msgbuff)
+int					handle_result_offer(t_wmgr *session, uint8_t *msg)
+{
+	ssize_t			ret;
+	binn			*obj;
+	t_obj_hdr		*hdr;
+
+	hdr = (t_obj_hdr *)msg;
+	hdr->objlen = ntohl(hdr->objlen);
+	if (hdr->objlen <= 0)
+		return (FAILURE);
+	if (!(obj = (binn *)malloc(sizeof(uint8_t) * hdr->objlen)))
+		return (FAILURE);
+	ret = recv(session->sock, obj, hdr->objlen, MSG_WAITALL);
+	if (ret == 0)
+	{
+		free(obj);
+		session->stat.running = false;
+		return (FAILURE);
+	}
+	if (hdr->code == C_OBJ_RES)
+	{
+
+	}
+	free(obj);
+	return (SUCCESS);
+}
+
+int					mgr_process_msg(t_mgr *mgr, t_wrkr *wrkr, uint8_t *msgbuff)
 {
 	t_msg_hdr		*hdr;
 
@@ -71,51 +98,37 @@ int 				mgr_process_msg(t_mgr *mgr, t_wrkr *wrkr, uint8_t *msgbuff)
 		return (FAILURE);
 	hdr = (t_msg_hdr*)msgbuff;
 	printf("type: %i code: %i\n", hdr->type, hdr->code);
-	if (hdr->type == T_WRK_REQ)
+	if (hdr->type == T_WRK_REQ && hdr->code == C_WRK_REQ)
 	{
 		if (mgr->targets.total > 0)
 		{
-			if (wrkr->targets.total == 0)
-			{
-				transfer_work(&wrkr->targets, &mgr->targets, 20);
-				send_work(wrkr);
-				wrkr->stat.has_work = true;
-				mgr->workers.wrking_cnt += 1;
-			}
+			wrkr->targets.total = 0;
+			wrkr->targets.ip_cnt = 0;
+			wrkr->targets.rng_cnt = 0;
+			transfer_work(&wrkr->targets, &mgr->targets, wrkr->send_size);
+			wrkr->send_size *= 2;
+			send_work(wrkr);
+			wrkr->stat.has_work = true;
+			mgr->workers.wrking_cnt += 1;
 		}
 		else
 		{
 			hermes_sendmsgf(wrkr->sock, msg_tc(T_SHUTDOWN, C_SHUTDOWN_SFT), NULL);
+			wrkr->stat.running = false;
 			wrkr->stat.has_work = false;
-			mgr->workers.wrking_cnt -= 1;
-
+			wrkr->set->wrking_cnt -= 1;
+			/*TODO this doesn't work properly... gotta */
+			((t_wrkr **)wrkr->set->wrkrs->data)[wrkr->sock] = NULL;
+			free(wrkr);
 		}
 	}
 	else if (hdr->type == T_OBJ && hdr->code == C_OBJ_RES)
 	{
+		t_resultset	*recv_results;
+
 
 	}
-//	else if (hdr->type == T_SHUTDOWN)
-//	{
-//		if (handle_disconnect(&mgr, &wrkr) == false)
-//			transfer_all_work(mgr->targets.targets, wrkr->targets->targets);
-//	}
 	return (SUCCESS);
-}
-
-void				loop_get_max_fd(t_node *wrkrs, nfds_t *fdmax)
-{
-	t_wrkr			*wrkr;
-
-	if (!wrkrs)
-		return;
-	if (wrkrs->left)
-		loop_get_max_fd(wrkrs->left, fdmax);
-	wrkr = wrkrs->data;
-	if (wrkr->sock > (int)*fdmax)
-		*fdmax = (nfds_t)wrkr->sock;
-	if (wrkrs->right)
-		loop_get_max_fd(wrkrs->right, fdmax);
 }
 
 void				poll_wrkr_msgs(t_mgr *mgr, nfds_t fditer, struct pollfd *fds)
@@ -182,101 +195,49 @@ t_node				*wrkrtree_to_fdinxarray(t_node **wrkrtree, nfds_t maxfd)
 	return (new_node((void **)&array));
 }
 
-//void 				run_thr_scan(t_job *job, t_targetset *targetset, t_result **res_ptr,
-//									pthread_mutex_t *res_mtx)
-//{
-//
-//}
-
-void				run_scan(t_job *job, t_targetset *targets,
-							 t_node **res_ptr,
-							 pthread_mutex_t *res_mtx)
+void				run_scan(t_env *env, t_targetset *targets, t_resultset *res_ptr, pthread_mutex_t *res_mtx)
 {
-	t_ip4		*ip;
 	t_result	*result;
 	t_ip4rng	*curr;
 
-	if (!job || !targets || !res_ptr)
+	if (!env || !targets || !res_ptr)
 		return ;
-	if (res_mtx)
+	if (targets->total > 0)
 	{
-		if (targets->total > 0)
+		while (targets->ips)
 		{
-			while (targets->ips)
+			sleep(1);
+			if (!(result = new_result()))
+				return ;
+			result->ip = *(t_ip4 *)targets->ips->data;
+			pthread_mutex_lock(res_mtx);
+			clist_add_head(&res_ptr->results, (void**)&result);
+			pthread_mutex_unlock(res_mtx);
+			if (clist_rm_head(&targets->ips, true) == false)
+				break;
+			targets->total--;
+			targets->ip_cnt--;
+		}
+		while (targets->iprngs)
+		{
+			curr = (t_ip4rng *)targets->iprngs->data;
+			while (ntohl(curr->start) <= ntohl(curr->end))
 			{
-				sleep(10);
-				if (!(result = (t_result*)memalloc(sizeof(t_result))))
-					return ;
-				result->ip = *(t_ip4 *) targets->ips->data;
+				sleep(1);
+				if (!(result = (t_result *)memalloc(sizeof(t_result))))
+					return;
+				result->ip.s_addr = curr->start;
 				pthread_mutex_lock(res_mtx);
-				clist_add_head(res_ptr, (void**)&result);
+				clist_add_head(&res_ptr->results, (void **) &result);
 				pthread_mutex_unlock(res_mtx);
-				if (clist_rm_head(&targets->ips, true) == false)
-					break;
+				curr->start = ip4_increment(curr->start, 1);
 				targets->total--;
-				targets->ip_cnt--;
 			}
-			while (targets->iprngs)
-			{
-				curr = (t_ip4rng *) targets->iprngs->data;
-				while (ntohl(curr->start) <= ntohl(curr->end))
-				{
-					ip = new_ip4();
-					ip->s_addr = curr->start;
-
-					sleep(10);
-					if (!(result = (t_result *) memalloc(sizeof(t_result))))
-						return;
-					result->ip = *ip;
-					pthread_mutex_lock(res_mtx);
-					clist_add_head(res_ptr, (void **) &result);
-					pthread_mutex_unlock(res_mtx);
-					curr->start = ip4_increment(curr->start, 1);
-					targets->total--;
-					if (ip)
-						free(ip);
-				}
-				if (clist_rm_head(&targets->iprngs, true) == false)
-					break;
-				targets->rng_cnt--;
-			}
+			if (clist_rm_head(&targets->iprngs, true) == false)
+				break;
+			targets->rng_cnt--;
 		}
 	}
-}
-
-void				*thread_loop(void *thrd)
-{
-	t_targetset		work;
-	t_thread		*thread;
-
-	thread = (t_thread *)thrd;
-	memset(&work, 0, sizeof(t_targetset));
-	while (thread->alive)
-	{
-			pthread_mutex_lock(&thread->pool->work_pool_mutex);
-			if (thread->pool->work_pool->total > 0)
-			{
-				transfer_work(&work, thread->pool->work_pool, thread->amt);
-				pthread_mutex_unlock(&thread->pool->work_pool_mutex);
-				thread->amt *= (thread->amt < 512) ? 2 : 1;
-				thread->working = true;
-				pthread_mutex_lock(&thread->pool->amt_working_mutex);
-				thread->pool->amt_working += 1;
-				pthread_mutex_unlock(&thread->pool->amt_working_mutex);
-				run_scan(thread->pool->job, &work,
-						&thread->pool->results, &thread->pool->results_mutex);
-				thread->working = false;
-				pthread_mutex_lock(&thread->pool->amt_working_mutex);
-				thread->pool->amt_working -= 1;
-				pthread_mutex_unlock(&thread->pool->amt_working_mutex);
-			}
-			else
-			{
-				pthread_mutex_unlock(&thread->pool->work_pool_mutex);
-				sleep(1);
-			}
-	}
-	return (NULL);
 }
 
 int					init_workers(t_mgr *mgr, struct pollfd **fds)
@@ -312,66 +273,17 @@ int					init_workers(t_mgr *mgr, struct pollfd **fds)
 	return (SUCCESS);
 }
 
-void				kill_threadpool(t_thrpool *pool)
-{
-	int				i;
-
-	i = -1;
-	if (!pool)
-		return ;
-	while (++i < pool->thr_count)
-		pool->threads[i].alive = false;
-	sleep(1);
-	if (pool->threads)
-		free(pool->threads);
-//	del_clist(&pool->work_pool->ips, true);
-//	del_clist(&pool->work_pool->iprngs, true);
-}
-
-t_thrpool			*init_threadpool(t_job *job, t_targetset *workpool,
-									  t_node **results)
-{
-	int					i;
-	t_thrpool			*pool;
-
-	i = -1;
-	if (!(pool = memalloc(sizeof(t_thrpool))))
-		return (NULL);
-	if (!(pool->threads = memalloc(sizeof(t_thread) * job->opts.thread_count)))
-		return (NULL);
-	pthread_mutex_init(&pool->work_pool_mutex, NULL);
-	pthread_mutex_init(&pool->results_mutex, NULL);
-	pthread_mutex_init(&pool->amt_working_mutex, NULL);
-	pool->thr_count = job->opts.thread_count;
-	pool->reqest_amt = pool->thr_count;
-	pool->results = *results;
-	pool->work_pool = workpool;
-	pool->job = job;
-	while (++i < pool->thr_count)
-	{
-		pool->threads[i].amt = 1;
-		pool->threads[i].pool = pool;
-		pool->threads[i].alive = true;
-		pool->threads[i].working = false;
-		pthread_create(&pool->threads[i].thread, NULL, thread_loop,
-					   &pool->threads[i]);
-	}
-	return (pool);
-}
-
 int					manager_loop(t_mgr *mgr)
 {
 	struct pollfd	*fds;
-	t_thrpool		*tpool;
-	t_node			*results;
+	t_resultset		results;
 
-	tpool = NULL;
 	fds = NULL;
-	results = NULL;
+	memset(&results, 0, sizeof(t_resultset));
 	mgr->stat.running = true;
-	if (mgr->job.opts.thread_count > 0)
+	if (mgr->env.opts.thread_count > 0)
 	{
-		if (!(tpool = init_threadpool(&mgr->job, &mgr->thrd_targets, &results)))
+		if (!(mgr->tpool = init_threadpool(&mgr->env, &mgr->thread_targets, &results)))
 			hermes_error(EXIT_FAILURE, "init_threadpool()");
 	}
 	if (mgr->workers.cnt > 0)
@@ -385,38 +297,39 @@ int					manager_loop(t_mgr *mgr)
 		{
 			poll_wrkr_msgs(mgr, mgr->workers.maxfd, fds);
 		}
-		if (tpool)
+		if (mgr->tpool)
 		{
-			pthread_mutex_lock(&tpool->amt_working_mutex);
-			if (tpool->amt_working != tpool->thr_count)
+			pthread_mutex_lock(&mgr->tpool->amt_working_mtx);
+			if (mgr->tpool->amt_working != mgr->tpool->tcount)
 			{
-				pthread_mutex_unlock(&tpool->amt_working_mutex);
-				pthread_mutex_lock(&tpool->work_pool_mutex);
-				if (tpool->work_pool->total == 0)
+				pthread_mutex_unlock(&mgr->tpool->amt_working_mtx);
+				pthread_mutex_lock(&mgr->tpool->work_pool_mtx);
+				if (mgr->tpool->work_pool->total == 0)
 				{
-					transfer_work(&mgr->thrd_targets, &mgr->targets, tpool->reqest_amt);
-					tpool->reqest_amt *= (tpool->reqest_amt < 2048) ? 2 : 1;
+					transfer_work(&mgr->thread_targets, &mgr->targets, mgr->tpool->reqest_amt);
+					mgr->tpool->reqest_amt *= (mgr->tpool->reqest_amt < 2048) ? 2 : 1;
 				}
-				pthread_mutex_unlock(&tpool->work_pool_mutex);
+				pthread_mutex_unlock(&mgr->tpool->work_pool_mtx);
 			}
 			else
-				pthread_mutex_unlock(&tpool->amt_working_mutex);
+				pthread_mutex_unlock(&mgr->tpool->amt_working_mtx);
+			pthread_mutex_unlock(&mgr->tpool->results_mtx);
 		}
-		if (mgr->targets.total == 0) /*TODO account for threads*/
+		if (mgr->targets.total == 0)
 		{
 			if (mgr->workers.wrking_cnt != 0)
 				continue;
-			pthread_mutex_lock(&tpool->amt_working_mutex);
-			if (tpool->amt_working != 0)
+			pthread_mutex_lock(&mgr->tpool->amt_working_mtx);
+			if (mgr->tpool->amt_working != 0)
 			{
-				pthread_mutex_unlock(&tpool->amt_working_mutex);
+				pthread_mutex_unlock(&mgr->tpool->amt_working_mtx);
 				continue;
 			}
-			pthread_mutex_unlock(&tpool->amt_working_mutex);
+			pthread_mutex_unlock(&mgr->tpool->amt_working_mtx);
 			mgr->stat.running = false;
 		}
 	}
-	if (tpool)
-		kill_threadpool(tpool);
+	if (mgr->tpool)
+		kill_threadpool(mgr->tpool);
 	return (0);
 }
