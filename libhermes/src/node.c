@@ -22,6 +22,8 @@ void			del_node(t_node **node, bool deldata)
 		free((*node)->data);
 		(*node)->data = NULL;
 	}
+	else
+		(*node)->data = NULL;
 	(*node)->left = NULL;
 	(*node)->right = NULL;
 	free(*node);

@@ -65,7 +65,6 @@ int					send_work(t_wrkr *worker)
 int					handle_result_offer(t_mgr *mgr, t_wrkr *worker,
 										   uint8_t *msg)
 {
-	t_resultset		result_staging; /*TODO this process needs to be optimized*/
 	ssize_t			ret;
 	binn			*obj;
 	t_obj_hdr		*hdr;
@@ -73,7 +72,7 @@ int					handle_result_offer(t_mgr *mgr, t_wrkr *worker,
 	printf("Entering handle_result_offer()\n");
 	hdr = (t_obj_hdr *)msg;
 	hdr->objlen = ntohl(hdr->objlen);
-	memset(&result_staging, 0, sizeof(t_resultset));
+	printf("%u\n", hdr->objlen);
 	if (hdr->objlen <= 0)
 		return (FAILURE);
 	if (!(obj = (binn *)malloc(sizeof(uint8_t) * hdr->objlen)))
@@ -89,9 +88,11 @@ int					handle_result_offer(t_mgr *mgr, t_wrkr *worker,
 	{
 		if (mgr->tpool)
 			pthread_mutex_lock(&mgr->tpool->results_mtx);
+		printf("got mutex\n");
 		unbinnify_resultset(&mgr->results, &worker->targets, obj);
 		if (mgr->tpool)
 			pthread_mutex_unlock(&mgr->tpool->results_mtx);
+		printf("gave mutex\n");
 	}
 	free(obj);
 	printf("Leaving handle_result_offer()\n");
@@ -352,7 +353,8 @@ int					manager_loop(t_mgr *mgr)
 	{
 		init_workers(mgr, &fds);
 	}
-	while (mgr->stat.running == true) {
+	while (mgr->stat.running == true)
+	{
 		/* if we have workers, see if they've sent us any messages */
 		if (mgr->workers.cnt > 0)
 			poll_wrkr_msgs(mgr, mgr->workers.maxfd, fds);

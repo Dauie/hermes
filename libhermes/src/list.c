@@ -39,7 +39,7 @@ bool			clist_add_tail(t_node **start, void **data)
 	new = new_node(data);
 	new->right = *start;
 	(*start)->left = new;
-	new->right = last;
+	new->left = last;
 	last->right = new;
 	return (true);
 }
@@ -110,6 +110,7 @@ void			del_clist(t_node **clist, bool deldata)
 		list = list->right;
 		del_node(&tmp, deldata);
 	}
+	*clist = NULL;
 }
 
 bool			rm_node(t_node **node, bool deldata)
