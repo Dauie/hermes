@@ -18,10 +18,10 @@ UNITSRC_FILES = munit.c
 
 SRC_DIR = src
 SRC_FILES = worker_daemon.c worker_loop.c sanity_check.c exclude.c
-SRC_FILES += manager.c partition.c binnify.c message.c thread.c
+SRC_FILES += manager.c partition.c binnify.c message.c thread.c unbinnify.c
 
 THELP_DIR = src/type_helper
-THELP_FILES = ip4.c port.c job.c worker.c mgr.c
+THELP_FILES = ip4.c port.c job.c worker.c mgr.c result.c
 
 PARSE_DIR = src/parsing
 PARSE_FILES = h_custom_payload.c h_files.c h_performace_opts.c h_portlists.c

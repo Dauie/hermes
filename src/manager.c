@@ -62,29 +62,34 @@ int					send_work(t_wrkr *worker)
 	return (SUCCESS);
 }
 
-
-int					handle_result_offer(t_wmgr *session, uint8_t *msg)
+int					handle_result_offer(t_mgr mgr, t_wrkr *worker, uint8_t *msg)
 {
+	t_resultset		result_staging; /*TODO this process needs to be optimized*/
 	ssize_t			ret;
 	binn			*obj;
 	t_obj_hdr		*hdr;
 
 	hdr = (t_obj_hdr *)msg;
 	hdr->objlen = ntohl(hdr->objlen);
+	memset(&result_staging, 0, sizeof(t_resultset));
 	if (hdr->objlen <= 0)
 		return (FAILURE);
 	if (!(obj = (binn *)malloc(sizeof(uint8_t) * hdr->objlen)))
-		return (FAILURE);
-	ret = recv(session->sock, obj, hdr->objlen, MSG_WAITALL);
+		return (hermes_error(FAILURE, "malloc() %s", strerror(errno)));
+	ret = recv(worker->sock, obj, hdr->objlen, MSG_WAITALL);
 	if (ret == 0)
 	{
 		free(obj);
-		session->stat.running = false;
+		worker->stat.running = false;
 		return (FAILURE);
 	}
 	if (hdr->code == C_OBJ_RES)
 	{
-
+		if (mgr.tpool)
+			pthread_mutex_lock(&mgr.tpool->results_mtx);
+		unbinnify_resultset(&mgr.results, &worker->targets, obj);
+		if (mgr.tpool)
+			pthread_mutex_unlock(&mgr.tpool->results_mtx);
 	}
 	free(obj);
 	return (SUCCESS);
@@ -124,7 +129,6 @@ int					mgr_process_msg(t_mgr *mgr, t_wrkr *wrkr, uint8_t *msgbuff)
 	}
 	else if (hdr->type == T_OBJ && hdr->code == C_OBJ_RES)
 	{
-		t_resultset	*recv_results;
 
 
 	}
@@ -293,7 +297,7 @@ int					manager_loop(t_mgr *mgr)
 	while (mgr->stat.running == true)
 	{
 		/* if we have workers, see if they've sent us any messages */
-		if (mgr->workers.cnt > 0)
+		if (mgr->workers.wrking_cnt > 0)
 		{
 			poll_wrkr_msgs(mgr, mgr->workers.maxfd, fds);
 		}
@@ -314,7 +318,7 @@ int					manager_loop(t_mgr *mgr)
 			else
 				pthread_mutex_unlock(&mgr->tpool->amt_working_mtx);
 			pthread_mutex_unlock(&mgr->tpool->results_mtx);
-		}
+		} else
 		if (mgr->targets.total == 0)
 		{
 			if (mgr->workers.wrking_cnt != 0)
