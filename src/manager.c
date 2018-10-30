@@ -299,7 +299,84 @@ void 				disconn_wrkrs(t_mgr *mgr)
 }
 
 int					manager_loop(t_mgr *mgr)
+void				tend_threads(t_mgr *mgr)
 {
+	pthread_mutex_lock(&mgr->tpool->amt_working_mtx);
+	if (mgr->tpool->amt_working != mgr->tpool->tcount)
+	{
+		pthread_mutex_unlock(&mgr->tpool->amt_working_mtx);
+		pthread_mutex_lock(&mgr->tpool->work_pool_mtx);
+		if (mgr->tpool->work_pool->total == 0)
+		{
+			transfer_work(&mgr->thread_targets, &mgr->targets, mgr->tpool->reqest_amt);
+			mgr->tpool->reqest_amt *= (mgr->tpool->reqest_amt < 2048) ? 2 : 1;
+		}
+		pthread_mutex_unlock(&mgr->tpool->work_pool_mtx);
+	}
+	else
+		pthread_mutex_unlock(&mgr->tpool->amt_working_mtx);
+	pthread_mutex_unlock(&mgr->tpool->results_mtx);
+}
+
+bool				check_if_finished(t_mgr *mgr)
+{
+	if (mgr->targets.total > 0)
+		return (false);
+	if (mgr->workers.wrking_cnt != 0)
+		return (false);
+	pthread_mutex_lock(&mgr->tpool->amt_working_mtx);
+	if (mgr->tpool->amt_working != 0)
+	{
+		pthread_mutex_unlock(&mgr->tpool->amt_working_mtx);
+		return (false);
+	}
+	pthread_mutex_unlock(&mgr->tpool->amt_working_mtx);
+	return (true);
+}
+
+void				check_results(t_mgr *mgr)
+{
+	t_result		*res;
+
+	if (mgr->tpool)
+		pthread_mutex_lock(&mgr->tpool->results_mtx);
+	if (mgr->results.result_cnt > 0)
+	{
+		res = mgr->results.results->data;
+		printf("result: %u\n", res->ip.s_addr);
+		clist_rm_head(&mgr->results.results, true);
+		mgr->results.result_cnt--;
+	}
+	if (mgr->tpool)
+		pthread_mutex_unlock(&mgr->tpool->results_mtx);
+}
+
+int					manager_loop(t_mgr *mgr)
+{
+	struct pollfd	*fds;
+	t_resultset		results;
+
+	fds = NULL;
+	memset(&results, 0, sizeof(t_resultset));
+	mgr->stat.running = true;
+	if (mgr->env.opts.thread_count > 0)
+	{
+		if (!(mgr->tpool = init_threadpool(&mgr->env, &mgr->thread_targets, &results)))
+			hermes_error(EXIT_FAILURE, "init_threadpool()");
+	}
+	if (mgr->workers.cnt > 0)
+	{
+		init_workers(mgr, &fds);
+	}
+	while (mgr->stat.running == true)
+	{
+		/* if we have workers, see if they've sent us any messages */
+		if (mgr->workers.wrking_cnt > 0)
+			poll_wrkr_msgs(mgr, mgr->workers.maxfd, fds);
+		if (mgr->tpool)
+			tend_threads(mgr);
+		check_results(mgr);
+		if (check_if_finished(mgr) == true)
 	struct pollfd	*fds;
 	t_resultset		results;
 
