@@ -237,6 +237,7 @@ void					*ip4_min(t_node *tree);
 in_addr_t				ip4_increment(in_addr_t ip, uint32_t increase);
 in_addr_t				ip4_decrement(in_addr_t ip, uint32_t decrease);
 uint32_t				ip4_diff(in_addr_t left, in_addr_t right);
+bool					remove_ip_targetset(t_targetset *set, uint32_t ip);
 
 t_ip4rng				*new_ip4range(void);
 int						ip4rng_cmp(void *ipr_left, void *ipr_right);

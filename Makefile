@@ -37,7 +37,7 @@ SRC += binn/binn.o
 SRC += libhermes/libhermes.a
 
 UNIT_SRC = $(SRC)
-#UNIT_SRC += munit/munit.c
+UNIT_SRC += munit/munit.c
 UNIT_SRC += $(addprefix $(UNITSRC_DIR)/, $(UNITSRC_FILES))
 
 RM = rm -fr
