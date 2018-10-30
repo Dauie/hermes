@@ -277,6 +277,58 @@ int					init_workers(t_mgr *mgr, struct pollfd **fds)
 	return (SUCCESS);
 }
 
+void				tend_threads(t_mgr *mgr)
+{
+	pthread_mutex_lock(&mgr->tpool->amt_working_mtx);
+	if (mgr->tpool->amt_working != mgr->tpool->tcount)
+	{
+		pthread_mutex_unlock(&mgr->tpool->amt_working_mtx);
+		pthread_mutex_lock(&mgr->tpool->work_pool_mtx);
+		if (mgr->tpool->work_pool->total == 0)
+		{
+			transfer_work(&mgr->thread_targets, &mgr->targets, mgr->tpool->reqest_amt);
+			mgr->tpool->reqest_amt *= (mgr->tpool->reqest_amt < 2048) ? 2 : 1;
+		}
+		pthread_mutex_unlock(&mgr->tpool->work_pool_mtx);
+	}
+	else
+		pthread_mutex_unlock(&mgr->tpool->amt_working_mtx);
+	pthread_mutex_unlock(&mgr->tpool->results_mtx);
+}
+
+bool				check_if_finished(t_mgr *mgr)
+{
+	if (mgr->targets.total > 0)
+		return (false);
+	if (mgr->workers.wrking_cnt != 0)
+		return (false);
+	pthread_mutex_lock(&mgr->tpool->amt_working_mtx);
+	if (mgr->tpool->amt_working != 0)
+	{
+		pthread_mutex_unlock(&mgr->tpool->amt_working_mtx);
+		return (false);
+	}
+	pthread_mutex_unlock(&mgr->tpool->amt_working_mtx);
+	return (true);
+}
+
+void				check_results(t_mgr *mgr)
+{
+	t_result		*res;
+
+	if (mgr->tpool)
+		pthread_mutex_lock(&mgr->tpool->results_mtx);
+	if (mgr->results.result_cnt > 0)
+	{
+		res = mgr->results.results->data;
+		printf("result: %u\n", res->ip.s_addr);
+		clist_rm_head(&mgr->results.results, true);
+		mgr->results.result_cnt--;
+	}
+	if (mgr->tpool)
+		pthread_mutex_unlock(&mgr->tpool->results_mtx);
+}
+
 int					manager_loop(t_mgr *mgr)
 {
 	struct pollfd	*fds;
@@ -298,40 +350,12 @@ int					manager_loop(t_mgr *mgr)
 	{
 		/* if we have workers, see if they've sent us any messages */
 		if (mgr->workers.wrking_cnt > 0)
-		{
 			poll_wrkr_msgs(mgr, mgr->workers.maxfd, fds);
-		}
 		if (mgr->tpool)
-		{
-			pthread_mutex_lock(&mgr->tpool->amt_working_mtx);
-			if (mgr->tpool->amt_working != mgr->tpool->tcount)
-			{
-				pthread_mutex_unlock(&mgr->tpool->amt_working_mtx);
-				pthread_mutex_lock(&mgr->tpool->work_pool_mtx);
-				if (mgr->tpool->work_pool->total == 0)
-				{
-					transfer_work(&mgr->thread_targets, &mgr->targets, mgr->tpool->reqest_amt);
-					mgr->tpool->reqest_amt *= (mgr->tpool->reqest_amt < 2048) ? 2 : 1;
-				}
-				pthread_mutex_unlock(&mgr->tpool->work_pool_mtx);
-			}
-			else
-				pthread_mutex_unlock(&mgr->tpool->amt_working_mtx);
-			pthread_mutex_unlock(&mgr->tpool->results_mtx);
-		} else
-		if (mgr->targets.total == 0)
-		{
-			if (mgr->workers.wrking_cnt != 0)
-				continue;
-			pthread_mutex_lock(&mgr->tpool->amt_working_mtx);
-			if (mgr->tpool->amt_working != 0)
-			{
-				pthread_mutex_unlock(&mgr->tpool->amt_working_mtx);
-				continue;
-			}
-			pthread_mutex_unlock(&mgr->tpool->amt_working_mtx);
+			tend_threads(mgr);
+		check_results(mgr);
+		if (check_if_finished(mgr) == true)
 			mgr->stat.running = false;
-		}
 	}
 	if (mgr->tpool)
 		kill_threadpool(mgr->tpool);
