@@ -285,5 +285,6 @@ void					kill_threadpool(t_thread_pool *pool);
 void					print_ip_struct(t_node *ip4);
 void					print_iprng_struct(t_node *iprng);
 
+binn					*binnify_resultset(t_resultset *set);
 
 #endif

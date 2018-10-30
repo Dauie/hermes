@@ -70,6 +70,16 @@ int					process_message(t_wmgr *session, uint8_t *msgbuff)
 	return (SUCCESS);
 }
 
+int					send_results(t_wmgr *session)
+{
+	binn	*obj;
+
+	obj = binnify_resultset(&session->results);
+	if (hermes_send_binn(session->sock, C_OBJ_RES, obj) < 0)
+		return (FAILURE);
+	return (SUCCESS);
+}
+
 int					worker_loop(t_wmgr *session)
 {
 	ssize_t			ret;
@@ -124,13 +134,18 @@ int					worker_loop(t_wmgr *session)
 				pthread_mutex_lock(&session->tpool->work_pool_mtx);
 				if (session->targets.total == 0)
 				{
-					printf("setting has work to false\n");
+					printf("setting \"has work\" to false\n");
 					session->stat.has_work = false;
 				}
 				pthread_mutex_unlock(&session->tpool->work_pool_mtx);
 			}
 			else
 				pthread_mutex_unlock(&session->tpool->amt_working_mtx);
+		}
+		if (session->results.results)
+		{
+			if (send_results(session) == FAILURE)
+				hermes_error(FAILURE, "results unsent");
 		}
 	}
 	return (SUCCESS);

@@ -1,6 +1,6 @@
 # include "../../incl/hermes.h"
 
-t_result		*new_result()
+t_result		*new_result(void)
 {
 	t_result	*res;
 

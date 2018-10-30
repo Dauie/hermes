@@ -24,7 +24,7 @@ void				connect_workers(t_node **workers, t_workerset *set, int proto)
 		if (worker->sock > (int)set->maxfd)
 			set->maxfd = (nfds_t)worker->sock;
 		worker->stat.running = true;
-		printf("connected to %s.\n", inet_ntoa(worker->sin.sin_addr));
+		printf("connected to %s\n", inet_ntoa(worker->sin.sin_addr));
 	}
 	if (*workers && (*workers)->right)
 		connect_workers(&(*workers)->right, set, proto);
@@ -125,8 +125,7 @@ int					mgr_process_msg(t_mgr *mgr, t_wrkr *wrkr, uint8_t *msgbuff)
 	else if (hdr->type == T_OBJ && hdr->code == C_OBJ_RES)
 	{
 		t_resultset	*recv_results;
-
-
+		(void)recv_results;
 	}
 	return (SUCCESS);
 }
