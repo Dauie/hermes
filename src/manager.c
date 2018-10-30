@@ -277,29 +277,7 @@ int					init_workers(t_mgr *mgr, struct pollfd **fds)
 	return (SUCCESS);
 }
 
-void 				disconn_wrkrs(t_mgr *mgr)
-{
-	t_wrkr *wrkr;
-
-	while (mgr->workers.cnt)
-	{
-		wrkr = (t_wrkr*)mgr->workers.wrkrs->data;
-		/* TODO :
-		 * worker shutdown
-		 */
-		if (hermes_sendmsgf(wrkr->sock,
-							msg_tc(T_SHUTDOWN, C_SHUTDOWN_SFT),
-							NULL) == FAILURE)
-			hermes_error(FAILURE, "worker shutdown signal");
-		close(wrkr->sock);
-		mgr->workers.cnt--;
-	}
-	del_clist(&mgr->workers.wrkrs, true);
-	free(&mgr->workers);
-}
-
 int					manager_loop(t_mgr *mgr)
-void				tend_threads(t_mgr *mgr)
 {
 	struct pollfd	*fds;
 	t_resultset		results;
