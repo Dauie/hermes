@@ -74,10 +74,11 @@ int					send_results(t_wmgr *session)
 {
 	binn	*obj;
 
+	printf("sending results\n");
 	obj = binnify_resultset(&session->results);
 	if (hermes_send_binn(session->sock, C_OBJ_RES, obj) < 0)
 		return (FAILURE);
-
+	printf("leaving sending results\n");
 	return (SUCCESS);
 }
 
@@ -142,11 +143,14 @@ int					worker_loop(t_wmgr *session)
 			}
 			else
 				pthread_mutex_unlock(&session->tpool->amt_working_mtx);
-		}
-		if (session->results.results)
-		{
-			if (send_results(session) == FAILURE)
-				hermes_error(FAILURE, "results unsent");
+			/* Check if we need to send results to manager */
+			pthread_mutex_lock(&session->tpool->results_mtx);
+			if (session->results.result_cnt > 5)
+			{
+				if (send_results(session) == FAILURE)
+					hermes_error(FAILURE, "results unsent");
+			}
+			pthread_mutex_unlock(&session->tpool->results_mtx);
 		}
 	}
 	return (SUCCESS);
