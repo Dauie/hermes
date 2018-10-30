@@ -98,6 +98,7 @@ static void		add_resultclist_to_binnlist(binn *list, t_node **results)
 			portstatlist = binn_list();
 			add_portstatusclist_to_binnlist(portstatlist, &res->port_stats);
 			binn_object_set_list(obj, "port_stats", portstatlist);
+			del_clist(&res->port_stats, true);
 			free(portstatlist);
 		}
 		else
@@ -106,6 +107,7 @@ static void		add_resultclist_to_binnlist(binn *list, t_node **results)
 		free(obj);
 		head = head->right;
 	} while (head != *results);
+	del_clist(results, true);
 }
 
 binn			*binnify_resultset(t_resultset *set)

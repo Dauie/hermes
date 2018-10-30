@@ -62,7 +62,8 @@ int					send_work(t_wrkr *worker)
 	return (SUCCESS);
 }
 
-int					handle_result_offer(t_mgr mgr, t_wrkr *worker, uint8_t *msg)
+int					handle_result_offer(t_mgr *mgr, t_wrkr *worker,
+										   uint8_t *msg)
 {
 	t_resultset		result_staging; /*TODO this process needs to be optimized*/
 	ssize_t			ret;
@@ -85,11 +86,11 @@ int					handle_result_offer(t_mgr mgr, t_wrkr *worker, uint8_t *msg)
 	}
 	if (hdr->code == C_OBJ_RES)
 	{
-		if (mgr.tpool)
-			pthread_mutex_lock(&mgr.tpool->results_mtx);
-		unbinnify_resultset(&mgr.results, &worker->targets, obj);
-		if (mgr.tpool)
-			pthread_mutex_unlock(&mgr.tpool->results_mtx);
+		if (mgr->tpool)
+			pthread_mutex_lock(&mgr->tpool->results_mtx);
+		unbinnify_resultset(&mgr->results, &worker->targets, obj);
+		if (mgr->tpool)
+			pthread_mutex_unlock(&mgr->tpool->results_mtx);
 	}
 	free(obj);
 	return (SUCCESS);
@@ -129,8 +130,7 @@ int					mgr_process_msg(t_mgr *mgr, t_wrkr *wrkr, uint8_t *msgbuff)
 	}
 	else if (hdr->type == T_OBJ && hdr->code == C_OBJ_RES)
 	{
-
-
+		handle_result_offer(mgr, wrkr, msgbuff);
 	}
 	return (SUCCESS);
 }
@@ -182,7 +182,6 @@ void				add_wrkrtree_to_array(t_node *wrkr, t_wrkr **array)
 	if (wrkr->right)
 		add_wrkrtree_to_array(wrkr->right, array);
 }
-
 
 t_node				*wrkrtree_to_fdinxarray(t_node **wrkrtree, nfds_t maxfd)
 {
@@ -246,6 +245,7 @@ void				run_scan(t_env *env, t_targetset *targets, t_resultset *res_ptr, pthread
 
 int					init_workers(t_mgr *mgr, struct pollfd **fds)
 {
+	size_t			i;
 	struct protoent	*proto;
 	t_wrkr			**workers;
 
@@ -259,7 +259,7 @@ int					init_workers(t_mgr *mgr, struct pollfd **fds)
 		mgr->workers.wrkrs = wrkrtree_to_fdinxarray(&mgr->workers.wrkrs, mgr->workers.maxfd);
 		workers = mgr->workers.wrkrs->data;
 		*fds = memalloc(sizeof(struct pollfd) * mgr->workers.maxfd);
-		for (size_t i = 0; i < mgr->workers.maxfd; i++)
+		for (i = 0; i < mgr->workers.maxfd; i++)
 		{
 			if (workers[i])
 			{
@@ -318,7 +318,8 @@ int					manager_loop(t_mgr *mgr)
 			else
 				pthread_mutex_unlock(&mgr->tpool->amt_working_mtx);
 			pthread_mutex_unlock(&mgr->tpool->results_mtx);
-		} else
+		}
+//		else
 		if (mgr->targets.total == 0)
 		{
 			if (mgr->workers.wrking_cnt != 0)

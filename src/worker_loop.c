@@ -77,6 +77,7 @@ int					send_results(t_wmgr *session)
 	obj = binnify_resultset(&session->results);
 	if (hermes_send_binn(session->sock, C_OBJ_RES, obj) < 0)
 		return (FAILURE);
+
 	return (SUCCESS);
 }
 
