@@ -352,10 +352,10 @@ int					manager_loop(t_mgr *mgr)
 	{
 		init_workers(mgr, &fds);
 	}
-	while (mgr->stat.running == true) {
+	while (mgr->stat.running == true)
+	{
 		/* if we have workers, see if they've sent us any messages */
 		if (mgr->workers.cnt > 0)
-		{
 			poll_wrkr_msgs(mgr, mgr->workers.maxfd, fds);
 		if (mgr->tpool)
 			tend_threads(mgr);

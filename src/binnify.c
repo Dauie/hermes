@@ -89,6 +89,8 @@ static void		add_resultclist_to_binnlist(binn *list, t_node **results)
 	binn		*portstatlist;
 
 	head = *results;
+	if (!head)
+		return ;
 	do {
 		res = head->data;
 		obj = binn_object();
