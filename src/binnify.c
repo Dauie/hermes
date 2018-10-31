@@ -22,15 +22,12 @@ static void		add_ip4rngclist_to_binnlist(binn *list, t_node **ip4rng)
 	do {
 		rng = head->data;
 		obj = binn_object();
-
 		binn_object_set_uint32(obj, "size", rng->size);
 		binn_object_set_uint32(obj, "start", rng->start);
 		binn_object_set_uint32(obj, "end", rng->end);
-
 		binn_list_add_object(list, obj);
 		head = head->right;
 	} while (head != *ip4rng);
-
 }
 
 static void		add_portclist_to_binnlist(binn *list, t_node **ports)
@@ -64,7 +61,7 @@ static void		add_prtrngclist_to_binnlist(binn *list, t_node **prtrngs)
 	} while (head != *prtrngs);
 }
 
-static void		add_portstatusclist_to_binnlist(binn *list, t_node **portstatus)
+static void		add_portstatclist_to_binnlist(binn *list, t_node **portstatus)
 {
 	t_node		*head;
 	t_portstat *port_stat;
@@ -77,6 +74,7 @@ static void		add_portstatusclist_to_binnlist(binn *list, t_node **portstatus)
 		binn_object_set_uint16(obj, "port", port_stat->port);
 		binn_object_set_uint8(obj, "status", port_stat->status);
 		binn_list_add_object(list, obj);
+		free(obj);
 		head = head->right;
 	} while (head != *portstatus);
 }
@@ -98,10 +96,10 @@ static void		add_resultclist_to_binnlist(binn *list, t_node **results)
 		if (res->port_stats)
 		{
 			portstatlist = binn_list();
-			add_portstatusclist_to_binnlist(portstatlist, &res->port_stats);
+			add_portstatclist_to_binnlist(portstatlist, &res->port_stats);
 			binn_object_set_list(obj, "port_stats", portstatlist);
-			del_clist(&res->port_stats, true);
 			free(portstatlist);
+			del_clist(&res->port_stats, true);
 		}
 		else
 			binn_object_set_null(obj, "port_stats");
@@ -109,7 +107,6 @@ static void		add_resultclist_to_binnlist(binn *list, t_node **results)
 		free(obj);
 		head = head->right;
 	} while (head != *results);
-	del_clist(results, true);
 }
 
 binn			*binnify_resultset(t_resultset *set)
@@ -126,6 +123,9 @@ binn			*binnify_resultset(t_resultset *set)
 		add_resultclist_to_binnlist(res_list, &set->results);
 		binn_object_set_list(obj, "results", res_list);
 		free(res_list);
+		del_clist(&set->results, true);
+		set->result_cnt = 0;
+		set->byte_size = 0;
 	}
 	else
 		binn_object_set_null(obj, "results");

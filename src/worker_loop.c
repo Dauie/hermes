@@ -82,10 +82,41 @@ int					send_results(t_wmgr *session)
 	return (SUCCESS);
 }
 
-int					worker_loop(t_wmgr *session)
+void				poll_messages(t_wmgr *session, struct pollfd *fds)
 {
 	ssize_t			ret;
 	uint8_t			msgbuff[PKT_SIZE];
+
+	ret = poll(fds, 1, WKRMGR_POLL_TIMEO);
+	if (ret < 0)
+	{
+		if (errno != EAGAIN && errno != EINTR)
+		{
+			session->stat.running = false;
+			hermes_error(FAILURE, "poll()", strerror(errno));
+		}
+	}
+	else if (ret == 0)
+	{
+		printf("timeout\n");
+	}
+	else if (ret > 0 && fds[0].revents & POLLIN)
+	{
+		if ((ret = hermes_recvmsg(session->sock, msgbuff)) < 0)
+		{
+			session->stat.running = false;
+			hermes_error(FAILURE, "manager disconnected unexpectedly");
+		}
+		else if (ret > 0)
+		{
+			process_message(session, msgbuff);
+			bzero(msgbuff, PKT_SIZE);
+		}
+	}
+}
+
+int					worker_loop(t_wmgr *session)
+{
 	struct pollfd	fds[1];
 
 	memset(&fds, 0, sizeof(fds));
@@ -94,32 +125,7 @@ int					worker_loop(t_wmgr *session)
 	printf("worker loop start\n");
 	while (session->stat.running == true)
 	{
-		ret = poll(fds, 1, WKRMGR_POLL_TIMEO);
-		if (ret < 0)
-		{
-			if (errno != EAGAIN && errno != EINTR)
-			{
-				session->stat.running = false;
-				hermes_error(FAILURE, "poll()", strerror(errno));
-			}
-		}
-		else if (ret == 0)
-		{
-			printf("timeout\n");
-		}
-		else if (ret > 0 && fds[0].revents & POLLIN)
-		{
-			if ((ret = hermes_recvmsg(session->sock, msgbuff)) < 0)
-			{
-				session->stat.running = false;
-				hermes_error(FAILURE, "manager disconnected unexpectedly");
-			}
-			else if (ret > 0)
-			{
-				process_message(session, msgbuff);
-				bzero(msgbuff, PKT_SIZE);
-			}
-		}
+		poll_messages(session, (struct pollfd *)&fds);
 		if (session->stat.initilized && !session->stat.has_work && !session->stat.work_requested)
 		{
 			printf("sending work request\n");
