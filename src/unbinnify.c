@@ -109,7 +109,7 @@ void			get_resultclist_from_binnlist(binn *list, t_node **clist, t_targetset *ac
 		obj = binn_list_object(list, i);
 		binn_object_get_uint32(obj, "ip", &res->ip.s_addr);
 		remove_ip_targetset(account, res->ip.s_addr);
-		if (binn_object_get_object(obj, "port_stats", (void **)&portstats) == true)
+		if (binn_object_get_list(obj, "port_stats", (void **)&portstats) == true)
 		{
 			get_portstatclist_from_binnlist(portstats, &res->port_stats);
 		}

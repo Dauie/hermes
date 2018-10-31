@@ -53,6 +53,21 @@ int				ip4_cmp(void *left, void *right)
 	return (0);
 }
 
+uint32_t		ip4_rangesize(in_addr_t left, in_addr_t right)
+{
+	in_addr_t	*l;
+	in_addr_t	*r;
+
+	l = &left;
+	r = &right;
+	if (left < right)
+	{
+		l = &right;
+		r = &left;
+	}
+	return ((ntohl(*l) - ntohl(*r)) + 1);
+}
+
 uint32_t		ip4_diff(in_addr_t left, in_addr_t right)
 {
 	in_addr_t	*l;
@@ -162,7 +177,6 @@ void			remove_ip_iprng(t_ip4rng *rng, uint32_t ip, t_ip4rng **l, t_ip4rng **r)
 {
 	*l = NULL;
 	*r = NULL;
-
 	if (ip4_cmp(&rng->start, &ip) == 0)
 	{
 		rng->size -= 1;
@@ -181,11 +195,12 @@ void			remove_ip_iprng(t_ip4rng *rng, uint32_t ip, t_ip4rng **l, t_ip4rng **r)
 		(*l)->end = ip4_decrement(ip, 1);
 		(*r)->start = ip4_increment(ip, 1);
 		(*r)->end = rng->end;
-		(*l)->size = ip4_diff((*l)->start, (*l)->end);
-		(*r)->size = ip4_diff((*r)->start, (*r)->end);
+		(*l)->size = ip4_rangesize((*l)->start, (*l)->end);
+		(*r)->size = ip4_rangesize((*r)->start, (*r)->end);
 	}
 }
 
+/* TODO figure out why ip ranges are looping infinitely */
 bool			remove_ip_targetset(t_targetset *set, uint32_t ip)
 {
 	t_node		*seek;
@@ -213,12 +228,12 @@ bool			remove_ip_targetset(t_targetset *set, uint32_t ip)
 	/* look through ips */
 	seek = set->ips;
 	do {
-		if (ip4_cmp(seek->data, &ip) == 0)
+		if (ip4_cmp(&ip, seek->data) == 0)
 		{
 			clist_rm_head(&seek, true);
 			return (true);
 		}
 		seek = seek->right;
-	} while (seek != set->iprngs);
+	} while (seek != set->ips);
 	return (false);
 }

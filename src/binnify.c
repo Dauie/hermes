@@ -81,46 +81,50 @@ static void		add_portstatclist_to_binnlist(binn *list, t_node **portstatus)
 
 static void		add_resultclist_to_binnlist(binn *list, t_node **results)
 {
+	int			i;
 	t_node		*head;
-	t_result	*res;
-	binn		*obj;
+	t_result	*result;
+	binn		*res_binn;
 	binn		*portstatlist;
 
+	i = 1;
 	head = *results;
 	do {
-		res = head->data;
-		obj = binn_object();
-		binn_object_set_uint32(obj, "ip", res->ip.s_addr);
-		if (res->port_stats)
+		printf("%d added to resultset to be sent\n", i);
+		result = head->data;
+		res_binn = binn_object();
+		binn_object_set_uint32(res_binn, "ip", result->ip.s_addr);
+		if (result->port_stats)
 		{
 			portstatlist = binn_list();
-			add_portstatclist_to_binnlist(portstatlist, &res->port_stats);
-			binn_object_set_list(obj, "port_stats", portstatlist);
+			add_portstatclist_to_binnlist(portstatlist, &result->port_stats);
+			binn_object_set_list(res_binn, "port_stats", portstatlist);
 			free(portstatlist);
-			del_clist(&res->port_stats, true);
+			del_clist(&result->port_stats, true);
 		}
 		else
-			binn_object_set_null(obj, "port_stats");
-		binn_list_add_object(list, obj);
-		free(obj);
+			binn_object_set_null(res_binn, "port_stats");
+		binn_list_add_object(list, res_binn);
+		free(res_binn);
 		head = head->right;
+		i++;
 	} while (head != *results);
 }
 
 binn			*binnify_resultset(t_resultset *set)
 {
 	binn		*obj;
-	binn		*res_list;
+	binn		*result_list;
 
 	obj = binn_object();
 	binn_object_set_uint32(obj, "byte_size", set->byte_size);
 	binn_object_set_uint32(obj, "result_cnt", set->result_cnt);
 	if (set->results)
 	{
-		res_list = binn_list();
-		add_resultclist_to_binnlist(res_list, &set->results);
-		binn_object_set_list(obj, "results", res_list);
-		free(res_list);
+		result_list = binn_list();
+		add_resultclist_to_binnlist(result_list, &set->results);
+		binn_object_set_list(obj, "results", result_list);
+		free(result_list);
 		del_clist(&set->results, true);
 		set->result_cnt = 0;
 		set->byte_size = 0;

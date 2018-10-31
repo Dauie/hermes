@@ -302,9 +302,7 @@ void				tend_threads(t_mgr *mgr)
 
 bool				check_if_finished(t_mgr *mgr)
 {
-	if (mgr->targets.total > 0)
-		return (false);
-	if (mgr->workers.wrking_cnt != 0)
+	if (mgr->targets.total > 0 || mgr->workers.wrking_cnt != 0)
 		return (false);
 	if (mgr->tpool)
 	{
