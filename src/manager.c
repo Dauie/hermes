@@ -212,7 +212,7 @@ void				run_scan(t_env *env, t_targetset *targets, t_resultset *res_ptr, pthread
 	{
 		while (targets->ips)
 		{
-			sleep(1);
+//			sleep(1);
 			if (!(result = new_result()))
 				return ;
 			result->ip = *(t_ip4 *)targets->ips->data;
@@ -224,13 +224,14 @@ void				run_scan(t_env *env, t_targetset *targets, t_resultset *res_ptr, pthread
 				break;
 			targets->total--;
 			targets->ip_cnt--;
+			printf("worked on ip %u\n", result->ip.s_addr);
 		}
 		while (targets->iprngs)
 		{
 			curr = (t_ip4rng *)targets->iprngs->data;
 			while (ntohl(curr->start) <= ntohl(curr->end))
 			{
-				sleep(1);
+//				sleep(1);
 				if (!(result = (t_result *)memalloc(sizeof(t_result))))
 					return;
 				result->ip.s_addr = curr->start;
@@ -240,6 +241,7 @@ void				run_scan(t_env *env, t_targetset *targets, t_resultset *res_ptr, pthread
 				pthread_mutex_unlock(res_mtx);
 				curr->start = ip4_increment(curr->start, 1);
 				targets->total--;
+				printf("worked on ip %u\n", result->ip.s_addr);
 			}
 			if (clist_rm_head(&targets->iprngs, true) == false)
 				break;
@@ -323,6 +325,7 @@ void				check_results(t_mgr *mgr)
 {
 	t_result		*res;
 
+	printf("%d\n", mgr->results.result_cnt);
 	if (mgr->tpool)
 		pthread_mutex_lock(&mgr->tpool->results_mtx);
 	if (mgr->results.result_cnt > 0)

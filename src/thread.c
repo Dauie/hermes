@@ -39,6 +39,8 @@ void				*thread_loop(void *thrd)
 			run_scan(thread->pool->env, &work,
 					 thread->pool->results, &thread->pool->results_mtx);
 			printf("thread %d left scan\n", thread->id);
+			printf("ip %u done\n",
+			       ((t_result*)thread->pool->results->results->data)->ip.s_addr);
 			thread->working = false;
 			pthread_mutex_lock(&thread->pool->amt_working_mtx);
 			thread->pool->amt_working -= 1;
