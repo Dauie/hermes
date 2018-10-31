@@ -61,13 +61,13 @@ static void		add_prtrngclist_to_binnlist(binn *list, t_node **prtrngs)
 	} while (head != *prtrngs);
 }
 
-static void		add_portstatclist_to_binnlist(binn *list, t_node **portstatus)
+static void		add_portstatclist_to_binnlist(binn *list, t_node **port_stats)
 {
 	t_node		*head;
-	t_portstat *port_stat;
+	t_portstat	*port_stat;
 	binn		*obj;
 
-	head = *portstatus;
+	head = *port_stats;
 	do {
 		port_stat = head->data;
 		obj = binn_object();
@@ -76,21 +76,18 @@ static void		add_portstatclist_to_binnlist(binn *list, t_node **portstatus)
 		binn_list_add_object(list, obj);
 		free(obj);
 		head = head->right;
-	} while (head != *portstatus);
+	} while (head != *port_stats);
 }
 
 static void		add_resultclist_to_binnlist(binn *list, t_node **results)
 {
-	int			i;
 	t_node		*head;
 	t_result	*result;
 	binn		*res_binn;
 	binn		*portstatlist;
 
-	i = 1;
 	head = *results;
 	do {
-		printf("%d added to resultset to be sent\n", i);
 		result = head->data;
 		res_binn = binn_object();
 		binn_object_set_uint32(res_binn, "ip", result->ip.s_addr);
@@ -107,7 +104,6 @@ static void		add_resultclist_to_binnlist(binn *list, t_node **results)
 		binn_list_add_object(list, res_binn);
 		free(res_binn);
 		head = head->right;
-		i++;
 	} while (head != *results);
 }
 
@@ -116,7 +112,11 @@ binn			*binnify_resultset(t_resultset *set)
 	binn		*obj;
 	binn		*result_list;
 
-	obj = binn_object();
+	if (!(obj = binn_object()))
+	{
+		hermes_error(FAILURE, "binn_object %s", strerror(errno));
+		return (NULL);
+	}
 	binn_object_set_uint32(obj, "byte_size", set->byte_size);
 	binn_object_set_uint32(obj, "result_cnt", set->result_cnt);
 	if (set->results)

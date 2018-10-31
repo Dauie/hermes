@@ -19,7 +19,7 @@ int					handle_obj_offer(t_wmgr *session, uint8_t code, uint8_t *msg)
 	ret = recv(session->sock, obj, hdr->objlen, MSG_WAITALL);
 	if (ret == 0)
 	{
-		printf("failed to recv obj\n");
+		printf("failed to recv obj, mgr disconnected early\n");
 		free(obj);
 		session->stat.running = false;
 		return (FAILURE);
@@ -74,11 +74,13 @@ int					send_results(t_wmgr *session)
 {
 	binn	*obj;
 
-	printf("sending results\n");
 	obj = binnify_resultset(&session->results);
 	if (hermes_send_binn(session->sock, C_OBJ_RES, obj) < 0)
-		return (FAILURE);
-	printf("leaving sending results\n");
+	{
+		free(obj);
+		return (hermes_error(FAILURE, "send_results()"));
+	}
+	free(obj);
 	return (SUCCESS);
 }
 
@@ -87,6 +89,7 @@ void				poll_messages(t_wmgr *session, struct pollfd *fds)
 	ssize_t			ret;
 	uint8_t			msgbuff[PKT_SIZE];
 
+	bzero(msgbuff, PKT_SIZE);
 	ret = poll(fds, 1, WKRMGR_POLL_TIMEO);
 	if (ret < 0)
 	{
@@ -97,9 +100,7 @@ void				poll_messages(t_wmgr *session, struct pollfd *fds)
 		}
 	}
 	else if (ret == 0)
-	{
 		printf("timeout\n");
-	}
 	else if (ret > 0 && fds[0].revents & POLLIN)
 	{
 		if ((ret = hermes_recvmsg(session->sock, msgbuff)) < 0)
@@ -108,10 +109,7 @@ void				poll_messages(t_wmgr *session, struct pollfd *fds)
 			hermes_error(FAILURE, "manager disconnected unexpectedly");
 		}
 		else if (ret > 0)
-		{
 			process_message(session, msgbuff);
-			bzero(msgbuff, PKT_SIZE);
-		}
 	}
 }
 

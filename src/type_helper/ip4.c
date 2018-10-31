@@ -173,7 +173,7 @@ int				ip4rng_overlap_cmp(void *left, void *right)
 		return (-1);
 }
 
-void			remove_ip_iprng(t_ip4rng *rng, uint32_t ip, t_ip4rng **l, t_ip4rng **r)
+void		remove_ip_iprng(uint32_t ip, t_ip4rng *rng, t_ip4rng **l, t_ip4rng **r)
 {
 	*l = NULL;
 	*r = NULL;
@@ -200,7 +200,6 @@ void			remove_ip_iprng(t_ip4rng *rng, uint32_t ip, t_ip4rng **l, t_ip4rng **r)
 	}
 }
 
-/* TODO figure out why ip ranges are looping infinitely */
 bool			remove_ip_targetset(t_targetset *set, uint32_t ip)
 {
 	t_node		*seek;
@@ -209,27 +208,33 @@ bool			remove_ip_targetset(t_targetset *set, uint32_t ip)
 
 	/*look through ranges*/
 	seek = set->iprngs;
-	do
-	{
+	do {
 		if (ip4_ip4rng_overlap_cmp(&ip, seek->data) == 0)
 		{
-			remove_ip_iprng(seek->data, ip, &left, &right);
+			remove_ip_iprng(ip, seek->data, &left, &right);
 			if (left && right)
 			{
 				clist_rm_head(&seek, true);
-				clist_add_head(&seek, (void **)&left);
 				clist_add_head(&seek, (void **)&right);
+				clist_add_head(&seek, (void **)&left);
 			}
+			else if (((t_ip4rng*)seek->data)->size == 0)
+			{
+				clist_rm_head(&seek, true);
+				set->rng_cnt -= 1;
+			}
+			set->total -= 1;
 			return (true);
 		}
 		seek = seek->right;
-	}
-	while (seek != set->iprngs);
+	} while (seek != set->iprngs);
 	/* look through ips */
 	seek = set->ips;
 	do {
 		if (ip4_cmp(&ip, seek->data) == 0)
 		{
+			set->ip_cnt -= 1;
+			set->total -= 1;
 			clist_rm_head(&seek, true);
 			return (true);
 		}
