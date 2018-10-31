@@ -35,6 +35,7 @@ int					handle_obj_offer(t_wmgr *session, uint8_t code, uint8_t *msg)
 	}
 	else if (code == C_OBJ_TARGETS)
 	{
+		tpool_event(session->tpool);
 		pthread_mutex_lock(&session->tpool->work_pool_mtx);
 		unbinnify_targetset(&session->targets, obj);
 		pthread_mutex_unlock(&session->tpool->work_pool_mtx);
@@ -46,10 +47,22 @@ int					handle_obj_offer(t_wmgr *session, uint8_t code, uint8_t *msg)
 	return (SUCCESS);
 }
 
+/* int              initialize(t_wmgr **session, uint8_t n_threads)
+ * {
+ *      if (new_tpool(session->tpool) == false)
+ *          return (FAILURE);
+ *      return (SUCCESS);
+ * }
+ */
+
 int					process_message(t_wmgr *session, uint8_t *msgbuff)
 {
 	t_msg_hdr		*hdr;
 
+	/* TODO :
+	 * if initializer is sent:
+	 *      session = initialize(t_wmgr &session, uint8_t n_threads);
+	 */
 	printf("processing message\n");
 	hdr = (t_msg_hdr*)msgbuff;
 	printf("type: %i code: %i\n", hdr->type, hdr->code);

@@ -184,9 +184,15 @@ typedef struct 			s_thread
 	uint16_t			amt;
 }						t_thread;
 
+typedef struct          s_sem
+{
+	pthread_cond_t      wait;
+	pthread_mutex_t     stop;
+}                       t_sem;
+
 typedef struct 			s_thread_pool
 {
-	uint16_t 			tcount;
+	uint8_t 			tcount;
 	uint16_t			amt_working;
 	uint16_t			reqest_amt;
 	t_thread			*threads;
@@ -196,6 +202,7 @@ typedef struct 			s_thread_pool
 	pthread_mutex_t		amt_working_mtx;
 	pthread_mutex_t		results_mtx;
 	pthread_mutex_t		work_pool_mtx;
+	t_sem               *tsem;
 }						t_thread_pool;
 
 typedef struct			s_worker_manager
@@ -268,7 +275,7 @@ t_wrkr					*new_worker(void);
 int						worker_cmp(void *wrkr_left, void *wrkr_right);
 void					*worker_min(t_node *tree);
 
-int						sanity_check(t_mgr *mgr);
+int sanity_check(t_mgr *mgr);
 void					do_exclusions(t_mgr *mgr);
 int						hermes_daemon(int port);
 void					transfer_work(t_targetset *dst, t_targetset *src, uint32_t reqamt);
@@ -282,7 +289,9 @@ void					transfer_work(t_targetset *dst, t_targetset *src, uint32_t reqamt);
 int						send_work(t_wrkr *worker);
 void					run_scan(t_env *env, t_targetset *targets, t_resultset *res_ptr, pthread_mutex_t *res_mtx);
 
-void					kill_threadpool(t_thread_pool *pool);
+bool new_tpool(t_thread_pool **pool);
+void                    tpool_event(t_thread_pool *pool);
+void					tpool_kill(t_thread_pool *pool);
 void					print_ip_struct(t_node *ip4);
 void					print_iprng_struct(t_node *iprng);
 

@@ -1,6 +1,47 @@
 # include "../incl/hermes.h"
 
-void				kill_threadpool(t_thread_pool *pool)
+bool                new_tsem(t_sem **sem)
+{
+	if (!(*sem = (t_sem*)memalloc(sizeof(t_sem))))
+		return (false);
+	return (true);
+}
+
+bool                new_tpool(t_thread_pool **pool)
+{
+	if (!(*pool = (t_thread_pool*)memalloc(sizeof(t_thread_pool))))
+		return (false);
+	if (new_tsem(&(*pool)->tsem))
+		return (false);
+	return (true);
+}
+
+void                tpool_event(t_thread_pool *pool)
+{
+	int i;
+
+	i = -1;
+	pthread_mutex_lock(&pool->tsem->stop);
+	while (++i < pool->tcount)
+	{
+		pool->threads[i].working = true;
+		pthread_mutex_lock(&pool->amt_working_mtx);
+		pool->amt_working++;
+		pthread_mutex_unlock(&pool->amt_working_mtx);
+	}
+	pthread_cond_broadcast(&pool->tsem->wait);
+	pthread_mutex_unlock(&pool->tsem->stop);
+}
+
+void                tpool_wait(t_thread_pool *pool)
+{
+	pthread_mutex_lock(&pool->tsem->stop);
+	while (pool->amt_working == 0)
+		pthread_cond_wait(&pool->tsem->wait, &pool->tsem->stop);
+	pthread_mutex_unlock(&pool->tsem->stop);
+}
+
+void				tpool_kill(t_thread_pool *pool)
 {
 	int				i;
 

@@ -1,7 +1,7 @@
 #include "../incl/parser.h"
 #include "../incl/hermes.h"
 
-int			sanity_check(t_mgr *mgr)
+int     sanity_check(t_mgr *mgr)
 {
 	if (mgr->env.opts.min_rtt_timeo == 0)
 		mgr->env.opts.min_rtt_timeo = DEF_MIN_RTT_TIMEOUT;

@@ -70,6 +70,8 @@ int					handle_result_offer(t_mgr *mgr, t_wrkr *worker,
 	t_obj_hdr		*hdr;
 
 	printf("Entering handle_result_offer()\n");
+	if (!mgr || !worker || !msg)
+		return (FAILURE);
 	hdr = (t_obj_hdr *)msg;
 	hdr->objlen = ntohl(hdr->objlen);
 	printf("%u\n", hdr->objlen);
@@ -133,12 +135,14 @@ int					mgr_process_msg(t_mgr *mgr, t_wrkr *wrkr, uint8_t *msgbuff)
 	}
 	else if (hdr->type == T_OBJ && hdr->code == C_OBJ_RES)
 	{
-		handle_result_offer(mgr, wrkr, msgbuff);
+		if (handle_result_offer(mgr, wrkr, msgbuff) == FAILURE)
+			return (FAILURE);
 	}
 	return (SUCCESS);
 }
 
-void				poll_wrkr_msgs(t_mgr *mgr, nfds_t fditer, struct pollfd *fds)
+int poll_wrkr_msgs(t_mgr *mgr, nfds_t fditer,
+                   struct pollfd *fds)
 {
 	uint8_t			msgbuff[PKT_SIZE];
 	t_wrkr			**workers;
@@ -166,10 +170,12 @@ void				poll_wrkr_msgs(t_mgr *mgr, nfds_t fditer, struct pollfd *fds)
 			{
 				printf("entering to recv msg\n");
 				if (hermes_recvmsg(fds[fditer].fd, msgbuff) > 0)
-					mgr_process_msg(mgr, workers[fds[fditer].fd], msgbuff);
+					if (mgr_process_msg(mgr, workers[fds[fditer].fd], msgbuff) == FAILURE)
+						return (FAILURE);
 			}
 		}
 	}
+	return (SUCCESS);
 }
 
 void				add_wrkrtree_to_array(t_node *wrkr, t_wrkr **array)
@@ -360,7 +366,8 @@ int					manager_loop(t_mgr *mgr)
 	{
 		/* if we have workers, see if they've sent us any messages */
 		if (mgr->workers.cnt > 0)
-			poll_wrkr_msgs(mgr, mgr->workers.maxfd, fds);
+			if (poll_wrkr_msgs(mgr, mgr->workers.maxfd, fds) == FAILURE)
+				hermes_error(FAILURE, "poll_wrkr_msgs");
 		if (mgr->tpool)
 			tend_threads(mgr);
 		check_results(mgr);
@@ -368,6 +375,6 @@ int					manager_loop(t_mgr *mgr)
 			mgr->stat.running = false;
 	}
 	if (mgr->tpool)
-		kill_threadpool(mgr->tpool);
+		tpool_kill(mgr->tpool);
 	return (SUCCESS);
 }

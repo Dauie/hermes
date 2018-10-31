@@ -50,6 +50,8 @@ int						hermes_daemon(int port)
 
 	if (!(session = memalloc(sizeof(t_wmgr))))
 		return (hermes_error(EXIT_FAILURE, "malloc() %s", strerror(errno)));
+	if (new_tpool(&session->tpool) == false)
+		return (FAILURE);
 	session->stat.running = true;
 	/* TODO add signal handlers */
 	if ((proto = getprotobyname("tcp")) == NULL)

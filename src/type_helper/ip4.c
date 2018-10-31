@@ -39,8 +39,8 @@ int				ip4_cmp(void *left, void *right)
 	in_addr_t	l;
 	in_addr_t	r;
 
-	l = ((t_ip4*)left)->s_addr;
-	r = ((t_ip4*)right)->s_addr;
+	l = ntohl(((t_ip4*)left)->s_addr);
+	r = ntohl(((t_ip4*)right)->s_addr);
 	shift = 0xFF;
 	while (shift)
 	{
@@ -193,6 +193,8 @@ bool			remove_ip_targetset(t_targetset *set, uint32_t ip)
 	t_ip4rng	*right;
 
 	/*look through ranges*/
+	if (!set)
+		return (false);
 	seek = set->iprngs;
 	do
 	{

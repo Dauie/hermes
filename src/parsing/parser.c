@@ -98,6 +98,8 @@ int			dtab_wopt_loop(t_mgr *mgr, char *arg, char *opt,
 	{
 		if (strncmp(arg, tab[i].name, len) == 0)
 		{
+			printf("%p\n", &tab[i].function);
+			printf("%p\n", &h_daemon);
 			tab[i].function(mgr, opt);
 			return (SUCCESS);
 		}
