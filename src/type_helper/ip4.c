@@ -196,31 +196,38 @@ bool			remove_ip_targetset(t_targetset *set, uint32_t ip)
 	if (!set)
 		return (false);
 	seek = set->iprngs;
-	do
+	if (seek)
 	{
-		if (ip4_ip4rng_overlap_cmp(&ip, seek->data) == 0)
+		do
 		{
-			remove_ip_iprng(seek->data, ip, &left, &right);
-			if (left && right)
+			if (ip4_ip4rng_overlap_cmp(&ip, seek->data) == 0)
 			{
-				clist_rm_head(&seek, true);
-				clist_add_head(&seek, (void **)&left);
-				clist_add_head(&seek, (void **)&right);
+				remove_ip_iprng(seek->data, ip, &left, &right);
+				if (left && right) {
+					clist_rm_head(&seek, true);
+					clist_add_head(&seek, (void **) &left);
+					clist_add_head(&seek, (void **) &right);
+				}
+				return (true);
 			}
-			return (true);
+			seek = seek->right;
 		}
-		seek = seek->right;
+		while (seek != set->iprngs);
 	}
-	while (seek != set->iprngs);
 	/* look through ips */
 	seek = set->ips;
-	do {
-		if (ip4_cmp(seek->data, &ip) == 0)
+	if (seek)
+	{
+		do
 		{
-			clist_rm_head(&seek, true);
-			return (true);
+			if (ip4_cmp(seek->data, &ip) == 0)
+			{
+				clist_rm_head(&seek, true);
+				return (true);
+			}
+			seek = seek->right;
 		}
-		seek = seek->right;
-	} while (seek != set->iprngs);
+		while (seek != set->ips);
+	}
 	return (false);
 }

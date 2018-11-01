@@ -112,7 +112,7 @@ void			get_resultclist_from_binnlist(binn *list, t_node **clist, t_targetset *ac
 		binn_object_get_uint32(obj, "ip", &res->ip.s_addr);
 		if (remove_ip_targetset(account, res->ip.s_addr) == false)
 			return ;
-		if (binn_object_get_object(obj, "port_stats", (void **)&portstats) == true)
+		if (binn_object_get_object(obj, "port_stats", (void**)&portstats) == true)
 		{
 			get_portstatclist_from_binnlist(portstats, &res->port_stats);
 		}
@@ -130,7 +130,7 @@ void			unbinnify_resultset(t_resultset *set, t_targetset *work,  binn *obj)
 	binn_object_get_uint32(obj, "byte_size", &set->byte_size);
 	binn_object_get_uint32(obj, "result_cnt", &res_cnt);
 	set->result_cnt += res_cnt;
-	if (binn_object_get_list(obj, "results", (void **)&results) == true)
+	if (binn_object_get_list(obj, "results", (void**)&results) == true)
 	{
 		get_resultclist_from_binnlist(results, &set->results, work);
 	}

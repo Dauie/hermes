@@ -222,27 +222,26 @@ void				run_scan(t_env *env, t_targetset *targets,
 //			sleep(1);
 			if (!(result = new_result()))
 				return ;
-			result->ip = *(t_ip4*)targets->ips->data;
+			memcpy(&result->ip, (void*)(t_ip4*)targets->ips->data, sizeof(t_ip4));
 			pthread_mutex_lock(res_mtx);
 			clist_add_head(&res_ptr->results, (void**)&result);
 			res_ptr->result_cnt += 1;
 			res_ptr->byte_size += sizeof(result);
 			pthread_mutex_unlock(res_mtx);
-			if (clist_rm_head(&targets->ips, true) == false)
+			if (clist_rm_head(&targets->ips, false) == false)
 				break;
 			targets->total--;
 			targets->ip_cnt--;
-			printf("worked on ip %s\n", inet_ntoa(result->ip));
 		}
 		while (targets->iprngs)
 		{
-			curr = (t_ip4rng *)targets->iprngs->data;
+			curr = (t_ip4rng*)targets->iprngs->data;
 			while (ntohl(curr->start) <= ntohl(curr->end))
 			{
 //				sleep(1);
 				if (!(result = (t_result*)memalloc(sizeof(t_result))))
 					return;
-				result->ip.s_addr = curr->start;
+				memcpy(&result->ip, &curr->start, sizeof(t_ip4));
 				pthread_mutex_lock(res_mtx);
 				clist_add_head(&res_ptr->results, (void **) &result);
 				res_ptr->result_cnt += 1;
@@ -250,9 +249,8 @@ void				run_scan(t_env *env, t_targetset *targets,
 				pthread_mutex_unlock(res_mtx);
 				curr->start = ip4_increment(curr->start, 1);
 				targets->total--;
-				printf("worked on ip %u\n", result->ip.s_addr);
 			}
-			if (clist_rm_head(&targets->iprngs, true) == false)
+			if (clist_rm_head(&targets->iprngs, false) == false)
 				break;
 			targets->rng_cnt--;
 		}
@@ -315,7 +313,7 @@ void				tend_threads(t_mgr *mgr)
 	{
 		clist_add_head(&mgr->results.results,
 		               &mgr->tpool->results->results->data);
-		clist_rm_head(&mgr->tpool->results->results, true);
+		clist_rm_head(&mgr->tpool->results->results, false);
 		mgr->tpool->results->result_cnt -= 1;
 		mgr->tpool->results->byte_size -= sizeof(mgr->tpool->results->byte_size);
 		mgr->results.result_cnt += 1;
@@ -350,8 +348,13 @@ void				check_results(t_mgr *mgr)
 //	printf("result count: %d\n", mgr->results.result_cnt);
 	if (mgr->results.result_cnt > 0)
 	{
-		res = mgr->results.results->data;
-		printf("result: %s\n", inet_ntoa(res->ip));
+		res = (t_result*)mgr->results.results->data;
+		t_ip4 *ip;
+		if (!res)
+			return ;
+		ip = new_ip4();
+		memcpy(&ip->s_addr, &res->ip.s_addr, sizeof(t_ip4));
+		printf("result: %d\n", ip->s_addr);
 		// TODO
 		clist_rm_head(&mgr->results.results, false);
 		mgr->results.result_cnt--;
