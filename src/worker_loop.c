@@ -84,7 +84,7 @@ int					send_results(t_wmgr *session)
 	return (SUCCESS);
 }
 
-void				poll_messages(t_wmgr *session, struct pollfd *fds)
+void				poll_mgr_messages(t_wmgr *session, struct pollfd *fds)
 {
 	ssize_t			ret;
 	uint8_t			msgbuff[PKT_SIZE];
@@ -113,6 +113,17 @@ void				poll_messages(t_wmgr *session, struct pollfd *fds)
 	}
 }
 
+void				worker_check_results(t_wmgr *session)
+{
+	pthread_mutex_lock(&session->tpool->results_mtx);
+	if (session->results.result_cnt > 5)
+	{
+		if (send_results(session) == FAILURE)
+			hermes_error(FAILURE, "results unsent");
+	}
+	pthread_mutex_unlock(&session->tpool->results_mtx);
+}
+
 int					worker_loop(t_wmgr *session)
 {
 	struct pollfd	fds[1];
@@ -123,8 +134,10 @@ int					worker_loop(t_wmgr *session)
 	printf("worker loop start\n");
 	while (session->stat.running == true)
 	{
-		poll_messages(session, (struct pollfd *)&fds);
-		if (session->stat.initilized && !session->stat.has_work && !session->stat.work_requested)
+		poll_mgr_messages(session, (struct pollfd *) &fds);
+		if (session->stat.initilized &&
+			!session->stat.has_work &&
+				!session->stat.work_requested)
 		{
 			printf("sending work request\n");
 			hermes_sendmsgf(session->sock, msg_tc(T_WRK_REQ, C_WRK_REQ), NULL);
@@ -148,13 +161,7 @@ int					worker_loop(t_wmgr *session)
 			else
 				pthread_mutex_unlock(&session->tpool->amt_working_mtx);
 			/* Check if we need to send results to manager */
-			pthread_mutex_lock(&session->tpool->results_mtx);
-			if (session->results.result_cnt > 5)
-			{
-				if (send_results(session) == FAILURE)
-					hermes_error(FAILURE, "results unsent");
-			}
-			pthread_mutex_unlock(&session->tpool->results_mtx);
+			worker_check_results(session);
 		}
 	}
 	return (SUCCESS);

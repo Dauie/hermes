@@ -144,7 +144,6 @@ typedef struct			s_worker
 	int					sock;
 	t_targetset			targets;
 	uint32_t			send_size;
-	struct s_workerset	*set;
 }						t_wrkr;
 
 typedef struct			s_workerset
@@ -272,19 +271,21 @@ int						sanity_check(t_mgr *mgr);
 void					do_exclusions(t_mgr *mgr);
 int						hermes_daemon(int port);
 void					transfer_work(t_targetset *dst, t_targetset *src, uint32_t reqamt);
-
-t_thread_pool				*init_threadpool(t_env *env, t_targetset *workpool, t_resultset *results);
+t_thread_pool			*init_threadpool(t_env *env, t_targetset *workpool, t_resultset *results);
 
 int						worker_loop(t_wmgr *session);
 int						manager_loop(t_mgr *mgr);
-void					transfer_work(t_targetset *dst, t_targetset *src, uint32_t reqamt);
 
 int						send_work(t_wrkr *worker);
 void					run_scan(t_env *env, t_targetset *targets, t_resultset *res_ptr, pthread_mutex_t *res_mtx);
 
+void				run_scan(t_env *env, t_targetset *targets, t_resultset *res_ptr, pthread_mutex_t *res_mtx);
+
 void					kill_threadpool(t_thread_pool *pool);
 void					print_ip_struct(t_node *ip4);
 void					print_iprng_struct(t_node *iprng);
+void					print_targetset(t_targetset *set);
+
 
 binn					*binnify_resultset(t_resultset *set);
 

@@ -2,100 +2,61 @@
 #include "sys/errno.h"
 #include "../incl/libhermes.h"
 
-bool			clist_add_head(t_node **start, void **data)
+bool			list_add_head(t_node **start, void **data)
 {
-	t_node		*last;
 	t_node		*new;
 
+	if (!(new = new_node(data)))
+		return (false);
 	if (*start == NULL)
 	{
-		new = new_node(data);
-		new->right = new->left = new;
 		*start = new;
 		return (true);
 	}
-	last = (*start)->left;
-	new = new_node(data);
-	new->right = *start;
-	new->left = last;
-	last->right = (*start)->left = new;
-	*start = new;
-	return (true);
-}
-
-bool			clist_add_tail(t_node **start, void **data)
-{
-	t_node		*new;
-	t_node		*last;
-
-	if (*start == NULL)
-	{
-		new = new_node(*data);
-		new->right = new->left = new;
-		*start = new;
-		return (true);
-	}
-	last = (*start)->left;
-	new = new_node(data);
 	new->right = *start;
 	(*start)->left = new;
-	new->left = last;
-	last->right = new;
 	return (true);
 }
 
-bool			clist_rm_head(t_node **clist, bool deldata)
+bool			list_add_tail(t_node **start, void **data)
 {
-	t_node		*tmp;
-	t_node		*head;
+	t_node		*new;
+	t_node		*seek;
 
-	if (!clist || !*clist)
-		return (false);
-	head = *clist;
-	if (head->left == head && head->right == head)
+	new = new_node(data);
+	if (*start == NULL)
 	{
-		del_node(clist, deldata);
+		*start = new;
 		return (true);
 	}
-	tmp = head;
-	head->left->right = head->right;
-	head->right->left = head->left;
-	*clist = head->right;
+	seek = *start;
+	while (seek->right)
+		seek = seek->right;
+	seek->right = new;
+	new->left = seek;
+	return (true);
+}
+
+bool			list_rm_node(t_node **clist, bool deldata)
+{
+	t_node		*tmp;
+
+	if (!*clist)
+		return (false);
+	tmp = *clist;
+	*clist = (*clist)->right;
+	if (*clist)
+	{
+		if (tmp->left)
+			(*clist)->left = tmp->left;
+		if ((*clist)->left)
+			(*clist)->left->right = (*clist);
+	}
 	del_node(&tmp, deldata);
 	return (true);
 }
 
-bool			clist_rm_tail(t_node **clist, bool deldata)
-{
-	t_node		*tail;
-	t_node		*head;
-	t_node		*tmp;
-
-	head = *clist;
-	if (!head)
-		return (false);
-	if (head->left == head && head->right == head)
-	{
-		del_node(clist, deldata);
-		return (true);
-	}
-	tail = head->left;
-	tmp = tail;
-	tail->left->right = tail->right;
-	tail->right->left = tail->left;
-	del_node(&tmp, deldata);
-	return (true);
-}
-
-bool			clist_rm(t_node **clist, void *data, int (*cmp)(void *, void *))
-{
-	(void)clist;
-	(void)data;
-	(void)cmp;
-	return (true);
-}
-
-void			del_clist(t_node **clist, bool deldata)
+void			del_list(t_node **clist, bool deldata)
 {
 	t_node		*list;
 	t_node		*tmp;
@@ -103,7 +64,6 @@ void			del_clist(t_node **clist, bool deldata)
 	if (!clist || !*clist)
 		return ;
 	list = *clist;
-	list->left->right = NULL;
 	while (list)
 	{
 		tmp = list;
@@ -113,29 +73,13 @@ void			del_clist(t_node **clist, bool deldata)
 	*clist = NULL;
 }
 
-bool			rm_node(t_node **node, bool deldata)
-{
-	t_node		*tmp;
-
-	if (!node || !*node)
-		return (false);
-	tmp = *node;
-	*node = (*node)->right;
-	if (tmp->left)
-		tmp->left->right = tmp->right;
-	if (tmp->right)
-		tmp->right->left = tmp->left;
-	del_node(&tmp, deldata);
-	return (true);
-}
-
 void		bst_to_clist_loop(t_node **tree, t_node **clist)
 {
 	if (!*tree)
 		return ;
 	if ((*tree)->right)
 		bst_to_clist_loop(&(*tree)->right, clist);
-	clist_add_head(clist, &(*tree)->data);
+	list_add_head(clist, &(*tree)->data);
 	if ((*tree)->left)
 		bst_to_clist_loop(&(*tree)->left, clist);
 }

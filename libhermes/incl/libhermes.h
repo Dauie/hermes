@@ -66,13 +66,13 @@ t_node				*bst_to_clist(t_node **tree);
 /*
 **	List Functions
 */
-bool				clist_add_head(t_node **clist, void **data);
-bool				clist_add_tail(t_node **clist, void **data);
+bool				list_add_head(t_node **clist, void **data);
+bool				list_add_tail(t_node **clist, void **data);
 bool				clist_add_inorder(t_node **clist, void **data);
-bool				clist_rm_head(t_node **clist, bool deldata);
+bool				list_rm_node(t_node **clist, bool deldata);
 bool				clist_rm_tail(t_node **clist, bool deldata);
 bool				clist_rm(t_node **clist, void *data, int (*cmp)(void *, void *));
-void				del_clist(t_node **clist, bool deldata);
+void				del_list(t_node **clist, bool deldata);
 bool				rm_node(t_node **node, bool deldata);
 
 
