@@ -207,7 +207,8 @@ t_node				*wrkrtree_to_fdinxarray(t_node **wrkrtree, nfds_t maxfd)
 	return (new_node((void **)&array));
 }
 
-void				run_scan(t_env *env, t_targetset *targets, t_resultset *res_ptr, pthread_mutex_t *res_mtx)
+void				run_scan(t_env *env, t_targetset *targets,
+                             t_resultset *res_ptr, pthread_mutex_t *res_mtx)
 {
 	t_result	*result;
 	t_ip4rng	*curr;
@@ -221,16 +222,17 @@ void				run_scan(t_env *env, t_targetset *targets, t_resultset *res_ptr, pthread
 //			sleep(1);
 			if (!(result = new_result()))
 				return ;
-			result->ip = *(t_ip4 *)targets->ips->data;
+			result->ip = *(t_ip4*)targets->ips->data;
 			pthread_mutex_lock(res_mtx);
 			clist_add_head(&res_ptr->results, (void**)&result);
 			res_ptr->result_cnt += 1;
+			res_ptr->byte_size += sizeof(result);
 			pthread_mutex_unlock(res_mtx);
 			if (clist_rm_head(&targets->ips, true) == false)
 				break;
 			targets->total--;
 			targets->ip_cnt--;
-			printf("worked on ip %u\n", result->ip.s_addr);
+			printf("worked on ip %s\n", inet_ntoa(result->ip));
 		}
 		while (targets->iprngs)
 		{
@@ -238,12 +240,13 @@ void				run_scan(t_env *env, t_targetset *targets, t_resultset *res_ptr, pthread
 			while (ntohl(curr->start) <= ntohl(curr->end))
 			{
 //				sleep(1);
-				if (!(result = (t_result *)memalloc(sizeof(t_result))))
+				if (!(result = (t_result*)memalloc(sizeof(t_result))))
 					return;
 				result->ip.s_addr = curr->start;
 				pthread_mutex_lock(res_mtx);
 				clist_add_head(&res_ptr->results, (void **) &result);
 				res_ptr->result_cnt += 1;
+				res_ptr->byte_size += sizeof(result);
 				pthread_mutex_unlock(res_mtx);
 				curr->start = ip4_increment(curr->start, 1);
 				targets->total--;
@@ -301,11 +304,24 @@ void				tend_threads(t_mgr *mgr)
 		{
 			transfer_work(&mgr->thread_targets, &mgr->targets, mgr->tpool->reqest_amt);
 			mgr->tpool->reqest_amt *= (mgr->tpool->reqest_amt < 2048) ? 2 : 1;
+			tpool_event(mgr->tpool);
 		}
 		pthread_mutex_unlock(&mgr->tpool->work_pool_mtx);
 	}
 	else
 		pthread_mutex_unlock(&mgr->tpool->amt_working_mtx);
+	pthread_mutex_lock(&mgr->tpool->results_mtx);
+	while (mgr->tpool->results->results != NULL)
+	{
+		clist_add_head(&mgr->results.results,
+		               &mgr->tpool->results->results->data);
+		clist_rm_head(&mgr->tpool->results->results, true);
+		mgr->tpool->results->result_cnt -= 1;
+		mgr->tpool->results->byte_size -= sizeof(mgr->tpool->results->byte_size);
+		mgr->results.result_cnt += 1;
+		mgr->results.byte_size += sizeof(mgr->results.results->data);
+	}
+	pthread_mutex_unlock(&mgr->tpool->results_mtx);
 }
 
 bool				check_if_finished(t_mgr *mgr)
@@ -331,18 +347,15 @@ void				check_results(t_mgr *mgr)
 {
 	t_result		*res;
 
-	printf("%d\n", mgr->results.result_cnt);
-	if (mgr->tpool)
-		pthread_mutex_lock(&mgr->tpool->results_mtx);
+//	printf("result count: %d\n", mgr->results.result_cnt);
 	if (mgr->results.result_cnt > 0)
 	{
 		res = mgr->results.results->data;
-		printf("result: %u\n", res->ip.s_addr);
-		clist_rm_head(&mgr->results.results, true);
+		printf("result: %s\n", inet_ntoa(res->ip));
+		// TODO
+		clist_rm_head(&mgr->results.results, false);
 		mgr->results.result_cnt--;
 	}
-	if (mgr->tpool)
-		pthread_mutex_unlock(&mgr->tpool->results_mtx);
 }
 
 int					manager_loop(t_mgr *mgr)

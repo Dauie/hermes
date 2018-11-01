@@ -23,7 +23,7 @@ void			 transfer_work(t_targetset *dst, t_targetset *src, uint32_t reqamt)
 	uint32_t	ipcnt;
 	t_ip4rng	rng;
 
-	if (!src || reqamt <= 0)
+	if (!src || reqamt == 0)
 		return ;
 	if (reqamt > src->total)
 		reqamt = src->total;

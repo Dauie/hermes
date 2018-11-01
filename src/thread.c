@@ -2,41 +2,33 @@
 
 bool                new_tsem(t_sem **sem)
 {
-	if (!(*sem = (t_sem*)memalloc(sizeof(t_sem))))
-		return (false);
-	return (true);
-}
 
-bool                new_tpool(t_thread_pool **pool)
-{
-	if (!(*pool = (t_thread_pool*)memalloc(sizeof(t_thread_pool))))
-		return (false);
-	if (new_tsem(&(*pool)->tsem))
+	if (!(sem = (t_sem**)memalloc(sizeof(t_sem))))
 		return (false);
 	return (true);
 }
 
 void                tpool_event(t_thread_pool *pool)
 {
-	int i;
+	uint16_t i;
 
-	i = -1;
+	i = 0;
 	pthread_mutex_lock(&pool->tsem->stop);
-	while (++i < pool->tcount)
+	while (i < pool->tcount)
 	{
 		pool->threads[i].working = true;
-		pthread_mutex_lock(&pool->amt_working_mtx);
-		pool->amt_working++;
-		pthread_mutex_unlock(&pool->amt_working_mtx);
+		i++;
 	}
 	pthread_cond_broadcast(&pool->tsem->wait);
 	pthread_mutex_unlock(&pool->tsem->stop);
+	pool->amt_working = i;
 }
 
 void                tpool_wait(t_thread_pool *pool)
 {
 	pthread_mutex_lock(&pool->tsem->stop);
-	while (pool->amt_working == 0)
+	printf("thread waiting...\n");
+	while (pool->work_pool->total == 0)
 		pthread_cond_wait(&pool->tsem->wait, &pool->tsem->stop);
 	pthread_mutex_unlock(&pool->tsem->stop);
 }
@@ -58,12 +50,15 @@ void				tpool_kill(t_thread_pool *pool)
 void				*thread_loop(void *thrd)
 {
 	t_targetset		work;
+	t_thread_pool   *tpool;
 	t_thread		*thread;
 
-	thread = (t_thread *)thrd;
+	thread = (t_thread*)thrd;
+	tpool = thread->pool;
 	memset(&work, 0, sizeof(t_targetset));
 	while (thread->alive)
 	{
+		tpool_wait(tpool);
 		pthread_mutex_lock(&thread->pool->work_pool_mtx);
 		if (thread->pool->work_pool->total > 0)
 		{
@@ -80,8 +75,6 @@ void				*thread_loop(void *thrd)
 			run_scan(thread->pool->env, &work,
 					 thread->pool->results, &thread->pool->results_mtx);
 			printf("thread %d left scan\n", thread->id);
-			printf("ip %u done\n",
-			       ((t_result*)thread->pool->results->results->data)->ip.s_addr);
 			thread->working = false;
 			pthread_mutex_lock(&thread->pool->amt_working_mtx);
 			thread->pool->amt_working -= 1;
@@ -90,7 +83,6 @@ void				*thread_loop(void *thrd)
 		else
 		{
 			pthread_mutex_unlock(&thread->pool->work_pool_mtx);
-			sleep(1);
 		}
 	}
 	return (NULL);
@@ -106,9 +98,13 @@ t_thread_pool			*init_threadpool(t_env *env, t_targetset *workpool, t_resultset 
 		return (NULL);
 	if (!(pool->threads = memalloc(sizeof(t_thread) * env->opts.thread_count)))
 		return (NULL);
+	if (!(pool->tsem = memalloc(sizeof(t_sem))))
+		return (NULL);
 	pthread_mutex_init(&pool->work_pool_mtx, NULL);
 	pthread_mutex_init(&pool->results_mtx, NULL);
 	pthread_mutex_init(&pool->amt_working_mtx, NULL);
+	pthread_mutex_init(&pool->tsem->stop, NULL);
+	pthread_cond_init(&pool->tsem->wait, NULL);
 	pool->tcount = env->opts.thread_count;
 	pool->reqest_amt = pool->tcount;
 	pool->results = results;
