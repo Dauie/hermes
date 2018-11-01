@@ -106,7 +106,7 @@ void			get_resultclist_from_binnlist(binn *list, t_node **clist, t_targetset *ac
 	printf("count %d\n", cnt);
 	while (++i < cnt)
 	{
-		printf("%d of %d\n", i, cnt);
+		printf("%d of %d\n", i + 1, cnt);
 		res = new_result();
 		obj = binn_list_object(list, i);
 		binn_object_get_uint32(obj, "ip", &res->ip.s_addr);
@@ -122,8 +122,8 @@ void			get_resultclist_from_binnlist(binn *list, t_node **clist, t_targetset *ac
 
 void			unbinnify_resultset(t_resultset *set, t_targetset *work,  binn *obj)
 {
-	binn		*results;
 	uint32_t	res_cnt;
+	binn		*results;
 
 	if (!set || !work || !obj)
 		return ;

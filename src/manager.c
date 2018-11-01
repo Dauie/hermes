@@ -72,12 +72,12 @@ int					handle_result_offer(t_mgr *mgr, t_wrkr *worker,
 	printf("Entering handle_result_offer()\n");
 	if (!mgr || !worker || !msg)
 		return (FAILURE);
-	hdr = (t_obj_hdr *)msg;
+	hdr = (t_obj_hdr*)msg;
 	hdr->objlen = ntohl(hdr->objlen);
 	printf("%u\n", hdr->objlen);
 	if (hdr->objlen <= 0)
 		return (FAILURE);
-	if (!(obj = (binn *)malloc(sizeof(uint8_t) * hdr->objlen)))
+	if (!(obj = (binn*)malloc(sizeof(uint8_t) * hdr->objlen)))
 		return (hermes_error(FAILURE, "malloc() %s", strerror(errno)));
 	ret = recv(worker->sock, obj, hdr->objlen, MSG_WAITALL);
 	if (ret == 0)
@@ -101,7 +101,7 @@ int					handle_result_offer(t_mgr *mgr, t_wrkr *worker,
 	return (SUCCESS);
 }
 
-int					mgr_process_msg(t_mgr *mgr, t_wrkr *wrkr, uint8_t *msgbuff)
+int					mgr_process_msg(t_mgr *mgr, t_wrkr *wrkr, uint8_t msgbuff[])
 {
 	t_msg_hdr		*hdr;
 

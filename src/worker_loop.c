@@ -28,7 +28,8 @@ int					handle_obj_offer(t_wmgr *session, uint8_t code, uint8_t *msg)
 	if (code == C_OBJ_ENV)
 	{
 		unbinnify_env(&session->env, obj);
-		if (!(session->tpool = init_threadpool(&session->env, &session->targets, &session->results)))
+		if (!(session->tpool = init_threadpool(&session->env,
+		                                       &session->targets, &session->results)))
 			hermes_error(EXIT_FAILURE, "init_threadpool() failure");
 		session->stat.initilized = true;
 		printf("worker initialized\n");

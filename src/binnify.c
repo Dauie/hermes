@@ -79,7 +79,7 @@ static void		add_portstatclist_to_binnlist(binn *list, t_node **portstatus)
 	} while (head != *portstatus);
 }
 
-static void		add_resultclist_to_binnlist(binn *list, t_node **results)
+static void		add_resultclist_to_binnlist(binn **list, t_node **results)
 {
 	t_node		*head;
 	t_result	*res;
@@ -103,7 +103,7 @@ static void		add_resultclist_to_binnlist(binn *list, t_node **results)
 		}
 		else
 			binn_object_set_null(obj, "port_stats");
-		binn_list_add_object(list, obj);
+		binn_list_add_object(*list, obj);
 		free(obj);
 		head = head->right;
 	} while (head != *results);
@@ -120,7 +120,7 @@ binn			*binnify_resultset(t_resultset *set)
 	if (set->results)
 	{
 		res_list = binn_list();
-		add_resultclist_to_binnlist(res_list, &set->results);
+		add_resultclist_to_binnlist(&res_list, &set->results);
 		binn_object_set_list(obj, "results", res_list);
 		free(res_list);
 		del_clist(&set->results, true);
