@@ -121,6 +121,7 @@ int					mgr_process_msg(t_mgr *mgr, t_wrkr *wrkr, uint8_t *msgbuff)
 			hermes_sendmsgf(wrkr->sock, msg_tc(T_SHUTDOWN, C_SHUTDOWN_SFT), NULL);
 			wrkr->stat.running = false;
 			wrkr->stat.has_work = false;
+			mgr->workers.wrking_cnt -= 1;
 			mgr->workers.cnt -= 1;
 			/*TODO this doesn't work properly... gotta */
 			free(wrkr);
@@ -162,6 +163,12 @@ void				poll_wrkr_msgs(t_mgr *mgr, nfds_t fditer, struct pollfd *fds)
 				printf("entering to recv msg\n");
 				if (hermes_recvmsg(fds[fditer].fd, msgbuff) > 0)
 					mgr_process_msg(mgr, workers[fds[fditer].fd], msgbuff);
+			}
+			if (fds[fditer].revents & POLLHUP)
+			{
+				printf("POLLHUP hit\n");
+				close(fds[fditer].fd);
+				fds[fditer].fd *= -1;
 			}
 		}
 	}
@@ -212,6 +219,8 @@ int					init_workers(t_mgr *mgr, struct pollfd **fds)
 		mgr->workers.wrkrs = wrkrtree_to_fdinxarray(&mgr->workers.wrkrs, mgr->workers.maxfd);
 		workers = mgr->workers.wrkrs->data;
 		*fds = memalloc(sizeof(struct pollfd) * mgr->workers.maxfd);
+		for (i = 0; i < mgr->workers.maxfd; i++)
+			(*fds)[i].fd = -1;
 		for (i = 0; i < mgr->workers.maxfd; i++)
 		{
 			if (workers[i])

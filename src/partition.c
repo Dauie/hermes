@@ -76,7 +76,7 @@ void			 transfer_work(t_targetset *dst, t_targetset *src, uint32_t reqamt)
 				break;
 			}
 			src->total -= slice->size;
-			list_add_head(&dst->iprngs, (void **) &slice);
+			list_add_head(&dst->iprngs, (void **)&slice);
 			reqamt -= slice->size;
 			dst->rng_cnt += 1;
 			dst->total += slice->size;

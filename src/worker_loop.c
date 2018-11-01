@@ -72,7 +72,7 @@ int					process_message(t_wmgr *session, uint8_t *msgbuff)
 
 int					send_results(t_wmgr *session)
 {
-	binn	*obj;
+	binn			*obj;
 
 	obj = binnify_resultset(&session->results);
 	if (hermes_send_binn(session->sock, C_OBJ_RES, obj) < 0)
@@ -135,9 +135,9 @@ int					worker_loop(t_wmgr *session)
 	while (session->stat.running == true)
 	{
 		poll_mgr_messages(session, (struct pollfd *) &fds);
-		if (session->stat.initilized &&
-			!session->stat.has_work &&
-				!session->stat.work_requested)
+		if (session->stat.initilized == true &&
+			session->stat.has_work == false &&
+				session->stat.work_requested == false)
 		{
 			printf("sending work request\n");
 			hermes_sendmsgf(session->sock, msg_tc(T_WRK_REQ, C_WRK_REQ), NULL);
