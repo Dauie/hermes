@@ -2,6 +2,12 @@
 # include "../incl/message.h"
 # include "../incl/binnify.h"
 
+void                sig_kill(int sig)
+{
+	signal(sig, SIG_IGN);
+	hermes_error(EXIT_FAILURE, "kill signal sent -- goodbye\n");
+}
+
 int					handle_obj_offer(t_wmgr *session, uint8_t code, uint8_t *msg)
 {
 	ssize_t			ret;
@@ -141,6 +147,7 @@ int					worker_loop(t_wmgr *session)
 	printf("worker loop start\n");
 	while (session->stat.running == true)
 	{
+		signal(SIGINT, sig_kill);
 		poll_messages(session, (struct pollfd *)&fds);
 		if (session->stat.initilized && !session->stat.has_work && !session->stat.work_requested)
 		{

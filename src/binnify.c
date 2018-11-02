@@ -93,6 +93,7 @@ static void		add_resultclist_to_binnlist(binn **list, t_node **results)
 		res = head->data;
 		obj = binn_object();
 		binn_object_set_uint32(obj, "ip", res->ip.s_addr);
+		printf("adding result : %s\n", inet_ntoa(res->ip));
 		if (res->port_stats)
 		{
 			portstatlist = binn_list();

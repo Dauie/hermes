@@ -24,10 +24,12 @@ static void		get_ip4clist_from_binnlist(t_node **clist, binn *list)
 
 	i = 0;
 	cnt = binn_count(list);
-	while (i++ <= cnt)
+	while (++i <= cnt)
 	{
+		printf("%i of %i\n", i, cnt);
 		ip = new_ip4();
 		ip->s_addr = binn_list_uint32(list, i);
+		printf("getting ip : %u\n", ip->s_addr);
 		clist_add_head(clist, (void **)&ip);
 	}
 }
@@ -101,10 +103,10 @@ void			get_resultclist_from_binnlist(binn *list, t_node **clist, t_targetset *ac
 
 	if (!list || !clist || !account)
 		return ;
-	i = -1;
+	i = 0;
 	cnt = binn_count(list);
 	printf("count %d\n", cnt);
-	while (++i < cnt)
+	while (++i <= cnt)
 	{
 		printf("%d of %d\n", i + 1, cnt);
 		res = new_result();
@@ -130,6 +132,7 @@ void			unbinnify_resultset(t_resultset *set, t_targetset *work,  binn *obj)
 	binn_object_get_uint32(obj, "byte_size", &set->byte_size);
 	binn_object_get_uint32(obj, "result_cnt", &res_cnt);
 	set->result_cnt += res_cnt;
+	results = binn_object();
 	if (binn_object_get_list(obj, "results", (void**)&results) == true)
 	{
 		get_resultclist_from_binnlist(results, &set->results, work);

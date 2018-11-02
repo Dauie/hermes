@@ -141,14 +141,14 @@ int					mgr_process_msg(t_mgr *mgr, t_wrkr *wrkr, uint8_t msgbuff[])
 	return (SUCCESS);
 }
 
-int poll_wrkr_msgs(t_mgr *mgr, nfds_t fditer,
+int                poll_wrkr_msgs(t_mgr *mgr, nfds_t fditer,
                    struct pollfd *fds)
 {
 	uint8_t			msgbuff[PKT_SIZE];
 	t_wrkr			**workers;
 	ssize_t 		ret;
 
-	printf("check workers called\n");
+//	printf("check workers called\n");
 	workers = mgr->workers.wrkrs->data;
 	ret = poll(fds, fditer, 500);
 	if (ret < 0)
@@ -163,18 +163,27 @@ int poll_wrkr_msgs(t_mgr *mgr, nfds_t fditer,
 		printf("timeout\n");
 	else
 	{
-		printf("poll says mgr got a message\n");
+//		printf("poll says mgr got a message\n");
 		while (fditer--)
 		{
 			if (fds[fditer].revents & POLLIN)
 			{
-				printf("entering to recv msg\n");
+//				printf("entering to recv msg\n");
 				if (hermes_recvmsg(fds[fditer].fd, msgbuff) > 0)
-					if (mgr_process_msg(mgr, workers[fds[fditer].fd], msgbuff) == FAILURE)
-						return (FAILURE);
+				{
+					if (workers[fds[fditer].fd])
+						if (mgr_process_msg(mgr, workers[fds[fditer].fd],
+						                    msgbuff) == FAILURE)
+							return (FAILURE);
+				}
+				else
+				{
+					workers[fds[fditer].fd] = NULL;
+				}
 			}
 		}
 	}
+	fflush(NULL);
 	return (SUCCESS);
 }
 

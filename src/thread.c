@@ -27,7 +27,7 @@ void                tpool_event(t_thread_pool *pool)
 void                tpool_wait(t_thread_pool *pool)
 {
 	pthread_mutex_lock(&pool->tsem->stop);
-	printf("thread waiting...\n");
+//	printf("thread waiting...\n");
 	while (pool->work_pool->total == 0)
 		pthread_cond_wait(&pool->tsem->wait, &pool->tsem->stop);
 	pthread_mutex_unlock(&pool->tsem->stop);
@@ -62,19 +62,19 @@ void				*thread_loop(void *thrd)
 		pthread_mutex_lock(&thread->pool->work_pool_mtx);
 		if (thread->pool->work_pool->total > 0)
 		{
-			printf("thread %d taking work\n", thread->id);
+//			printf("thread %d taking work\n", thread->id);
 			transfer_work(&work, thread->pool->work_pool, thread->amt);
-			printf("thread %d finished taking work\n", thread->id);
+//			printf("thread %d finished taking work\n", thread->id);
 			pthread_mutex_unlock(&thread->pool->work_pool_mtx);
 			thread->amt *= (thread->amt < 512) ? 2 : 1;
 			thread->working = true;
 			pthread_mutex_lock(&thread->pool->amt_working_mtx);
 			thread->pool->amt_working += 1;
 			pthread_mutex_unlock(&thread->pool->amt_working_mtx);
-			printf("thread %d entering scan\n", thread->id);
+//			printf("thread %d entering scan\n", thread->id);
 			run_scan(thread->pool->env, &work,
 					 thread->pool->results, &thread->pool->results_mtx);
-			printf("thread %d left scan\n", thread->id);
+//			printf("thread %d left scan\n", thread->id);
 			thread->working = false;
 			pthread_mutex_lock(&thread->pool->amt_working_mtx);
 			thread->pool->amt_working -= 1;
