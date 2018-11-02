@@ -38,14 +38,19 @@ bool			list_add_tail(t_node **list, void **data)
 	return (true);
 }
 
-bool			list_rm_node(t_node **head_ref, bool deldata)
+bool			list_rm_node(t_node **list, t_node **rm, bool deldata)
 {
 	t_node		*del;
 
-	if(*head_ref == NULL)
-		return false;
-	del = *head_ref;
-	*head_ref = del->right;
+	if (!*list || !*rm)
+		return (false);
+	del = *list;
+	while (del && del != *rm)
+		del = del->right;
+	if (!del)
+		return (false);
+	if (del == *list)
+		*list = (*list)->right;
 	if(del->right != NULL)
 		del->right->left = del->left;
 	if(del->left != NULL)

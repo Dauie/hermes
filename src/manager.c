@@ -263,7 +263,7 @@ void				check_results(t_mgr *mgr)
 	{
 		res = mgr->results.results->data;
 		printf("result: %u\n", res->ip.s_addr);
-		list_rm_node(&mgr->results.results, true);
+		list_rm_node(&mgr->results.results, &mgr->results.results, true);
 		mgr->results.result_cnt--;
 	}
 	if (mgr->tpool)
