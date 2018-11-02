@@ -2,13 +2,11 @@
 
 static void		get_portlist_from_binnlist(t_node **tree, binn *list)
 {
-	int			i;
 	int			cnt;
 	t_port		*port;
 
-	i = 0;
 	cnt = binn_count(list);
-	while (i++ < cnt)
+	for (int i = 1; i <= cnt; i++)
 	{
 		port = new_port();
 		port->port = binn_list_uint16(list, i);
@@ -18,13 +16,11 @@ static void		get_portlist_from_binnlist(t_node **tree, binn *list)
 
 static void		get_ip4list_from_binnlist(t_node **clist, binn *list)
 {
-	int			i;
 	int			cnt;
 	t_ip4		*ip;
 
-	i = 0;
 	cnt = binn_count(list);
-	while (i++ < cnt)
+	for (int i = 1; i <= cnt; i++)
 	{
 		ip = new_ip4();
 		ip->s_addr = binn_list_uint32(list, i);
@@ -34,14 +30,12 @@ static void		get_ip4list_from_binnlist(t_node **clist, binn *list)
 
 static void		get_prtrnglist_from_binnlist(t_node **clst, binn *list)
 {
-	int			i;
 	int			cnt;
 	t_prtrng	*rng;
 	binn		*obj;
 
-	i = 1;
 	cnt = binn_count(list);
-	while (i++ < cnt)
+	for (int i = 1; i <= cnt; i++)
 	{
 		rng = new_portrange();
 		obj = binn_list_object(list, i);
@@ -54,14 +48,12 @@ static void		get_prtrnglist_from_binnlist(t_node **clst, binn *list)
 
 static void		get_ip4rnglist_from_binnlist(t_node **clst, binn *list)
 {
-	int			i;
 	int			cnt;
 	t_ip4rng	*rng;
 	binn		*obj;
 
-	i = 0;
 	cnt = binn_count(list);
-	while (i++ < cnt)
+	for (int i = 1; i <= cnt; i++)
 	{
 		rng = new_ip4range();
 		obj = binn_list_object(list, i);
@@ -74,35 +66,31 @@ static void		get_ip4rnglist_from_binnlist(t_node **clst, binn *list)
 
 void			get_portstatlist_from_binnlist(binn *list, t_node **clist)
 {
-	int			i;
 	int			cnt;
 	t_portstat	*pstat;
 	binn		*obj;
 
-	i = 0;
 	cnt = binn_count(list);
-	while (i++ < cnt)
+	for (int i = 1; i <= cnt; i++)
 	{
 		pstat = new_portstat();
 		obj = binn_list_object(list, i);
 		binn_object_get_uint16(obj, "port", &pstat->port);
 		binn_object_get_uint8(obj, "status", &pstat->status);
-		list_add_head(clist, (void **) &pstat);
+		list_add_head(clist, (void **)&pstat);
 	}
 }
 
 void			get_resultlist_from_binnlist(binn *list, t_node **clist, t_targetset *account)
 {
-	int			i;
 	int			cnt;
 	t_result	*res;
 	binn		*obj;
 	binn		*portstats;
 
-	i = 0;
 	cnt = binn_count(list);
 	printf("count %d\n", cnt);
-	while (i++ < cnt)
+	for (int i = 1; i <= cnt; i++)
 	{
 		printf("%d\n", i);
 		res = new_result();
@@ -127,11 +115,8 @@ void			unbinnify_resultset(t_resultset *set, t_targetset *work,  binn *obj)
 	binn_object_get_uint32(obj, "byte_size", &set->byte_size);
 	binn_object_get_uint32(obj, "result_cnt", &res_cnt);
 	set->result_cnt += res_cnt;
-	if (!binn_object_null(obj, "results") &&
-			binn_object_get_list(obj, "results", (void **)&results) == true)
-	{
+	if (binn_object_get_list(obj, "results", (void **)&results) == true)
 		get_resultlist_from_binnlist(results, &set->results, work);
-	}
 }
 
 void			unbinnify_targetset(t_targetset *set, binn *obj)
@@ -148,13 +133,10 @@ void			unbinnify_targetset(t_targetset *set, binn *obj)
 	set->total += total;
 	set->rng_cnt += rng_cnt;
 	set->ip_cnt += ip_cnt;
-	if (!binn_object_null(obj, "ips") &&
-			binn_object_get_list(obj, "ips", (void **)&ip4list) == true)
-	{
+	printf("targetset: total: %d | range count: %d | ip count %d\n", set->total, set->rng_cnt, set->ip_cnt);
+	if (binn_object_get_list(obj, "ips", (void **)&ip4list) == true)
 		get_ip4list_from_binnlist(&set->ips, ip4list);
-	}
-	if (!binn_object_null(obj, "iprngs") &&
-			binn_object_get_list(obj, "iprngs", (void**)&ip4rnglist) == true)
+	if (binn_object_get_list(obj, "iprngs", (void**)&ip4rnglist) == true)
 		get_ip4rnglist_from_binnlist(&set->iprngs, ip4rnglist);
 }
 

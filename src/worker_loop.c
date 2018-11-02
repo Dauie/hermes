@@ -30,7 +30,6 @@ int					handle_obj_offer(t_wmgr *session, uint8_t code, uint8_t *msg)
 		unbinnify_env(&session->env, obj);
 		if (!(session->tpool = init_threadpool(&session->env, &session->targets, &session->results)))
 			hermes_error(EXIT_FAILURE, "init_threadpool() failure");
-		session->stat.initilized = true;
 		printf("worker initialized\n");
 	}
 	else if (code == C_OBJ_TARGETS)
@@ -75,6 +74,7 @@ int					send_results(t_wmgr *session)
 	binn			*obj;
 
 	obj = binnify_resultset(&session->results);
+	printf("sending result\n");
 	if (hermes_send_binn(session->sock, C_OBJ_RES, obj) < 0)
 	{
 		free(obj);
@@ -87,9 +87,8 @@ int					send_results(t_wmgr *session)
 void				poll_mgr_messages(t_wmgr *session, struct pollfd *fds)
 {
 	ssize_t			ret;
-	uint8_t			msgbuff[PKT_SIZE];
+	uint8_t			msgbuff[PKT_SIZE] = {0};
 
-	bzero(msgbuff, PKT_SIZE);
 	ret = poll(fds, 1, WKRMGR_POLL_TIMEO);
 	if (ret < 0)
 	{
@@ -116,7 +115,7 @@ void				poll_mgr_messages(t_wmgr *session, struct pollfd *fds)
 void				worker_check_results(t_wmgr *session)
 {
 	pthread_mutex_lock(&session->tpool->results_mtx);
-	if (session->results.result_cnt > 5)
+	if (session->results.result_cnt > 0)
 	{
 		if (send_results(session) == FAILURE)
 			hermes_error(FAILURE, "results unsent");
@@ -134,34 +133,11 @@ int					worker_loop(t_wmgr *session)
 	printf("worker loop start\n");
 	while (session->stat.running == true)
 	{
-		poll_mgr_messages(session, (struct pollfd *) &fds);
-		if (session->stat.initilized == true &&
-			session->stat.has_work == false &&
-				session->stat.work_requested == false)
-		{
-			printf("sending work request\n");
-			hermes_sendmsgf(session->sock, msg_tc(T_WRK_REQ, C_WRK_REQ), NULL);
-			session->stat.work_requested = true;
-			printf("work request sent\n");
-		}
+		poll_mgr_messages(session, (struct pollfd *)&fds);
 		if (session->tpool)
 		{
-			pthread_mutex_lock(&session->tpool->amt_working_mtx);
-			if (session->tpool->amt_working != session->tpool->tcount)
-			{
-				pthread_mutex_unlock(&session->tpool->amt_working_mtx);
-				pthread_mutex_lock(&session->tpool->work_pool_mtx);
-				if (session->targets.total == 0)
-				{
-					printf("setting \"has work\" to false\n");
-					session->stat.has_work = false;
-				}
-				pthread_mutex_unlock(&session->tpool->work_pool_mtx);
-			}
-			else
-				pthread_mutex_unlock(&session->tpool->amt_working_mtx);
-			/* Check if we need to send results to manager */
 			worker_check_results(session);
+			/* Check if we need to send results to manager */
 		}
 	}
 	return (SUCCESS);

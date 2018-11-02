@@ -2,34 +2,35 @@
 #include "sys/errno.h"
 #include "../incl/libhermes.h"
 
-bool			list_add_head(t_node **start, void **data)
+bool			list_add_head(t_node **list, void **data)
 {
 	t_node		*new;
 
 	if (!(new = new_node(data)))
 		return (false);
-	if (*start == NULL)
+	if (*list == NULL)
 	{
-		*start = new;
+		*list = new;
 		return (true);
 	}
-	new->right = *start;
-	(*start)->left = new;
+	new->right = *list;
+	(*list)->left = new;
+	*list = new;
 	return (true);
 }
 
-bool			list_add_tail(t_node **start, void **data)
+bool			list_add_tail(t_node **list, void **data)
 {
 	t_node		*new;
 	t_node		*seek;
 
 	new = new_node(data);
-	if (*start == NULL)
+	if (*list == NULL)
 	{
-		*start = new;
+		*list = new;
 		return (true);
 	}
-	seek = *start;
+	seek = *list;
 	while (seek->right)
 		seek = seek->right;
 	seek->right = new;
@@ -37,22 +38,19 @@ bool			list_add_tail(t_node **start, void **data)
 	return (true);
 }
 
-bool			list_rm_node(t_node **clist, bool deldata)
+bool			list_rm_node(t_node **head_ref, bool deldata)
 {
-	t_node		*tmp;
+	t_node		*del;
 
-	if (!*clist)
-		return (false);
-	tmp = *clist;
-	*clist = (*clist)->right;
-	if (*clist)
-	{
-		if (tmp->left)
-			(*clist)->left = tmp->left;
-		if ((*clist)->left)
-			(*clist)->left->right = (*clist);
-	}
-	del_node(&tmp, deldata);
+	if(*head_ref == NULL)
+		return false;
+	del = *head_ref;
+	*head_ref = del->right;
+	if(del->right != NULL)
+		del->right->left = del->left;
+	if(del->left != NULL)
+		del->left->right = del->right;
+	del_node(&del, deldata);
 	return (true);
 }
 

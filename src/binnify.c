@@ -78,7 +78,7 @@ static void		add_portstatlist_to_binnlist(binn *list, t_node **port_stats)
 		binn_object_set_uint16(obj, "port", port_stat->port);
 		binn_object_set_uint8(obj, "status", port_stat->status);
 		binn_list_add_object(list, obj);
-		free(obj);
+		binn_free(obj);
 		head = head->right;
 	}
 }
@@ -101,13 +101,13 @@ static void		add_resultlist_to_binnlist(binn *list, t_node **results)
 			portstatlist = binn_list();
 			add_portstatlist_to_binnlist(portstatlist, &result->port_stats);
 			binn_object_set_list(res_binn, "port_stats", portstatlist);
-			free(portstatlist);
+			binn_free(portstatlist);
 			del_list(&result->port_stats, true);
 		}
 		else
 			binn_object_set_null(res_binn, "port_stats");
 		binn_list_add_object(list, res_binn);
-		free(res_binn);
+		binn_free(res_binn);
 		head = head->right;
 	}
 }
@@ -129,7 +129,7 @@ binn			*binnify_resultset(t_resultset *set)
 		result_list = binn_list();
 		add_resultlist_to_binnlist(result_list, &set->results);
 		binn_object_set_list(obj, "results", result_list);
-		free(result_list);
+		binn_free(result_list);
 		del_list(&set->results, true);
 		set->result_cnt = 0;
 		set->byte_size = 0;
@@ -159,7 +159,7 @@ binn			*binnify_targetset(t_targetset *set)
 		ip = binn_list();
 		add_ip4list_to_binnlist(ip, &set->ips);
 		binn_object_set_list(obj, "ips", ip);
-		free(ip);
+		binn_free(ip);
 	}
 	else
 		binn_object_set_null(obj, "ips");
@@ -168,7 +168,7 @@ binn			*binnify_targetset(t_targetset *set)
 		iprng = binn_list();
 		add_ip4rnglist_to_binnlist(iprng, &set->iprngs);
 		binn_object_set_list(obj, "iprngs", iprng);
-		free(iprng);
+		binn_free(iprng);
 	}
 	else
 		binn_object_set_null(obj, "iprngs");
@@ -263,31 +263,32 @@ binn			*binnify_env(t_env *env)
 	binn *obj;
 	binn *member;
 
-	if (!(obj = binn_object())) {
+	if (!(obj = binn_object()))
+	{
 		hermes_error(FAILURE, "binn_object()");
 		return (NULL);
 	}
 	member = binnify_opts(&env->opts);
 	binn_object_set_object(obj, "opts", member);
-	free(member);
+	binn_free(member);
 	member = binnify_portset(&env->ports);
 	binn_object_set_object(obj, "ports", member);
-	free(member);
+	binn_free(member);
 	if (env->ack_ports) {
 		member = binnify_portset(env->ack_ports);
 		binn_object_set_object(obj, "ack_ports", member);
-		free(member);
+		binn_free(member);
 	}
 	if (env->syn_ports) {
 		member = binnify_portset(env->syn_ports);
 		binn_object_set_object(obj, "syn_ports", member);
-		free(member);
+		binn_free(member);
 	}
 	if (env->udp_ports)
 	{
 		member = binnify_portset(env->udp_ports);
 		binn_object_set_object(obj, "udp_ports", member);
-		free(member);
+		binn_free(member);
 	}
 	return (obj);
 }
