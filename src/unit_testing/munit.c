@@ -200,7 +200,7 @@ static MunitResult test_split_ip4rng_n(const MunitParameter params[], void *user
 		munit_assert_uint32(((t_ip4rng*)tmp->data)->end, ==, r[i++].s_addr);
 		tmp = tmp->right;
 	}
-	del_clist(&tree, true);
+	del_list(&tree, true);
 	return (MUNIT_OK);
 }
 

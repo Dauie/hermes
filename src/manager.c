@@ -46,11 +46,11 @@ void				send_workers_binn(t_workerset *set, binn *obj, uint8_t code)
 
 void				send_workers_initial_env(t_mgr *mgr)
 {
-	binn 			*job;
+	binn 			*env;
 
-	job = binnify_env(&mgr->env);
-	send_workers_binn(&mgr->workers, job, C_OBJ_ENV);
-	free(job);
+	env = binnify_env(&mgr->env);
+	send_workers_binn(&mgr->workers, env, C_OBJ_ENV);
+	free(env);
 }
 
 int					send_work(t_wrkr *worker)
@@ -62,28 +62,25 @@ int					send_work(t_wrkr *worker)
 	return (SUCCESS);
 }
 
-int					handle_result_offer(t_mgr *mgr, t_wrkr *worker,
-										   uint8_t *msg)
+int					handle_result_offer(t_mgr *mgr, t_wrkr *wrkr, uint8_t *msg)
 {
 	ssize_t			ret;
 	binn			*obj;
 	t_obj_hdr		*hdr;
 
 	printf("Entering handle_result_offer()\n");
-	if (!mgr || !worker || !msg)
-		return (FAILURE);
-	hdr = (t_obj_hdr*)msg;
+	hdr = (t_obj_hdr *)msg;
 	hdr->objlen = ntohl(hdr->objlen);
 	printf("%u\n", hdr->objlen);
 	if (hdr->objlen <= 0)
 		return (FAILURE);
-	if (!(obj = (binn*)malloc(sizeof(uint8_t) * hdr->objlen)))
+	if (!(obj = (binn*)memalloc(sizeof(uint8_t) * hdr->objlen)))
 		return (hermes_error(FAILURE, "malloc() %s", strerror(errno)));
-	ret = recv(worker->sock, obj, hdr->objlen, MSG_WAITALL);
+	ret = recv(wrkr->sock, obj, hdr->objlen, MSG_WAITALL);
 	if (ret == 0)
 	{
 		free(obj);
-		worker->stat.running = false;
+		wrkr->stat.running = false;
 		return (FAILURE);
 	}
 	if (hdr->code == C_OBJ_RES)
@@ -91,7 +88,7 @@ int					handle_result_offer(t_mgr *mgr, t_wrkr *worker,
 		if (mgr->tpool)
 			pthread_mutex_lock(&mgr->tpool->results_mtx);
 		printf("got mutex\n");
-		unbinnify_resultset(&mgr->results, &worker->targets, obj);
+		unbinnify_resultset(&mgr->results, &wrkr->targets, obj);
 		if (mgr->tpool)
 			pthread_mutex_unlock(&mgr->tpool->results_mtx);
 		printf("gave mutex\n");
@@ -101,7 +98,7 @@ int					handle_result_offer(t_mgr *mgr, t_wrkr *worker,
 	return (SUCCESS);
 }
 
-int					mgr_process_msg(t_mgr *mgr, t_wrkr *wrkr, uint8_t msgbuff[])
+int					mgr_process_msg(t_mgr *mgr, t_wrkr *wrkr, uint8_t *msgbuff)
 {
 	t_msg_hdr		*hdr;
 
@@ -113,9 +110,6 @@ int					mgr_process_msg(t_mgr *mgr, t_wrkr *wrkr, uint8_t msgbuff[])
 	{
 		if (mgr->targets.total > 0)
 		{
-			wrkr->targets.total = 0;
-			wrkr->targets.ip_cnt = 0;
-			wrkr->targets.rng_cnt = 0;
 			transfer_work(&wrkr->targets, &mgr->targets, wrkr->send_size);
 			wrkr->send_size *= 2;
 			send_work(wrkr);
@@ -127,9 +121,9 @@ int					mgr_process_msg(t_mgr *mgr, t_wrkr *wrkr, uint8_t msgbuff[])
 			hermes_sendmsgf(wrkr->sock, msg_tc(T_SHUTDOWN, C_SHUTDOWN_SFT), NULL);
 			wrkr->stat.running = false;
 			wrkr->stat.has_work = false;
-			wrkr->set->wrking_cnt -= 1;
+			mgr->workers.wrking_cnt -= 1;
+			mgr->workers.cnt -= 1;
 			/*TODO this doesn't work properly... gotta */
-			((t_wrkr **)wrkr->set->wrkrs->data)[wrkr->sock] = NULL;
 			free(wrkr);
 		}
 	}
@@ -148,7 +142,7 @@ int                poll_wrkr_msgs(t_mgr *mgr, nfds_t fditer,
 	t_wrkr			**workers;
 	ssize_t 		ret;
 
-//	printf("check workers called\n");
+	printf("check workers called\n");
 	workers = mgr->workers.wrkrs->data;
 	ret = poll(fds, fditer, 500);
 	if (ret < 0)
@@ -163,12 +157,12 @@ int                poll_wrkr_msgs(t_mgr *mgr, nfds_t fditer,
 		printf("timeout\n");
 	else
 	{
-//		printf("poll says mgr got a message\n");
+		printf("poll says mgr got a message\n");
 		while (fditer--)
 		{
 			if (fds[fditer].revents & POLLIN)
 			{
-//				printf("entering to recv msg\n");
+				printf("entering to recv msg\n");
 				if (hermes_recvmsg(fds[fditer].fd, msgbuff) > 0)
 				{
 					if (workers[fds[fditer].fd])
@@ -178,7 +172,12 @@ int                poll_wrkr_msgs(t_mgr *mgr, nfds_t fditer,
 				}
 				else
 				{
-					workers[fds[fditer].fd] = NULL;
+					if (fds[fditer].revents & POLLHUP)
+					{
+						printf("POLLHUP hit\n");
+						close(fds[fditer].fd);
+						fds[fditer].fd *= -1;
+					}
 				}
 			}
 		}
@@ -187,18 +186,18 @@ int                poll_wrkr_msgs(t_mgr *mgr, nfds_t fditer,
 	return (SUCCESS);
 }
 
-void				add_wrkrtree_to_array(t_node *wrkr, t_wrkr **array)
+void				add_wrkrtree_to_array(t_node *workers, t_wrkr **array)
 {
-	t_wrkr			*w;
+	t_wrkr			*worker;
 
-	if (!wrkr)
+	if (!workers)
 		return ;
-	if (wrkr->left)
-		add_wrkrtree_to_array(wrkr->left, array);
-	w = (t_wrkr*)wrkr->data;
-	array[w->sock] =  w;
-	if (wrkr->right)
-		add_wrkrtree_to_array(wrkr->right, array);
+	if (workers->left)
+		add_wrkrtree_to_array(workers->left, array);
+	worker = (t_wrkr*)workers->data;
+	array[worker->sock] =  worker;
+	if (workers->right)
+		add_wrkrtree_to_array(workers->right, array);
 }
 
 t_node				*wrkrtree_to_fdinxarray(t_node **wrkrtree, nfds_t maxfd)
@@ -233,11 +232,11 @@ void				run_scan(t_env *env, t_targetset *targets,
 				return ;
 			memcpy(&result->ip, (void*)(t_ip4*)targets->ips->data, sizeof(t_ip4));
 			pthread_mutex_lock(res_mtx);
-			clist_add_head(&res_ptr->results, (void**)&result);
+			list_add_head(&res_ptr->results, (void**)&result);
 			res_ptr->result_cnt += 1;
 			res_ptr->byte_size += sizeof(result);
 			pthread_mutex_unlock(res_mtx);
-			if (clist_rm_head(&targets->ips, false) == false)
+			if (list_rm_head(&targets->ips, false) == false)
 				break;
 			targets->total--;
 			targets->ip_cnt--;
@@ -252,14 +251,14 @@ void				run_scan(t_env *env, t_targetset *targets,
 					return;
 				memcpy(&result->ip, &curr->start, sizeof(t_ip4));
 				pthread_mutex_lock(res_mtx);
-				clist_add_head(&res_ptr->results, (void **) &result);
+				list_add_head(&res_ptr->results, (void **) &result);
 				res_ptr->result_cnt += 1;
 				res_ptr->byte_size += sizeof(result);
 				pthread_mutex_unlock(res_mtx);
 				curr->start = ip4_increment(curr->start, 1);
 				targets->total--;
 			}
-			if (clist_rm_head(&targets->iprngs, false) == false)
+			if (list_rm_head(&targets->iprngs, false) == false)
 				break;
 			targets->rng_cnt--;
 		}
@@ -282,6 +281,8 @@ int					init_workers(t_mgr *mgr, struct pollfd **fds)
 		mgr->workers.wrkrs = wrkrtree_to_fdinxarray(&mgr->workers.wrkrs, mgr->workers.maxfd);
 		workers = mgr->workers.wrkrs->data;
 		*fds = memalloc(sizeof(struct pollfd) * mgr->workers.maxfd);
+		for (i = 0; i < mgr->workers.maxfd; i++)
+			(*fds)[i].fd = -1;
 		for (i = 0; i < mgr->workers.maxfd; i++)
 		{
 			if (workers[i])
@@ -333,9 +334,7 @@ void				tend_threads(t_mgr *mgr)
 
 bool				check_if_finished(t_mgr *mgr)
 {
-	if (mgr->targets.total > 0)
-		return (false);
-	if (mgr->workers.wrking_cnt != 0)
+	if (mgr->targets.total > 0 || mgr->workers.wrking_cnt != 0)
 		return (false);
 	if (mgr->tpool)
 	{
@@ -357,6 +356,9 @@ void				check_results(t_mgr *mgr)
 //	printf("result count: %d\n", mgr->results.result_cnt);
 	if (mgr->results.result_cnt > 0)
 	{
+		res = mgr->results.results->data;
+		printf("result: %u\n", res->ip.s_addr);
+		list_rm_node(&mgr->results.results, true);
 		res = (t_result*)mgr->results.results->data;
 		t_ip4 *ip;
 		if (!res)

@@ -34,14 +34,14 @@ void			 transfer_work(t_targetset *dst, t_targetset *src, uint32_t reqamt)
 	reqamt -= ipcnt;
 	while (ipcnt && src->ip_cnt > 0 && src->ips)
 	{
-		if (clist_add_head(&dst->ips, &src->ips->data) == true)
+		if (list_add_head(&dst->ips, &src->ips->data) == true)
 		{
 			dst->total += 1;
 			dst->ip_cnt += 1;
 		}
 		else
 			break;
-		if (clist_rm_head(&src->ips, false) == true)
+		if (list_rm_node(&src->ips, false) == true)
 		{
 			src->total -= 1;
 			src->ip_cnt -= 1;
@@ -54,14 +54,14 @@ void			 transfer_work(t_targetset *dst, t_targetset *src, uint32_t reqamt)
 		memcpy(&rng, src->iprngs->data, sizeof(t_ip4rng));
 		if (rng.size <= reqamt)
 		{
-			if (clist_add_head(&dst->iprngs, &src->iprngs->data) == true)
+			if (list_add_head(&dst->iprngs, &src->iprngs->data) == true)
 			{
 				dst->total += rng.size;
 				dst->rng_cnt += 1;
 			}
 			else
 				break;
-			if (clist_rm_head(&src->iprngs, false) == true)
+			if (list_rm_node(&src->iprngs, false) == true)
 			{
 				src->total -= rng.size;
 				src->rng_cnt -= 1;
@@ -76,7 +76,7 @@ void			 transfer_work(t_targetset *dst, t_targetset *src, uint32_t reqamt)
 				break;
 			}
 			src->total -= slice->size;
-			clist_add_head(&dst->iprngs, (void **)&slice);
+			list_add_head(&dst->iprngs, (void **)&slice);
 			reqamt -= slice->size;
 			dst->rng_cnt += 1;
 			dst->total += slice->size;

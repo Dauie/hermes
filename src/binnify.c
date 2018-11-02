@@ -1,25 +1,26 @@
 #include "../incl/hermes.h"
 
-
-static void		add_ip4clist_to_binnlist(binn *list, t_node **ips)
+static void		add_ip4list_to_binnlist(binn *list, t_node **ips)
 {
 	t_node		*head;
 
 	head = *ips;
-	do {
+	while (head)
+	{
 		binn_list_add_uint32(list, ((t_ip4 *)head->data)->s_addr);
 		head = head->right;
-	} while (head != *ips);
+	}
 }
 
-static void		add_ip4rngclist_to_binnlist(binn *list, t_node **ip4rng)
+static void		add_ip4rnglist_to_binnlist(binn *list, t_node **ip4rng)
 {
 	t_node		*head;
 	t_ip4rng	*rng;
 	binn		*obj;
 
 	head = *ip4rng;
-	do {
+	while (head)
+	{
 		rng = head->data;
 		obj = binn_object();
 		binn_object_set_uint32(obj, "size", rng->size);
@@ -27,30 +28,32 @@ static void		add_ip4rngclist_to_binnlist(binn *list, t_node **ip4rng)
 		binn_object_set_uint32(obj, "end", rng->end);
 		binn_list_add_object(list, obj);
 		head = head->right;
-	} while (head != *ip4rng);
+	}
 }
 
-static void		add_portclist_to_binnlist(binn *list, t_node **ports)
+static void		add_portlist_to_binnlist(binn *list, t_node **ports)
 {
 	t_node		*head;
 	t_port		*port;
 
 	head = *ports;
-	do {
+	while (head)
+	{
 		port = head->data;
 		binn_list_add_uint16(list, port->port);
 		head = head->right;
-	} while (head != *ports);
+	}
 }
 
-static void		add_prtrngclist_to_binnlist(binn *list, t_node **prtrngs)
+static void		add_prtrnglist_to_binnlist(binn *list, t_node **prtrngs)
 {
 	t_node		*head;
 	t_prtrng	*rng;
 	binn		*obj;
 
 	head = *prtrngs;
-	do {
+	while (head)
+	{
 		rng = head->data;
 		obj = binn_object();
 		binn_object_set_uint32(obj, "size", rng->size);
@@ -58,17 +61,18 @@ static void		add_prtrngclist_to_binnlist(binn *list, t_node **prtrngs)
 		binn_object_set_uint32(obj, "end", rng->end);
 		binn_list_add_object(list, obj);
 		head = head->right;
-	} while (head != *prtrngs);
+	}
 }
 
-static void		add_portstatclist_to_binnlist(binn *list, t_node **portstatus)
+static void		add_portstatlist_to_binnlist(binn *list, t_node **port_stats)
 {
 	t_node		*head;
-	t_portstat *port_stat;
+	t_portstat	*port_stat;
 	binn		*obj;
 
-	head = *portstatus;
-	do {
+	head = *port_stats;
+	while (head)
+	{
 		port_stat = head->data;
 		obj = binn_object();
 		binn_object_set_uint16(obj, "port", port_stat->port);
@@ -76,55 +80,57 @@ static void		add_portstatclist_to_binnlist(binn *list, t_node **portstatus)
 		binn_list_add_object(list, obj);
 		free(obj);
 		head = head->right;
-	} while (head != *portstatus);
+	}
 }
 
-static void		add_resultclist_to_binnlist(binn **list, t_node **results)
+static void		add_resultlist_to_binnlist(binn *list, t_node **results)
 {
 	t_node		*head;
-	t_result	*res;
-	binn		*obj;
+	t_result	*result;
+	binn		*res_binn;
 	binn		*portstatlist;
 
 	head = *results;
-	if (!head->data)
-		return ;
-	do {
-		res = head->data;
-		obj = binn_object();
-		binn_object_set_uint32(obj, "ip", res->ip.s_addr);
-		printf("adding result : %s\n", inet_ntoa(res->ip));
-		if (res->port_stats)
+	while (head)
+	{
+		result = head->data;
+		res_binn = binn_object();
+		binn_object_set_uint32(res_binn, "ip", result->ip.s_addr);
+		if (result->port_stats)
 		{
 			portstatlist = binn_list();
-			add_portstatclist_to_binnlist(portstatlist, &res->port_stats);
-			binn_object_set_list(obj, "port_stats", portstatlist);
+			add_portstatlist_to_binnlist(portstatlist, &result->port_stats);
+			binn_object_set_list(res_binn, "port_stats", portstatlist);
 			free(portstatlist);
-			del_clist(&res->port_stats, true);
+			del_list(&result->port_stats, true);
 		}
 		else
-			binn_object_set_null(obj, "port_stats");
-		binn_list_add_object(*list, obj);
-		free(obj);
+			binn_object_set_null(res_binn, "port_stats");
+		binn_list_add_object(list, res_binn);
+		free(res_binn);
 		head = head->right;
-	} while (head != *results);
+	}
 }
 
 binn			*binnify_resultset(t_resultset *set)
 {
 	binn		*obj;
-	binn		*res_list;
+	binn		*result_list;
 
-	obj = binn_object();
+	if (!(obj = binn_object()))
+	{
+		hermes_error(FAILURE, "binn_object %s", strerror(errno));
+		return (NULL);
+	}
 	binn_object_set_uint32(obj, "byte_size", set->byte_size);
 	binn_object_set_uint32(obj, "result_cnt", set->result_cnt);
 	if (set->results)
 	{
-		res_list = binn_list();
-		add_resultclist_to_binnlist(&res_list, &set->results);
-		binn_object_set_list(obj, "results", res_list);
-		free(res_list);
-		del_clist(&set->results, true);
+		result_list = binn_list();
+		add_resultlist_to_binnlist(result_list, &set->results);
+		binn_object_set_list(obj, "results", result_list);
+		free(result_list);
+		del_list(&set->results, true);
 		set->result_cnt = 0;
 		set->byte_size = 0;
 	}
@@ -144,13 +150,14 @@ binn			*binnify_targetset(t_targetset *set)
 		hermes_error(FAILURE, "binn_object()");
 		return (NULL);
 	}
+	printf("binnifying targets total: %d ip_cnt: %d  rng_cnt: %d\n", set->total, set->ip_cnt, set->rng_cnt);
 	binn_object_set_uint32(obj, "total", set->total);
 	binn_object_set_uint32(obj, "ip_cnt", set->ip_cnt);
 	binn_object_set_uint32(obj, "rng_cnt", set->rng_cnt);
 	if (set->ips)
 	{
 		ip = binn_list();
-		add_ip4clist_to_binnlist(ip, &set->ips);
+		add_ip4list_to_binnlist(ip, &set->ips);
 		binn_object_set_list(obj, "ips", ip);
 		free(ip);
 	}
@@ -159,7 +166,7 @@ binn			*binnify_targetset(t_targetset *set)
 	if (set->iprngs)
 	{
 		iprng = binn_list();
-		add_ip4rngclist_to_binnlist(iprng, &set->iprngs);
+		add_ip4rnglist_to_binnlist(iprng, &set->iprngs);
 		binn_object_set_list(obj, "iprngs", iprng);
 		free(iprng);
 	}
@@ -191,13 +198,13 @@ binn			*binnify_portset(t_portset *set)
 			hermes_error(FAILURE, "binn_list() failed");
 			return (NULL);
 		}
-		add_portclist_to_binnlist(port, &set->ports);
-		binn_object_set_list(obj, "port_stats", port);
+		add_portlist_to_binnlist(port, &set->ports);
+		binn_object_set_list(obj, "ports", port);
 		binn_free(port);
 
 	}
 	else
-		binn_object_set_null(obj, "port_stats");
+		binn_object_set_null(obj, "ports");
 	if (set->prtrngs)
 	{
 		if (!(prtrng = binn_list()))
@@ -205,7 +212,7 @@ binn			*binnify_portset(t_portset *set)
 			hermes_error(FAILURE, "binn_list() failed");
 			return (NULL);
 		}
-		add_prtrngclist_to_binnlist(prtrng, &set->prtrngs);
+		add_prtrnglist_to_binnlist(prtrng, &set->prtrngs);
 		binn_object_set_list(obj, "prtrngs", prtrng);
 		binn_free(prtrng);
 	}
@@ -264,7 +271,7 @@ binn			*binnify_env(t_env *env)
 	binn_object_set_object(obj, "opts", member);
 	free(member);
 	member = binnify_portset(&env->ports);
-	binn_object_set_object(obj, "port_stats", member);
+	binn_object_set_object(obj, "ports", member);
 	free(member);
 	if (env->ack_ports) {
 		member = binnify_portset(env->ack_ports);
