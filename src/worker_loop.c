@@ -37,7 +37,6 @@ int					handle_obj_offer(t_wmgr *session, uint8_t code, uint8_t *msg)
 		if (!(session->tpool = init_threadpool(&session->env,
 		                                       &session->targets, &session->results)))
 			hermes_error(EXIT_FAILURE, "init_threadpool() failure");
-		session->stat.initilized = true;
 		printf("worker initialized\n");
 	}
 	else if (code == C_OBJ_TARGETS)
@@ -110,9 +109,8 @@ int					send_results(t_wmgr *session)
 void				poll_mgr_messages(t_wmgr *session, struct pollfd *fds)
 {
 	ssize_t			ret;
-	uint8_t			msgbuff[PKT_SIZE];
+	uint8_t			msgbuff[PKT_SIZE] = {0};
 
-	bzero(msgbuff, PKT_SIZE);
 	ret = poll(fds, 1, WKRMGR_POLL_TIMEO);
 	if (ret < 0)
 	{
@@ -163,18 +161,20 @@ int					worker_loop(t_wmgr *session)
 	while (session->stat.running == true)
 	{
 		signal(SIGINT, sig_kill);
-		poll_mgr_messages(session, (struct pollfd *) &fds);
-		if (session->stat.initilized == true &&
-			session->stat.has_work == false &&
-				session->stat.work_requested == false)
-		{
-			printf("sending work request\n");
-			hermes_sendmsgf(session->sock, msg_tc(T_WRK_REQ, C_WRK_REQ), NULL);
-			session->stat.work_requested = true;
-			printf("work request sent\n");
-		}
+//		poll_mgr_messages(session, (struct pollfd *) &fds);
+//		if (session->stat.initilized == true &&
+//			session->stat.has_work == false &&
+//				session->stat.work_requested == false)
+//		{
+//			printf("sending work request\n");
+//			hermes_sendmsgf(session->sock, msg_tc(T_WRK_REQ, C_WRK_REQ), NULL);
+//			session->stat.work_requested = true;
+//			printf("work request sent\n");
+//		}
+		poll_mgr_messages(session, (struct pollfd *)&fds);
 		if (session->tpool)
 		{
+			worker_check_results(session);
 			pthread_mutex_lock(&session->tpool->amt_working_mtx);
 			if (session->tpool->amt_working != session->tpool->tcount)
 			{
@@ -189,8 +189,6 @@ int					worker_loop(t_wmgr *session)
 			}
 			else
 				pthread_mutex_unlock(&session->tpool->amt_working_mtx);
-			/* Check if we need to send results to manager */
-			worker_check_results(session);
 		}
 	}
 	return (SUCCESS);

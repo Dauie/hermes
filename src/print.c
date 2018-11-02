@@ -37,4 +37,5 @@ void	print_targetset(t_targetset *set)
 		print_iprng_struct(seek);
 		seek = seek->right;
 	}
+	printf("\n");
 }

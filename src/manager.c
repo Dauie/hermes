@@ -106,28 +106,7 @@ int					mgr_process_msg(t_mgr *mgr, t_wrkr *wrkr, uint8_t *msgbuff)
 		return (FAILURE);
 	hdr = (t_msg_hdr*)msgbuff;
 	printf("type: %i code: %i\n", hdr->type, hdr->code);
-	if (hdr->type == T_WRK_REQ && hdr->code == C_WRK_REQ)
-	{
-		if (mgr->targets.total > 0)
-		{
-			transfer_work(&wrkr->targets, &mgr->targets, wrkr->send_size);
-			wrkr->send_size *= 2;
-			send_work(wrkr);
-			wrkr->stat.has_work = true;
-			mgr->workers.wrking_cnt += 1;
-		}
-		else
-		{
-			hermes_sendmsgf(wrkr->sock, msg_tc(T_SHUTDOWN, C_SHUTDOWN_SFT), NULL);
-			wrkr->stat.running = false;
-			wrkr->stat.has_work = false;
-			mgr->workers.wrking_cnt -= 1;
-			mgr->workers.cnt -= 1;
-			/*TODO this doesn't work properly... gotta */
-			free(wrkr);
-		}
-	}
-	else if (hdr->type == T_OBJ && hdr->code == C_OBJ_RES)
+	if (hdr->type == T_OBJ && hdr->code == C_OBJ_RES)
 	{
 		if (handle_result_offer(mgr, wrkr, msgbuff) == FAILURE)
 			return (FAILURE);
@@ -305,7 +284,8 @@ void				check_results(t_mgr *mgr)
 	t_ip4           *ip;
 	t_result		*res;
 
-//	printf("result count: %d\n", mgr->results.result_cnt);
+	if (mgr->tpool)
+		pthread_mutex_lock(&mgr->tpool->results_mtx);
 	if (mgr->results.result_cnt > 0)
 	{
 		if (mgr->results.results)
@@ -339,6 +319,37 @@ void				check_results(t_mgr *mgr)
 	}
 }
 
+void				send_workers_work(t_mgr *mgr)
+{
+	t_wrkr		**workers;
+
+	workers = mgr->workers.wrkrs->data;
+	for (int i = 0; i < (int)mgr->workers.maxfd; i++)
+	{
+		if (workers[i])
+		{
+			if (workers[i]->targets.total == 0 && mgr->targets.total > 0)
+			{
+				printf("sending worker work\n");
+				transfer_work(&workers[i]->targets, &mgr->targets, workers[i]->send_size);
+				workers[i]->send_size *= 2;
+				send_work(workers[i]);
+				workers[i]->stat.has_work = true;
+				mgr->workers.wrking_cnt += 1;
+			}
+			else if (workers[i]->targets.total == 0 && mgr->targets.total == 0)
+			{
+				hermes_sendmsgf(workers[i]->sock, msg_tc(T_SHUTDOWN, C_SHUTDOWN_SFT), NULL);
+				mgr->workers.wrking_cnt -= 1;
+				mgr->workers.cnt -= 1;
+				/*TODO this doesn't work properly... gotta */
+				free(workers[i]);
+				workers[i] = NULL;
+			}
+		}
+	}
+}
+
 int					manager_loop(t_mgr *mgr)
 {
 	struct pollfd	*fds;
@@ -360,8 +371,11 @@ int					manager_loop(t_mgr *mgr)
 	{
 		/* if we have workers, see if they've sent us any messages */
 		if (mgr->workers.cnt > 0)
+		{
 			if (poll_wrkr_msgs(mgr, mgr->workers.maxfd, fds) == FAILURE)
 				hermes_error(FAILURE, "poll_wrkr_msgs");
+			send_workers_work(mgr);
+		}
 		if (mgr->tpool)
 			tend_threads(mgr);
 		check_results(mgr);

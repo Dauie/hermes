@@ -66,8 +66,8 @@ t_node				*bst_to_clist(t_node **tree);
 /*
 **	List Functions
 */
-bool				list_add_head(t_node **clist, void **data);
-bool				list_add_tail(t_node **clist, void **data);
+bool				list_add_head(t_node **list, void **data);
+bool				list_add_tail(t_node **list, void **data);
 bool				clist_add_inorder(t_node **clist, void **data);
 bool				list_rm_node(t_node **clist, bool deldata);
 bool				clist_rm_tail(t_node **clist, bool deldata);

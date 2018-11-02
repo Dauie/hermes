@@ -60,10 +60,10 @@ static int		split_ip4range(t_ip4rng *target, t_ip4rng *exclude, t_ip4rng **l, t_
 		*r = new_ip4range();
 		(*l)->start = target->start;
 		(*l)->end = ip4_decrement(exclude->start, 1);
-		(*l)->size = ip4_diff((*l)->start, (*l)->end);
+		(*l)->size = ip4_rangesize((*l)->start, (*l)->end);
 		(*r)->start = ip4_increment(exclude->end, 1);
 		(*r)->end = target->end;
-		(*r)->size = ip4_diff((*r)->start, (*r)->end);
+		(*r)->size = ip4_rangesize((*r)->start, (*r)->end);
 	}
 	else if (ip4_cmp(&exclude->start, &target->end) <= 0 &&
 				ip4_cmp(&exclude->end, &target->end) >= 0)
@@ -71,7 +71,7 @@ static int		split_ip4range(t_ip4rng *target, t_ip4rng *exclude, t_ip4rng **l, t_
 		*l = new_ip4range();
 		(*l)->start = target->start;
 		(*l)->end = ip4_decrement(exclude->start, 1);
-		(*l)->size = ip4_diff((*l)->start, (*l)->end);
+		(*l)->size = ip4_rangesize((*l)->start, (*l)->end);
 	}
 	else if (ip4_cmp(&exclude->end, &target->start) <= 0 &&
 				ip4_cmp(&exclude->start, &target->start) >= 0)
@@ -79,7 +79,7 @@ static int		split_ip4range(t_ip4rng *target, t_ip4rng *exclude, t_ip4rng **l, t_
 		*r = new_ip4range();
 		(*r)->start = ip4_increment(exclude->end, 1);
 		(*r)->end = target->end;
-		(*r)->size = ip4_diff((*r)->start, (*r)->end);
+		(*r)->size = ip4_rangesize((*r)->start, (*r)->end);
 	}
 	return (SUCCESS);
 }

@@ -12,7 +12,7 @@ void				run_scan(t_env *env, t_targetset *targets,
 	{
 		while (targets->ips)
 		{
-//			sleep(1);
+			sleep(1);
 			if (!(result = new_result()))
 				return ;
 			memcpy(&result->ip, (void*)(t_ip4*)targets->ips->data, sizeof(t_ip4));
@@ -31,7 +31,6 @@ void				run_scan(t_env *env, t_targetset *targets,
 			curr = (t_ip4rng*)targets->iprngs->data;
 			while (ntohl(curr->start) <= ntohl(curr->end))
 			{
-//				sleep(1);
 				if (!(result = (t_result*)memalloc(sizeof(t_result))))
 					return;
 				memcpy(&result->ip, &curr->start, sizeof(t_ip4));
