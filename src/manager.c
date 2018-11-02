@@ -162,7 +162,7 @@ int                poll_wrkr_msgs(t_mgr *mgr, nfds_t fditer,
 			}
 		}
 	}
-	fflush(NULL);
+//	fflush(NULL);
 	return (SUCCESS);
 }
 
@@ -321,10 +321,11 @@ void				check_results(t_mgr *mgr)
 
 void				send_workers_work(t_mgr *mgr)
 {
+	int         i;
 	t_wrkr		**workers;
 
 	workers = mgr->workers.wrkrs->data;
-	for (int i = 0; i < (int)mgr->workers.maxfd; i++)
+	for (i = 0; i < (int)mgr->workers.maxfd; i++)
 	{
 		if (workers[i])
 		{
@@ -342,7 +343,7 @@ void				send_workers_work(t_mgr *mgr)
 				hermes_sendmsgf(workers[i]->sock, msg_tc(T_SHUTDOWN, C_SHUTDOWN_SFT), NULL);
 				mgr->workers.wrking_cnt -= 1;
 				mgr->workers.cnt -= 1;
-				/*TODO this doesn't work properly... gotta */
+				/* TODO this doesn't work properly... gotta */
 				free(workers[i]);
 				workers[i] = NULL;
 			}

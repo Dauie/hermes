@@ -97,7 +97,7 @@ int					send_results(t_wmgr *session)
 	if (!session->results.results)
 		return (FAILURE);
 	obj = binnify_resultset(&session->results);
-	if (hermes_send_binn(session->sock, C_OBJ_RES, obj) < 0)
+	if (hermes_send_binn(session->sock, C_OBJ_RES, obj) == FAILURE)
 	{
 		free(obj);
 		return (hermes_error(FAILURE, "send_results()"));
@@ -174,6 +174,14 @@ int					worker_loop(t_wmgr *session)
 		poll_mgr_messages(session, (struct pollfd *)&fds);
 		if (session->tpool)
 		{
+			pthread_mutex_lock(&session->tpool->work_pool_mtx);
+			if (!session->tpool->work_pool->total)
+			{
+				transfer_work(session->tpool->work_pool,
+				              &session->targets,
+				              session->tpool->reqest_amt);
+			}
+			pthread_mutex_unlock(&session->tpool->work_pool_mtx);
 			worker_check_results(session);
 			pthread_mutex_lock(&session->tpool->amt_working_mtx);
 			if (session->tpool->amt_working != session->tpool->tcount)

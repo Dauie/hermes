@@ -121,6 +121,7 @@ ssize_t			hermes_send_binn(int sock, uint8_t code, binn *obj)
 		return (hermes_error(FAILURE, "send() %s", strerror(errno)));
 	if (ret != objlen)
 		return (FAILURE);
+	printf("this some ret : %lu\n", ret);
 	return (SUCCESS);
 }
 
