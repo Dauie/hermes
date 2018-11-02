@@ -177,6 +177,7 @@ int                poll_wrkr_msgs(t_mgr *mgr, nfds_t fditer,
 						printf("POLLHUP hit\n");
 						close(fds[fditer].fd);
 						fds[fditer].fd *= -1;
+						mgr->workers.wrking_cnt--;
 					}
 				}
 			}
@@ -213,56 +214,6 @@ t_node				*wrkrtree_to_fdinxarray(t_node **wrkrtree, nfds_t maxfd)
 	add_wrkrtree_to_array(*wrkrtree, array);
 	del_tree(wrkrtree, false);
 	return (new_node((void **)&array));
-}
-
-void				run_scan(t_env *env, t_targetset *targets,
-                             t_resultset *res_ptr, pthread_mutex_t *res_mtx)
-{
-	t_result	*result;
-	t_ip4rng	*curr;
-
-	if (!env || !targets || !res_ptr)
-		return ;
-	if (targets->total > 0)
-	{
-		while (targets->ips)
-		{
-//			sleep(1);
-			if (!(result = new_result()))
-				return ;
-			memcpy(&result->ip, (void*)(t_ip4*)targets->ips->data, sizeof(t_ip4));
-			pthread_mutex_lock(res_mtx);
-			list_add_head(&res_ptr->results, (void**)&result);
-			res_ptr->result_cnt += 1;
-			res_ptr->byte_size += sizeof(result);
-			pthread_mutex_unlock(res_mtx);
-			if (list_rm_head(&targets->ips, false) == false)
-				break;
-			targets->total--;
-			targets->ip_cnt--;
-		}
-		while (targets->iprngs)
-		{
-			curr = (t_ip4rng*)targets->iprngs->data;
-			while (ntohl(curr->start) <= ntohl(curr->end))
-			{
-//				sleep(1);
-				if (!(result = (t_result*)memalloc(sizeof(t_result))))
-					return;
-				memcpy(&result->ip, &curr->start, sizeof(t_ip4));
-				pthread_mutex_lock(res_mtx);
-				list_add_head(&res_ptr->results, (void **) &result);
-				res_ptr->result_cnt += 1;
-				res_ptr->byte_size += sizeof(result);
-				pthread_mutex_unlock(res_mtx);
-				curr->start = ip4_increment(curr->start, 1);
-				targets->total--;
-			}
-			if (list_rm_head(&targets->iprngs, false) == false)
-				break;
-			targets->rng_cnt--;
-		}
-	}
 }
 
 int					init_workers(t_mgr *mgr, struct pollfd **fds)
@@ -321,9 +272,9 @@ void				tend_threads(t_mgr *mgr)
 	pthread_mutex_lock(&mgr->tpool->results_mtx);
 	while (mgr->tpool->results->results != NULL)
 	{
-		clist_add_head(&mgr->results.results,
+		list_add_head(&mgr->results.results,
 		               &mgr->tpool->results->results->data);
-		clist_rm_head(&mgr->tpool->results->results, false);
+		list_rm_node(&mgr->tpool->results->results, false);
 		mgr->tpool->results->result_cnt -= 1;
 		mgr->tpool->results->byte_size -= sizeof(mgr->tpool->results->byte_size);
 		mgr->results.result_cnt += 1;
@@ -351,24 +302,40 @@ bool				check_if_finished(t_mgr *mgr)
 
 void				check_results(t_mgr *mgr)
 {
+	t_ip4           *ip;
 	t_result		*res;
 
 //	printf("result count: %d\n", mgr->results.result_cnt);
 	if (mgr->results.result_cnt > 0)
 	{
-		res = mgr->results.results->data;
-		printf("result: %u\n", res->ip.s_addr);
-		list_rm_node(&mgr->results.results, true);
-		res = (t_result*)mgr->results.results->data;
-		t_ip4 *ip;
-		if (!res)
-			return ;
-		ip = new_ip4();
-		memcpy(&ip->s_addr, &res->ip.s_addr, sizeof(t_ip4));
-		printf("result: %d\n", ip->s_addr);
-		// TODO
-		clist_rm_head(&mgr->results.results, false);
-		mgr->results.result_cnt--;
+		if (mgr->results.results)
+		{
+			res = (t_result*)mgr->results.results->data;
+			if (res)
+			{
+				printf("result: %u\n", res->ip.s_addr);
+				ip = new_ip4();
+				memcpy(&ip->s_addr, &res->ip.s_addr, sizeof(t_ip4));
+				printf("result: %d\n", ip->s_addr);
+				list_rm_node(&mgr->results.results, true);
+				mgr->results.result_cnt--;
+				if (rm_node_bst(&mgr->targets.ips, ip, ip4_cmp, ip4_min) == false)
+				{
+					if (rm_node_bst(&mgr->targets.iprngs, ip, ip4rng_cmp,
+					                ip4rng_min) == false)
+						return;
+					else
+					{
+						mgr->targets.rng_cnt--;
+					}
+				}
+				else
+				{
+					mgr->targets.ip_cnt--;
+				}
+				mgr->targets.total--;
+			}
+		}
 	}
 }
 

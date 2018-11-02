@@ -2,6 +2,12 @@
 # include "../incl/message.h"
 # include "../incl/binnify.h"
 
+void                sig_kill(int sig)
+{
+	signal(sig, SIG_IGN);
+	hermes_error(EXIT_FAILURE, "kill signal sent -- goodbye\n");
+}
+
 int					handle_obj_offer(t_wmgr *session, uint8_t code, uint8_t *msg)
 {
 	ssize_t			ret;
@@ -28,13 +34,15 @@ int					handle_obj_offer(t_wmgr *session, uint8_t code, uint8_t *msg)
 	if (code == C_OBJ_ENV)
 	{
 		unbinnify_env(&session->env, obj);
-		if (!(session->tpool = init_threadpool(&session->env, &session->targets, &session->results)))
+		if (!(session->tpool = init_threadpool(&session->env,
+		                                       &session->targets, &session->results)))
 			hermes_error(EXIT_FAILURE, "init_threadpool() failure");
 		session->stat.initilized = true;
 		printf("worker initialized\n");
 	}
 	else if (code == C_OBJ_TARGETS)
 	{
+		tpool_event(session->tpool);
 		pthread_mutex_lock(&session->tpool->work_pool_mtx);
 		unbinnify_targetset(&session->targets, obj);
 		pthread_mutex_unlock(&session->tpool->work_pool_mtx);
@@ -46,10 +54,22 @@ int					handle_obj_offer(t_wmgr *session, uint8_t code, uint8_t *msg)
 	return (SUCCESS);
 }
 
+/* int              initialize(t_wmgr **session, uint8_t n_threads)
+ * {
+ *      if (new_tpool(session->tpool) == false)
+ *          return (FAILURE);
+ *      return (SUCCESS);
+ * }
+ */
+
 int					process_message(t_wmgr *session, uint8_t *msgbuff)
 {
 	t_msg_hdr		*hdr;
 
+	/* TODO :
+	 * if initializer is sent:
+	 *      session = initialize(t_wmgr &session, uint8_t n_threads);
+	 */
 	printf("processing message\n");
 	hdr = (t_msg_hdr*)msgbuff;
 	printf("type: %i code: %i\n", hdr->type, hdr->code);
@@ -74,6 +94,9 @@ int					send_results(t_wmgr *session)
 {
 	binn			*obj;
 
+	printf("sending results\n");
+	if (!session->results.results)
+		return (FAILURE);
 	obj = binnify_resultset(&session->results);
 	if (hermes_send_binn(session->sock, C_OBJ_RES, obj) < 0)
 	{
@@ -116,10 +139,15 @@ void				poll_mgr_messages(t_wmgr *session, struct pollfd *fds)
 void				worker_check_results(t_wmgr *session)
 {
 	pthread_mutex_lock(&session->tpool->results_mtx);
-	if (session->results.result_cnt > 5)
+	if (session->results.result_cnt)
 	{
+		printf("sending results\n");
 		if (send_results(session) == FAILURE)
 			hermes_error(FAILURE, "results unsent");
+	}
+	else
+	{
+		printf("no results to send\n");
 	}
 	pthread_mutex_unlock(&session->tpool->results_mtx);
 }
@@ -134,6 +162,7 @@ int					worker_loop(t_wmgr *session)
 	printf("worker loop start\n");
 	while (session->stat.running == true)
 	{
+		signal(SIGINT, sig_kill);
 		poll_mgr_messages(session, (struct pollfd *) &fds);
 		if (session->stat.initilized == true &&
 			session->stat.has_work == false &&
