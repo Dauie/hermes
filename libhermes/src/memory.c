@@ -11,3 +11,12 @@ void		*memalloc(size_t size)
 	bzero(res, size);
 	return (res);
 }
+
+void        safe_free(void *ptr)
+{
+	if (ptr)
+	{
+		free(ptr);
+		ptr = NULL;
+	}
+}

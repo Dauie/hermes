@@ -215,13 +215,13 @@ bool			remove_ip_targetset(t_targetset *set, uint32_t ip)
 			remove_ip_iprng(ip, seek->data, &left, &right);
 			if (left && right)
 			{
-				list_rm_node(&seek, true);
-				list_add_head(&seek, (void **) &right);
-				list_add_head(&seek, (void **) &left);
+				list_rm_node(&set->iprngs, &seek, true);
+				list_add_head(&set->iprngs, (void **) &right);
+				list_add_head(&set->iprngs, (void **) &left);
 			}
 			else if (((t_ip4rng *) seek->data)->size == 0)
 			{
-				list_rm_node(&seek, true);
+				list_rm_node(&set->iprngs, &seek, true);
 				set->rng_cnt -= 1;
 			}
 			set->total -= 1;
@@ -237,7 +237,7 @@ bool			remove_ip_targetset(t_targetset *set, uint32_t ip)
 		{
 			set->ip_cnt -= 1;
 			set->total -= 1;
-			list_rm_node(&seek, true);
+			list_rm_node(&set->ips, &seek, true);
 			return (true);
 		}
 		seek = seek->right;

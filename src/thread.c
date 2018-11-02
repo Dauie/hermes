@@ -43,6 +43,7 @@ void				tpool_kill(t_thread_pool *pool)
 	while (++i < pool->tcount)
 		pool->threads[i].alive = false;
 	sleep(1);
+
 	if (pool->threads)
 		free(pool->threads);
 }

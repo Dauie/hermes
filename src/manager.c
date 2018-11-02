@@ -249,11 +249,11 @@ void				tend_threads(t_mgr *mgr)
 	else
 		pthread_mutex_unlock(&mgr->tpool->amt_working_mtx);
 	pthread_mutex_lock(&mgr->tpool->results_mtx);
-	while (mgr->tpool->results->results != NULL)
+	while (mgr->tpool->results->results)
 	{
 		list_add_head(&mgr->results.results,
 		               &mgr->tpool->results->results->data);
-		list_rm_node(&mgr->tpool->results->results, false);
+		list_rm_node(&mgr->tpool->results->results, &mgr->tpool->results->results, false);
 		mgr->tpool->results->result_cnt -= 1;
 		mgr->tpool->results->byte_size -= sizeof(mgr->tpool->results->byte_size);
 		mgr->results.result_cnt += 1;
@@ -262,19 +262,19 @@ void				tend_threads(t_mgr *mgr)
 	pthread_mutex_unlock(&mgr->tpool->results_mtx);
 }
 
-bool				check_if_finished(t_mgr *mgr)
+bool				mgr_finished(t_mgr *mgr)
 {
 	if (mgr->targets.total > 0 || mgr->workers.wrking_cnt != 0)
 		return (false);
 	if (mgr->tpool)
 	{
-		pthread_mutex_lock(&mgr->tpool->amt_working_mtx);
-		if (mgr->tpool->amt_working != 0)
+		pthread_mutex_lock(&mgr->tpool->results_mtx);
+		if (mgr->tpool->results->result_cnt)
 		{
-			pthread_mutex_unlock(&mgr->tpool->amt_working_mtx);
+			pthread_mutex_unlock(&mgr->tpool->results_mtx);
 			return (false);
 		}
-		pthread_mutex_unlock(&mgr->tpool->amt_working_mtx);
+		pthread_mutex_unlock(&mgr->tpool->results_mtx);
 	}
 	return (true);
 }
@@ -284,8 +284,6 @@ void				check_results(t_mgr *mgr)
 	t_ip4           *ip;
 	t_result		*res;
 
-	if (mgr->tpool)
-		pthread_mutex_lock(&mgr->tpool->results_mtx);
 	if (mgr->results.result_cnt > 0)
 	{
 		if (mgr->results.results)
@@ -293,26 +291,20 @@ void				check_results(t_mgr *mgr)
 			res = (t_result*)mgr->results.results->data;
 			if (res)
 			{
-				printf("result: %u\n", res->ip.s_addr);
 				ip = new_ip4();
 				memcpy(&ip->s_addr, &res->ip.s_addr, sizeof(t_ip4));
 				printf("result: %d\n", ip->s_addr);
-				list_rm_node(&mgr->results.results, true);
+				list_rm_node(&mgr->results.results, &mgr->results.results, true);
 				mgr->results.result_cnt--;
 				if (rm_node_bst(&mgr->targets.ips, ip, ip4_cmp, ip4_min) == false)
 				{
 					if (rm_node_bst(&mgr->targets.iprngs, ip, ip4rng_cmp,
 					                ip4rng_min) == false)
-						return;
-					else
-					{
-						mgr->targets.rng_cnt--;
-					}
+						return ;
+					mgr->targets.rng_cnt--;
 				}
 				else
-				{
 					mgr->targets.ip_cnt--;
-				}
 				mgr->targets.total--;
 			}
 		}
@@ -380,7 +372,7 @@ int					manager_loop(t_mgr *mgr)
 		if (mgr->tpool)
 			tend_threads(mgr);
 		check_results(mgr);
-		if (check_if_finished(mgr) == true)
+		if (mgr_finished(mgr) == true)
 			mgr->stat.running = false;
 	}
 	if (mgr->tpool)

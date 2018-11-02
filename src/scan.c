@@ -21,7 +21,7 @@ void				run_scan(t_env *env, t_targetset *targets,
 			res_ptr->result_cnt += 1;
 			res_ptr->byte_size += sizeof(result);
 			pthread_mutex_unlock(res_mtx);
-			if (list_rm_node(&targets->ips, false) == false)
+			if (list_rm_node(&targets->ips, &targets->ips, true) == false)
 				break;
 			targets->total--;
 			targets->ip_cnt--;
@@ -42,7 +42,7 @@ void				run_scan(t_env *env, t_targetset *targets,
 				curr->start = ip4_increment(curr->start, 1);
 				targets->total--;
 			}
-			if (list_rm_node(&targets->iprngs, false) == false)
+			if (list_rm_node(&targets->iprngs, &targets->iprngs, true) == false)
 				break;
 			targets->rng_cnt--;
 		}

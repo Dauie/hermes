@@ -41,7 +41,7 @@ void			 transfer_work(t_targetset *dst, t_targetset *src, uint32_t reqamt)
 		}
 		else
 			break;
-		if (list_rm_node(&src->ips, false) == true)
+		if (list_rm_node(&src->ips, &src->ips, false) == true)
 		{
 			src->total -= 1;
 			src->ip_cnt -= 1;
@@ -61,7 +61,7 @@ void			 transfer_work(t_targetset *dst, t_targetset *src, uint32_t reqamt)
 			}
 			else
 				break;
-			if (list_rm_node(&src->iprngs, false) == true)
+			if (list_rm_node(&src->iprngs, &src->iprngs, false) == true)
 			{
 				src->total -= rng.size;
 				src->rng_cnt -= 1;
