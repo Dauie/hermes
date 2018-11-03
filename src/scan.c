@@ -1,6 +1,6 @@
 #include "../incl/hermes.h"
 
-void				run_scan(t_env *env, t_targetset *targets, t_resultset *res_ptr, pthread_mutex_t *res_mtx)
+void				test_run_scan(t_env *env, t_targetset *targets, t_resultset *res_ptr, pthread_mutex_t *res_mtx)
 {
 	t_result	*result;
 	t_ip4rng	*curr;
@@ -45,4 +45,13 @@ void				run_scan(t_env *env, t_targetset *targets, t_resultset *res_ptr, pthread
 			targets->rng_cnt--;
 		}
 	}
+}
+
+void				run_scan(t_env *env, t_targetset *targets,
+							t_resultset *res_ptr, pthread_mutex_t *res_mtx)
+{
+	(void)env;
+	(void)targets;
+	(void)res_ptr;
+	(void)res_mtx;
 }

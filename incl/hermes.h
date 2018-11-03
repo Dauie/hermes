@@ -276,11 +276,15 @@ int						worker_loop(t_wmgr *session);
 int						manager_loop(t_mgr *mgr);
 
 int						send_work(t_wrkr *worker);
-void					run_scan(t_env *env, t_targetset *targets, t_resultset *res_ptr, pthread_mutex_t *res_mtx);
+void					test_run_scan(t_env *env, t_targetset *targets,
+									  t_resultset *res_ptr,
+									  pthread_mutex_t *res_mtx);
 
-void					run_scan(t_env *env, t_targetset *targets, t_resultset *res_ptr, pthread_mutex_t *res_mtx);
+void					test_run_scan(t_env *env, t_targetset *targets,
+									  t_resultset *res_ptr,
+									  pthread_mutex_t *res_mtx);
 
-void					kill_threadpool(t_thread_pool *pool);
+void					kill_threadpool(t_thread_pool **pool);
 void					print_ip_struct(t_node *ip4);
 void					print_iprng_struct(t_node *iprng);
 void					print_targetset(t_targetset *set);

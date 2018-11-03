@@ -1,17 +1,18 @@
 # include "../incl/hermes.h"
 
-void				kill_threadpool(t_thread_pool *pool)
+void				kill_threadpool(t_thread_pool **pool)
 {
 	int				i;
 
 	i = -1;
 	if (!pool)
 		return ;
-	while (++i < pool->tcount)
-		pool->threads[i].alive = false;
+	while (++i < (*pool)->tcount)
+		(*pool)->threads[i].alive = false;
 	sleep(1);
-	if (pool->threads)
-		free(pool->threads);
+	if ((*pool)->threads)
+		free((*pool)->threads);
+	free(*pool);
 }
 
 void				*thread_loop(void *thrd)
@@ -34,8 +35,8 @@ void				*thread_loop(void *thrd)
 				pthread_mutex_lock(&thread->pool->amt_working_mtx);
 				thread->pool->amt_working += 1;
 				pthread_mutex_unlock(&thread->pool->amt_working_mtx);
-				run_scan(thread->pool->env, &work,
-						thread->pool->results, &thread->pool->results_mtx);
+				test_run_scan(thread->pool->env, &work,
+							  thread->pool->results, &thread->pool->results_mtx);
 				pthread_mutex_lock(&thread->pool->amt_working_mtx);
 				thread->pool->amt_working -= 1;
 				pthread_mutex_unlock(&thread->pool->amt_working_mtx);

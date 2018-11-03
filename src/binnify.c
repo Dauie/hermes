@@ -27,6 +27,7 @@ static void		add_ip4rnglist_to_binnlist(binn *list, t_node **ip4rng)
 		binn_object_set_uint32(obj, "start", rng->start);
 		binn_object_set_uint32(obj, "end", rng->end);
 		binn_list_add_object(list, obj);
+		binn_free(obj);
 		head = head->right;
 	}
 }
@@ -60,6 +61,7 @@ static void		add_prtrnglist_to_binnlist(binn *list, t_node **prtrngs)
 		binn_object_set_uint32(obj, "start", rng->start);
 		binn_object_set_uint32(obj, "end", rng->end);
 		binn_list_add_object(list, obj);
+		binn_free(obj);
 		head = head->right;
 	}
 }

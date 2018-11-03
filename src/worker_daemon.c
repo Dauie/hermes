@@ -42,6 +42,50 @@ static void				setsockopt_wrapper(int lsock)
 		hermes_error(FAILURE, "setsockopt() %s", strerror(errno));
 }
 
+void					destroy_worker_session(t_wmgr	**session)
+{
+	if ((*session)->results.results)
+		del_list(&(*session)->results.results, true);
+	if ((*session)->targets.ips)
+		del_list(&(*session)->targets.ips, true);
+	if ((*session)->targets.iprngs)
+		del_list(&(*session)->targets.iprngs, true);
+	if ((*session)->env.ports.ports)
+		del_list(&(*session)->env.ports.ports, true);
+	if ((*session)->env.ports.prtrngs)
+		del_list(&(*session)->env.ports.prtrngs, true);
+
+	if ((*session)->env.ack_ports)
+	{
+		if ((*session)->env.ack_ports->ports)
+			del_list(&(*session)->env.ack_ports->ports, true);
+		if ((*session)->env.ack_ports->prtrngs)
+			del_list(&(*session)->env.ack_ports->prtrngs, true);
+		free((*session)->env.ack_ports);
+	}
+
+	if ((*session)->env.syn_ports)
+	{
+		if ((*session)->env.syn_ports->ports)
+			del_list(&(*session)->env.syn_ports->ports, true);
+		if ((*session)->env.syn_ports->prtrngs)
+			del_list(&(*session)->env.syn_ports->prtrngs, true);
+		free((*session)->env.syn_ports);
+	}
+
+	if ((*session)->env.udp_ports)
+	{
+		if ((*session)->env.udp_ports->ports)
+			del_list(&(*session)->env.udp_ports->ports, true);
+		if ((*session)->env.udp_ports->prtrngs)
+			del_list(&(*session)->env.udp_ports->prtrngs, true);
+		free((*session)->env.udp_ports);
+	}
+	if ((*session)->tpool)
+		free((*session)->tpool);
+	free(*session);
+}
+
 int						hermes_daemon(int port)
 {
 	int					lsock;
@@ -65,5 +109,7 @@ int						hermes_daemon(int port)
 	if (listen(lsock, 1) == -1)
 		hermes_error(EXIT_FAILURE, "listen() %s", strerror(errno));
 	printf("Daemon running on port: %d\n", port);
-	return (daemon_loop(session, lsock));
+	daemon_loop(session, lsock);
+	destroy_worker_session(&session);
+	exit(EXIT_SUCCESS);
 }

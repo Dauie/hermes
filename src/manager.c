@@ -50,7 +50,7 @@ void				send_workers_initial_env(t_mgr *mgr)
 
 	env = binnify_env(&mgr->env);
 	send_workers_binn(&mgr->workers, env, C_OBJ_ENV);
-	free(env);
+	binn_free(env);
 }
 
 int					send_work(t_wrkr *worker)
@@ -59,6 +59,7 @@ int					send_work(t_wrkr *worker)
 
 	targets = binnify_targetset(&worker->targets);
 	hermes_send_binn(worker->sock, C_OBJ_TARGETS, targets);
+	binn_free(targets);
 	return (SUCCESS);
 }
 
@@ -328,6 +329,7 @@ int					manager_loop(t_mgr *mgr)
 			mgr->stat.running = false;
 	}
 	if (mgr->tpool)
-		kill_threadpool(mgr->tpool);
+		kill_threadpool(&mgr->tpool);
+	free(fds);
 	return (SUCCESS);
 }
