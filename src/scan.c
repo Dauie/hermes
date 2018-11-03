@@ -15,7 +15,7 @@ void				run_scan(t_env *env, t_targetset *targets,
 			sleep(1);
 			if (!(result = new_result()))
 				return ;
-			memcpy(&result->ip, (void*)(t_ip4*)targets->ips->data, sizeof(t_ip4));
+			result->ip.s_addr = ((t_ip4 *)targets->ips->data)->s_addr;
 			pthread_mutex_lock(res_mtx);
 			list_add_head(&res_ptr->results, (void**)&result);
 			res_ptr->result_cnt += 1;
@@ -33,7 +33,7 @@ void				run_scan(t_env *env, t_targetset *targets,
 			{
 				if (!(result = (t_result*)memalloc(sizeof(t_result))))
 					return;
-				memcpy(&result->ip, &curr->start, sizeof(t_ip4));
+				result->ip.s_addr = curr->start;
 				pthread_mutex_lock(res_mtx);
 				list_add_head(&res_ptr->results, (void **) &result);
 				res_ptr->result_cnt += 1;

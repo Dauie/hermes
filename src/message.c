@@ -114,7 +114,6 @@ ssize_t			hermes_send_binn(int sock, uint8_t code, binn *obj)
 	uint16_t	tc;
 
 	objlen = (uint32_t)binn_size(obj);
-	printf("sending object of len %d\n", objlen);
 	tc = msg_tc(T_OBJ, code);
 	hermes_sendmsgf(sock, tc, "u32", objlen);
 	if ((ret = send(sock, binn_ptr(obj), objlen, MSG_WAITALL)) < 0)
@@ -146,9 +145,7 @@ ssize_t			hermes_recvmsg(int sock, uint8_t *msgbuff)
 		else
 			return (hermes_error(FAILURE, "recv() %s", strerror(errno)));
 	}
-	printf("hdrlen %zu\n", hdrlen);
 	hdr->msglen = ntohs(hdr->msglen);
-	printf("msglen %u\n", hdr->msglen);
 	if (hdr->msglen > 0)
 	{
 		if ((msglen = recv(sock, msgbuff + MSG_HDRSZ, hdr->msglen, MSG_WAITALL)) <= 0)
@@ -160,7 +157,6 @@ ssize_t			hermes_recvmsg(int sock, uint8_t *msgbuff)
 			else
 				return (hermes_error(FAILURE, "recv() %s", strerror(errno)));
 		}
-		printf("recved %zu\n", msglen);
 	}
 	return (hdrlen + msglen);
 }
