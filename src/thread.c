@@ -28,18 +28,14 @@ void				*thread_loop(void *thrd)
 		{
 			transfer_work(&work, thread->pool->work_pool, thread->amt);
 			pthread_mutex_unlock(&thread->pool->work_pool_mtx);
-			thread->amt *= (thread->amt < 512) ? 2 : 1;
+			thread->amt *= (thread->amt < 64) ? 2 : 1;
 			if (work.total > 0)
 			{
 				pthread_mutex_lock(&thread->pool->amt_working_mtx);
 				thread->pool->amt_working += 1;
 				pthread_mutex_unlock(&thread->pool->amt_working_mtx);
-				thread->working = true;
-				printf("thread %d entering scan\n", thread->id);
 				run_scan(thread->pool->env, &work,
 						thread->pool->results, &thread->pool->results_mtx);
-				printf("thread %d left scan\n", thread->id);
-				thread->working = false;
 				pthread_mutex_lock(&thread->pool->amt_working_mtx);
 				thread->pool->amt_working -= 1;
 				pthread_mutex_unlock(&thread->pool->amt_working_mtx);
@@ -81,9 +77,7 @@ t_thread_pool			*init_threadpool(t_env *env, t_targetset *workpool, t_resultset 
 		pool->threads[i].amt = 1;
 		pool->threads[i].pool = pool;
 		pool->threads[i].alive = true;
-		pool->threads[i].working = false;
 		pthread_create(&pool->threads[i].thread, NULL, thread_loop, &pool->threads[i]);
 	}
 	return (pool);
 }
-

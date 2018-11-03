@@ -94,6 +94,7 @@ static void		add_resultlist_to_binnlist(binn *list, t_node **results)
 	while (head)
 	{
 		result = head->data;
+		printf("%s worker result\n", inet_ntoa(result->ip));
 		res_binn = binn_object();
 		binn_object_set_uint32(res_binn, "ip", result->ip.s_addr);
 		if (result->port_stats)
@@ -150,7 +151,6 @@ binn			*binnify_targetset(t_targetset *set)
 		hermes_error(FAILURE, "binn_object()");
 		return (NULL);
 	}
-	printf("binnifying targets total: %d ip_cnt: %d  rng_cnt: %d\n", set->total, set->ip_cnt, set->rng_cnt);
 	binn_object_set_uint32(obj, "total", set->total);
 	binn_object_set_uint32(obj, "ip_cnt", set->ip_cnt);
 	binn_object_set_uint32(obj, "rng_cnt", set->rng_cnt);

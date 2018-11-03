@@ -8,10 +8,8 @@ int					handle_obj_offer(t_wmgr *session, uint8_t code, uint8_t *msg)
 	binn			*obj;
 	t_obj_hdr		*hdr;
 
-	printf("handling obj offer\n");
 	hdr = (t_obj_hdr *)msg;
 	hdr->objlen = ntohl(hdr->objlen);
-	printf("%i %i %i %u\n", hdr->type, hdr->code, hdr->msglen, hdr->objlen);
 	if (hdr->objlen <= 0)
 		return (FAILURE);
 	if (!(obj = (binn *)malloc(sizeof(uint8_t) * hdr->objlen)))
@@ -24,22 +22,18 @@ int					handle_obj_offer(t_wmgr *session, uint8_t code, uint8_t *msg)
 		session->stat.running = false;
 		return (FAILURE);
 	}
-	printf("recved obj %zu\n", ret);
 	if (code == C_OBJ_ENV)
 	{
 		unbinnify_env(&session->env, obj);
 		if (!(session->tpool = init_threadpool(&session->env, &session->targets, &session->results)))
 			hermes_error(EXIT_FAILURE, "init_threadpool() failure");
-		printf("worker initialized\n");
 	}
 	else if (code == C_OBJ_TARGETS)
 	{
 		pthread_mutex_lock(&session->tpool->work_pool_mtx);
 		unbinnify_targetset(&session->targets, obj);
 		pthread_mutex_unlock(&session->tpool->work_pool_mtx);
-		session->stat.work_requested = false;
 		session->stat.has_work = true;
-		printf("received targetset\n");
 	}
 	free(obj);
 	return (SUCCESS);
@@ -49,9 +43,7 @@ int					process_message(t_wmgr *session, uint8_t *msgbuff)
 {
 	t_msg_hdr		*hdr;
 
-	printf("processing message\n");
 	hdr = (t_msg_hdr*)msgbuff;
-	printf("type: %i code: %i\n", hdr->type, hdr->code);
 	if (hdr->type == T_OBJ)
 		handle_obj_offer(session, hdr->code, msgbuff);
 	else if (hdr->type == T_SHUTDOWN)
@@ -80,7 +72,7 @@ int					send_results(t_wmgr *session)
 		free(obj);
 		return (hermes_error(FAILURE, "send_results()"));
 	}
-	free(obj);
+	binn_free(obj);
 	return (SUCCESS);
 }
 
@@ -130,15 +122,11 @@ int					worker_loop(t_wmgr *session)
 	memset(&fds, 0, sizeof(fds));
 	fds[0].fd = session->sock;
 	fds[0].events = POLLIN;
-	printf("worker loop start\n");
 	while (session->stat.running == true)
 	{
 		poll_mgr_messages(session, (struct pollfd *)&fds);
 		if (session->tpool)
-		{
 			worker_check_results(session);
-			/* Check if we need to send results to manager */
-		}
 	}
 	return (SUCCESS);
 }

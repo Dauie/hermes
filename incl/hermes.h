@@ -132,8 +132,6 @@ typedef struct			s_env
 typedef struct			t_status
 {
 	uint8_t				running: 1;
-	uint8_t				initilized: 1;
-	uint8_t				work_requested: 1;
 	uint8_t				has_work: 1;
 }						t_stat;
 
@@ -178,7 +176,6 @@ typedef struct 			s_thread
 	uint8_t				id;
 	pthread_t			thread;
 	struct s_thread_pool*pool;
-	volatile bool		working;
 	volatile bool		alive;
 	uint16_t			amt;
 }						t_thread;
@@ -186,7 +183,7 @@ typedef struct 			s_thread
 typedef struct 			s_thread_pool
 {
 	uint16_t 			tcount;
-	uint16_t			amt_working;
+	volatile uint16_t	amt_working;
 	uint16_t			reqest_amt;
 	t_thread			*threads;
 	t_resultset			*results;
@@ -281,7 +278,7 @@ int						manager_loop(t_mgr *mgr);
 int						send_work(t_wrkr *worker);
 void					run_scan(t_env *env, t_targetset *targets, t_resultset *res_ptr, pthread_mutex_t *res_mtx);
 
-void				run_scan(t_env *env, t_targetset *targets, t_resultset *res_ptr, pthread_mutex_t *res_mtx);
+void					run_scan(t_env *env, t_targetset *targets, t_resultset *res_ptr, pthread_mutex_t *res_mtx);
 
 void					kill_threadpool(t_thread_pool *pool);
 void					print_ip_struct(t_node *ip4);

@@ -15,7 +15,6 @@ void				run_scan(t_env *env, t_targetset *targets, t_resultset *res_ptr, pthread
 			if (!(result = new_result()))
 				return ;
 			result->ip.s_addr = ((t_ip4 *)targets->ips->data)->s_addr;
-			printf("adding %s from ips\n", inet_ntoa(result->ip));
 			pthread_mutex_lock(res_mtx);
 			list_add_head(&res_ptr->results, (void **)&result);
 			res_ptr->result_cnt += 1;
@@ -34,7 +33,6 @@ void				run_scan(t_env *env, t_targetset *targets, t_resultset *res_ptr, pthread
 				if (!(result = (t_result *)memalloc(sizeof(t_result))))
 					return;
 				result->ip.s_addr = curr->start;
-				printf("adding %s from iprngs\n", inet_ntoa(result->ip));
 				pthread_mutex_lock(res_mtx);
 				list_add_head(&res_ptr->results, (void **) &result);
 				res_ptr->result_cnt += 1;

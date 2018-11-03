@@ -96,11 +96,9 @@ void			get_resultlist_from_binnlist(binn *list, t_node **clist, t_targetset *acc
 		res = new_result();
 		obj = binn_list_object(list, i);
 		binn_object_get_uint32(obj, "ip", &res->ip.s_addr);
-		printf("removing %s\n", inet_ntoa(res->ip));
 		remove_ip_targetset(account, res->ip.s_addr);
 		if (binn_object_get_list(obj, "port_stats", (void **)&portstats) == true)
 		{
-			printf("I think I have portstats\n");
 			get_portstatlist_from_binnlist(portstats, &res->port_stats);
 		}
 		list_add_head(clist, (void **) &res);
@@ -121,19 +119,12 @@ void			unbinnify_resultset(t_resultset *set, t_targetset *work,  binn *obj)
 
 void			unbinnify_targetset(t_targetset *set, binn *obj)
 {
-	uint32_t	total;
-	uint32_t	ip_cnt;
-	uint32_t	rng_cnt;
 	binn		*ip4list;
 	binn		*ip4rnglist;
 
-	binn_object_get_uint32(obj, "total", &total);
-	binn_object_get_uint32(obj, "ip_cnt", &ip_cnt);
-	binn_object_get_uint32(obj, "rng_cnt", &rng_cnt);
-	set->total += total;
-	set->rng_cnt += rng_cnt;
-	set->ip_cnt += ip_cnt;
-	printf("targetset: total: %d | range count: %d | ip count %d\n", set->total, set->rng_cnt, set->ip_cnt);
+	binn_object_get_uint32(obj, "total", &set->total);
+	binn_object_get_uint32(obj, "ip_cnt", &set->ip_cnt);
+	binn_object_get_uint32(obj, "rng_cnt", &set->rng_cnt);
 	if (binn_object_get_list(obj, "ips", (void **)&ip4list) == true)
 		get_ip4list_from_binnlist(&set->ips, ip4list);
 	if (binn_object_get_list(obj, "iprngs", (void**)&ip4rnglist) == true)

@@ -68,10 +68,8 @@ int					handle_result_offer(t_mgr *mgr, t_wrkr *wrkr, uint8_t *msg)
 	binn			*obj;
 	t_obj_hdr		*hdr;
 
-	printf("Entering handle_result_offer()\n");
 	hdr = (t_obj_hdr *)msg;
 	hdr->objlen = ntohl(hdr->objlen);
-	printf("%u\n", hdr->objlen);
 	if (hdr->objlen <= 0)
 		return (FAILURE);
 	if (!(obj = (binn *)memalloc(sizeof(uint8_t) * hdr->objlen)))
@@ -87,14 +85,11 @@ int					handle_result_offer(t_mgr *mgr, t_wrkr *wrkr, uint8_t *msg)
 	{
 		if (mgr->tpool)
 			pthread_mutex_lock(&mgr->tpool->results_mtx);
-		printf("got mutex\n");
 		unbinnify_resultset(&mgr->results, &wrkr->targets, obj);
 		if (mgr->tpool)
 			pthread_mutex_unlock(&mgr->tpool->results_mtx);
-		printf("gave mutex\n");
 	}
 	free(obj);
-	printf("Leaving handle_result_offer()\n");
 	return (SUCCESS);
 }
 
@@ -119,7 +114,6 @@ void				poll_wrkr_msgs(t_mgr *mgr, nfds_t fditer, struct pollfd *fds)
 	t_wrkr			**workers;
 	ssize_t 		ret;
 
-	printf("check workers called\n");
 	workers = mgr->workers.wrkrs->data;
 	ret = poll(fds, fditer, 500);
 	if (ret < 0)
@@ -134,12 +128,10 @@ void				poll_wrkr_msgs(t_mgr *mgr, nfds_t fditer, struct pollfd *fds)
 		printf("timeout\n");
 	else
 	{
-		printf("poll says mgr got a message\n");
 		while (fditer--)
 		{
 			if (fds[fditer].revents & POLLIN)
 			{
-				printf("entering to recv msg\n");
 				if (hermes_recvmsg(fds[fditer].fd, msgbuff) > 0)
 					mgr_process_msg(mgr, workers[fds[fditer].fd], msgbuff);
 			}
@@ -261,10 +253,13 @@ void				check_results(t_mgr *mgr)
 		pthread_mutex_lock(&mgr->tpool->results_mtx);
 	if (mgr->results.result_cnt > 0)
 	{
-		res = mgr->results.results->data;
-		printf("result: %u\n", res->ip.s_addr);
-		list_rm_node(&mgr->results.results, &mgr->results.results, true);
-		mgr->results.result_cnt--;
+		while (mgr->results.results)
+		{
+			res = mgr->results.results->data;
+			printf("result: %s\n", inet_ntoa(res->ip));
+			list_rm_node(&mgr->results.results, &mgr->results.results, true);
+			mgr->results.result_cnt--;
+		}
 	}
 	if (mgr->tpool)
 		pthread_mutex_unlock(&mgr->tpool->results_mtx);
@@ -285,15 +280,18 @@ void				send_workers_work(t_mgr *mgr)
 				transfer_work(&workers[i]->targets, &mgr->targets, workers[i]->send_size);
 				workers[i]->send_size *= 2;
 				send_work(workers[i]);
-				workers[i]->stat.has_work = true;
-				mgr->workers.wrking_cnt += 1;
+				if (workers[i]->stat.has_work == false)
+				{
+					workers[i]->stat.has_work = true;
+					mgr->workers.wrking_cnt += 1;
+				}
 			}
 			else if (workers[i]->targets.total == 0 && mgr->targets.total == 0)
 			{
 				hermes_sendmsgf(workers[i]->sock, msg_tc(T_SHUTDOWN, C_SHUTDOWN_SFT), NULL);
 				mgr->workers.wrking_cnt -= 1;
 				mgr->workers.cnt -= 1;
-				/*TODO this doesn't work properly... gotta */
+				workers[i]->stat.has_work = false;
 				free(workers[i]);
 				workers[i] = NULL;
 			}
@@ -304,20 +302,17 @@ void				send_workers_work(t_mgr *mgr)
 int					manager_loop(t_mgr *mgr)
 {
 	struct pollfd	*fds;
-	t_resultset		results;
 
 	fds = NULL;
-	memset(&results, 0, sizeof(t_resultset));
+	memset(&mgr->results, 0, sizeof(t_resultset));
 	mgr->stat.running = true;
 	if (mgr->env.opts.thread_count > 0)
 	{
-		if (!(mgr->tpool = init_threadpool(&mgr->env, &mgr->thread_targets, &results)))
+		if (!(mgr->tpool = init_threadpool(&mgr->env, &mgr->thread_targets, &mgr->results)))
 			hermes_error(EXIT_FAILURE, "init_threadpool()");
 	}
 	if (mgr->workers.cnt > 0)
-	{
 		init_workers(mgr, &fds);
-	}
 	while (mgr->stat.running == true)
 	{
 		/* if we have workers, see if they've sent us any messages */
