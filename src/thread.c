@@ -71,6 +71,7 @@ int						find_live_interface_indx(int sock)
 
 int						prepare_pcap_rx()
 {
+	return (SUCCESS);
 }
 
 int						prepare_thread_tx_ring(t_thread *thread)
@@ -89,7 +90,10 @@ int						prepare_thread_tx_ring(t_thread *thread)
 		thread->alive = false;
 		return (hermes_error(FAILURE, "socket() %s", strerror(errno)));
 	}
-	setsockopt(thread->sock, SOL_SOCKET, IP_HDRINCL, )
+	int on = 1;
+	if (setsockopt(thread->sock, SOL_SOCKET, IP_HDRINCL, &on, sizeof(on)) < 0)
+		return (hermes_error(FAILURE, "setsockopt() %s", strerror(errno)));
+
 	memset(&tpr, 0, sizeof(struct tpacket_req));
 	(void)tpr;
 	memset(&sll_loc, 0, sizeof(struct sockaddr_ll));
