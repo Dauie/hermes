@@ -14,10 +14,16 @@
 # include <netinet/in.h>
 # include <netdb.h>
 # include <netinet/ip_icmp.h>
+# include <ifaddrs.h>
+# include <linux/if_ether.h> /* TODO not portable */
+# include <linux/if_packet.h> /* TODO not portable */
+# include <net/if.h>
+# include <sys/ioctl.h>
+# include <sys/mman.h>
 
 # include "defined.h"
 
-# define HERMES_VERSION "v0.0.1"
+# define LOOPBACK_ADDR 0x7F000001
 
 typedef struct sockaddr_in sockaddr_in;
 
@@ -178,12 +184,13 @@ typedef struct 			s_thread
 	struct s_thread_pool*pool;
 	volatile bool		alive;
 	uint16_t			amt;
+	int					sock;
 }						t_thread;
 
 typedef struct 			s_thread_pool
 {
-	uint16_t 			tcount;
 	volatile uint16_t	amt_working;
+	uint16_t 			thread_amt;
 	uint16_t			reqest_amt;
 	t_thread			*threads;
 	t_resultset			*results;

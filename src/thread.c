@@ -1,13 +1,15 @@
+#include <net/if.h>
 # include "../incl/hermes.h"
 
-void				kill_threadpool(t_thread_pool **pool)
+
+void					kill_threadpool(t_thread_pool **pool)
 {
-	int				i;
+	int					i;
 
 	i = -1;
 	if (!pool)
 		return ;
-	while (++i < (*pool)->tcount)
+	while (++i < (*pool)->thread_amt)
 		(*pool)->threads[i].alive = false;
 	sleep(1);
 	if ((*pool)->threads)
@@ -15,10 +17,99 @@ void				kill_threadpool(t_thread_pool **pool)
 	free(*pool);
 }
 
-void				*thread_loop(void *thrd)
+int						find_live_interface_indx(int sock)
 {
-	t_targetset		work;
-	t_thread		*thread;
+	struct ifreq		ifr;
+	struct ifaddrs		*addrs;
+
+	bzero(&ifr, sizeof(struct ifreq));
+	if (getifaddrs(&addrs) == -1)
+	{
+		hermes_error(FAILURE, "getifaddrs() %s", strerror(errno));
+		return (-1);
+	}
+	while (addrs)
+	{
+		if (addrs->ifa_addr &&
+			(addrs->ifa_flags & IFF_UP) &&
+				(addrs->ifa_flags & IFF_RUNNING))
+		{
+			if (addrs->ifa_addr->sa_family == AF_INET &&
+				((struct sockaddr_in *)addrs->ifa_addr)->sin_addr.s_addr !=
+						htonl(LOOPBACK_ADDR))
+			{
+				strcpy(ifr.ifr_ifrn.ifrn_name, addrs->ifa_name);
+				if ((ioctl(sock, SIOCGIFINDEX, &ifr)) < 0)
+					return (hermes_error(FAILURE, "ioctl() %s", strerror(errno)));
+				break;
+			}
+		}
+	}
+	freeifaddrs(addrs);
+	return (ifr.ifr_ifindex);
+}
+
+/*
+** Transmission process is similar to capture as shown below.
+**
+**[setup]          socket() -------> creation of the transmission socket
+**                 setsockopt() ---> allocation of the circular buffer (ring)
+**                                   option: PACKET_TX_RING
+**                 bind() ---------> bind transmission socket with a network interface
+**                 mmap() ---------> mapping of the allocated buffer to the
+**                                   user process
+**
+**[transmission]   poll() ---------> wait for free packets (optional)
+**                 send() ---------> send all packets that are set as ready in
+**                                   the ring
+**                                   The flag MSG_DONTWAIT can be used to return
+**                                   before end of transfer.
+**
+**[shutdown]  close() --------> destruction of the transmission socket and
+**                              deallocation of all associated resources.
+*/
+int						prepare_thread_tx_ring(t_thread *thread)
+{
+	struct tpacket_req	tp;
+	struct sockaddr_ll	sll_loc;
+	int					ifinx;
+	size_t				ring_size;
+
+	ring_size = 0;
+	/* TODO figure out block/frame sizes for mmap tx_ring */
+	memset(&sll_loc, 0, sizeof(struct sockaddr_ll));
+	thread->sock = socket(AF_PACKET, SOCK_RAW, htons(ETH_P_ALL));				/* step 1 */
+	if (thread->sock == -1)
+	{
+		thread->alive = false;
+		return (hermes_error(FAILURE, "socket() %s", strerror(errno)));
+	}
+
+
+	memset(&sll_loc, 0, sizeof(struct sockaddr_ll));
+	sll_loc.sll_family = PF_PACKET;
+	sll_loc.sll_protocol = htons(ETH_P_ALL);
+	if ((ifinx = find_live_interface_indx(thread->sock)) < 0)
+	{
+		thread->alive = false;
+		return (FAILURE);
+	}
+	sll_loc.sll_ifindex = ifinx;
+	/* TODO possibly increase iface mtu */
+	if (bind(thread->sock, (sockaddr *)&sll_loc, sizeof(struct sockaddr_ll)) == -1)
+	{
+		thread->alive = false;
+		return (hermes_error(FAILURE, "bind() %s", strerror(errno)));
+	}
+
+	mmap(0, ring_size, PROT_READ|PROT_WRITE, MAP_SHARED, thread->sock, 0);
+	return (SUCCESS);
+}
+
+void					*thread_loop(void *thrd)
+{
+	t_targetset			work;
+	t_thread			*thread;
 
 	thread = (t_thread *)thrd;
 	memset(&work, 0, sizeof(t_targetset));
@@ -35,8 +126,8 @@ void				*thread_loop(void *thrd)
 				pthread_mutex_lock(&thread->pool->amt_working_mtx);
 				thread->pool->amt_working += 1;
 				pthread_mutex_unlock(&thread->pool->amt_working_mtx);
-				test_run_scan(thread->pool->env, &work,
-							  thread->pool->results, &thread->pool->results_mtx);
+				test_run_scan(thread->pool->env, &work, thread->pool->results,
+						&thread->pool->results_mtx);
 				pthread_mutex_lock(&thread->pool->amt_working_mtx);
 				thread->pool->amt_working -= 1;
 				pthread_mutex_unlock(&thread->pool->amt_working_mtx);
@@ -51,7 +142,8 @@ void				*thread_loop(void *thrd)
 	return (NULL);
 }
 
-t_thread_pool			*init_threadpool(t_env *env, t_targetset *workpool, t_resultset *results)
+t_thread_pool			*init_threadpool(t_env *env, t_targetset *workpool,
+											t_resultset *results)
 {
 	int					i;
 	t_thread_pool		*pool;
@@ -67,12 +159,12 @@ t_thread_pool			*init_threadpool(t_env *env, t_targetset *workpool, t_resultset 
 		hermes_error(EXIT_FAILURE, "pthread_mutex_init()");
 	if (pthread_mutex_init(&pool->amt_working_mtx, NULL) != 0)
 		hermes_error(EXIT_FAILURE, "pthread_mutex_init()");
-	pool->tcount = env->opts.thread_count;
-	pool->reqest_amt = pool->tcount;
+	pool->thread_amt = env->opts.thread_count;
+	pool->reqest_amt = pool->thread_amt;
 	pool->results = results;
 	pool->work_pool = workpool;
 	pool->env = env;
-	while (++i < pool->tcount)
+	while (++i < pool->thread_amt)
 	{
 		pool->threads[i].id = (uint8_t)(i + 2);
 		pool->threads[i].amt = 1;

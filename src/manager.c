@@ -214,7 +214,7 @@ int					init_workers(t_mgr *mgr, struct pollfd **fds)
 void				tend_threads(t_mgr *mgr)
 {
 	pthread_mutex_lock(&mgr->tpool->amt_working_mtx);
-	if (mgr->tpool->amt_working != mgr->tpool->tcount)
+	if (mgr->tpool->amt_working != mgr->tpool->thread_amt)
 	{
 		pthread_mutex_unlock(&mgr->tpool->amt_working_mtx);
 		pthread_mutex_lock(&mgr->tpool->work_pool_mtx);

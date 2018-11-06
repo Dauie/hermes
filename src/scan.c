@@ -47,11 +47,8 @@ void				test_run_scan(t_env *env, t_targetset *targets, t_resultset *res_ptr, pt
 	}
 }
 
-void				run_scan(t_env *env, t_targetset *targets,
-							t_resultset *res_ptr, pthread_mutex_t *res_mtx)
+void				run_scan(t_thread *thread, t_targetset *targets)
 {
-	(void)env;
+	(void)thread;
 	(void)targets;
-	(void)res_ptr;
-	(void)res_mtx;
 }

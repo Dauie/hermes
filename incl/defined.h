@@ -9,7 +9,8 @@
 # define PORT_MAX (65535)
 # define MAX_PKT_DATA (65535 - 20 - 20)
 # define MAX_THREADS (256)
-# define MAX_HOSTGROUP (4096)
+# define MAX_HST_HSTGRP (4096)
+# define MAX_THRD_HSTGRP (512)
 # define MIN_HOSTGROUP (1)
 
 # ifndef fast_swap_ints
