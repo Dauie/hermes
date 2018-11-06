@@ -68,9 +68,14 @@ int						find_live_interface_indx(int sock)
 **[shutdown]  close() --------> destruction of the transmission socket and
 **                              deallocation of all associated resources.
 */
+
+int						prepare_pcap_rx()
+{
+}
+
 int						prepare_thread_tx_ring(t_thread *thread)
 {
-	struct tpacket_req	tp;
+	struct tpacket_req	tpr;
 	struct sockaddr_ll	sll_loc;
 	int					ifinx;
 	size_t				ring_size;
@@ -78,16 +83,17 @@ int						prepare_thread_tx_ring(t_thread *thread)
 	ring_size = 0;
 	/* TODO figure out block/frame sizes for mmap tx_ring */
 	memset(&sll_loc, 0, sizeof(struct sockaddr_ll));
-	thread->sock = socket(AF_PACKET, SOCK_RAW, htons(ETH_P_ALL));				/* step 1 */
+	thread->sock = socket(PF_PACKET, SOCK_DGRAM, htons(ETH_P_ALL));				/* step 1 */
 	if (thread->sock == -1)
 	{
 		thread->alive = false;
 		return (hermes_error(FAILURE, "socket() %s", strerror(errno)));
 	}
-
-
+	setsockopt(thread->sock, SOL_SOCKET, IP_HDRINCL, )
+	memset(&tpr, 0, sizeof(struct tpacket_req));
+	(void)tpr;
 	memset(&sll_loc, 0, sizeof(struct sockaddr_ll));
-	sll_loc.sll_family = PF_PACKET;
+	sll_loc.sll_family = AF_PACKET;
 	sll_loc.sll_protocol = htons(ETH_P_ALL);
 	if ((ifinx = find_live_interface_indx(thread->sock)) < 0)
 	{
@@ -101,7 +107,6 @@ int						prepare_thread_tx_ring(t_thread *thread)
 		thread->alive = false;
 		return (hermes_error(FAILURE, "bind() %s", strerror(errno)));
 	}
-
 	mmap(0, ring_size, PROT_READ|PROT_WRITE, MAP_SHARED, thread->sock, 0);
 	return (SUCCESS);
 }
