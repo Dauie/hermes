@@ -1,17 +1,19 @@
-# include "../../incl/job.h"
-# include "../../incl/parser.h"
+#include "../../incl/hermes.h"
 
-void			h_append_output(t_job *job)
+int			h_append_output(t_mgr *mgr)
 {
-	job->options.bitops.apnd_file = TRUE;
+	mgr->env.opts.bitops.apnd_file = true;
+	return (SUCCESS);
 }
 
-void			h_norm_output(t_job *job)
+int			h_norm_output(t_mgr *mgr)
 {
-	job->options.bitops.output_norm = TRUE;
+	mgr->env.opts.bitops.output_norm = true;
+	return (SUCCESS);
 }
 
-void			h_show_only_open_ports(t_job *job)
+int			h_show_only_open_ports(t_mgr *mgr)
 {
-	job->options.bitops.show_only_open_ports = TRUE;
+	mgr->env.opts.bitops.show_only_open_ports = true;
+	return (SUCCESS);
 }

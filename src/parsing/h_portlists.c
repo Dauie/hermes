@@ -1,42 +1,62 @@
-#include "../../incl/job.h"
+#include "../../incl/hermes.h"
 #include "../../incl/parser.h"
 
-void 			h_ack_portlist(t_job *job, char *input)
+int			h_ack_portset(t_mgr *mgr, char *input)
 {
-	if (handle_port(&job->d_ack_portlist, input) == FAILURE)
-		return ; /* TODO hermes_error() */
-	job->options.bitops.do_ack_discov = TRUE;
+	if (!input)
+		return (hermes_error(EXIT_FAILURE, "no ack port_stats specified"));
+	if (!mgr->env.ack_ports)
+		mgr->env.ack_ports = new_portset();
+	if (handle_port(mgr->env.ack_ports, input) == FAILURE)
+		return (hermes_error(EXIT_FAILURE, "issue parsing ack port_stats")) ;
+	mgr->env.opts.bitops.do_ack_discov = true;
+	return (SUCCESS);
 }
 
-void 			h_scan_portlist(t_job *job, char *input)
+int			h_scan_portset(t_mgr *mgr, char *input)
 {
-	if (handle_port(&job->scan_portlist, input) == FAILURE)
-		return ; /* TODO hermes_error() */
-	job->options.bitops.scan_ports_spec = TRUE;
+	if (!input)
+		return (hermes_error(EXIT_FAILURE, "no port_stats specified"));
+	if (handle_port(&mgr->env.ports, input) == FAILURE)
+		return (hermes_error(EXIT_FAILURE, "issue parsing port_stats"));
+	return (SUCCESS);
 }
 
-void 			h_syn_portlist(t_job *job, char *input)
+int			h_syn_portset(t_mgr *mgr, char *input)
 {
-	if (handle_port(&job->d_syn_portlist, input) == FAILURE)
-		return ; /* TODO hermes_error() */
-	job->options.bitops.do_syn_discov = TRUE;
+	if (!input)
+		return (hermes_error(EXIT_FAILURE, "no syn port_stats specified"));
+	if (handle_port(mgr->env.syn_ports, input) == FAILURE)
+		return (hermes_error(EXIT_FAILURE, "issue parsing syn port_stats"));
+	mgr->env.opts.bitops.do_syn_discov = true;
+	return (SUCCESS);
 }
 
-void 			h_udp_portlist(t_job *job, char *input)
+int			h_udp_portset(t_mgr *mgr, char *input)
 {
-	if (handle_port(&job->d_udp_portlist, input) == FAILURE)
-		return ; /* TODO hermes_error() */
-	job->options.bitops.do_udp_discov = TRUE;
+	if (!input)
+		return (hermes_error(EXIT_FAILURE, "no udp port_stats specified"));
+	if (!mgr->env.udp_ports)
+		mgr->env.udp_ports = new_portset();
+	if (handle_port(mgr->env.udp_ports, input) == FAILURE)
+		return hermes_error(EXIT_FAILURE, "issue parsing udp port_stats");
+	mgr->env.opts.bitops.do_udp_discov = true;
+	return (SUCCESS);
 }
 
-void			h_exclude_ports(t_job *job, char *input)
+int			h_exclude_ports(t_mgr *mgr, char *input)
 {
-	if (handle_port(&job->exclude_portlist, input) == FAILURE)
-		return ; /* TODO hermes_error() */
-	job->options.bitops.exclude_ports_spec = TRUE;
+	if (!input)
+		return (hermes_error(EXIT_FAILURE, "no exclude port_stats specified"));
+	if (!mgr->exclude_ports)
+		mgr->exclude_ports = new_portset();
+	if (handle_port(mgr->exclude_ports, input) == FAILURE)
+		return (hermes_error(EXIT_FAILURE, "issue parsing exclude port_stats"));
+	return (SUCCESS);
 }
 
-void			h_dont_randomize_ports(t_job *job)
+int			h_dont_randomize_ports(t_mgr *mgr)
 {
-	job->options.bitops.ports_no_random = TRUE;
+	mgr->env.opts.bitops.no_rand_ports = true;
+	return (SUCCESS);
 }

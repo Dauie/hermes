@@ -1,148 +1,100 @@
-# include "sys/errno.h"
-# include "../incl/libhermes.h"
+#include <stdbool.h>
+#include "sys/errno.h"
+#include "../incl/libhermes.h"
 
-t_node			*new_node(void)
+bool			list_add_head(t_node **list, void **data)
 {
-	t_node		*node;
+	t_node		*new;
 
-	if (!(node = (t_node*)memalloc(sizeof(t_node))))
-		hermes_error(errno, TRUE, 2, "malloc()", strerror(errno));
-	return (node);
+	if (!(new = new_node(data)))
+		return (false);
+	if (*list == NULL)
+	{
+		*list = new;
+		return (true);
+	}
+	new->right = *list;
+	(*list)->left = new;
+	*list = new;
+	return (true);
 }
 
-void			del_node(t_node **node)
+bool			list_add_tail(t_node **list, void **data)
 {
-	if (!node || !*node)
+	t_node		*new;
+	t_node		*seek;
+
+	new = new_node(data);
+	if (*list == NULL)
+	{
+		*list = new;
+		return (true);
+	}
+	seek = *list;
+	while (seek->right)
+		seek = seek->right;
+	seek->right = new;
+	new->left = seek;
+	return (true);
+}
+
+bool			list_rm_node(t_node **list, t_node **rm, bool deldata)
+{
+	t_node		*del;
+
+	if (!*list || !*rm)
+		return (false);
+	del = *list;
+	while (del && del != *rm)
+		del = del->right;
+	if (!del)
+		return (false);
+	if (del == *list)
+		*list = (*list)->right;
+	if(del->right != NULL)
+		del->right->left = del->left;
+	if(del->left != NULL)
+		del->left->right = del->right;
+	del_node(&del, deldata);
+	return (true);
+}
+
+void			del_list(t_node **clist, bool deldata)
+{
+	t_node		*list;
+	t_node		*tmp;
+
+	if (!clist || !*clist)
 		return ;
-	if ((*node)->data)
+	list = *clist;
+	while (list)
 	{
-		free((*node)->data);
-		(*node)->data = NULL;
+		tmp = list;
+		list = list->right;
+		del_node(&tmp, deldata);
 	}
-	free(*node);
-	*node = NULL;
+	*clist = NULL;
 }
 
-t_node			*bst_search(t_node **tree, void *data, int (*cmp)(void *, void *))
+void		bst_to_clist_loop(t_node **tree, t_node **clist)
 {
-	t_node		*cur;
-
-	cur = *tree;
-	while (cur)
-	{
-		if (cmp(cur->data, data) < 0)
-			cur = cur->left;
-		else if (cmp(cur->data, data) > 0)
-			cur = cur->right;
-		else
-			return (cur);
-	}
-	return (NULL);
-}
-
-t_node			*tree_search(t_node **tree, void *data, int (*cmp)(void *, void *))
-{
-	if ((*tree)->left)
-		return (tree_search(&(*tree)->left, data, cmp));
-	if (cmp(data, (*tree)->data) == 0)
-		return (*tree);
+	if (!*tree)
+		return ;
 	if ((*tree)->right)
-		return (tree_search(&(*tree)->left, data, cmp));
-	return (NULL);
+		bst_to_clist_loop(&(*tree)->right, clist);
+	list_add_head(clist, &(*tree)->data);
+	if ((*tree)->left)
+		bst_to_clist_loop(&(*tree)->left, clist);
 }
 
-int		add_node(t_node **root, void **data, int (*cmp)(void *, void *))
+t_node		*bst_to_clist(t_node **tree)
 {
-	int ret;
-	t_node *node;
-	t_node *curr = *root;
-	t_node *parent = NULL;
+	t_node	*clist;
 
-	node = new_node();
-	node->data = *data;
-	if (*root == NULL)
-	{
-		*root = node;
-		return (SUCCESS);
-	}
-	while (curr != NULL)
-	{
-		parent = curr;
-		ret = cmp(data, curr->data);
-		if (ret < 0)
-			curr = curr->left;
-		else if (ret > 0)
-			curr = curr->right;
-		else
-		{
-			del_node(&node);
-			return (FAILURE);
-		}
-	}
-	if (cmp(data, parent->data) < 0)
-		parent->left = node;
-	else
-		parent->right = node;
-	return (SUCCESS);
-}
-
-void remove_search_key(t_node **curr, t_node **parent, void *key,
-					   int (*cmp)(void *, void *))
-{
-	while (curr != NULL && cmp((*curr)->data, key) != 0)
-	{
-		*parent = *curr;
-		if (cmp(key, (*curr)->data) < 0)
-			*curr = (*curr)->left;
-		else
-			*curr = (*curr)->right;
-	}
-}
-
-int			remove_node(t_node **root, void *key, int (*cmp)(void *, void *), void *(*min)(t_node *))
-{
-	t_node* parent = NULL;
-	t_node *curr = *root;
-	t_node *child;
-	void	*successor;
-
-	remove_search_key(&curr, &parent, key, cmp);
-	if (curr == NULL)
-		return (FAILURE);
-	if (curr->left == NULL && curr->right == NULL)
-	{
-		if (cmp(curr->data, (*root)->data) != 0)
-		{
-			if (parent->left == curr)
-				parent->left = NULL;
-			else
-				parent->right = NULL;
-		}
-		else
-			*root = NULL;
-		del_node(&curr);
-	}
-	else if (curr->left && curr->right)
-	{
-		successor  = min(curr->right);
-		remove_node(root, successor, cmp, min);
-		curr->data = successor;
-	}
-	else
-	{
-		child = (curr->left)? curr->left: curr->right;
-		if (curr != *root)
-		{
-			if (curr == parent->left)
-				parent->left = child;
-			else
-				parent->right = child;
-		}
-		else
-			*root = child;
-		del_node(&curr);
-	}
-	return (SUCCESS);
+	clist = NULL;
+	bst_to_clist_loop(tree, &clist);
+	del_tree(tree, false);
+	return (clist);
 }
 
 

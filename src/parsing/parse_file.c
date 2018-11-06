@@ -1,7 +1,8 @@
-# include "../../incl/job.h"
-# include "../../incl/parser.h"
+#include "../../incl/hermes.h"
+#include "../../incl/parser.h"
 
-int			parse_ip_file(t_targetlist *list, char *filename)
+
+int			parse_ip_file(t_targetset *set, char *filename)
 {
 	FILE	*fp;
 	size_t	len;
@@ -10,24 +11,24 @@ int			parse_ip_file(t_targetlist *list, char *filename)
 
 	len = 1024;
 	if (!filename)
-		hermes_error(errno, TRUE, 2, "ip file not provided");
+		return (hermes_error(FAILURE, "ips file not provided"));
 	if (!(buff = memalloc(sizeof(char) * (len + 1))))
-		hermes_error(errno, TRUE, 2, "malloc()", strerror(errno));
+		return (hermes_error(FAILURE, "malloc() %s", strerror(errno)));
 	if (!(fp = fopen(filename, "r")))
-		hermes_error(errno, TRUE, 3, "error opening", filename, strerror(errno));
+		return (hermes_error(FAILURE, "error opening %s %s", filename, strerror(errno)));
 	while ((read = getline(&buff, &len, fp)) > 0)
 	{
 		if (buff[read - 1] == '\n')
 			buff[read - 1] = '\0';
-		if (handle_ip(list, buff) == FAILURE)
-			hermes_error(INPUT_ERROR, TRUE, 2, "issue parsing targets from", filename);
+		if (handle_ip(set, buff) == FAILURE)
+			return (hermes_error(FAILURE, "issue parsing targets from %s", filename));
 	}
 	free(buff);
 	fclose(fp);
 	return (SUCCESS);
 }
 
-int			parse_worker_file(t_workerlist *list, char *filename)
+int			parse_worker_file(t_workerset *set, char *filename)
 {
 	FILE	*fp;
 	size_t	len;
@@ -36,20 +37,19 @@ int			parse_worker_file(t_workerlist *list, char *filename)
 
 	len = 1024;
 	if (!filename)
-		hermes_error(errno, TRUE, 2, "worker file not provided");
+		return (hermes_error(FAILURE, "worker file not provided"));
 	if (!(buff = memalloc(sizeof(char) * (len + 1))))
-		hermes_error(errno, TRUE, 2, "malloc()", strerror(errno));
+		return (hermes_error(FAILURE, "malloc() %s", strerror(errno)));
 	if (!(fp = fopen(filename, "r")))
-		hermes_error(errno, TRUE, 3, "error opening", filename, strerror(errno));
+		return (hermes_error(FAILURE, "error opening %s %s", filename, strerror(errno)));
 	while ((read = getline(&buff, &len, fp)) > 0)
 	{
 		if (buff[read - 1] == '\n')
 			buff[read - 1] = '\0';
-		if (parse_worker(list, buff) == FAILURE)
-			hermes_error(INPUT_ERROR, TRUE, 2, "issue parsing targets from", filename);
+		if (parse_worker(set, buff) == FAILURE)
+			return (hermes_error(FAILURE, "issue parsing workers from %s", filename));
 	}
 	free(buff);
 	fclose(fp);
 	return (SUCCESS);
 }
-

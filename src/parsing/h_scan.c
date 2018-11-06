@@ -1,102 +1,116 @@
-# include "../../incl/job.h"
-# include "../../incl/parser.h"
-# include "../../incl/defined.h"
+#include "../../incl/hermes.h"
+#include "../../incl/parser.h"
 
-void			h_list_scan(t_job *job)
+
+int				h_list_scan(t_mgr *mgr)
 {
-	job->options.bitops.do_list_scan = TRUE;
+	mgr->env.opts.bitops.do_list_scan = true;
+	return (SUCCESS);
 }
 
-void			h_ping_scan(t_job *job)
+int				h_ping_scan(t_mgr *mgr)
 {
-	job->options.bitops.do_ping_scan = TRUE;
+	mgr->env.opts.bitops.do_ping_scan = true;
+	return (SUCCESS);
 }
 
-void			h_syn_scan(t_job *job)
+int				h_syn_scan(t_mgr *mgr)
 {
-	job->options.bitops.do_syn_scan = TRUE;
+	mgr->env.opts.bitops.do_syn_scan = true;
+	return (SUCCESS);
 }
 
-void			h_ack_scan(t_job *job)
+int				h_ack_scan(t_mgr *mgr)
 {
-	job->options.bitops.do_ack_scan = TRUE;
+	mgr->env.opts.bitops.do_ack_scan = true;
+	return (SUCCESS);
 }
 
-void			h_null_scan(t_job *job)
+int				h_null_scan(t_mgr *mgr)
 {
-	job->options.bitops.do_null_scan = TRUE;
+	mgr->env.opts.bitops.do_null_scan = true;
+	return (SUCCESS);
 }
 
-void			h_fin_scan(t_job *job)
+int				h_fin_scan(t_mgr *mgr)
 {
-	job->options.bitops.do_fin_scan = TRUE;
+	mgr->env.opts.bitops.do_fin_scan = true;
+	return (SUCCESS);
 }
 
-void			h_xmas_scan(t_job *job)
+int				h_xmas_scan(t_mgr *mgr)
 {
-	job->options.bitops.do_xmas_scan = TRUE;
+	mgr->env.opts.bitops.do_xmas_scan = true;
+	return (SUCCESS);
 }
 
-void			h_udp_scan(t_job *job)
+int				h_udp_scan(t_mgr *mgr)
 {
-	job->options.bitops.do_udp_scan = TRUE;
+	mgr->env.opts.bitops.do_udp_scan = true;
+	return (SUCCESS);
 }
 
-void			h_bad_checksum(t_job *job)
+int				h_bad_checksum(t_mgr *mgr)
 {
-	job->options.bitops.do_bad_checksum = TRUE;
+	mgr->env.opts.bitops.do_bad_checksum = true;
+	return (SUCCESS);
 }
 
-void			h_custom_ip_ttl(t_job *job, char *input)
+int				h_custom_ip_ttl(t_mgr *mgr, char *input)
 {
 	int			ttl;
 
 	if (!input)
-		hermes_error(INPUT_ERROR, TRUE, 1, "-ttl not specified");
+		return (hermes_error(EXIT_FAILURE, "-ttl not specified"));
 	if ((ttl = atoi(input)) <= 0 || ttl > TTL_MAX)
-		hermes_error(INPUT_ERROR, TRUE, 1, "bad ttl specified");
-	job->options.ip_ttl = (uint8_t)ttl;
-	job->options.bitops.custom_ip_ttl = TRUE;
+		return (hermes_error(EXIT_FAILURE, "bad ttl specified"));
+	mgr->env.opts.ip_ttl = (uint8_t)ttl;
+	return (SUCCESS);
 }
 
-void			h_fragment_mtu(t_job *job, char *input)
+int				h_fragment_mtu(t_mgr *mgr, char *input)
 {
 	int			mtu;
 
 	if (!input)
-		hermes_error(INPUT_ERROR, TRUE, 1, "--fragment-mtu not specified");
+		return (hermes_error(EXIT_FAILURE, "--fragment-mtu not specified"));
 	if ((mtu = atoi(input)) <= 0 || mtu > MTU_MAX)
-		hermes_error(INPUT_ERROR, TRUE, 1, "bad fragment-mtu specified");
-	job->options.fragment_mtu = (uint8_t)mtu;
-	job->options.bitops.fragment_pkts = TRUE;
+		return (hermes_error(EXIT_FAILURE, "bad fragment-mtu specified"));
+	mgr->env.opts.fragment_mtu = (uint8_t)mtu;
+	return (SUCCESS);
 }
 
-void			h_spoof_srcip(t_job *job, char *input)
+int				h_spoof_srcip(t_mgr *mgr, char *input)
 {
 	uint32_t	ip;
 
 	if (!input)
-		hermes_error(INPUT_ERROR, TRUE, 1, "spoof ip address not specified");
+		return (hermes_error(EXIT_FAILURE, "spoof ips address not specified"));
 	if (parse_ip(&ip, input) < 0)
-		hermes_error(INPUT_ERROR, TRUE, 1, "bad spoof ip address specified");
-	job->options.spoofed_srcaddr = ip;
+		return (hermes_error(EXIT_FAILURE, "bad spoof ips address specified"));
+	mgr->env.opts.spoofed_srcaddr = ip;
+	return (SUCCESS);
 }
 
-void			h_spoof_srcport(t_job *job, char *input)
+int				h_spoof_srcport(t_mgr *mgr, char *input)
 {
 	uint16_t	port;
 
 	if (!input)
-		hermes_error(INPUT_ERROR, TRUE, 1, "spoof port not specified");
+		return (hermes_error(EXIT_FAILURE, "spoof port_stats not specified"));
 	if (parse_port(&port, input) == FAILURE)
-		hermes_error(INPUT_ERROR, TRUE, 1, "bad spoof port specified");
-	job->options.spoofed_srcport = port;
+		return (hermes_error(EXIT_FAILURE, "bad spoof port_stats specified"));
+	mgr->env.opts.spoofed_srcport = port;
+	return (SUCCESS);
 }
 
-void			h_exclude_targets(t_job *job, char *input)
+int				h_exclude_targets(t_mgr *mgr, char *input)
 {
 	if (!input)
-		hermes_error(INPUT_ERROR, TRUE, 1, "--exclude-targets not specified");
-	if (handle_ip(&job->exclude_targets, input) == FAILURE)
-		hermes_error(INPUT_ERROR, TRUE, 1, "bad exclude target ip(s)");
+		return (hermes_error(EXIT_FAILURE, "--exclude-targets not specified"));
+	if (!mgr->exclude_targets)
+		mgr->exclude_targets = new_targetset();
+	if (handle_ip(mgr->exclude_targets, input) == FAILURE)
+		return (hermes_error(EXIT_FAILURE, "bad exclude target ips(s)"));
+	return (SUCCESS);
 }

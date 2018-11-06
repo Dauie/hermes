@@ -1,66 +1,72 @@
-#include "../../incl/parser.h"
-#include "../../incl/defined.h"
+#include "../../incl/hermes.h"
 
-void			h_thread_amt(t_job *job, char *input)
+int				h_thread_amt(t_mgr *mgr, char *input)
 {
 	int			threads;
 
+	if (!input)
+		return (hermes_error(EXIT_FAILURE, "thread amount not specified"));
 	if ((threads = atoi(input)) <= 0 || threads > MAX_THREADS)
-		hermes_error(INPUT_ERROR, TRUE, 1, "bad thread amount");
-	job->options.thread_count = (uint8_t)threads;
+		return (hermes_error(EXIT_FAILURE, "bad thread amount %s", input));
+	mgr->env.opts.thread_count = (uint8_t)threads;
+	return (SUCCESS);
 }
 
-void			h_max_hostgroup(t_job *job, char *input)
+int				h_max_hostgroup(t_mgr *mgr, char *input)
 {
 	long		hgsize;
 
 	if (!input)
-		hermes_error(INPUT_ERROR, TRUE, 1, "--max-hostgroup not specified");
-	if ((hgsize = atoi(input)) < MIN_HOSTGROUP || hgsize > MAX_HOSTGROUP)
-		hermes_error(INPUT_ERROR, TRUE, 2, "bad max-hostgroup value", input);
-	job->options.max_hostgroup = (uint32_t)hgsize;
+		return (hermes_error(EXIT_FAILURE, "--max-hostgroup not specified"));
+	if ((hgsize = atoi(input)) < MIN_HOSTGROUP || hgsize > MAX_HST_HSTGRP)
+		return (hermes_error(EXIT_FAILURE, "bad max-hostgroup value %s", input));
+	mgr->env.opts.max_hostgroup = (uint32_t)hgsize;
+	return (SUCCESS);
 }
 
-void			h_min_hostgroup(t_job *job, char *input)
+int				h_min_hostgroup(t_mgr *mgr, char *input)
 {
 	long		hgsize;
 
 	if (!input)
-		hermes_error(INPUT_ERROR, TRUE, 1, "--min-hostgroup not specified");
-	if ((hgsize = atoi(input)) < MIN_HOSTGROUP || hgsize > MAX_HOSTGROUP)
-		hermes_error(INPUT_ERROR, TRUE, 2, "bad min-hostgroup value", input);
-	job->options.min_hostgroup = (uint32_t)hgsize;
+		return (hermes_error(EXIT_FAILURE, "--min-hostgroup not specified"));
+	if ((hgsize = atoi(input)) < MIN_HOSTGROUP || hgsize > MAX_HST_HSTGRP)
+		return (hermes_error(EXIT_FAILURE, "bad min-hostgroup value %s", input));
+	mgr->env.opts.min_hostgroup = (uint32_t)hgsize;
+	return (SUCCESS);
 }
 
-void			h_max_packet_rate(t_job *job, char *input)
+int				h_max_packet_rate(t_mgr *mgr, char *input)
 {
 	long		rate;
 
 	if (!input)
-		hermes_error(INPUT_ERROR, TRUE, 1, "--max-rate not specified");
+		return (hermes_error(EXIT_FAILURE, "--max-rate not specified"));
 	if ((rate = atoi(input)) <= 0)
-		hermes_error(INPUT_ERROR, TRUE, 2, "bad max-packet-rate value", input);
-	job->options.max_packet_rate = (uint32_t)rate;
+		return (hermes_error(EXIT_FAILURE, "bad max-packet-rate value %s", input));
+	mgr->env.opts.max_packet_rate = (uint32_t)rate;
+	return (SUCCESS);
 }
 
-void			h_min_packet_rate(t_job *job, char *input)
+int				h_min_packet_rate(t_mgr *mgr, char *input)
 {
 	long		rate;
 	if (!input)
-		hermes_error(INPUT_ERROR, TRUE, 1, "--min-rate not specified");
+		return (hermes_error(EXIT_FAILURE, "--min-rate not specified"));
 	if ((rate = atoi(input)) <= 0)
-		hermes_error(INPUT_ERROR, TRUE, 2, "bad min-packet-rate value", input);
-	job->options.min_packet_rate = (uint32_t)rate;
+		return (hermes_error(EXIT_FAILURE, "bad min-packet-rate value %s", input));
+	mgr->env.opts.min_packet_rate = (uint32_t)rate;
+	return (SUCCESS);
 }
 
-
-void			h_max_retries(t_job *job, char *input)
+int				h_max_retries(t_mgr *mgr, char *input)
 {
 	long		retries;
 
 	if (!input)
-		hermes_error(INPUT_ERROR, TRUE, 1, "--max-retries not specified");
+		return (hermes_error(EXIT_FAILURE, "--max-retries not specified"));
 	if ((retries = atoi(input)) < 0)
-		hermes_error(INPUT_ERROR, TRUE, 2, "bad max-retries value", input);
-	job->options.max_retries = (uint32_t)retries;
+		return (hermes_error(EXIT_FAILURE, "bad max-retries value %s", input));
+	mgr->env.opts.max_retries = (uint32_t)retries;
+	return (SUCCESS);
 }

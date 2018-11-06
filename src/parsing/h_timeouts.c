@@ -1,41 +1,48 @@
+#include "../../incl/hermes.h"
 #include "../../incl/parser.h"
 
-void			h_host_timeout(t_job *job, char *input)
+
+int			h_host_timeout(t_mgr *mgr, char *input)
 {
 	if (!input)
-		hermes_error(INPUT_ERROR, TRUE, 1, "--host-timeout not specified");
-	if (parse_time(&job->options.host_timeo, input) == FAILURE)
-		hermes_error(INPUT_ERROR, TRUE, 1, "bad host-timeout specified");
+		return (hermes_error(EXIT_FAILURE, "--host-timeout not specified"));
+	if (parse_time(&mgr->env.opts.host_timeo, input) == FAILURE)
+		return (hermes_error(EXIT_FAILURE, "bad host-timeout specified"));
+	return (SUCCESS);
 }
 
-void			h_max_rtt_timeout(t_job *job, char *input)
+int			h_max_rtt_timeout(t_mgr *mgr, char *input)
 {
 	if (!input)
-		hermes_error(INPUT_ERROR, TRUE, 1, "--max-rtt-timeout not specified");
-	if (parse_time(&job->options.max_rtt_timeo, input) == FAILURE)
-		hermes_error(INPUT_ERROR, TRUE, 1, "bad max-rtt-timeout specified");
+		return (hermes_error(EXIT_FAILURE, "--max-rtt-timeout not specified"));
+	if (parse_time(&mgr->env.opts.max_rtt_timeo, input) == FAILURE)
+		return (hermes_error(EXIT_FAILURE, "bad max-rtt-timeout specified"));
+	return (SUCCESS);
 }
 
-void			h_min_rtt_timeout(t_job *job, char *input)
+int			h_min_rtt_timeout(t_mgr *mgr, char *input)
 {
 	if (!input)
-		hermes_error(INPUT_ERROR, TRUE, 1, "--min-rtt-timeout not specified");
-	if (parse_time(&job->options.min_rtt_timeo, input) == FAILURE)
-		hermes_error(INPUT_ERROR, TRUE, 1, "bad min-rtt-timeout specified");
+		return (hermes_error(EXIT_FAILURE, "--min-rtt-timeout not specified"));
+	if (parse_time(&mgr->env.opts.min_rtt_timeo, input) == FAILURE)
+		return (hermes_error(EXIT_FAILURE, "bad min-rtt-timeout specified"));
+	return (SUCCESS);
 }
 
-void			h_scan_delay(t_job *job, char *input)
+int			h_scan_delay(t_mgr *mgr, char *input)
 {
 	if (!input)
-		hermes_error(INPUT_ERROR, TRUE, 1, "--scan-delay not specified");
-	if (parse_time(&job->options.scan_delay, input) == FAILURE)
-		hermes_error(INPUT_ERROR, TRUE, 1, "bad scan-delay specified");
+		return (hermes_error(EXIT_FAILURE, "--scan-delay not specified"));
+	if (parse_time(&mgr->env.opts.scan_delay, input) == FAILURE)
+		return (hermes_error(EXIT_FAILURE, "bad scan-delay specified"));
+	return (SUCCESS);
 }
 
-void			h_max_scan_delay(t_job *job, char *input)
+int			h_max_scan_delay(t_mgr *mgr, char *input)
 {
 	if (!input)
-		hermes_error(INPUT_ERROR, TRUE, 1, "--max-scan-delay not specified");
-	if (parse_time(&job->options.max_scan_delay, input) == FAILURE)
-		hermes_error(INPUT_ERROR, TRUE, 1, "bad max-scan-delay specified");
+		return (hermes_error(EXIT_FAILURE, "--max-scan-delay not specified"));
+	if (parse_time(&mgr->env.opts.max_scan_delay, input) == FAILURE)
+		return (hermes_error(EXIT_FAILURE, "bad max-scan-delay specified"));
+	return (SUCCESS);
 }

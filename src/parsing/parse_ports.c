@@ -1,5 +1,4 @@
 #include "../../incl/hermes.h"
-#include "../../incl/parser.h"
 
 int				parse_port(uint16_t *port, char *input)
 {
@@ -13,64 +12,65 @@ int				parse_port(uint16_t *port, char *input)
 	return (SUCCESS);
 }
 
-static int		add_port(t_portlist *list, char *input)
+static int		add_port(t_portset *set, char *input)
 {
 	t_port		*data;
 	uint16_t	port;
-	/*
-	** check to make sure port is in range.
-	*/
+
 	if (parse_port(&port, input) == FAILURE)
-		return (hermes_error(FAILURE, FALSE, 1, "bad port specified", input));
+		return (hermes_error(FAILURE, "bad port_stats specified %s", input));
 	data = new_port();
 	data->port = (uint16_t)port;
-	if (add_node(&list->ports, (void **)&data, port_cmp) == SUCCESS)
+	if (add_node_bst(&set->ports, (void **) &data, port_cmp) == SUCCESS)
 	{
-		list->port_count++;
+		set->port_cnt++;
 		return (SUCCESS);
 	}
 	return (FAILURE);
 }
 
-static int		add_range(t_portlist *list, char **range)
+int				add_range_portset(t_portset *set, char **range)
 {
 	uint16_t	start;
 	uint16_t	end;
-	t_portrange	*data;
+	t_prtrng	*data;
 
 	if (parse_port(&start, range[0]) == FAILURE)
-		return (hermes_error(FAILURE, FALSE, 1, "bad start to port range", range[0]));
+		return (hermes_error(FAILURE, "bad start to port_stats range %s", range[0]));
 	if (parse_port(&end, range[1]) == FAILURE)
-		return (hermes_error(FAILURE, FALSE, 1, "bad end to port range", range[1]));
+		return (hermes_error(FAILURE, "bad end to port_stats range %s", range[1]));
 	data = new_portrange();
+	if (start > end)
+		swap_uint16(&start, &end);
 	data->start = start;
 	data->end = end;
-	if (add_node(&list->port_range, (void**)&data, portrng_cmp) == SUCCESS)
+	data->size = end - start;
+	if (add_node_bst(&set->prtrngs, (void **) &data, portrng_cmp) == true)
 	{
-		list->range_count++;
+		set->total += data->size;
+		set->rng_cnt++;
 		return (SUCCESS);
 	}
 	return (FAILURE);
 }
 
-int				handle_port(t_portlist *list, char *input)
+int				handle_port(t_portset *set, char *input)
 {
 	char		*port;
 	char		**port_range;
 
-	/* TODO: Make sure all portlists in job are free'd */
 	while ((port = strsep(&input, ",")) != NULL)
 	{
 		if (strchr(port, '-'))
 		{
 			if (!(port_range = strsplit(port, '-')))
-				return (hermes_error(INPUT_ERROR, TRUE, 1, "strsplit()"));
-			if (add_range(list, port_range) == FAILURE)
+				return (hermes_error(FAILURE, "strsplit()"));
+			if (add_range_portset(set, port_range) == FAILURE)
 				return (FAILURE);
 			tbldel(&port_range);
 		}
 		else
-			if (add_port(list, port) == FAILURE)
+			if (add_port(set, port) == FAILURE)
 				return (FAILURE);
 	}
 	return (SUCCESS);

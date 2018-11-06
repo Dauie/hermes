@@ -1,102 +1,115 @@
 #include "../incl/hermes.h"
-#include "../incl/defined.h"
 
-typedef struct			s_daemon_session /* worker daemon session */
+static int				accept_wrapper(t_wmgr *session, int lsock)
 {
-	int					run;
-	int					pid;
-	int					lsock;	/* listen socket */
-	int					csock;	/* client socket */
-	struct sockaddr_in	sin;
-}						t_dsession;
+	uint				cslen;
 
-//void                    worker_loop(int csock)
-//{
-//    char buffer[BUFF_SIZE];
-//    printf("Connected\n");
-////    while (TRUE)
-////    {
-////        if (recvfrom(csock, buffer, BUFF_SIZE, 0) < 0)
-////            hermes_error(INPUT_ERROR, TRUE, 2, "worker loop recv()", strerror(errno));
-////
-////    }
-//}
-
-static int				accept_wrapper(t_dsession *session)
-{
-	uint		cslen;
-
-	cslen = sizeof(struct sockaddr_in);
-	if ((session->csock = accept(session->lsock,
-							(struct sockaddr*)&session->sin, &cslen)) == -1)
-		return (FAILURE);
-	/* ^ TODO add non-fatal hermes_error() call for max amount of connections */
+	cslen = sizeof(sockaddr_in);
+	if ((session->sock = accept(lsock, (sockaddr*)&session->sin, &cslen)) == -1)
+		return (hermes_error(FAILURE, "accept() %s", strerror(errno)));
 	return (SUCCESS);
 }
 
-static int					daemon_loop(t_dsession *session)
+static int				daemon_loop(t_wmgr *session, int lsock)
 {
-	while (session->run)
+	while (session->stat.running)
 	{
-		if (accept_wrapper(session) == FAILURE)
+		if (accept_wrapper(session, lsock) == FAILURE)
 			continue;
-		if ((session->pid = fork()) < 0)
-			hermes_error(INPUT_ERROR, TRUE, 2, "fork()", strerror(errno));
-		else if (session->pid > 0)
-			close(session->csock);
-		/*TODO: add wait() to protect from zombie children*/
+		if ((session->id = fork()) < 0)
+			hermes_error(EXIT_FAILURE, "fork() %s", strerror(errno));
+		else if (session->id > 0)
+		{
+			signal(SIGCHLD,SIG_IGN);
+			close(session->sock);
+		}
 		else
 		{
-			close(session->lsock);
-//			worker_loop(session->csock);
+			close(lsock);
+			worker_loop(session);
 		}
 	}
 	return (SUCCESS);
 }
 
-static void				setsockopt_wrapper(t_dsession *session)
+static void				setsockopt_wrapper(int lsock)
 {
-	int				opt;
+	int					opt;
 
-	opt = TRUE;
-	if (setsockopt(session->lsock, SOL_SOCKET, SO_REUSEADDR,
+	opt = true;
+	if (setsockopt(lsock, SOL_SOCKET, SO_REUSEADDR,
 				   (char *)&opt, sizeof(opt)) < 0)
-		hermes_error(INPUT_ERROR, TRUE, 2, "setsockopt()", strerror(errno));
+		hermes_error(FAILURE, "setsockopt() %s", strerror(errno));
 }
 
-
-int						worker_daemon(int port)
+void					destroy_worker_session(t_wmgr	**session)
 {
-	t_dsession			*session;
+	if ((*session)->results.results)
+		del_list(&(*session)->results.results, true);
+	if ((*session)->targets.ips)
+		del_list(&(*session)->targets.ips, true);
+	if ((*session)->targets.iprngs)
+		del_list(&(*session)->targets.iprngs, true);
+	if ((*session)->env.ports.ports)
+		del_list(&(*session)->env.ports.ports, true);
+	if ((*session)->env.ports.prtrngs)
+		del_list(&(*session)->env.ports.prtrngs, true);
+
+	if ((*session)->env.ack_ports)
+	{
+		if ((*session)->env.ack_ports->ports)
+			del_list(&(*session)->env.ack_ports->ports, true);
+		if ((*session)->env.ack_ports->prtrngs)
+			del_list(&(*session)->env.ack_ports->prtrngs, true);
+		free((*session)->env.ack_ports);
+	}
+
+	if ((*session)->env.syn_ports)
+	{
+		if ((*session)->env.syn_ports->ports)
+			del_list(&(*session)->env.syn_ports->ports, true);
+		if ((*session)->env.syn_ports->prtrngs)
+			del_list(&(*session)->env.syn_ports->prtrngs, true);
+		free((*session)->env.syn_ports);
+	}
+
+	if ((*session)->env.udp_ports)
+	{
+		if ((*session)->env.udp_ports->ports)
+			del_list(&(*session)->env.udp_ports->ports, true);
+		if ((*session)->env.udp_ports->prtrngs)
+			del_list(&(*session)->env.udp_ports->prtrngs, true);
+		free((*session)->env.udp_ports);
+	}
+	if ((*session)->tpool)
+		free((*session)->tpool);
+	free(*session);
+}
+
+int						hermes_daemon(int port)
+{
+	int					lsock;
+	t_wmgr				*session;
 	struct protoent		*proto;
 
-	if (!(session = memalloc(sizeof(t_dsession))))
-		return (hermes_error(INPUT_ERROR, TRUE, 2, "malloc()", strerror(errno)));
-	session->run = TRUE;
+	if (!(session = memalloc(sizeof(t_wmgr))))
+		return (hermes_error(EXIT_FAILURE, "malloc() %s", strerror(errno)));
+	session->stat.running = true;
 	/* TODO add signal handlers */
 	if ((proto = getprotobyname("tcp")) == NULL)
-		hermes_error(INPUT_ERROR, TRUE, 2, "getprotobyname()", strerror(errno));
-	if ((session->lsock = socket(PF_INET, SOCK_STREAM, proto->p_proto)) == -1)
-		hermes_error(INPUT_ERROR, TRUE, 2, "socket()", strerror(errno));
-	setsockopt_wrapper(session);
+		hermes_error(EXIT_FAILURE, "getprotobyname() %s", strerror(errno));
+	if ((lsock = socket(PF_INET, SOCK_STREAM, proto->p_proto)) == -1)
+		hermes_error(EXIT_FAILURE, "socket() %s", strerror(errno));
+	setsockopt_wrapper(lsock);
 	session->sin.sin_family = AF_INET;
 	session->sin.sin_port = htons(port);
 	session->sin.sin_addr.s_addr = htonl(INADDR_ANY);
-	if (bind(session->lsock, (const struct sockaddr *)&session->sin,
-			sizeof(session->sin)) < 0)
-		hermes_error(INPUT_ERROR, TRUE, 2, "bind()", strerror(errno));
-	if (listen(session->lsock, 1) == -1)
-		hermes_error(INPUT_ERROR, TRUE, 2, "listen()", strerror(errno));
-	return (daemon_loop(session));
+	if (bind(lsock, (const sockaddr *)&session->sin, sizeof(session->sin)) < 0)
+		hermes_error(EXIT_FAILURE, "bind() %s", strerror(errno));
+	if (listen(lsock, 1) == -1)
+		hermes_error(EXIT_FAILURE, "listen() %s", strerror(errno));
+	printf("Daemon running on port: %d\n", port);
+	daemon_loop(session, lsock);
+	destroy_worker_session(&session);
+	exit(EXIT_SUCCESS);
 }
-
-#ifdef TESTING
-int main(void)
-{
-    int w_port;
-
-    w_port = 4000;
-    if (worker_daemon(w_port) < 0)
-        hermes_error(INPUT_ERROR, TRUE, 2, "worker_daemon()", strerror(errno));
-}
-#endif

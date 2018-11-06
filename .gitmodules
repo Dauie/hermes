@@ -1,0 +1,6 @@
+[submodule "binn"]
+	path = binn
+	url = https://github.com/liteserver/binn.git
+[submodule "munit"]
+	path = munit
+	url = https://github.com/nemequ/munit.git
