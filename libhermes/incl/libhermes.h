@@ -27,6 +27,7 @@ typedef struct		s_node
 /*
 **	Integer helper functions
 */
+unsigned int		pow2_round(unsigned int nb);
 void				swap_uint8(uint8_t *l, uint8_t *r);
 void				swap_uint16(uint16_t *l, uint16_t *r);
 void				swap_uint32(uint32_t *l, uint32_t *r);

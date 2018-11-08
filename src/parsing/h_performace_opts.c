@@ -6,7 +6,7 @@ int				h_thread_amt(t_mgr *mgr, char *input)
 
 	if (!input)
 		return (hermes_error(EXIT_FAILURE, "thread amount not specified"));
-	if ((threads = atoi(input)) <= 0 || threads > MAX_THREADS)
+	if ((threads = atoi(input)) <= 0 || threads > THREAD_MAX)
 		return (hermes_error(EXIT_FAILURE, "bad thread amount %s", input));
 	mgr->env.opts.thread_count = (uint8_t)threads;
 	return (SUCCESS);
@@ -18,7 +18,7 @@ int				h_max_hostgroup(t_mgr *mgr, char *input)
 
 	if (!input)
 		return (hermes_error(EXIT_FAILURE, "--max-hostgroup not specified"));
-	if ((hgsize = atoi(input)) < MIN_HOSTGROUP || hgsize > MAX_HST_HSTGRP)
+	if ((hgsize = atoi(input)) < HSTGRP_MIN || hgsize > WKR_HSTGRP_MAX)
 		return (hermes_error(EXIT_FAILURE, "bad max-hostgroup value %s", input));
 	mgr->env.opts.max_hostgroup = (uint32_t)hgsize;
 	return (SUCCESS);
@@ -30,7 +30,7 @@ int				h_min_hostgroup(t_mgr *mgr, char *input)
 
 	if (!input)
 		return (hermes_error(EXIT_FAILURE, "--min-hostgroup not specified"));
-	if ((hgsize = atoi(input)) < MIN_HOSTGROUP || hgsize > MAX_HST_HSTGRP)
+	if ((hgsize = atoi(input)) < HSTGRP_MIN || hgsize > WKR_HSTGRP_MAX)
 		return (hermes_error(EXIT_FAILURE, "bad min-hostgroup value %s", input));
 	mgr->env.opts.min_hostgroup = (uint32_t)hgsize;
 	return (SUCCESS);

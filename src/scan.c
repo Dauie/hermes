@@ -49,7 +49,6 @@ void				test_run_scan(t_env *env, t_targetset *targets, t_resultset *res_ptr, pt
 
 void				run_scan(t_thread *thread, t_targetset *targets)
 {
-	prepare_thread_tx_ring(thread);
 	(void)thread;
 	(void)targets;
 }
