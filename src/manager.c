@@ -373,7 +373,7 @@ int					manager_loop(t_mgr *mgr)
 			mgr->stat.running = false;
 	}
 	if (mgr->tpool)
-		tpool_kill(mgr->tpool);
+		tpool_kill(&mgr->tpool);
 	free(fds);
 	return (SUCCESS);
 }

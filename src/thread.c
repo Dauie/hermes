@@ -15,7 +15,7 @@ void                tpool_event(t_thread_pool *pool)
 
 	i = 0;
 	pthread_mutex_lock(&pool->tsem->stop);
-	while (i < pool->tcount)
+	while (i < pool->thread_amt)
 	{
 		pool->threads[i].working = true;
 		i++;
@@ -33,17 +33,19 @@ void                tpool_wait(t_thread_pool *pool)
 	pthread_mutex_unlock(&pool->tsem->stop);
 }
 
-void				tpool_kill(t_thread_pool *pool)
+void				tpool_kill(t_thread_pool **pool)
 {
 	int				i;
 
 	i = -1;
 	if (!pool)
 		return ;
-	while (++i < pool->tcount)
-		pool->threads[i].alive = false;
-	if (pool->threads)
-		free(pool->threads);
+	while (++i < (*pool)->thread_amt)
+		(*pool)->threads[i].alive = false;
+	tpool_event(*pool);
+	sleep(5);
+	if ((*pool)->threads)
+		free((*pool)->threads);
 }
 void					kill_threadpool(t_thread_pool **pool)
 {
@@ -131,7 +133,7 @@ int						prepare_thread_tx_ring(t_thread *thread)
 		thread->alive = false;
 		return (hermes_error(FAILURE, "socket() %s", strerror(errno)));
 	}
-	setsockopt(thread->sock, SOL_SOCKET, IP_HDRINCL,)
+	setsockopt(thread->sock, SOL_SOCKET, IP_HDRINCL, NULL, 0);
 	memset(&tpr, 0, sizeof(struct tpacket_req));
 	(void) tpr;
 	memset(&sll_loc, 0, sizeof(struct sockaddr_ll));
@@ -150,9 +152,9 @@ int						prepare_thread_tx_ring(t_thread *thread)
 	}
 	mmap(0, ring_size, PROT_READ | PROT_WRITE, MAP_SHARED, thread->sock, 0);
 	return (SUCCESS);
-
-	if (pool->threads)
-		free(pool->threads);
+	if (thread->pool->threads)
+		free(thread->pool->threads);
+	return (SUCCESS);
 }
 
 void					*thread_loop(void *thrd)
@@ -219,8 +221,8 @@ t_thread_pool			*init_threadpool(t_env *env, t_targetset *workpool,
 	pthread_mutex_init(&pool->amt_working_mtx, NULL);
 	pthread_mutex_init(&pool->tsem->stop, NULL);
 	pthread_cond_init(&pool->tsem->wait, NULL);
-	pool->tcount = env->opts.thread_count;
-	pool->reqest_amt = pool->tcount;
+	pool->thread_amt = env->opts.thread_count;
+	pool->reqest_amt = pool->thread_amt;
 	pool->results = results;
 	pool->work_pool = workpool;
 	pool->env = env;

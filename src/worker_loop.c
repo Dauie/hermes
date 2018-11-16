@@ -144,7 +144,7 @@ int					worker_loop(t_wmgr *session)
 			pthread_mutex_unlock(&session->tpool->work_pool_mtx);
 			worker_check_results(session);
 			pthread_mutex_lock(&session->tpool->amt_working_mtx);
-			if (session->tpool->amt_working != session->tpool->tcount)
+			if (session->tpool->amt_working != session->tpool->thread_amt)
 			{
 				pthread_mutex_unlock(&session->tpool->amt_working_mtx);
 				pthread_mutex_lock(&session->tpool->work_pool_mtx);
