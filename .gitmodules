@@ -4,6 +4,3 @@
 [submodule "munit"]
 	path = munit
 	url = https://github.com/nemequ/munit.git
-[submodule "libpcap"]
-	path = libpcap
-	url = https://github.com/the-tcpdump-group/libpcap.git
