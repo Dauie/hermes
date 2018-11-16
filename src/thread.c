@@ -131,7 +131,7 @@ int						prepare_thread_tx_ring(t_thread *thread)
 		thread->alive = false;
 		return (hermes_error(FAILURE, "socket() %s", strerror(errno)));
 	}
-	setsockopt(thread->sock, SOL_SOCKET, IP_HDRINCL,)
+	setsockopt(thread->sock, SOL_SOCKET, IP_HDRINCL,);
 	memset(&tpr, 0, sizeof(struct tpacket_req));
 	(void) tpr;
 	memset(&sll_loc, 0, sizeof(struct sockaddr_ll));
