@@ -1,7 +1,6 @@
 #include "../incl/hermes.h"
 
-void				run_scan(t_env *env, t_targetset *targets,
-                             t_resultset *res_ptr, pthread_mutex_t *res_mtx)
+void				test_run_scan(t_env *env, t_targetset *targets, t_resultset *res_ptr, pthread_mutex_t *res_mtx)
 {
 	t_result	*result;
 	t_ip4rng	*curr;
@@ -31,6 +30,7 @@ void				run_scan(t_env *env, t_targetset *targets,
 			curr = (t_ip4rng*)targets->iprngs->data;
 			while (ntohl(curr->start) <= ntohl(curr->end))
 			{
+				sleep(1);
 				if (!(result = (t_result*)memalloc(sizeof(t_result))))
 					return;
 				result->ip.s_addr = curr->start;
@@ -47,4 +47,10 @@ void				run_scan(t_env *env, t_targetset *targets,
 			targets->rng_cnt--;
 		}
 	}
+}
+
+void				run_scan(t_thread *thread, t_targetset *targets)
+{
+	(void)thread;
+	(void)targets;
 }

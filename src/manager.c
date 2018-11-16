@@ -50,7 +50,7 @@ void				send_workers_initial_env(t_mgr *mgr)
 
 	env = binnify_env(&mgr->env);
 	send_workers_binn(&mgr->workers, env, C_OBJ_ENV);
-	free(env);
+	binn_free(env);
 }
 
 int					send_work(t_wrkr *worker)
@@ -59,6 +59,7 @@ int					send_work(t_wrkr *worker)
 
 	targets = binnify_targetset(&worker->targets);
 	hermes_send_binn(worker->sock, C_OBJ_TARGETS, targets);
+	binn_free(targets);
 	return (SUCCESS);
 }
 
@@ -72,7 +73,7 @@ int					handle_result_offer(t_mgr *mgr, t_wrkr *wrkr, uint8_t *msg)
 	hdr->objlen = ntohl(hdr->objlen);
 	if (hdr->objlen <= 0)
 		return (FAILURE);
-	if (!(obj = (binn*)memalloc(sizeof(uint8_t) * hdr->objlen)))
+	if (!(obj = (binn *)memalloc(sizeof(uint8_t) * hdr->objlen)))
 		return (hermes_error(FAILURE, "malloc() %s", strerror(errno)));
 	ret = recv(wrkr->sock, obj, hdr->objlen, MSG_WAITALL);
 	if (ret == 0)
@@ -224,7 +225,7 @@ int					init_workers(t_mgr *mgr, struct pollfd **fds)
 void				tend_threads(t_mgr *mgr)
 {
 	pthread_mutex_lock(&mgr->tpool->amt_working_mtx);
-	if (mgr->tpool->amt_working != mgr->tpool->tcount)
+	if (mgr->tpool->amt_working != mgr->tpool->thread_amt)
 	{
 		pthread_mutex_unlock(&mgr->tpool->amt_working_mtx);
 		pthread_mutex_lock(&mgr->tpool->work_pool_mtx);
@@ -373,5 +374,6 @@ int					manager_loop(t_mgr *mgr)
 	}
 	if (mgr->tpool)
 		tpool_kill(mgr->tpool);
+	free(fds);
 	return (SUCCESS);
 }

@@ -14,10 +14,16 @@
 # include <netinet/in.h>
 # include <netdb.h>
 # include <netinet/ip_icmp.h>
+# include <ifaddrs.h>
+# include <linux/if_ether.h> /* TODO not portable */
+# include <linux/if_packet.h> /* TODO not portable */
+# include <net/if.h>
+# include <sys/ioctl.h>
+# include <sys/mman.h>
 
 # include "defined.h"
 
-# define HERMES_VERSION "v0.0.1"
+# define LOOPBACK_ADDR 0x7F000001
 
 typedef struct sockaddr_in sockaddr_in;
 
@@ -179,6 +185,7 @@ typedef struct 			s_thread
 	volatile bool       working;
 	volatile bool		alive;
 	uint16_t			amt;
+	int					sock;
 }						t_thread;
 
 typedef struct          s_sem
@@ -189,8 +196,8 @@ typedef struct          s_sem
 
 typedef struct 			s_thread_pool
 {
-	uint16_t 			tcount;
 	volatile uint16_t	amt_working;
+	uint16_t 			thread_amt;
 	uint16_t			reqest_amt;
 	t_thread			*threads;
 	t_resultset			*results;
@@ -284,12 +291,17 @@ int						worker_loop(t_wmgr *session);
 int						manager_loop(t_mgr *mgr);
 
 int						send_work(t_wrkr *worker);
+void					test_run_scan(t_env *env, t_targetset *targets,
+									  t_resultset *res_ptr,
+									  pthread_mutex_t *res_mtx);
 
-void					run_scan(t_env *env, t_targetset *targets, t_resultset *res_ptr, pthread_mutex_t *res_mtx);
+void					test_run_scan(t_env *env, t_targetset *targets,
+									  t_resultset *res_ptr,
+									  pthread_mutex_t *res_mtx);
 
-void					kill_threadpool(t_thread_pool *pool);
 void                    tpool_event(t_thread_pool *pool);
 void					tpool_kill(t_thread_pool *pool);
+void					kill_threadpool(t_thread_pool **pool);
 void					print_ip_struct(t_node *ip4);
 void					print_iprng_struct(t_node *iprng);
 void					print_targetset(t_targetset *set);

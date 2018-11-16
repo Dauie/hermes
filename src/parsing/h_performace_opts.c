@@ -18,7 +18,7 @@ int				h_max_hostgroup(t_mgr *mgr, char *input)
 
 	if (!input)
 		return (hermes_error(EXIT_FAILURE, "--max-hostgroup not specified"));
-	if ((hgsize = atoi(input)) < MIN_HOSTGROUP || hgsize > MAX_HOSTGROUP)
+	if ((hgsize = atoi(input)) < MIN_HOSTGROUP || hgsize > MAX_HST_HSTGRP)
 		return (hermes_error(EXIT_FAILURE, "bad max-hostgroup value %s", input));
 	mgr->env.opts.max_hostgroup = (uint32_t)hgsize;
 	return (SUCCESS);
@@ -30,7 +30,7 @@ int				h_min_hostgroup(t_mgr *mgr, char *input)
 
 	if (!input)
 		return (hermes_error(EXIT_FAILURE, "--min-hostgroup not specified"));
-	if ((hgsize = atoi(input)) < MIN_HOSTGROUP || hgsize > MAX_HOSTGROUP)
+	if ((hgsize = atoi(input)) < MIN_HOSTGROUP || hgsize > MAX_HST_HSTGRP)
 		return (hermes_error(EXIT_FAILURE, "bad min-hostgroup value %s", input));
 	mgr->env.opts.min_hostgroup = (uint32_t)hgsize;
 	return (SUCCESS);
