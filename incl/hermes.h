@@ -316,7 +316,10 @@ void					print_ip_struct(t_node *ip4);
 void					print_iprng_struct(t_node *iprng);
 void					print_targetset(t_targetset *set);
 int						prepare_packetmmap_tx_ring(t_thread *thread);
+void					inflate_targetset_into_results(t_targetset *set, t_thread *thread, t_env *env);
+void add_results_to_lookup(t_thread *thread, size_t count);
 void					run_scan(t_thread *thread, t_targetset *set);
+int						make_rx_filter(t_thread *thread);
 
 
 binn					*binnify_resultset(t_resultset *set);

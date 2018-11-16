@@ -109,14 +109,17 @@ void				inflate_targetset_into_results(t_targetset *set, t_thread *thread, t_env
 	del_list(&set->iprngs, true);
 }
 
-void				add_results_to_lookup(t_thread *thread)
+void add_results_to_lookup(t_thread *thread, size_t count)
 {
-	int				i;
+	size_t			i;
 
-	i = -1;
-	while (thread->results[++i])
+	i = 0;
+	while (i < count)
+	{
 		hashtbl_add(thread->lookup, (uint8_t *)&thread->results[i]->ip, 4, (void **)&thread->results[i]);
-	printf("add %d elements to lookup\n", i);
+		i++;
+	}
+	printf("add %zu elements to lookup\n", i);
 }
 
 void				run_scan(t_thread *thread, t_targetset *set)
@@ -124,17 +127,17 @@ void				run_scan(t_thread *thread, t_targetset *set)
 	t_result		*tmp;
 
 	inflate_targetset_into_results(set, thread, thread->pool->env);
-	add_results_to_lookup(thread);
+	add_results_to_lookup(thread, set->total);
 	make_rx_filter(thread);
 
 
 
-	for (int i = 0; thread->results[i]; i++)
+	for (size_t i = 0; i < set->total; i++)
 	{
 		if (hashtbl_get(thread->lookup, (uint8_t *)&thread->results[i]->ip, 4, (void **)&tmp) == true)
-			printf("thread %d found result %d %s\n", thread->id, i, inet_ntoa(tmp->ip));
+			printf("thread %d found result %zu %s\n", thread->id, i, inet_ntoa(tmp->ip));
 	}
-	for (int i = 0; thread->results[i]; i++)
+	for (size_t i = 0; i < set->total; i++)
 	{
 		printf("thread %d deleting %s ...", thread->id, inet_ntoa(thread->results[i]->ip));
 		if (hashtbl_rm(thread->lookup, (uint8_t *)&thread->results[i]->ip, 4) == true)
