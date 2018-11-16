@@ -64,20 +64,21 @@ static void		get_ip4rnglist_from_binnlist(t_node **clst, binn *list)
 	}
 }
 
-void			get_portstatlist_from_binnlist(binn *list, t_node **clist)
+void			get_portstatlist_from_binnlist(binn *list, t_portstat **stats)
 {
 	int			cnt;
 	t_portstat	*pstat;
 	binn		*obj;
 
 	cnt = binn_count(list);
+	stats = memalloc(sizeof(t_portstat *) * cnt);
 	for (int i = 1; i <= cnt; i++)
 	{
 		pstat = new_portstat();
 		obj = binn_list_object(list, i);
 		binn_object_get_uint16(obj, "port", &pstat->port);
 		binn_object_get_uint8(obj, "status", &pstat->status);
-		list_add_head(clist, (void **)&pstat);
+		stats[i] = pstat;
 	}
 }
 
@@ -99,7 +100,7 @@ void			get_resultlist_from_binnlist(binn *list, t_node **clist, t_targetset *acc
 		remove_ip_targetset(account, res->ip.s_addr);
 		if (binn_object_get_list(obj, "port_stats", (void **)&portstats) == true)
 		{
-			get_portstatlist_from_binnlist(portstats, &res->port_stats);
+			get_portstatlist_from_binnlist(portstats, res->portstats);
 		}
 		list_add_head(clist, (void **) &res);
 	}

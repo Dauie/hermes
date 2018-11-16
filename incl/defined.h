@@ -3,15 +3,19 @@
 
 # define WKRMGR_POLL_TIMEO (250)
 
+# define IP_HDRLEN (20)
+# define TCP_HDR_LEN (20)
+# define UDP_HDR_LEN (8)
+# define DEF_TRAN_HDRLEN (20)
+
 # define TTL_MAX 256
 # define MTU_MAX 1500
-# define BUFF_SIZE 1028
 # define PORT_MAX (65535)
-# define MAX_PKT_DATA (65535 - 20 - 20)
-# define MAX_THREADS (256)
-# define MAX_HST_HSTGRP (4096)
-# define MAX_THRD_HSTGRP (512)
-# define MIN_HOSTGROUP (1)
+# define CUST_PAYLOAD_MAX (64)
+# define THREAD_MAX (256)
+# define WKR_HSTGRP_MAX (4096)
+# define THRD_HSTGRP_MAX (128)
+# define HSTGRP_MIN (1)
 
 # ifndef fast_swap_ints
 # define fast_swap_ints(x, y) ((x ^= y),(y ^= x),(x ^= y))
