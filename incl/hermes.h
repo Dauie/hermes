@@ -69,7 +69,7 @@ typedef struct			s_portset
 	uint16_t			rng_cnt;
 	t_node				*ports;
 	t_node				*prtrngs;
-	uint16_t			*final;
+	uint16_t			*flat;
 }						t_portset;
 
 typedef struct			s_optbitf
@@ -171,7 +171,7 @@ typedef struct			s_portstat
 typedef struct			s_result
 {
 	t_ip4				ip;
-	t_node				*port_stats;
+	t_portstat			**portstats;
 }						t_result;
 
 typedef struct			s_resultset
@@ -180,7 +180,6 @@ typedef struct			s_resultset
 	uint32_t			result_cnt;
 	t_node				*results;
 }						t_resultset;
-
 
 typedef struct 			s_thread
 {
@@ -191,9 +190,11 @@ typedef struct 			s_thread
 	uint16_t			amt;
 	int					sock;
 	void				*tx_ring;
+	size_t				ring_size;
 	pcap_t				*pcaphand;
 	struct bpf_program	filter;
-	size_t				ring_size;
+	t_result			**results;
+	t_hashtbl			*lookup;
 }						t_thread;
 
 typedef struct 			s_thread_pool
@@ -296,15 +297,13 @@ void					test_run_scan(t_env *env, t_targetset *targets,
 									  t_resultset *res_ptr,
 									  pthread_mutex_t *res_mtx);
 
-void					test_run_scan(t_env *env, t_targetset *targets,
-									  t_resultset *res_ptr,
-									  pthread_mutex_t *res_mtx);
-
 void					kill_threadpool(t_thread_pool **pool);
 void					print_ip_struct(t_node *ip4);
 void					print_iprng_struct(t_node *iprng);
 void					print_targetset(t_targetset *set);
 int						prepare_packetmmap_tx_ring(t_thread *thread);
+void					run_scan(t_thread *thread, t_targetset *set);
+
 
 binn					*binnify_resultset(t_resultset *set);
 

@@ -128,61 +128,15 @@ int						prepare_thread_rx_tx(t_thread *thread)
 	return (SUCCESS);
 }
 
-int						make_rx_filter(t_thread *thread, t_targetset *work)
-{
-	t_ip4				*ipp;
-	t_ip4rng			*rng;
-	t_node				*member;
-	t_ip4				ip;
-	char				bpfexp[2048] = {0};
-	int					i;
-
-	i = 0;
-	if (work->ips)
-	{
-		member = work->ips;
-		while (member)
-		{
-			ipp = member->data;
-			i += sprintf(&bpfexp[i], "src host %s ", inet_ntoa(*ipp));
-			member = member->right;
-			if (member)
-				i += sprintf(&bpfexp[i], "and ");
-		}
-	}
-	if (work->iprngs)
-	{
-		member = work->iprngs;
-		while (member)
-		{
-			rng = member->data;
-			ip.s_addr = rng->start;
-			while (ip4_cmp(&ip.s_addr, &rng->end) <= 0)
-			{
-				i += sprintf(&bpfexp[i], "src host %s ", inet_ntoa(ip));
-				ip.s_addr = ip4_increment(ip.s_addr, 1);
-				if (ip4_cmp(&ip.s_addr, &rng->end) <= 0)
-					i += sprintf(&bpfexp[i], "and ");
-			}
-			member = member->right;
-			if (member)
-				i += sprintf(&bpfexp[i], "and ");
-		}
-	}
-	if (pcap_compile(thread->pcaphand, &thread->filter, bpfexp, 0, PCAP_NETMASK_UNKNOWN) == -1)
-		return (hermes_error(FAILURE, "pcap_compile() %s", pcap_geterr(thread->pcaphand)));
-	if (pcap_setfilter(thread->pcaphand, &thread->filter) == -1)
-		return (hermes_error(FAILURE, "pcap_setfilter() %s", pcap_geterr(thread->pcaphand)));
-	return (SUCCESS);
-}
-
 void					*thread_loop(void *thrd)
 {
 	t_targetset			work;
 	t_thread			*thread;
 
 	thread = (t_thread *)thrd;
+	thread->results = memalloc(sizeof(t_result *) * (THRD_HSTGRP_MAX + 64));
 	prepare_thread_rx_tx(thread);
+	thread->lookup = new_hashtbl(THRD_HSTGRP_MAX);
 	memset(&work, 0, sizeof(t_targetset));
 	while (thread->alive)
 	{
@@ -197,13 +151,8 @@ void					*thread_loop(void *thrd)
 				pthread_mutex_lock(&thread->pool->amt_working_mtx);
 				thread->pool->amt_working += 1;
 				pthread_mutex_unlock(&thread->pool->amt_working_mtx);
-				make_rx_filter(thread, &work);
-				/* TODO flatten port lists into arrays, randomized or
-				 * TODO not, then start scan. Scan needs to fill tx_ring and
-				 * TODO hit send() then call pcap_loop(), and process its
-				 * TODO return values*/
-				test_run_scan(thread->pool->env, &work, thread->pool->results,
-						&thread->pool->results_mtx);
+				/* TODO have randomized port option working.*/
+				run_scan(thread, &work);
 				pthread_mutex_lock(&thread->pool->amt_working_mtx);
 				thread->pool->amt_working -= 1;
 				pthread_mutex_unlock(&thread->pool->amt_working_mtx);
