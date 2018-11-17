@@ -95,7 +95,7 @@ bool				rm_node(t_node **node, bool deldata);
 **	Hash Functions
 */
 void				*new_hashtbl(size_t size);
-bool				hashtbl_add(t_hashtbl *tbl, uint8_t *key, uint32_t ksz, void **value);
+bool				hashtbl_add(t_hashtbl *tbl, uint8_t *key, uint16_t ksz, void **value);
 bool				hashtbl_get(t_hashtbl *tbl, uint8_t *key, uint16_t keysz,
 								void **hook);
 bool				hashtbl_rm(t_hashtbl *tbl, uint8_t *key, uint16_t keysz);

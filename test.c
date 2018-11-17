@@ -28,12 +28,10 @@ int			main(void)
 	inflate_targetset_into_results(&targets, &thread, &env);
 	add_results_to_lookup(&thread, targets.total);
 
-
-
 	for (size_t i = 0; i < targets.total; i++)
 	{
 		if (hashtbl_get(thread.lookup, (uint8_t *)&thread.results[i]->ip, 4, (void **)&tmp) == true)
-			printf("thread %d found result %ld %s\n", thread.id, i, inet_ntoa(tmp->ip));
+			printf("thread %d looking for %s : found result %ld %s\n", thread.id, inet_ntoa(thread.results[i]->ip),  i, inet_ntoa(tmp->ip));
 	}
 	for (size_t i = 0; i < targets.total; i++)
 	{

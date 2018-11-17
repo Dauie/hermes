@@ -40,12 +40,13 @@ void				tpool_kill(t_thread_pool **pool)
 	if (!pool)
 		return ;
 	while (++i < (*pool)->thread_amt)
-	{
 		(*pool)->threads[i].alive = false;
 	sleep(5);
 	if ((*pool)->threads)
 		free((*pool)->threads);
 }
+
+/*
 void					kill_threadpool(t_thread_pool **pool)
 {
 	int					i;
@@ -59,6 +60,7 @@ void					kill_threadpool(t_thread_pool **pool)
 		free((*pool)->threads);
 	free(*pool);
 }
+*/
 
 int						find_interface_indx(int sock)
 {
