@@ -22,8 +22,8 @@ int			main(void)
 	thread.pool = &pool;
 	thread.results = memalloc(sizeof(t_result *) * (THRD_HSTGRP_MAX + 1));
 	thread.lookup = &tbl;
-	tbl.buckets = memalloc(sizeof(t_hashbkt) * (THRD_HSTGRP_MAX + 1000));
-	tbl.bkt_cnt = THRD_HSTGRP_MAX + 100 - 1;
+	tbl.buckets = memalloc(sizeof(t_hashbkt) * (THRD_HSTGRP_MAX));
+	tbl.bkt_cnt = THRD_HSTGRP_MAX;
 	tbl.prb_max = tbl.bkt_cnt;
 	inflate_targetset_into_results(&targets, &thread, &env);
 	add_results_to_lookup(&thread, targets.total);

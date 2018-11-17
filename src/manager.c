@@ -213,15 +213,26 @@ int					init_workers(t_mgr *mgr, struct pollfd **fds)
 
 void				tend_threads(t_mgr *mgr)
 {
+	int				i;
+
+	 i = -1;
 	pthread_mutex_lock(&mgr->tpool->amt_working_mtx);
 	if (mgr->tpool->amt_working != mgr->tpool->thread_amt)
 	{
 		pthread_mutex_unlock(&mgr->tpool->amt_working_mtx);
 		pthread_mutex_lock(&mgr->tpool->work_pool_mtx);
-		if (mgr->tpool->work_pool->total == 0)
+		if (mgr->tpool->work_pool->total == 0 && mgr->targets.total > 0)
 		{
 			transfer_work(&mgr->thread_targets, &mgr->targets, mgr->tpool->reqest_amt);
 			mgr->tpool->reqest_amt *= (mgr->tpool->reqest_amt < 2048) ? 2 : 1;
+		}
+		else if (mgr->targets.total == 0 && mgr->tpool->work_pool->total == 0)
+		{
+			while (++i < mgr->tpool->thread_amt)
+			{
+				if (mgr->tpool->threads[i].working == false)
+					mgr->tpool->threads[i].alive = false;
+			}
 		}
 		pthread_mutex_unlock(&mgr->tpool->work_pool_mtx);
 	}
@@ -235,13 +246,13 @@ bool				check_if_finished(t_mgr *mgr)
 		return (false);
 	if (mgr->tpool)
 	{
-		pthread_mutex_lock(&mgr->tpool->amt_working_mtx);
-		if (mgr->tpool->amt_working != 0)
+		pthread_mutex_lock(&mgr->tpool->amt_alive_mtx);
+		if (mgr->tpool->amt_alive != 0)
 		{
-			pthread_mutex_unlock(&mgr->tpool->amt_working_mtx);
+			pthread_mutex_unlock(&mgr->tpool->amt_alive_mtx);
 			return (false);
 		}
-		pthread_mutex_unlock(&mgr->tpool->amt_working_mtx);
+		pthread_mutex_unlock(&mgr->tpool->amt_alive_mtx);
 	}
 	return (true);
 }
@@ -377,7 +388,6 @@ int					manager_loop(t_mgr *mgr)
 	flatten_all_portsets(&mgr->env);
 	while (mgr->stat.running == true)
 	{
-		/* if we have workers, see if they've sent us any messages */
 		if (mgr->workers.cnt > 0)
 		{
 			poll_wrkr_msgs(mgr, mgr->workers.maxfd, fds);
