@@ -344,6 +344,66 @@ void				send_workers_work(t_mgr *mgr)
 	}
 }
 
+void				flatten_portset(t_portset *set)
+{
+	t_prtrng		*rng;
+	uint16_t		start;
+	t_node			*tmp;
+	size_t			i;
+
+	i = 0;
+	if (!(set->flat = memalloc(sizeof(uint16_t) * (set->total + 1))))
+	{
+		hermes_error(FAILURE, "malloc() %s", strerror(errno));
+		return;
+	}
+	tmp = set->ports;
+	while (tmp)
+	{
+		set->flat[i++] = ((t_port*)tmp->data)->port;
+		tmp = tmp->right;
+	}
+	tmp = set->prtrngs;
+	while (tmp)
+	{
+		rng = tmp->data;
+		start = rng->start;
+		while (start <= rng->end)
+			set->flat[i++] = start++;
+		tmp = tmp->right;
+	}
+}
+
+void				flatten_all_portsets(t_env *env)
+{
+	if (env->ports.total > 0)
+		flatten_portset(&env->ports);
+	if (env->ack_ports && env->ack_ports->total > 0)
+	{
+		flatten_portset(env->ack_ports);
+		del_list(&env->ack_ports->ports, true);
+		del_list(&env->ack_ports->prtrngs, true);
+		free(env->ack_ports);
+		env->ack_ports = NULL;
+	}
+	if (env->syn_ports && env->syn_ports->total > 0)
+	{
+		flatten_portset(env->syn_ports);
+		del_list(&env->syn_ports->ports, true);
+		del_list(&env->syn_ports->prtrngs, true);
+		free(env->syn_ports);
+		env->syn_ports = NULL;
+	}
+	if (env->udp_ports && env->udp_ports->total > 0)
+	{
+		flatten_portset(env->udp_ports);
+		del_list(&env->udp_ports->ports, true);
+		del_list(&env->udp_ports->prtrngs, true);
+		free(env->udp_ports);
+		env->udp_ports = NULL;
+	}
+}
+
 int					manager_loop(t_mgr *mgr)
 {
 	struct pollfd	*fds;
@@ -358,6 +418,7 @@ int					manager_loop(t_mgr *mgr)
 	}
 	if (mgr->workers.cnt > 0)
 		init_workers(mgr, &fds);
+	flatten_all_portsets(&mgr->env);
 	while (mgr->stat.running == true)
 	{
 		/* if we have workers, see if they've sent us any messages */
@@ -373,7 +434,7 @@ int					manager_loop(t_mgr *mgr)
 			mgr->stat.running = false;
 	}
 	if (mgr->tpool)
-		tpool_kill(mgr->tpool);
+		tpool_kill(&mgr->tpool);
 	free(fds);
 	return (SUCCESS);
 }

@@ -24,9 +24,24 @@ typedef struct		s_node
 	void			*data;
 }					t_node;
 
+typedef struct		s_hashbkt
+{
+	uint16_t		hash;
+	void			*data;
+}					t_hashbkt;
+
+typedef struct		s_hashtbl
+{
+	uint16_t		prb_max;
+	uint16_t		bkt_cnt;
+	uint16_t		bkt_usd;
+	t_hashbkt		*buckets;
+}					t_hashtbl;
+
 /*
 **	Integer helper functions
 */
+unsigned int		pow2_round(unsigned int nb);
 void				swap_uint8(uint8_t *l, uint8_t *r);
 void				swap_uint16(uint16_t *l, uint16_t *r);
 void				swap_uint32(uint32_t *l, uint32_t *r);
@@ -76,6 +91,14 @@ bool				clist_rm(t_node **clist, void *data, int (*cmp)(void *, void *));
 void				del_list(t_node **clist, bool deldata);
 bool				rm_node(t_node **node, bool deldata);
 
+/*
+**	Hash Functions
+*/
+void				*new_hashtbl(size_t size);
+bool				hashtbl_add(t_hashtbl *tbl, uint8_t *key, uint32_t ksz, void **value);
+bool				hashtbl_get(t_hashtbl *tbl, uint8_t *key, uint16_t keysz,
+								void **hook);
+bool				hashtbl_rm(t_hashtbl *tbl, uint8_t *key, uint16_t keysz);
 
 /*
 **	Error Management Functions

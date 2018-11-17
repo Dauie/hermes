@@ -13,6 +13,15 @@
 #include "../incl/hermes.h"
 #include "../incl/parser.h"
 
+void		free_syn_ports(t_mgr **mgr)
+{
+	if ((*mgr)->env.syn_ports->ports)
+		del_list(&(*mgr)->env.syn_ports->ports, true);
+	if ((*mgr)->env.syn_ports->prtrngs)
+		del_list(&(*mgr)->env.syn_ports->prtrngs, true);
+	free((*mgr)->env.syn_ports);
+}
+
 void		destroy_manager(t_mgr **mgr)
 {
 	if ((*mgr)->results.results)
@@ -34,7 +43,6 @@ void		destroy_manager(t_mgr **mgr)
 			del_list(&(*mgr)->env.ack_ports->prtrngs, true);
 		free((*mgr)->env.ack_ports);
 	}
-
 	if ((*mgr)->env.syn_ports)
 	{
 		if ((*mgr)->env.syn_ports->ports)
@@ -58,8 +66,6 @@ void		destroy_manager(t_mgr **mgr)
 			free((*mgr)->workers.wrkrs->data);
 		free((*mgr)->workers.wrkrs);
 	}
-
-
 	free(*mgr);
 }
 

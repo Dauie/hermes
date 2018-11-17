@@ -1,4 +1,3 @@
-#include <net/if.h>
 # include "../incl/hermes.h"
 
 bool                new_tsem(t_sem **sem)
@@ -15,7 +14,7 @@ void                tpool_event(t_thread_pool *pool)
 
 	i = 0;
 	pthread_mutex_lock(&pool->tsem->stop);
-	while (i < pool->tcount)
+	while (i < pool->thread_amt)
 	{
 		pool->threads[i].working = true;
 		i++;
@@ -33,17 +32,21 @@ void                tpool_wait(t_thread_pool *pool)
 	pthread_mutex_unlock(&pool->tsem->stop);
 }
 
-void				tpool_kill(t_thread_pool *pool)
+void				tpool_kill(t_thread_pool **pool)
 {
 	int				i;
 
 	i = -1;
 	if (!pool)
 		return ;
-	while (++i < pool->tcount)
-		pool->threads[i].alive = false;
-	if (pool->threads)
-		free(pool->threads);
+	while (++i < (*pool)->thread_amt)
+	{
+		(*pool)->threads[i].alive = false;
+<<<<<<< HEAD
+	tpool_event(*pool);
+	sleep(5);
+	if ((*pool)->threads)
+		free((*pool)->threads);
 }
 void					kill_threadpool(t_thread_pool **pool)
 {
@@ -52,41 +55,27 @@ void					kill_threadpool(t_thread_pool **pool)
 	i = -1;
 	while (++i < (*pool)->thread_amt)
 		(*pool)->threads[i].alive = false;
+=======
+	}
+>>>>>>> origin/master
 	sleep(1);
 	if ((*pool)->threads)
 		free((*pool)->threads);
 	free(*pool);
 }
 
-int						find_live_interface_indx(int sock)
+int						find_interface_indx(int sock)
 {
 	struct ifreq		ifr;
-	struct ifaddrs		*addrs;
+	char				*ifname;
+	char				errbuff[PCAP_ERRBUF_SIZE];
 
-	bzero(&ifr, sizeof(struct ifreq));
-	if (getifaddrs(&addrs) == -1)
-	{
-		hermes_error(FAILURE, "getifaddrs() %s", strerror(errno));
-		return (-1);
-	}
-	while (addrs)
-	{
-		if (addrs->ifa_addr &&
-			(addrs->ifa_flags & IFF_UP) &&
-				(addrs->ifa_flags & IFF_RUNNING))
-		{
-			if (addrs->ifa_addr->sa_family == AF_INET &&
-				((struct sockaddr_in *)addrs->ifa_addr)->sin_addr.s_addr !=
-						htonl(LOOPBACK_ADDR))
-			{
-				strcpy(ifr.ifr_ifrn.ifrn_name, addrs->ifa_name);
-				if ((ioctl(sock, SIOCGIFINDEX, &ifr)) < 0)
-					return (hermes_error(FAILURE, "ioctl() %s", strerror(errno)));
-				break;
-			}
-		}
-	}
-	freeifaddrs(addrs);
+	if (!(ifname = pcap_lookupdev(errbuff)))
+		return (hermes_error(FAILURE, "pcap_lookupdev() %s", errbuff));
+	strcpy(ifr.ifr_ifrn.ifrn_name, ifname);
+	printf("interface: %s\n", ifr.ifr_ifrn.ifrn_name);
+	if ((ioctl(sock, SIOCGIFINDEX, &ifr)) < 0)
+		return (hermes_error(FAILURE, "ioctl() %s", strerror(errno)));
 	return (ifr.ifr_ifindex);
 }
 
@@ -110,13 +99,32 @@ int						find_live_interface_indx(int sock)
 **                              deallocation of all associated resources.
 */
 
+<<<<<<< HEAD
 //int						prepare_pcap_rx()
 //{
 //
 //}
-
-int						prepare_thread_tx_ring(t_thread *thread)
+=======
+int						prepare_pcap_rx(t_thread *thread)
 {
+	char			errbuff[PCAP_ERRBUF_SIZE] = {0};
+	char			*iface;
+	int				timeout;
+
+	timeout = thread->pool->env->opts.init_rtt_timeo;
+	if (!(iface = pcap_lookupdev(errbuff)))
+		return(hermes_error(FAILURE, "pcap_lookupdev() %s", errbuff));
+	if (!(thread->pcaphand = pcap_open_live(iface, 128, 0, timeout, errbuff)))
+		return (hermes_error(FAILURE, "pcap_open_live() %s", errbuff));
+	if (errbuff[0] != 0)
+		hermes_error(0, "pcap_open_live() %s", errbuff);
+	return (SUCCESS);
+}
+>>>>>>> origin/master
+
+int						prepare_packetmmap_tx_ring(t_thread *thread)
+{
+<<<<<<< HEAD
 	struct tpacket_req tpr;
 	struct sockaddr_ll sll_loc;
 	int ifinx;
@@ -131,16 +139,54 @@ int						prepare_thread_tx_ring(t_thread *thread)
 		thread->alive = false;
 		return (hermes_error(FAILURE, "socket() %s", strerror(errno)));
 	}
+<<<<<<< HEAD
 	setsockopt(thread->sock, SOL_SOCKET, IP_HDRINCL,);
+=======
+	setsockopt(thread->sock, SOL_SOCKET, IP_HDRINCL, NULL, 0);
+>>>>>>> 085c4fe7ddce4c15e84f6ab88ee29d1b09510986
 	memset(&tpr, 0, sizeof(struct tpacket_req));
 	(void) tpr;
 	memset(&sll_loc, 0, sizeof(struct sockaddr_ll));
 	sll_loc.sll_family = AF_PACKET;
 	sll_loc.sll_protocol = htons(ETH_P_ALL);
 	if ((ifinx = find_live_interface_indx(thread->sock)) < 0) {
+=======
+	struct tpacket_req	tpr;
+	struct sockaddr_ll	sll_loc;
+	int					ifinx;
+
+	/* Step 1 Create PF_PACKET socket. Using SOCK_DGRAM so packets will be "cooked" */
+	thread->sock = socket(PF_PACKET, SOCK_DGRAM, htons(ETH_P_ALL));
+	if (thread->sock == -1)
+	{
+		thread->alive = false;
+		return (hermes_error(FAILURE, "socket() %s", strerror(errno)));
+	}
+	/* Step 2 determine sizes for PACKET_TX_RING and allocate ring via setsockopt() */
+	memset(&tpr, 0, sizeof(struct tpacket_req));
+	tpr.tp_block_size = (unsigned int)getpagesize();
+	tpr.tp_frame_size = TPACKET_HDRLEN + IP_HDRLEN + DEF_TRAN_HDRLEN + thread->pool->env->cpayload_len;
+	tpr.tp_frame_size = pow2_round(tpr.tp_frame_size);
+	tpr.tp_block_nr = (THRD_HSTGRP_MAX / (tpr.tp_block_size / tpr.tp_frame_size));
+	tpr.tp_frame_nr = tpr.tp_block_nr * (tpr.tp_block_size / tpr.tp_frame_size);
+	thread->ring_size = tpr.tp_block_size * tpr.tp_block_nr;
+	printf("frame size: %d | blocksize: %d | block count %d | frame count %d\n", tpr.tp_frame_size, tpr.tp_block_size, tpr.tp_block_nr, tpr.tp_frame_nr);
+	if (setsockopt(thread->sock, SOL_PACKET, PACKET_TX_RING, (void *)&tpr, sizeof(tpr)) < 0)
+	{
+		thread->alive = false;
+		return (hermes_error(FAILURE, "setsockopt() PACKET_TX_RING %s", strerror(errno)));
+	}
+	printf("mmap PACKET_TX_RING success\n");
+	memset(&sll_loc, 0, sizeof(struct sockaddr_ll));
+	sll_loc.sll_family = AF_PACKET;
+	sll_loc.sll_protocol = htons(ETH_P_ALL);
+	if ((ifinx = find_interface_indx(thread->sock)) < 0)
+	{
+>>>>>>> origin/master
 		thread->alive = false;
 		return (FAILURE);
 	}
+	printf("found interface index\n");
 	sll_loc.sll_ifindex = ifinx;
 	/* TODO possibly increase iface mtu */
 	if (bind(thread->sock, (sockaddr *) &sll_loc, sizeof(struct sockaddr_ll)) ==
@@ -148,11 +194,26 @@ int						prepare_thread_tx_ring(t_thread *thread)
 		thread->alive = false;
 		return (hermes_error(FAILURE, "bind() %s", strerror(errno)));
 	}
+<<<<<<< HEAD
 	mmap(0, ring_size, PROT_READ | PROT_WRITE, MAP_SHARED, thread->sock, 0);
 	return (SUCCESS);
+	if (thread->pool->threads)
+		free(thread->pool->threads);
+=======
+	if (!(thread->tx_ring = mmap(0,thread->ring_size, PROT_READ|PROT_WRITE, MAP_SHARED, thread->sock, 0)))
+	{
+		thread->alive = false;
+		return (hermes_error(FAILURE, "mmap() TX_RING %s", strerror(errno)));
+	}
+	return (SUCCESS);
+}
 
-	if (pool->threads)
-		free(pool->threads);
+int						prepare_thread_rx_tx(t_thread *thread)
+{
+	prepare_packetmmap_tx_ring(thread);
+	prepare_pcap_rx(thread);
+>>>>>>> origin/master
+	return (SUCCESS);
 }
 
 void					*thread_loop(void *thrd)
@@ -161,8 +222,15 @@ void					*thread_loop(void *thrd)
 	t_thread_pool   *tpool;
 	t_thread		*thread;
 
+<<<<<<< HEAD
 	thread = (t_thread*)thrd;
 	tpool = thread->pool;
+=======
+	thread = (t_thread *)thrd;
+	thread->results = memalloc(sizeof(t_result *) * (THRD_HSTGRP_MAX + 64));
+	prepare_thread_rx_tx(thread);
+	thread->lookup = new_hashtbl(THRD_HSTGRP_MAX);
+>>>>>>> origin/master
 	memset(&work, 0, sizeof(t_targetset));
 	while (thread->alive)
 	{
@@ -172,14 +240,14 @@ void					*thread_loop(void *thrd)
 		{
 			transfer_work(&work, thread->pool->work_pool, thread->amt);
 			pthread_mutex_unlock(&thread->pool->work_pool_mtx);
-			thread->amt *= (thread->amt < 64) ? 2 : 1;
+			thread->amt *= (thread->amt < THRD_HSTGRP_MAX) ? 2 : 1;
 			if (work.total > 0)
 			{
 				pthread_mutex_lock(&thread->pool->amt_working_mtx);
 				thread->pool->amt_working += 1;
 				pthread_mutex_unlock(&thread->pool->amt_working_mtx);
-				test_run_scan(thread->pool->env, &work, thread->pool->results,
-						&thread->pool->results_mtx);
+				/* TODO have randomized port option working.*/
+				run_scan(thread, &work);
 				pthread_mutex_lock(&thread->pool->amt_working_mtx);
 				thread->pool->amt_working -= 1;
 				pthread_mutex_unlock(&thread->pool->amt_working_mtx);
@@ -219,8 +287,8 @@ t_thread_pool			*init_threadpool(t_env *env, t_targetset *workpool,
 	pthread_mutex_init(&pool->amt_working_mtx, NULL);
 	pthread_mutex_init(&pool->tsem->stop, NULL);
 	pthread_cond_init(&pool->tsem->wait, NULL);
-	pool->tcount = env->opts.thread_count;
-	pool->reqest_amt = pool->tcount;
+	pool->thread_amt = env->opts.thread_count;
+	pool->reqest_amt = pool->thread_amt;
 	pool->results = results;
 	pool->work_pool = workpool;
 	pool->env = env;

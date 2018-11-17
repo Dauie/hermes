@@ -66,22 +66,21 @@ static void		add_prtrnglist_to_binnlist(binn *list, t_node **prtrngs)
 	}
 }
 
-static void		add_portstatlist_to_binnlist(binn *list, t_node **port_stats)
+static void		add_portstatlist_to_binnlist(binn *list, t_portstat **port_stats)
 {
-	t_node		*head;
-	t_portstat	*port_stat;
+	int			i;
 	binn		*obj;
 
-	head = *port_stats;
-	while (head)
+	i = -1;
+	while (port_stats[++i])
 	{
-		port_stat = head->data;
 		obj = binn_object();
-		binn_object_set_uint16(obj, "port", port_stat->port);
-		binn_object_set_uint8(obj, "status", port_stat->status);
+		binn_object_set_uint16(obj, "port", port_stats[i]->port);
+		binn_object_set_uint8(obj, "status", port_stats[i]->status);
+		free(port_stats[i]);
+		port_stats[i] = NULL;
 		binn_list_add_object(list, obj);
 		binn_free(obj);
-		head = head->right;
 	}
 }
 
@@ -99,13 +98,12 @@ static void		add_resultlist_to_binnlist(binn *list, t_node **results)
 		printf("%s worker result\n", inet_ntoa(result->ip));
 		res_binn = binn_object();
 		binn_object_set_uint32(res_binn, "ip", result->ip.s_addr);
-		if (result->port_stats)
+		if (result->portstats)
 		{
 			portstatlist = binn_list();
-			add_portstatlist_to_binnlist(portstatlist, &result->port_stats);
+			add_portstatlist_to_binnlist(portstatlist, result->portstats);
 			binn_object_set_list(res_binn, "port_stats", portstatlist);
 			binn_free(portstatlist);
-			del_list(&result->port_stats, true);
 		}
 		else
 			binn_object_set_null(res_binn, "port_stats");
