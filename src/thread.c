@@ -47,6 +47,7 @@ void				tpool_kill(t_thread_pool **pool)
 	if ((*pool)->threads)
 		free((*pool)->threads);
 }
+
 void					kill_threadpool(t_thread_pool **pool)
 {
 	int					i;
@@ -179,28 +180,31 @@ void					*thread_loop(void *thrd)
 
 	thread = (t_thread *)thrd;
 	tpool = thread->pool;
-	thread->results = memalloc(sizeof(t_result *) * (THRD_HSTGRP_MAX + 64));
+	thread->results = memalloc(sizeof(t_result *) * (THRD_HSTGRP_MAX));
 	prepare_thread_rx_tx(thread);
 	thread->lookup = new_hashtbl(THRD_HSTGRP_MAX);
-	memset(&work, 0, sizeof(t_targetset));
 	while (thread->alive)
 	{
 		tpool_wait(tpool);
 		pthread_mutex_lock(&thread->pool->work_pool_mtx);
 		if (thread->pool->work_pool->total > 0)
 		{
+			memset(&work, 0, sizeof(t_targetset));
 			transfer_work(&work, thread->pool->work_pool, thread->amt);
 			pthread_mutex_unlock(&thread->pool->work_pool_mtx);
 			thread->amt *= (thread->amt < THRD_HSTGRP_MAX) ? 2 : 1;
 			if (work.total > 0)
 			{
+				printf("thread %d has %d works\n", thread->id, work.total);
 				pthread_mutex_lock(&thread->pool->amt_working_mtx);
 				thread->pool->amt_working += 1;
+				thread->working = true;
 				pthread_mutex_unlock(&thread->pool->amt_working_mtx);
 				/* TODO have randomized port option working.*/
 				run_scan(thread, &work);
 				pthread_mutex_lock(&thread->pool->amt_working_mtx);
 				thread->pool->amt_working -= 1;
+				thread->working = false;
 				pthread_mutex_unlock(&thread->pool->amt_working_mtx);
 			}
 		}
@@ -209,6 +213,14 @@ void					*thread_loop(void *thrd)
 			pthread_mutex_unlock(&thread->pool->work_pool_mtx);
 		}
 	}
+	free(thread->results);
+	free(thread->lookup->buckets);
+	free(thread->lookup);
+	pcap_close(thread->pcaphand);
+	pthread_mutex_lock(&thread->pool->amt_alive_mtx);
+	thread->pool->amt_alive -= 1;
+	printf("thread %d closing %d still alive\n", thread->id, thread->pool->amt_alive);
+	pthread_mutex_unlock(&thread->pool->amt_alive_mtx);
 	return (NULL);
 }
 
@@ -245,10 +257,13 @@ t_thread_pool			*init_threadpool(t_env *env, t_targetset *workpool,
 	pool->env = env;
 	while (++i < pool->thread_amt)
 	{
-		pool->threads[i].id = (uint8_t)(i + 2);
+		pool->threads[i].id = (uint8_t)(i + 1);
 		pool->threads[i].amt = 1;
 		pool->threads[i].pool = pool;
 		pool->threads[i].alive = true;
+		pthread_mutex_lock(&pool->amt_alive_mtx);
+		pool->amt_alive += 1;
+		pthread_mutex_unlock(&pool->amt_alive_mtx);
 		pthread_create(&pool->threads[i].thread, NULL, thread_loop, &pool->threads[i]);
 	}
 	return (pool);

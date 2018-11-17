@@ -188,6 +188,7 @@ typedef struct 			s_thread
 	struct s_thread_pool*pool;
 	volatile bool       working;
 	volatile bool		alive;
+	volatile bool		working;
 	uint16_t			amt;
 	int					sock;
 	void				*tx_ring;
@@ -207,12 +208,14 @@ typedef struct          s_sem
 typedef struct 			s_thread_pool
 {
 	volatile uint16_t	amt_working;
+	volatile uint16_t	amt_alive;
 	uint16_t 			thread_amt;
 	uint16_t			reqest_amt;
 	t_thread			*threads;
 	t_resultset			*results;
 	t_targetset			*work_pool;
 	t_env				*env;
+	pthread_mutex_t		amt_alive_mtx;
 	pthread_mutex_t		amt_working_mtx;
 	pthread_mutex_t		results_mtx;
 	pthread_mutex_t		work_pool_mtx;
@@ -316,7 +319,10 @@ void					print_ip_struct(t_node *ip4);
 void					print_iprng_struct(t_node *iprng);
 void					print_targetset(t_targetset *set);
 int						prepare_packetmmap_tx_ring(t_thread *thread);
+void					inflate_targetset_into_results(t_targetset *set, t_thread *thread, t_env *env);
+void add_results_to_lookup(t_thread *thread, size_t count);
 void					run_scan(t_thread *thread, t_targetset *set);
+int make_rx_filter(t_thread *thread, size_t total);
 
 
 binn					*binnify_resultset(t_resultset *set);

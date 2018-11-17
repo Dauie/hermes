@@ -34,6 +34,8 @@ void		destroy_manager(t_mgr **mgr)
 		del_list(&(*mgr)->env.ports.ports, true);
 	if ((*mgr)->env.ports.prtrngs)
 		del_list(&(*mgr)->env.ports.prtrngs, true);
+	if ((*mgr)->env.ports.flat)
+		free((*mgr)->env.ports.flat);
 
 	if ((*mgr)->env.ack_ports)
 	{
@@ -41,6 +43,8 @@ void		destroy_manager(t_mgr **mgr)
 			del_list(&(*mgr)->env.ack_ports->ports, true);
 		if ((*mgr)->env.ack_ports->prtrngs)
 			del_list(&(*mgr)->env.ack_ports->prtrngs, true);
+		if ((*mgr)->env.ack_ports->flat)
+			free((*mgr)->env.ack_ports);
 		free((*mgr)->env.ack_ports);
 	}
 	if ((*mgr)->env.syn_ports)
@@ -49,6 +53,8 @@ void		destroy_manager(t_mgr **mgr)
 			del_list(&(*mgr)->env.syn_ports->ports, true);
 		if ((*mgr)->env.syn_ports->prtrngs)
 			del_list(&(*mgr)->env.syn_ports->prtrngs, true);
+		if ((*mgr)->env.syn_ports->flat)
+			free((*mgr)->env.syn_ports);
 		free((*mgr)->env.syn_ports);
 	}
 
@@ -58,6 +64,8 @@ void		destroy_manager(t_mgr **mgr)
 			del_list(&(*mgr)->env.udp_ports->ports, true);
 		if ((*mgr)->env.udp_ports->prtrngs)
 			del_list(&(*mgr)->env.udp_ports->prtrngs, true);
+		if ((*mgr)->env.udp_ports->flat)
+			free((*mgr)->env.udp_ports);
 		free((*mgr)->env.udp_ports);
 	}
 	if ((*mgr)->workers.wrkrs)
