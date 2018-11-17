@@ -42,7 +42,6 @@ void				tpool_kill(t_thread_pool **pool)
 	while (++i < (*pool)->thread_amt)
 	{
 		(*pool)->threads[i].alive = false;
-<<<<<<< HEAD
 	tpool_event(*pool);
 	sleep(5);
 	if ((*pool)->threads)
@@ -55,9 +54,7 @@ void					kill_threadpool(t_thread_pool **pool)
 	i = -1;
 	while (++i < (*pool)->thread_amt)
 		(*pool)->threads[i].alive = false;
-=======
 	}
->>>>>>> origin/master
 	sleep(1);
 	if ((*pool)->threads)
 		free((*pool)->threads);
@@ -99,12 +96,6 @@ int						find_interface_indx(int sock)
 **                              deallocation of all associated resources.
 */
 
-<<<<<<< HEAD
-//int						prepare_pcap_rx()
-//{
-//
-//}
-=======
 int						prepare_pcap_rx(t_thread *thread)
 {
 	char			errbuff[PCAP_ERRBUF_SIZE] = {0};
@@ -120,37 +111,9 @@ int						prepare_pcap_rx(t_thread *thread)
 		hermes_error(0, "pcap_open_live() %s", errbuff);
 	return (SUCCESS);
 }
->>>>>>> origin/master
 
 int						prepare_packetmmap_tx_ring(t_thread *thread)
 {
-<<<<<<< HEAD
-	struct tpacket_req tpr;
-	struct sockaddr_ll sll_loc;
-	int ifinx;
-	size_t ring_size;
-
-	ring_size = 0;
-	/* TODO figure out block/frame sizes for mmap tx_ring */
-	memset(&sll_loc, 0, sizeof(struct sockaddr_ll));
-	thread->sock = socket(PF_PACKET, SOCK_DGRAM,
-						  htons(ETH_P_ALL));                /* step 1 */
-	if (thread->sock == -1) {
-		thread->alive = false;
-		return (hermes_error(FAILURE, "socket() %s", strerror(errno)));
-	}
-<<<<<<< HEAD
-	setsockopt(thread->sock, SOL_SOCKET, IP_HDRINCL,);
-=======
-	setsockopt(thread->sock, SOL_SOCKET, IP_HDRINCL, NULL, 0);
->>>>>>> 085c4fe7ddce4c15e84f6ab88ee29d1b09510986
-	memset(&tpr, 0, sizeof(struct tpacket_req));
-	(void) tpr;
-	memset(&sll_loc, 0, sizeof(struct sockaddr_ll));
-	sll_loc.sll_family = AF_PACKET;
-	sll_loc.sll_protocol = htons(ETH_P_ALL);
-	if ((ifinx = find_live_interface_indx(thread->sock)) < 0) {
-=======
 	struct tpacket_req	tpr;
 	struct sockaddr_ll	sll_loc;
 	int					ifinx;
@@ -182,7 +145,6 @@ int						prepare_packetmmap_tx_ring(t_thread *thread)
 	sll_loc.sll_protocol = htons(ETH_P_ALL);
 	if ((ifinx = find_interface_indx(thread->sock)) < 0)
 	{
->>>>>>> origin/master
 		thread->alive = false;
 		return (FAILURE);
 	}
@@ -194,12 +156,6 @@ int						prepare_packetmmap_tx_ring(t_thread *thread)
 		thread->alive = false;
 		return (hermes_error(FAILURE, "bind() %s", strerror(errno)));
 	}
-<<<<<<< HEAD
-	mmap(0, ring_size, PROT_READ | PROT_WRITE, MAP_SHARED, thread->sock, 0);
-	return (SUCCESS);
-	if (thread->pool->threads)
-		free(thread->pool->threads);
-=======
 	if (!(thread->tx_ring = mmap(0,thread->ring_size, PROT_READ|PROT_WRITE, MAP_SHARED, thread->sock, 0)))
 	{
 		thread->alive = false;
@@ -212,7 +168,6 @@ int						prepare_thread_rx_tx(t_thread *thread)
 {
 	prepare_packetmmap_tx_ring(thread);
 	prepare_pcap_rx(thread);
->>>>>>> origin/master
 	return (SUCCESS);
 }
 
@@ -222,15 +177,11 @@ void					*thread_loop(void *thrd)
 	t_thread_pool   *tpool;
 	t_thread		*thread;
 
-<<<<<<< HEAD
-	thread = (t_thread*)thrd;
-	tpool = thread->pool;
-=======
 	thread = (t_thread *)thrd;
+	tpool = thread->pool;
 	thread->results = memalloc(sizeof(t_result *) * (THRD_HSTGRP_MAX + 64));
 	prepare_thread_rx_tx(thread);
 	thread->lookup = new_hashtbl(THRD_HSTGRP_MAX);
->>>>>>> origin/master
 	memset(&work, 0, sizeof(t_targetset));
 	while (thread->alive)
 	{
