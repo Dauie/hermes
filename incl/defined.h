@@ -14,7 +14,7 @@
 # define CUST_PAYLOAD_MAX (64)
 # define THREAD_MAX (256)
 # define WKR_HSTGRP_MAX (4096)
-# define THRD_HSTGRP_MAX (128)
+# define THRD_HSTGRP_MAX (32)
 # define HSTGRP_MIN (1)
 
 # ifndef fast_swap_ints

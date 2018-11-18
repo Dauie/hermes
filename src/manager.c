@@ -221,17 +221,20 @@ void				tend_threads(t_mgr *mgr)
 	{
 		pthread_mutex_unlock(&mgr->tpool->amt_working_mtx);
 		pthread_mutex_lock(&mgr->tpool->work_pool_mtx);
-		if (mgr->tpool->work_pool->total == 0 && mgr->targets.total > 0)
+		if (mgr->tpool->workpool->total == 0 && mgr->targets.total > 0)
 		{
 			transfer_work(&mgr->thread_targets, &mgr->targets, mgr->tpool->reqest_amt);
 			mgr->tpool->reqest_amt *= (mgr->tpool->reqest_amt < 2048) ? 2 : 1;
 		}
-		else if (mgr->targets.total == 0 && mgr->tpool->work_pool->total == 0)
+		else if (mgr->targets.total == 0 && mgr->tpool->workpool->total == 0)
 		{
+			//TODO find out why threads aren't being switched off.
 			while (++i < mgr->tpool->thread_amt)
 			{
 				if (mgr->tpool->threads[i].working == false)
+				{
 					mgr->tpool->threads[i].alive = false;
+				}
 			}
 		}
 		pthread_mutex_unlock(&mgr->tpool->work_pool_mtx);

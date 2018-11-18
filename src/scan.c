@@ -146,4 +146,5 @@ void				run_scan(t_thread *thread, t_targetset *set)
 		thread->lookup->buckets[i].hash = 0;
 		thread->lookup->buckets[i].data = NULL;
 	}
+	sleep(1);
 }

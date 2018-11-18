@@ -18,6 +18,7 @@
 # include <sys/user.h>
 # include <linux/if_ether.h> /* TODO not portable */
 # include <linux/if_packet.h> /* TODO not portable */
+# include <linux/tcp.h>
 # include <net/if.h>
 # include <sys/ioctl.h>
 # include <sys/mman.h>
@@ -186,8 +187,8 @@ typedef struct 			s_thread
 	uint8_t				id;
 	pthread_t			thread;
 	struct s_thread_pool*pool;
-	volatile bool		alive;
-	volatile bool		working;
+	bool				alive;
+	bool				working;
 	uint16_t			amt;
 	int					sock;
 	void				*tx_ring;
@@ -200,13 +201,14 @@ typedef struct 			s_thread
 
 typedef struct 			s_thread_pool
 {
-	volatile uint16_t	amt_working;
-	volatile uint16_t	amt_alive;
+	char				*iface;
+	uint16_t			amt_working;
+	uint16_t			amt_alive;
 	uint16_t 			thread_amt;
 	uint16_t			reqest_amt;
 	t_thread			*threads;
 	t_resultset			*results;
-	t_targetset			*work_pool;
+	t_targetset 		*workpool;
 	t_env				*env;
 	pthread_mutex_t		amt_alive_mtx;
 	pthread_mutex_t		amt_working_mtx;
