@@ -25,14 +25,15 @@ int					handle_obj_offer(t_wmgr *session, uint8_t code, uint8_t *msg)
 	if (code == C_OBJ_ENV)
 	{
 		unbinnify_env(&session->env, obj);
+		session->env.dstports = make_tcp_dstports(session->env.ports.total);
 		if (!(session->tpool = init_threadpool(&session->env, &session->targets, &session->results)))
 			hermes_error(EXIT_FAILURE, "init_threadpool() failure");
 	}
 	else if (code == C_OBJ_TARGETS)
 	{
-		pthread_mutex_lock(&session->tpool->work_pool_mtx);
+		pthread_mutex_lock(&session->tpool->work_mtx);
 		unbinnify_targetset(&session->targets, obj);
-		pthread_mutex_unlock(&session->tpool->work_pool_mtx);
+		pthread_mutex_unlock(&session->tpool->work_mtx);
 		session->stat.has_work = true;
 	}
 	free(obj);
@@ -110,7 +111,7 @@ void				worker_check_results(t_wmgr *session)
 	if (session->results.result_cnt > 0)
 	{
 		if (send_results(session) == FAILURE)
-			hermes_error(FAILURE, "results unsent");
+			hermes_error(FAILURE, "hstgrp unsent");
 	}
 	pthread_mutex_unlock(&session->tpool->results_mtx);
 }

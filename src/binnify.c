@@ -129,14 +129,14 @@ binn			*binnify_resultset(t_resultset *set)
 	{
 		result_list = binn_list();
 		add_resultlist_to_binnlist(result_list, &set->results);
-		binn_object_set_list(obj, "results", result_list);
+		binn_object_set_list(obj, "hstgrp", result_list);
 		binn_free(result_list);
 		del_list(&set->results, true);
 		set->result_cnt = 0;
 		set->byte_size = 0;
 	}
 	else
-		binn_object_set_null(obj, "results");
+		binn_object_set_null(obj, "hstgrp");
 	return (obj);
 }
 

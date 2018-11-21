@@ -220,13 +220,13 @@ void				tend_threads(t_mgr *mgr)
 	if (mgr->tpool->amt_working != mgr->tpool->thread_amt)
 	{
 		pthread_mutex_unlock(&mgr->tpool->amt_working_mtx);
-		pthread_mutex_lock(&mgr->tpool->work_pool_mtx);
-		if (mgr->tpool->workpool->total == 0 && mgr->targets.total > 0)
+		pthread_mutex_lock(&mgr->tpool->work_mtx);
+		if (mgr->tpool->work->total == 0 && mgr->targets.total > 0)
 		{
-			transfer_work(&mgr->thread_targets, &mgr->targets, mgr->tpool->reqest_amt);
+			transfer_work(&mgr->thread_work, &mgr->targets, mgr->tpool->reqest_amt);
 			mgr->tpool->reqest_amt *= (mgr->tpool->reqest_amt < 2048) ? 2 : 1;
 		}
-		else if (mgr->targets.total == 0 && mgr->tpool->workpool->total == 0)
+		else if (mgr->targets.total == 0 && mgr->tpool->work->total == 0)
 		{
 			//TODO find out why threads aren't being switched off.
 			while (++i < mgr->tpool->thread_amt)
@@ -237,7 +237,7 @@ void				tend_threads(t_mgr *mgr)
 				}
 			}
 		}
-		pthread_mutex_unlock(&mgr->tpool->work_pool_mtx);
+		pthread_mutex_unlock(&mgr->tpool->work_mtx);
 	}
 	else
 		pthread_mutex_unlock(&mgr->tpool->amt_working_mtx);
@@ -374,6 +374,32 @@ void				flatten_all_portsets(t_env *env)
 	}
 }
 
+uint16_t		*make_tcp_dstports(size_t size)
+{
+	uint16_t	range;
+	uint16_t	*dstp;
+	size_t		i;
+
+	i = 0;
+	srand((uint)time(NULL));
+	range = EPHIM_MAX - EPHIM_MIN;
+	if (!(dstp = memalloc(sizeof(uint16_t) * size)))
+	{
+		hermes_error(FAILURE, "malloc() %s", strerror(errno));
+		return (NULL);
+	}
+	while (i < size)
+	{
+		dstp[i++] = (uint16_t)(rand() % range + EPHIM_MIN);
+	}
+	i = 0;
+	while (i < size)
+	{
+		printf("%u\n", dstp[i++]);
+	}
+	return (dstp);
+}
+
 int					manager_loop(t_mgr *mgr)
 {
 	struct pollfd	*fds;
@@ -383,12 +409,13 @@ int					manager_loop(t_mgr *mgr)
 	mgr->stat.running = true;
 	if (mgr->env.opts.thread_count > 0)
 	{
-		if (!(mgr->tpool = init_threadpool(&mgr->env, &mgr->thread_targets, &mgr->results)))
+		if (!(mgr->tpool = init_threadpool(&mgr->env, &mgr->thread_work, &mgr->results)))
 			hermes_error(EXIT_FAILURE, "init_threadpool()");
 	}
 	if (mgr->workers.cnt > 0)
 		init_workers(mgr, &fds);
 	flatten_all_portsets(&mgr->env);
+	mgr->env.dstports = make_tcp_dstports(mgr->env.ports.total);
 	while (mgr->stat.running == true)
 	{
 		if (mgr->workers.cnt > 0)

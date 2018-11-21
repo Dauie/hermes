@@ -20,25 +20,25 @@ int			main(void)
 	targets.rng_cnt = 1;
 	pool.env = &env;
 	thread.pool = &pool;
-	thread.results = memalloc(sizeof(t_result *) * (THRD_HSTGRP_MAX + 1));
+	thread.hstgrp = memalloc(sizeof(t_result *) * (THRD_HSTGRP_MAX + 1));
 	thread.lookup = &tbl;
 	tbl.buckets = memalloc(sizeof(t_hashbkt) * (THRD_HSTGRP_MAX));
 	tbl.bkt_cnt = THRD_HSTGRP_MAX;
 	tbl.prb_max = tbl.bkt_cnt;
-	inflate_targetset_into_results(&targets, &thread, &env);
+	targetset_to_hstgrp(&targets, &thread, &env);
 	add_results_to_lookup(&thread, targets.total);
 
 
 
 	for (size_t i = 0; i < targets.total; i++)
 	{
-		if (hashtbl_get(thread.lookup, (uint8_t *)&thread.results[i]->ip, 4, (void **)&tmp) == true)
+		if (hashtbl_get(thread.lookup, (uint8_t *)&thread.hstgrp[i]->ip, 4, (void **)&tmp) == true)
 			printf("thread %d found result %ld %s\n", thread.id, i, inet_ntoa(tmp->ip));
 	}
 	for (size_t i = 0; i < targets.total; i++)
 	{
-		printf("thread %d deleting %s ...", thread.id, inet_ntoa(thread.results[i]->ip));
-		if (hashtbl_rm(thread.lookup, (uint8_t *)&thread.results[i]->ip, 4) == true)
+		printf("thread %d deleting %s ...", thread.id, inet_ntoa(thread.hstgrp[i]->ip));
+		if (hashtbl_rm(thread.lookup, (uint8_t *)&thread.hstgrp[i]->ip, 4) == true)
 			printf("done\n");
 		else
 			printf("failed\n");

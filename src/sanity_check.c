@@ -13,6 +13,8 @@ int			sanity_check(t_mgr *mgr)
 		mgr->env.opts.max_retries = DEF_MAX_RETRIES;
 	if (mgr->env.opts.thread_count <= 1)
 		mgr->env.opts.thread_count = 4;
+	if (mgr->env.opts.ip_ttl == 0)
+		mgr->env.opts.ip_ttl = DEF_IP_TTL;
 	if (mgr->targets.total == 0)
 		return (hermes_error(FAILURE, "no targets specified"));
 	if (mgr->env.ports.total == 0)

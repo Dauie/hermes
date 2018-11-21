@@ -114,7 +114,7 @@ void			unbinnify_resultset(t_resultset *set, t_targetset *work,  binn *obj)
 	binn_object_get_uint32(obj, "byte_size", &set->byte_size);
 	binn_object_get_uint32(obj, "result_cnt", &res_cnt);
 	set->result_cnt += res_cnt;
-	if (binn_object_get_list(obj, "results", (void **)&results) == true)
+	if (binn_object_get_list(obj, "hstgrp", (void **)&results) == true)
 		get_resultlist_from_binnlist(results, &set->results, work);
 }
 

@@ -2,11 +2,9 @@
 
 void					toggle_thread_alive(t_thread *thread)
 {
-	pthread_mutex_lock(&thread->pool->amt_alive_mtx);
 	printf("thread %d closing early\n", thread->id);
 	thread->alive = false;
-	thread->pool->amt_alive -= 1;
-	pthread_mutex_unlock(&thread->pool->amt_alive_mtx);
+
 }
 void					kill_threadpool(t_thread_pool **pool)
 {
@@ -14,24 +12,11 @@ void					kill_threadpool(t_thread_pool **pool)
 	return ;
 }
 
-int						find_interface_indx(t_thread *thread)
-{
-	struct ifreq		ifr;
-
-
-	strcpy(ifr.ifr_ifrn.ifrn_name, thread->pool->iface);
-	printf("interface: %s\n", ifr.ifr_ifrn.ifrn_name);
-	if ((ioctl(thread->sock, SIOCGIFINDEX, &ifr)) < 0)
-		return (hermes_error(FAILURE, "ioctl() %s", strerror(errno)));
-
-	return (ifr.ifr_ifindex);
-}
-
 /*
 ** Transmission process is similar to capture as shown below.
 **
 **[setup]          socket() -------> creation of the transmission socket
-**                 setsockopt() ---> allocation of the circular buffer (ring)
+**                 setsockopt() ---> allocation of the circular buffer (txring)
 **                                   option: PACKET_TX_RING
 **                 bind() ---------> bind transmission socket with a network interface
 **                 mmap() ---------> mapping of the allocated buffer to the
@@ -39,7 +24,7 @@ int						find_interface_indx(t_thread *thread)
 **
 **[transmission]   poll() ---------> wait for free packets (optional)
 **                 send() ---------> send all packets that are set as ready in
-**                                   the ring
+**                                   the txring
 **                                   The flag MSG_DONTWAIT can be used to return
 **                                   before end of transfer.
 **
@@ -54,7 +39,7 @@ int						prepare_pcap_rx(t_thread *thread)
 
 	timeout = thread->pool->env->opts.init_rtt_timeo;
 
-	if (!(thread->pcaphand = pcap_open_live(thread->pool->iface, 128, 0, timeout, errbuff)))
+	if (!(thread->rxfilter.handle = pcap_open_live(thread->pool->iface.name, THRD_HSTGRP_MAX, 0, timeout, errbuff)))
 		return (hermes_error(FAILURE, "pcap_open_live() %s", errbuff));
 	if (errbuff[0] != 0)
 		hermes_error(0, "pcap_open_live() %s", errbuff);
@@ -63,9 +48,9 @@ int						prepare_pcap_rx(t_thread *thread)
 
 int						prepare_packetmmap_tx_ring(t_thread *thread)
 {
-	struct tpacket_req	tpr;
+	uint32_t			len;
+	int					tpacket_v;
 	struct sockaddr_ll	sll_loc;
-	int					ifinx;
 
 	/* Step 1 Create PF_PACKET socket. Using SOCK_DGRAM so packets will be "cooked" */
 	thread->sock = socket(PF_PACKET, SOCK_DGRAM, htons(ETH_P_ALL));
@@ -74,51 +59,74 @@ int						prepare_packetmmap_tx_ring(t_thread *thread)
 		toggle_thread_alive(thread);
 		return (hermes_error(FAILURE, "socket() %s", strerror(errno)));
 	}
-	/* Step 2 determine sizes for PACKET_TX_RING and allocate ring via setsockopt() */
-	memset(&tpr, 0, sizeof(struct tpacket_req));
-	tpr.tp_block_size = (unsigned int)getpagesize();
-	tpr.tp_frame_size = TPACKET_HDRLEN + IP_HDRLEN + DEF_TRAN_HDRLEN + thread->pool->env->cpayload_len;
-	tpr.tp_frame_size = pow2_round(tpr.tp_frame_size);
-	tpr.tp_block_nr = (THRD_HSTGRP_MAX / (tpr.tp_block_size / tpr.tp_frame_size));
-	tpr.tp_frame_nr = tpr.tp_block_nr * (tpr.tp_block_size / tpr.tp_frame_size);
-	thread->ring_size = tpr.tp_block_size * tpr.tp_block_nr;
-	printf("frame size: %d | blocksize: %d | block count %d | frame count %d\n", tpr.tp_frame_size, tpr.tp_block_size, tpr.tp_block_nr, tpr.tp_frame_nr);
+	tpacket_v = TPACKET_V1;
+#ifndef TPACKET_V2
+	tpacket_v = TPACKET_V2;
+	if (setsockopt(thread->sock, SOL_PACKET, PACKET_VERSION, &tpacket_v, sizeof(tpacket_v)) < 0)
+	{
+		toggle_thread_alive(thread);
+		return (hermes_error(FAILURE, "setsockopt() PACKET_VERSION %s", strerror(errno)));
+	}
+#endif
+	len = sizeof(thread->txring.hdrlen);
+	if (getsockopt(thread->sock, SOL_PACKET, PACKET_HDRLEN, &thread->txring.hdrlen, &len) < 0)
+	{
+		toggle_thread_alive(thread);
+		return (hermes_error(FAILURE, "getsockopt() PACKET_HDRLEN %s", strerror(errno)));
+	}
+	printf("packet hdrlen %d", thread->txring.hdrlen);
+	/* Step 3 determine sizes for PACKET_TX_RING and allocate txring via setsockopt() */
+	thread->txring.tpr.tp_block_size = (unsigned int)getpagesize();
+	printf("%d\n", thread->txring.hdrlen + IP_HDRLEN + DEF_TRAN_HDRLEN);
+	thread->txring.tpr.tp_frame_size = thread->txring.hdrlen + IP_HDRLEN + DEF_TRAN_HDRLEN + thread->pool->env->cpayload_len;
+	thread->txring.tpr.tp_frame_size = pow2_round(thread->txring.tpr.tp_frame_size);
+	thread->txring.tpr.tp_block_nr = (THRD_HSTGRP_MAX / (thread->txring.tpr.tp_block_size / thread->txring.tpr.tp_frame_size));
+	thread->txring.tpr.tp_frame_nr = thread->txring.tpr.tp_block_nr * (thread->txring.tpr.tp_block_size / thread->txring.tpr.tp_frame_size);
+	thread->txring.size = thread->txring.tpr.tp_block_size * thread->txring.tpr.tp_block_nr;
+	thread->txring.doffset = thread->txring.hdrlen - sizeof(struct sockaddr_ll);
+	printf("frame size: %d | blocksize: %d | block count %d | frame count %d\n", thread->txring.tpr.tp_frame_size, thread->txring.tpr.tp_block_size, thread->txring.tpr.tp_block_nr, thread->txring.tpr.tp_frame_nr);
 
-	if (setsockopt(thread->sock, SOL_PACKET, PACKET_TX_RING, (void *)&tpr, sizeof(tpr)) < 0)
+	if (setsockopt(thread->sock, SOL_PACKET, PACKET_TX_RING, (void *)&thread->txring.tpr, sizeof(thread->txring.tpr)) < 0)
 	{
 		toggle_thread_alive(thread);
 		return (hermes_error(FAILURE, "setsockopt() PACKET_TX_RING %s", strerror(errno)));
 	}
 	printf("mmap PACKET_TX_RING success\n");
-	memset(&sll_loc, 0, sizeof(struct sockaddr_ll));
-	sll_loc.sll_family = AF_PACKET;
-	sll_loc.sll_protocol = htons(ETH_P_ALL);
-	if ((ifinx = find_interface_indx(thread)) < 0)
+
+	/* Step 4 actually map ring to user space */
+	if (!(thread->txring.ring = mmap(0,thread->txring.size, PROT_READ|PROT_WRITE, MAP_SHARED, thread->sock, 0)))
 	{
 		toggle_thread_alive(thread);
-		return (FAILURE);
+		return (hermes_error(FAILURE, "mmap() TX_RING %s", strerror(errno)));
 	}
-	printf("found interface index\n");
-	sll_loc.sll_ifindex = ifinx;
 	/* TODO possibly increase iface mtu */
+	memset(&sll_loc, 0, sizeof(struct sockaddr_ll));
+	printf("found interface index\n");
+	sll_loc.sll_ifindex = thread->pool->iface.inx;
+	sll_loc.sll_family = AF_PACKET;
+	sll_loc.sll_protocol = htons(ETH_P_ALL);
+	/* Bind our socket to the interface */
 	if (bind(thread->sock, (sockaddr *)&sll_loc, sizeof(struct sockaddr_ll)) == -1)
 	{
 		toggle_thread_alive(thread);
 		return (hermes_error(FAILURE, "bind() %s", strerror(errno)));
 	}
-	if (!(thread->tx_ring = mmap(0,thread->ring_size, PROT_READ|PROT_WRITE, MAP_SHARED, thread->sock, 0)))
-	{
-		toggle_thread_alive(thread);
-		return (hermes_error(FAILURE, "mmap() TX_RING %s", strerror(errno)));
-	}
+	/* Get default gateway's MAC address so threads have a destination */
+
+	uint8_t		dstaddr[ETH_ALEN] = {0xf, 0xf, 0xf, 0xf, 0xf, 0xf};
+	thread->txring.peer_ll.sll_ifindex = thread->pool->iface.inx;
+	thread->txring.peer_ll.sll_protocol = htons(ETH_P_ALL);
+	thread->txring.peer_ll.sll_family = AF_PACKET;
+	thread->txring.peer_ll.sll_halen = ETH_ALEN;
+	memcpy(thread->txring.peer_ll.sll_addr, dstaddr, ETH_ALEN);
 	return (SUCCESS);
 }
 
 int						prepare_thread_rx_tx(t_thread *thread)
 {
-	printf("thread %d preparing tx_ring\n", thread->id);
+	printf("thread %d preparing ring\n", thread->id);
 	prepare_packetmmap_tx_ring(thread);
-	printf("thread %d prepared tx_ring. doing rx now...\n", thread->id);
+	printf("thread %d prepared ring. doing rx now...\n", thread->id);
 	prepare_pcap_rx(thread);
 	printf("thread %d finished preparing rx\n", thread->id);
 	return (SUCCESS);
@@ -131,19 +139,19 @@ void					*thread_loop(void *thrd)
 
 	thread = (t_thread *)thrd;
 	printf("im alive %d\n", thread->id);
-	thread->results = memalloc(sizeof(t_result *) * (THRD_HSTGRP_MAX));
+	thread->hstgrp = memalloc(sizeof(t_host) * (THRD_HSTGRP_MAX));
 	prepare_thread_rx_tx(thread);
 	thread->lookup = new_hashtbl(THRD_HSTGRP_MAX);
 	printf("got setup %d\n", thread->id);
 	while (thread->alive)
 	{
 		printf("im still alive %d\n", thread->id);
-		pthread_mutex_lock(&thread->pool->work_pool_mtx);
-		if (thread->pool->workpool->total > 0)
+		pthread_mutex_lock(&thread->pool->work_mtx);
+		if (thread->pool->work->total > 0)
 		{
 			memset(&work, 0, sizeof(t_targetset));
-			transfer_work(&work, thread->pool->workpool, thread->amt);
-			pthread_mutex_unlock(&thread->pool->work_pool_mtx);
+			transfer_work(&work, thread->pool->work, thread->amt);
+			pthread_mutex_unlock(&thread->pool->work_mtx);
 			if (work.total > 0)
 			{
 				thread->amt *= (thread->amt < THRD_HSTGRP_MAX) ? 2 : 1;
@@ -161,14 +169,14 @@ void					*thread_loop(void *thrd)
 		}
 		else
 		{
-			pthread_mutex_unlock(&thread->pool->work_pool_mtx);
+			pthread_mutex_unlock(&thread->pool->work_mtx);
 			sleep(1);
 		}
 	}
-	free(thread->results);
+	free(thread->hstgrp);
 	free(thread->lookup->buckets);
 	free(thread->lookup);
-	pcap_close(thread->pcaphand);
+	pcap_close(thread->rxfilter.handle);
 	pthread_mutex_lock(&thread->pool->amt_alive_mtx);
 	thread->pool->amt_alive -= 1;
 	printf("thread %d closing %d still alive\n", thread->id, thread->pool->amt_alive);
@@ -176,12 +184,43 @@ void					*thread_loop(void *thrd)
 	return (NULL);
 }
 
+int					prepare_interface(t_thread_pool *pool)
+{
+	int					sock;
+	struct ifreq		ifr;
+	char				errbuff[PCAP_ERRBUF_SIZE];
+
+	/* Make socket for use with ioctl and to make ARP request */
+	if ((sock = socket(AF_PACKET, SOCK_RAW, htons(ETH_P_ALL))) < 0)
+		return (hermes_error(FAILURE, "socket() %s", strerror(errno)));
+	/* Get the name of an interface we can send on */
+	if (!(pool->iface.name = pcap_lookupdev(errbuff)))
+	{
+		return (hermes_error(FAILURE, "pcap_lookupdev() %s", errbuff));
+	}
+	memset(&ifr, 0 , sizeof(struct ifreq));
+	strcpy(ifr.ifr_ifrn.ifrn_name, pool->iface.name);
+	/* Get our interfaces index */
+	if ((ioctl(sock, SIOCGIFINDEX, &ifr)) < 0)
+		return (hermes_error(FAILURE, "ioctl() %s", strerror(errno)));
+	pool->iface.inx = ifr.ifr_ifindex;
+	if ((ioctl(sock, SIOCGIFHWADDR, &ifr)) < 0)
+		return (hermes_error(FAILURE, "ioctl() %s", strerror(errno)));
+	memcpy(pool->iface.if_hwaddr, &ifr.ifr_hwaddr, ETH_ALEN);
+	printf("got our mac address: ");
+	for (int i = 0; i < ETH_ALEN; i++)
+	{
+		printf("%02x:", pool->iface.if_hwaddr[i]);
+	}
+	printf("\n");
+	/* Continue making arp request for Gateway's hardware address */
+	return (SUCCESS);
+}
 
 
 t_thread_pool			*init_threadpool(t_env *env, t_targetset *workpool,
 											t_resultset *results)
 {
-	char				errbuff[PCAP_ERRBUF_SIZE];
 	int					i;
 	t_thread_pool		*pool;
 
@@ -193,9 +232,9 @@ t_thread_pool			*init_threadpool(t_env *env, t_targetset *workpool,
 		return (NULL);
 	pool->reqest_amt = pool->thread_amt;
 	pool->results = results;
-	pool->workpool = workpool;
+	pool->work = workpool;
 	pool->env = env;
-	if (pthread_mutex_init(&pool->work_pool_mtx, NULL) != 0)
+	if (pthread_mutex_init(&pool->work_mtx, NULL) != 0)
 		hermes_error(EXIT_FAILURE, "pthread_mutex_init()");
 	if (pthread_mutex_init(&pool->results_mtx, NULL) != 0)
 		hermes_error(EXIT_FAILURE, "pthread_mutex_init()");
@@ -203,11 +242,7 @@ t_thread_pool			*init_threadpool(t_env *env, t_targetset *workpool,
 		hermes_error(EXIT_FAILURE, "pthread_mutex_init()");
 	if (pthread_mutex_init(&pool->amt_alive_mtx, NULL) != 0)
 		hermes_error(EXIT_FAILURE, "pthread_mutex_init()");
-	if (!(pool->iface = pcap_lookupdev(errbuff)))
-	{
-		hermes_error(FAILURE, "pcap_lookupdev() %s", errbuff);
-		return (NULL);
-	}
+	prepare_interface(pool);
 	while (++i < pool->thread_amt)
 	{
 		pool->threads[i].id = (uint8_t)(i + 1);

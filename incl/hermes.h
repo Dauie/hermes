@@ -18,8 +18,8 @@
 # include <sys/user.h>
 # include <linux/if_ether.h> /* TODO not portable */
 # include <linux/if_packet.h> /* TODO not portable */
+# include <linux/if_arp.h>
 # include <linux/tcp.h>
-# include <net/if.h>
 # include <sys/ioctl.h>
 # include <sys/mman.h>
 # include <pcap.h>
@@ -133,6 +133,7 @@ typedef struct			s_env
 {
 	t_opts				opts;
 	t_portset			ports;
+	uint16_t			*dstports;
 	t_portset			*syn_ports;
 	t_portset			*ack_ports;
 	t_portset			*udp_ports;
@@ -175,12 +176,41 @@ typedef struct			s_result
 	t_portstat			**portstats;
 }						t_result;
 
+typedef struct			s_performance
+{
+	uint16_t			portinx;
+}						t_perform;
+
+typedef struct			s_host
+{
+	t_result			*result;
+	t_perform			health;
+}						t_host;
+
 typedef struct			s_resultset
 {
 	uint32_t			byte_size;
 	uint32_t			result_cnt;
 	t_node				*results;
 }						t_resultset;
+
+typedef struct			s_tx_ring
+{
+	uint8_t				mode;
+	uint32_t			tpacketv;
+	struct tpacket_req	tpr;
+	struct sockaddr_ll	peer_ll;
+	uint32_t			doffset;
+	void				*ring;
+	uint32_t			hdrlen;
+	uint32_t			size;
+}						t_txring;
+
+typedef struct			s_rxfilter
+{
+	pcap_t				*handle;
+	struct bpf_program	prog;
+}						t_rxfilter;
 
 typedef struct 			s_thread
 {
@@ -191,29 +221,37 @@ typedef struct 			s_thread
 	bool				working;
 	uint16_t			amt;
 	int					sock;
-	void				*tx_ring;
-	size_t				ring_size;
-	pcap_t				*pcaphand;
-	struct bpf_program	filter;
-	t_result			**results;
+	t_txring			txring;
+	t_rxfilter			rxfilter;
+	t_host				*hstgrp;
+	uint8_t				hstgrpsz;
 	t_hashtbl			*lookup;
 }						t_thread;
 
+typedef struct			s_iface
+{
+	char				*name;
+	int					inx;
+	uint8_t				if_hwaddr[ETH_ALEN];
+	uint8_t				gw_hwaddr[ETH_ALEN];
+	struct in_addr		gw_ip;
+}						t_iface;
+
 typedef struct 			s_thread_pool
 {
-	char				*iface;
+	t_iface				iface;
 	uint16_t			amt_working;
 	uint16_t			amt_alive;
 	uint16_t 			thread_amt;
 	uint16_t			reqest_amt;
 	t_thread			*threads;
 	t_resultset			*results;
-	t_targetset 		*workpool;
+	t_targetset 		*work;
 	t_env				*env;
 	pthread_mutex_t		amt_alive_mtx;
 	pthread_mutex_t		amt_working_mtx;
 	pthread_mutex_t		results_mtx;
-	pthread_mutex_t		work_pool_mtx;
+	pthread_mutex_t		work_mtx;
 }						t_thread_pool;
 
 typedef struct			s_worker_manager
@@ -235,7 +273,7 @@ typedef struct			s_manager
 	t_thread_pool		*tpool;
 	t_resultset			results;
 	t_targetset			targets;
-	t_targetset			thread_targets;
+	t_targetset			thread_work;
 	t_workerset			workers;
 	t_targetset			*exclude_targets;
 	t_portset			*exclude_ports;
@@ -307,10 +345,13 @@ void					print_ip_struct(t_node *ip4);
 void					print_iprng_struct(t_node *iprng);
 void					print_targetset(t_targetset *set);
 int						prepare_packetmmap_tx_ring(t_thread *thread);
-void					inflate_targetset_into_results(t_targetset *set, t_thread *thread, t_env *env);
-void add_results_to_lookup(t_thread *thread, size_t count);
+void					targetset_to_hstgrp(t_targetset *set, t_thread *thread,
+											t_env *env);
+void 					add_results_to_lookup(t_thread *thread, size_t count);
 void					run_scan(t_thread *thread, t_targetset *set);
-int make_rx_filter(t_thread *thread, size_t total);
+int						make_rx_filter(t_thread *thread, size_t total);
+uint16_t				*make_tcp_dstports(size_t size);
+
 
 
 binn					*binnify_resultset(t_resultset *set);
