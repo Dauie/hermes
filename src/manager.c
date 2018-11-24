@@ -407,6 +407,8 @@ int					manager_loop(t_mgr *mgr)
 	fds = NULL;
 	memset(&mgr->results, 0, sizeof(t_resultset));
 	mgr->stat.running = true;
+	flatten_all_portsets(&mgr->env);
+	mgr->env.dstports = make_tcp_dstports(mgr->env.ports.total);
 	if (mgr->env.opts.thread_count > 0)
 	{
 		if (!(mgr->tpool = init_threadpool(&mgr->env, &mgr->thread_work, &mgr->results)))
@@ -414,8 +416,6 @@ int					manager_loop(t_mgr *mgr)
 	}
 	if (mgr->workers.cnt > 0)
 		init_workers(mgr, &fds);
-	flatten_all_portsets(&mgr->env);
-	mgr->env.dstports = make_tcp_dstports(mgr->env.ports.total);
 	while (mgr->stat.running == true)
 	{
 		if (mgr->workers.cnt > 0)

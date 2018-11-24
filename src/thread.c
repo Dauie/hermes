@@ -199,21 +199,29 @@ int					prepare_interface(t_thread_pool *pool)
 		return (hermes_error(FAILURE, "pcap_lookupdev() %s", errbuff));
 	}
 	memset(&ifr, 0 , sizeof(struct ifreq));
-	strcpy(ifr.ifr_ifrn.ifrn_name, pool->iface.name);
+	strcpy(ifr.ifr_name, pool->iface.name);
+	printf("ifr name: %s\n", ifr.ifr_name);
 	/* Get our interfaces index */
 	if ((ioctl(sock, SIOCGIFINDEX, &ifr)) < 0)
-		return (hermes_error(FAILURE, "ioctl() %s", strerror(errno)));
+		return (hermes_error(FAILURE, "ioctl() SIOCGIFINDEX %s", strerror(errno)));
 	pool->iface.inx = ifr.ifr_ifindex;
 	if ((ioctl(sock, SIOCGIFHWADDR, &ifr)) < 0)
-		return (hermes_error(FAILURE, "ioctl() %s", strerror(errno)));
+		return (hermes_error(FAILURE, "ioctl() SIOCGIFHWADDR %s", strerror(errno)));
 	memcpy(pool->iface.if_hwaddr, &ifr.ifr_hwaddr, ETH_ALEN);
 	printf("got our mac address: ");
 	for (int i = 0; i < ETH_ALEN; i++)
 	{
 		printf("%02x:", pool->iface.if_hwaddr[i]);
 	}
+	if ((ioctl(sock, SIOCGIFADDR, &ifr)) < 0)
+		return (hermes_error(FAILURE, "ioctl() SIOCGIFADDR %s", strerror(errno)));
+	memcpy(&pool->iface.if_ip, &ifr.ifr_addr, sizeof(struct sockaddr));
+	printf(" ip: %s", inet_ntoa(pool->iface.if_ip));
+	if ((ioctl(sock, SIOCGIFDSTADDR, &ifr)) < 0)
+		return (hermes_error(FAILURE, "ioctl() SIOCGIFDSTADDR %s", strerror(errno)));
+	memcpy(&pool->iface.gw_ip, &ifr.ifr_dstaddr, sizeof(struct sockaddr));
+	printf("gw addr %s", inet_ntoa(pool->iface.gw_ip));
 	printf("\n");
-	/* Continue making arp request for Gateway's hardware address */
 	return (SUCCESS);
 }
 

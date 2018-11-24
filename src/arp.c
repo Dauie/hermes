@@ -1,10 +1,13 @@
 #include "../incl/hermes.h"
 
-void				get_gateway_hwaddr(int ifinx)
+
+
+
+int			hermes_arp(in_addr_t addr, uint8_t *macbuff)
 {
-	struct arpreq	req;
-	int				sock;
-	struct ifreq
+	int		sock;
+
+	if ((sock = socket(AF_PACKET, SOCK_RAW, htons(ETH_P_ARP)) < 0))
+		return (hermes_error(FAILURE, "socket() AF_PACKET %s", strerror(errno)));
 
 }
-

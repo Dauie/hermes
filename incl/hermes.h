@@ -16,9 +16,12 @@
 # include <netinet/ip_icmp.h>
 # include <ifaddrs.h>
 # include <sys/user.h>
+# include <linux/if_link.h>
+# include <linux/if_addr.h>
 # include <linux/if_ether.h> /* TODO not portable */
 # include <linux/if_packet.h> /* TODO not portable */
 # include <linux/if_arp.h>
+/* netlink */
 # include <linux/tcp.h>
 # include <sys/ioctl.h>
 # include <sys/mman.h>
@@ -26,6 +29,8 @@
 # include <pcap-bpf.h>
 # include <pcap-namedb.h>
 # include "defined.h"
+
+#include "netlink.h"
 
 # define LOOPBACK_ADDR 0x7F000001
 
@@ -231,10 +236,11 @@ typedef struct 			s_thread
 typedef struct			s_iface
 {
 	char				*name;
-	int					inx;
+	uint32_t			inx;
+	struct in_addr		if_ip;
 	uint8_t				if_hwaddr[ETH_ALEN];
-	uint8_t				gw_hwaddr[ETH_ALEN];
 	struct in_addr		gw_ip;
+	uint8_t				gw_hwaddr[ETH_ALEN];
 }						t_iface;
 
 typedef struct 			s_thread_pool
@@ -351,6 +357,7 @@ void 					add_results_to_lookup(t_thread *thread, size_t count);
 void					run_scan(t_thread *thread, t_targetset *set);
 int						make_rx_filter(t_thread *thread, size_t total);
 uint16_t				*make_tcp_dstports(size_t size);
+int						get_iface_info(t_iface *info);
 
 
 
