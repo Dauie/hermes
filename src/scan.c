@@ -1,33 +1,60 @@
 #include "../incl/hermes.h"
 
-void				test_run_scan2(t_thread *thread, t_targetset *set)
+/* checksum code is borrowed from roman10.net thanks for the explanations! */
+static unsigned short compute_checksum(unsigned short *addr, unsigned int count)
 {
-//	t_result		*tmp;
-
-	targetset_to_hstgrp(set, thread, thread->pool->env);
-	add_results_to_lookup(thread, set->total);
-	make_rx_filter(thread, set->total);
-
-/* for testing */
-	for (size_t i = 0; i < set->total; i++)
+	register unsigned long sum = 0;
+	while (count > 1)
 	{
-		if (thread->hstgrp[i].result->portstats)
-		{
-			free(thread->hstgrp[i].result->portstats);
-			thread->hstgrp[i].result->portstats = NULL;
-		}
-		if (thread->hstgrp[i].result)
-		{
-			free(thread->hstgrp[i].result);
-			thread->hstgrp[i].result = NULL;
-		}
+		sum += * addr++;
+		count -= 2;
 	}
-	for (size_t i = 0; i < THRD_HSTGRP_MAX; i++)
+	if(count > 0)
 	{
-		thread->lookup->buckets[i].hash = 0;
-		thread->lookup->buckets[i].data = NULL;
+		sum += ((*addr)&htons(0xFF00));
 	}
-	sleep(1);
+	while (sum>>16)
+	{
+		sum = (sum & 0xffff) + (sum >> 16);
+	}
+	sum = ~sum;
+	return ((unsigned short)sum);
+}
+
+void ip_checksum(struct iphdr* iphdrp){
+	iphdrp->check = 0;
+	iphdrp->check = compute_checksum((unsigned short*)iphdrp, iphdrp->ihl<<2);
+}
+
+void tcp_checksum(struct iphdr *ip, unsigned short *ippayload)
+{
+	register unsigned long sum;
+	uint16_t len;
+	struct tcphdr *tcphdrp;
+
+	tcphdrp = (struct tcphdr*)(ippayload);
+	len = ntohs(ip->tot_len) - (uint16_t)(ip->ihl<<2);
+	sum = 0;
+	sum += (ip->saddr>>16)&0xFFFF;
+	sum += (ip->saddr)&0xFFFF;
+	sum += (ip->daddr>>16)&0xFFFF;
+	sum += (ip->daddr)&0xFFFF;
+	sum += htons(IPPROTO_TCP);
+	sum += htons(len);
+
+	tcphdrp->check = 0;
+	while (len > 1) {
+		sum += * ippayload++;
+		len -= 2;
+	}
+	if(len > 0) {
+		sum += ((*ippayload)&htons(0xFF00));
+	}
+	while (sum>>16) {
+		sum = (sum & 0xffff) + (sum >> 16);
+	}
+	sum = ~sum;
+	tcphdrp->check = (unsigned short)sum;
 }
 
 int 					make_rx_filter(t_thread *thread, size_t total)
@@ -102,88 +129,43 @@ void add_results_to_lookup(t_thread *thread, size_t count)
 	}
 }
 
-/* Get protocol by name should probably be used. */
-/* IP-TTL needs to be set in sanity check */
-
-void				init_txring_tcpsyn(t_thread *thread)
+void				fill_tx_ring(t_thread *thread, t_frame *ethframe, uint16_t *alive)
 {
-	uint32_t			i;
-	struct tpacket2_hdr *hdr;
-	uint8_t				*data;
-	struct tcphdr		tcphdr;
-	struct iphdr		iphdr = {
-			.ihl = 5,
-			.tot_len = IP_HDRLEN + sizeof(struct tcphdr) + thread->pool->env->cpayload_len,
-			.version = 4,
-			.tos = 0, /* need to do more research on this "diff" */
-			.id = 0,
-			.frag_off = 0,
-			.ttl = thread->pool->env->opts.ip_ttl,
-			.protocol = IPPROTO_TCP,
-			.saddr = 0, /* verify that kernel fills in */
-			.daddr = 0,
-	};
-	uint8_t			headers[60] = {0};
-	i = 0;
-	memset(&tcphdr, 0, sizeof(struct tcphdr));
-	/* set any initial tcp options */
-	tcphdr.syn = true;
-	memcpy(headers, &iphdr, sizeof(iphdr));
-	memcpy(headers + sizeof(iphdr), &tcphdr, sizeof(tcphdr));
-	while (i < thread->txring.tpr.tp_frame_nr)
-	{
-		hdr = thread->txring.ring + (thread->txring.tpr.tp_frame_size * i);
-		data = (void *)hdr + TPACKET_ALIGN(thread->txring.hdrlen);
-		memcpy(data, headers, 40);
-		i++;
-	}
-}
-
-void				fill_tx_ring(t_thread *thread, uint16_t *alive)
-{
-	uint8_t				packet[60] = {0};
+	struct tpacket2_hdr *frame;
 	void				*data;
 	uint16_t			*srcports;
 	uint16_t			*dstports;
-	struct tpacket2_hdr *hdr;
-	struct iphdr		*ip;
-	struct tcphdr		*tcp;
 	uint				ring_i;
 	uint				hst_i;
 
 	ring_i = 0;
 	hst_i = 0;
-	/* Init ip header */
-	ip = (struct iphdr *)&packet;
-	ip->version = 4;
-	ip->ihl = 5;
-	ip->tot_len = htons(sizeof(struct iphdr) + sizeof(struct tcphdr));
-	ip->ttl = thread->pool->env->opts.ip_ttl;
-	ip->protocol = IPPROTO_TCP;
-	/* Init TCP header */
-	tcp = (struct tcphdr *)((uint8_t*)ip + sizeof(struct iphdr));
 	srcports = thread->pool->env->ports.flat;
 	dstports = thread->pool->env->dstports;
 	while (hst_i < thread->hstgrpsz && ring_i < thread->txring.tpr.tp_frame_nr)
 	{
-		hdr = thread->txring.ring + (thread->txring.tpr.tp_frame_size * ring_i);
-		data = (void *)hdr + TPACKET_ALIGN(thread->txring.hdrlen);
-		printf("%d", hdr->tp_status);
-		if (hdr->tp_status == TP_STATUS_WRONG_FORMAT)
-			hermes_error(EXIT_FAILURE, "TX_RING wrong format in frame %i of thread %d", ring_i++, thread->id);
-		else if (hdr->tp_status == TP_STATUS_AVAILABLE)
+		frame = thread->txring.ring + (thread->txring.tpr.tp_frame_size * ring_i);
+		data = (void *)frame + thread->txring.doffset; /* check data offset*/
+		if (frame->tp_status == TP_STATUS_WRONG_FORMAT)
+			hermes_error(FAILURE, "TX_RING wrong format in frame %i of thread %d", ring_i++, thread->id);
+		else if (frame->tp_status == TP_STATUS_LOSING)
+			hermes_error(FAILURE, "issue detected during send TX_RING frame %i of thread %d", ring_i++, thread->id);
+		else if (frame->tp_status == TP_STATUS_AVAILABLE)
 		{
 			if (thread->hstgrp[hst_i].health.portinx < thread->pool->env->ports.total)
 			{
-				ip->daddr = thread->hstgrp[hst_i].result->ip.s_addr;
-				tcp->source = htons(dstports[thread->hstgrp[hst_i].health.portinx]);
-				tcp->dest = htons(srcports[thread->hstgrp[hst_i].health.portinx]);
-				memcpy(data, packet,  sizeof(struct iphdr) + sizeof(struct tcphdr));
-				hdr->tp_len = sizeof(struct iphdr) + sizeof(struct tcphdr);
-				hdr->tp_status = TP_STATUS_SEND_REQUEST;
+				ethframe->ip->daddr = thread->hstgrp[hst_i].result->ip.s_addr;
+				ip_checksum(ethframe->ip);
+				ethframe->tcp->source = htons(dstports[thread->hstgrp[hst_i].health.portinx]);
+				ethframe->tcp->dest = htons(srcports[thread->hstgrp[hst_i].health.portinx]);
+				tcp_checksum(ethframe->ip, (uint16_t *)ethframe->tcp);
+				memcpy(data, ethframe->buffer, ethframe->size);
+				frame->tp_len = ethframe->size;
+				frame->tp_status = TP_STATUS_SEND_REQUEST;
 				thread->hstgrp[hst_i++].health.portinx += 1;
 				ring_i++;
-			} else
+			}
+			else
 			{
 				*alive -= 1;
 				hst_i++;
@@ -199,9 +181,9 @@ void				send_task(t_thread *thread)
 	ssize_t			btx = 0;
 	int				tot = 0;
 
-	btx = sendto(thread->sock, NULL, 0, MSG_WAITALL, (sockaddr *)&thread->txring.peer_ll, sizeof(struct sockaddr_ll));
+	btx = send(thread->sock, NULL, 0, MSG_WAITALL);
 	if (btx < 0)
-		hermes_error(EXIT_FAILURE, "sendto() %s", strerror(errno));
+		hermes_error(EXIT_FAILURE, "send() %s", strerror(errno));
 	else if (btx == 0)
 		;
 	else
@@ -211,17 +193,72 @@ void				send_task(t_thread *thread)
 	}
 }
 
+void				init_ethhdr(t_thread *thread, struct ethhdr *eth)
+{
+	eth->h_proto = htons(ETH_P_IP); /* possibly ETH_P_IP */
+	memcpy(eth->h_dest, thread->pool->iface.gw_hwaddr, ETH_ALEN);
+	memcpy(eth->h_source, thread->pool->iface.if_hwaddr, ETH_ALEN);
+}
+
+void				init_iphdr(t_thread *thread, t_frame *frame)
+{
+	frame->ip->version = 4;
+	frame->ip->ihl = 5;
+	frame->ip->tot_len = htons(frame->size - sizeof(struct ethhdr));
+	frame->ip->ttl = thread->pool->env->opts.ip_ttl;
+	frame->ip->protocol = IPPROTO_TCP;
+	frame->ip->saddr = thread->pool->iface.if_ip.s_addr; /* already in nbo */
+}
+
+void				init_tcphdr(t_thread *thread, struct tcphdr *tcp)
+{
+	(void)thread;
+	tcp->doff = 6;
+	tcp->window = htons(1024);
+	tcp->syn = true;
+}
+
+void				init_tcpopt_mss(t_tcpopt *opt)
+{
+	opt->type = TCP_OPT_MSS;
+	opt->len = 4;
+	opt->val = htons(1460);
+}
+
+void				init_ethframe(t_thread *thread, t_frame *frame)
+{
+
+	/* below line will change when more scan types are implemented */
+	frame->size = sizeof(struct ethhdr) + sizeof(struct iphdr) +
+					sizeof(struct tcphdr) + sizeof(t_tcpopt) +
+						thread->pool->env->cpayload_len;
+	frame->buffer = memalloc(sizeof(uint8_t) * frame->size);
+	frame->eth = (struct ethhdr *)frame->buffer;
+	frame->ip = (struct iphdr *)((uint8_t *)frame->eth + sizeof(struct ethhdr));
+	frame->tcp = (struct tcphdr *)((uint8_t *)frame->ip + sizeof(struct iphdr));
+	frame->tcpopt = (t_tcpopt *)((uint8_t *)frame->tcp + sizeof(struct tcphdr));
+	init_ethhdr(thread, frame->eth);
+	init_iphdr(thread, frame);
+	init_tcphdr(thread, frame->tcp);
+	init_tcpopt_mss(frame->tcpopt);
+}
+
 void				syn_scan(t_thread *thread)
 {
+	t_frame			frame;
 	uint16_t		alive;
 
+	memset(&frame, 0, sizeof(t_frame));
+	init_ethframe(thread, &frame);
 	alive = thread->hstgrpsz;
-//	while (alive > 0)
-//	{
-	fill_tx_ring(thread, &alive);
-	send_task(thread);
-	printf("i guess i sent something\n");
-//	}
+	while (alive > 0)
+	{
+		fill_tx_ring(thread, &frame, &alive);
+		send_task(thread);
+
+	}
+	free(frame.buffer);
+	frame.buffer = NULL;
 }
 
 void				run_scan(t_thread *thread, t_targetset *set)

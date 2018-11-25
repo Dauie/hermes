@@ -97,6 +97,8 @@ int						parse_routeresp(t_iface *info, struct nlmsghdr *hdr)
 	attrib = RTM_RTA(route);
 	while (RTA_OK(attrib, len))
 	{
+		if (attrib->rta_type == RTA_SRC)
+			break;
 		if (attrib->rta_type == RTA_OIF)
 		{
 			if (*(uint32_t *)RTA_DATA(attrib) != info->inx)
@@ -257,6 +259,7 @@ int						get_iface_info(t_iface *info)
 	bzero(&kernel, sizeof(struct sockaddr_nl));
 	kernel.nl_family = AF_NETLINK;
 
+	/* Get mac address & index of our interface */
 	if (send_nlinforeq(sock, &loc, &kernel, RTM_GETLINK) == FAILURE)
 		return (FAILURE);
 	conf.f = parse_l2_resp;
@@ -264,28 +267,37 @@ int						get_iface_info(t_iface *info)
 	if (recv_parse_req(sock, info, &kernel, &conf) == FAILURE)
 		return (hermes_error(FAILURE, "failed to find info for interface %s", info->name));
 
+	/* Get interface ip address */
 	if (send_nlinforeq(sock, &loc, &kernel, RTM_GETADDR) == FAILURE)
 		return (FAILURE);
 	conf.f = parse_l3resp;
 	conf.type = RTM_NEWADDR;
 	if (recv_parse_req(sock, info, &kernel, &conf) == FAILURE)
 		return (FAILURE);
+
+	/* get our default gateway's ip */
 	if (send_nlinforeq(sock, &loc, &kernel, RTM_GETROUTE) == FAILURE)
 		return (FAILURE);
 	conf.f = parse_routeresp;
 	conf.type = RTM_NEWROUTE;
 	if (recv_parse_req(sock, info, &kernel, &conf) == FAILURE)
 		return (FAILURE);
+
+	/* get default gateway's mac address*/
 	if (send_nlinforeq(sock, &loc, &kernel, RTM_GETNEIGH) == FAILURE)
 		return (FAILURE);
 	conf.f = parse_neighresp;
 	conf.type = RTM_NEWNEIGH;
 	if (recv_parse_req(sock, info, &kernel, &conf) == FAILURE)
 		return (FAILURE);
+
+	if (info->gw_ip.s_addr == info->if_ip.s_addr)
+		printf("They really are equal\n");
 	printf("index %d | mac: ", info->inx);
 	for (int i = 0; i < ETH_ALEN; i++)
 		printf("%0x:", info->if_hwaddr[i]);
-	printf("| ip: %s | gwip: %s | gwmac: ", inet_ntoa(info->if_ip), inet_ntoa(info->gw_ip));
+	printf("| ip: %s ", inet_ntoa(info->if_ip));
+	printf("| gwip: %s | gwmac: ", inet_ntoa(info->gw_ip));
 	for (int i = 0; i < ETH_ALEN; i++)
 		printf("%0x:", info->gw_hwaddr[i]);
 	printf("\n");

@@ -45,7 +45,7 @@ RM = rm -fr
 $(NAME):
 		$(MAKE) -C $(LIBBINN)
 		$(MAKE) -C $(LIBHERMES)
-		$(CC) $(CFLAGS) $(SRC) test.c -lpthread -lpcap -o $(NAME)
+		$(CC) $(CFLAGS) $(SRC) src/main.c -lpthread -lpcap -o $(NAME)
 
 all: $(NAME)
 

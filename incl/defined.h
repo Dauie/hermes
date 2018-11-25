@@ -3,9 +3,6 @@
 
 # define WKRMGR_POLL_TIMEO (250)
 
-# define IP_HDRLEN (20)
-# define TCP_HDR_LEN (40)
-# define UDP_HDR_LEN (8)
 # define DEF_TRAN_HDRLEN (20)
 
 # define TTL_MAX 256
@@ -53,6 +50,8 @@
 /*
 **	Quick Access to Node Types
 */
+
+# define TCP_OPT_MSS (2)
 
 #ifndef WORKER_DATA
 #define WORKER_DATA(x) ((t_wrkr*)x->workers->wrkrs->data)

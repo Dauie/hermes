@@ -21,8 +21,9 @@ static int		add_port(t_portset *set, char *input)
 		return (hermes_error(FAILURE, "bad port_stats specified %s", input));
 	data = new_port();
 	data->port = (uint16_t)port;
-	if (add_node_bst(&set->ports, (void **) &data, port_cmp) == SUCCESS)
+	if (add_node_bst(&set->ports, (void **)&data, port_cmp) == true)
 	{
+		set->total++;
 		set->port_cnt++;
 		return (SUCCESS);
 	}

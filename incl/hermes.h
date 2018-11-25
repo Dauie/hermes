@@ -288,6 +288,25 @@ typedef struct			s_manager
 	FILE				*norm_file;
 }						t_mgr;
 
+typedef struct			s_tcpopt
+{
+	uint8_t				type;
+	uint8_t				len;
+	uint16_t			val;
+}__attribute__((packed))t_tcpopt;
+
+typedef struct			s_eframe
+{
+	struct ethhdr		*eth;
+	struct iphdr		*ip;
+	struct tcphdr		*tcp;
+	t_tcpopt			*tcpopt;
+	uint8_t				*buffer;
+	uint16_t			size;
+}						t_frame;
+
+
+
 t_mgr					*new_mgr(void);
 t_env					*new_job(void);
 t_opts					*new_opts(void);
