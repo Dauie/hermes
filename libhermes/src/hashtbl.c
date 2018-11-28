@@ -1,14 +1,17 @@
 #include "../incl/libhermes.h"
 
-int			fill_distance_to_initinx(t_hashtbl *tbl, uint16_t inx_stored, uint16_t *distance)
+int			fill_distance_to_initinx(t_hashtbl *tbl, uint16_t stored_i, uint16_t *distance)
 {
-	if(tbl->buckets[inx_stored].data == NULL)
+	if(tbl->buckets[stored_i].data == NULL)
 		return FAILURE;
-	uint16_t index_init = tbl->buckets[inx_stored].hash % tbl->bkt_cnt;
-	if (index_init <= inx_stored) {
-		*distance = inx_stored - index_init;
-	} else {
-		*distance = inx_stored + (tbl->bkt_cnt - index_init);
+	uint16_t init_i = tbl->buckets[stored_i].hash % tbl->bkt_cnt;
+	if (init_i <= stored_i)
+	{
+		*distance = stored_i - init_i;
+	}
+	else
+	{
+		*distance = stored_i + (tbl->bkt_cnt - init_i);
 	}
 	return SUCCESS;
 }
@@ -38,23 +41,86 @@ void			*new_hashtbl(size_t size)
 
 	if (!(ht = memalloc(sizeof(t_hashtbl))))
 		return (NULL);
-	if (!(ht->buckets = memalloc(sizeof(t_hashbkt) * size)))
+	if (!(ht->buckets = memalloc(sizeof(t_hashbkt) * (size + 1))))
 		return (NULL);
 	ht->bkt_cnt = (uint16_t)size;
 	ht->prb_max = (uint16_t)size;
 	return (ht);
 }
 
-bool 			hashtbl_add(t_hashtbl *tbl, uint8_t *key, uint32_t ksz, void **value)
+bool			hashtbl_rm(t_hashtbl *tbl, uint32_t key)
+{
+	uint16_t hash;
+	uint16_t init_i;
+	bool found;
+	uint16_t cur_i;
+	uint16_t prb_dist;
+	uint16_t prev_i;
+	uint16_t swap_i;
+	uint16_t i;
+
+	hash = jenkins_hash((uint8_t *)&key, sizeof(uint32_t));
+	init_i = hash % tbl->bkt_cnt;
+	found = false;
+	cur_i = 0;
+	prb_dist = 0;
+	for (i = 0; i < tbl->bkt_cnt; i++)
+	{
+		cur_i = (uint16_t)(init_i + i) % tbl->bkt_cnt;
+		fill_distance_to_initinx(tbl, cur_i, &prb_dist);
+		if (tbl->buckets[cur_i].data == NULL || i > prb_dist) {
+			break;
+		}
+		if (memcmp(&tbl->buckets[cur_i].key, &key, sizeof(uint32_t)) == 0) {
+			found = true;
+			break;
+		}
+	}
+	if (found)
+	{
+		tbl->buckets[cur_i].data = NULL;
+		tbl->buckets[cur_i].hash = 0;
+		for (i = 1; i < tbl->bkt_cnt; i++)
+		{
+			prev_i = (uint16_t)(cur_i + i - 1) % tbl->bkt_cnt;
+			swap_i = (cur_i + i) % tbl->bkt_cnt;
+			if (tbl->buckets[swap_i].data == NULL)
+			{
+				tbl->buckets[prev_i].data = NULL;
+				break;
+			}
+			if (fill_distance_to_initinx(tbl, swap_i, &prb_dist) != 0)
+				hermes_error(FAILURE, "fill_distance_to_initinx()");
+			if (prb_dist == 0)
+			{
+				tbl->buckets[prev_i].data = NULL;
+				break;
+			}
+			tbl->buckets[prev_i].data = tbl->buckets[swap_i].data;
+			tbl->buckets[prev_i].hash = tbl->buckets[swap_i].hash;
+		}
+		tbl->bkt_usd -= 1;
+		return (true);
+	}
+	return (false);
+}
+
+bool 			hashtbl_add(t_hashtbl *tbl, uint32_t key,
+							void **value)
 {
 	uint16_t	i;
-	uint16_t	hash;
-	uint16_t	init_inx;
-	uint16_t	cur_inx;
+	uint16_t	init_i;
+	uint16_t	cur_i;
+
 	uint16_t	prb_dist;
 	uint16_t	prb_cur;
-	uint16_t	hash_temp;
-	void		*entry;
+
+	uint16_t	hash_tmp;
+	uint16_t	hash;
+
+	uint32_t	key_tmp;
+
+	void		*data;
 	void		*data_tmp;
 	int			num_swaps;
 
@@ -62,32 +128,36 @@ bool 			hashtbl_add(t_hashtbl *tbl, uint8_t *key, uint32_t ksz, void **value)
 	if (tbl->bkt_usd == tbl->bkt_cnt)
 		return (false);
 	tbl->bkt_usd += 1;
-	hash = jenkins_hash(key, ksz);
-	init_inx = hash % tbl->bkt_cnt;
+	hash = jenkins_hash((uint8_t *)&key, sizeof(uint32_t));
+	init_i = hash % tbl->bkt_cnt;
 	prb_dist = 0;
 	prb_cur = 0;
-	entry = *value;
+	data = *value;
 	num_swaps = 0;
 	for (i = 0; i < tbl->prb_max; i++)
 	{
-		cur_inx = (init_inx + i) % tbl->bkt_cnt;
-		if (tbl->buckets[cur_inx].data == NULL)
+		cur_i = (init_i + i) % tbl->bkt_cnt;
+		if (tbl->buckets[cur_i].data == NULL)
 		{
-			tbl->buckets[cur_inx].data = entry;
-			tbl->buckets[cur_inx].hash = hash;
+			tbl->buckets[cur_i].key = key;
+			tbl->buckets[cur_i].data = data;
+			tbl->buckets[cur_i].hash = hash;
 			break;
 		}
 		else
 		{
-			fill_distance_to_initinx(tbl, cur_inx, &prb_dist);
+			fill_distance_to_initinx(tbl, cur_i, &prb_dist);
 			if (prb_cur > prb_dist)
 			{
-				data_tmp = tbl->buckets[cur_inx].data;
-				hash_temp = tbl->buckets[cur_inx].hash;
-				tbl->buckets[cur_inx].data = entry;
-				tbl->buckets[cur_inx].hash = hash;
-				entry = data_tmp;
-				hash = hash_temp;
+				data_tmp = tbl->buckets[cur_i].data;
+				hash_tmp = tbl->buckets[cur_i].hash;
+				key_tmp = tbl->buckets[cur_i].key;
+				tbl->buckets[cur_i].data = data;
+				tbl->buckets[cur_i].hash = hash;
+				tbl->buckets[cur_i].key = key;
+				data = data_tmp;
+				hash = hash_tmp;
+				key = key_tmp;
 				prb_cur = prb_dist;
 				num_swaps += 1;
 			}
@@ -97,64 +167,7 @@ bool 			hashtbl_add(t_hashtbl *tbl, uint8_t *key, uint32_t ksz, void **value)
 	return (true);
 }
 
-bool			hashtbl_rm(t_hashtbl *tbl, uint8_t *key, uint16_t keysz)
-{
-	uint16_t hash;
-	uint16_t index_init;
-	bool found;
-	uint16_t cur_inx;
-	uint16_t prb_dist;
-	uint16_t prev_inx;
-	uint16_t swap_inx;
-	uint16_t i;
-
-	hash = jenkins_hash(key, keysz);
-	index_init = hash % tbl->bkt_cnt;
-	found = false;
-	cur_inx = 0;
-	prb_dist = 0;
-	for (i = 0; i < tbl->bkt_cnt; i++)
-	{
-		cur_inx = (uint16_t)(index_init + i) % tbl->bkt_cnt;
-		fill_distance_to_initinx(tbl, cur_inx, &prb_dist);
-		if (tbl->buckets[cur_inx].data == NULL || i > prb_dist) {
-			break;
-		}
-		if (memcmp(tbl->buckets[cur_inx].data, key, keysz) == 0) {
-			found = true;
-			break;
-		}
-	}
-	if (found)
-	{
-		tbl->buckets[cur_inx].data = NULL;
-		tbl->buckets[cur_inx].hash = 0;
-		for (i = 1; i < tbl->bkt_cnt; i++)
-		{
-			prev_inx = (uint16_t)(cur_inx + i - 1) % tbl->bkt_cnt;
-			swap_inx = (cur_inx + i) % tbl->bkt_cnt;
-			if (tbl->buckets[swap_inx].data == NULL)
-			{
-				tbl->buckets[prev_inx].data = NULL;
-				break;
-			}
-			if (fill_distance_to_initinx(tbl, swap_inx, &prb_dist) != 0)
-				hermes_error(FAILURE, "fill_distance_to_initinx()");
-			if (prb_dist == 0)
-			{
-				tbl->buckets[prev_inx].data = NULL;
-				break;
-			}
-			tbl->buckets[prev_inx].data = tbl->buckets[swap_inx].data;
-			tbl->buckets[prev_inx].hash = tbl->buckets[swap_inx].hash;
-		}
-		tbl->bkt_usd -= 1;
-		return (true);
-	}
-	return (false);
-}
-
-bool			hashtbl_get(t_hashtbl *tbl, uint8_t *key, uint16_t keysz, void **hook)
+bool 			hashtbl_get(t_hashtbl *tbl, uint32_t key, void **hook)
 {
 	uint16_t	i;
 	bool		found;
@@ -166,7 +179,7 @@ bool			hashtbl_get(t_hashtbl *tbl, uint8_t *key, uint16_t keysz, void **hook)
 	i = 0;
 	probe_dist = 0;
 	found = false;
-	hash = jenkins_hash(key, keysz);
+	hash = jenkins_hash((uint8_t *)&key, sizeof(uint32_t));
 	init_inx = hash % tbl->bkt_cnt;
 	while (i < tbl->prb_max)
 	{
@@ -174,7 +187,7 @@ bool			hashtbl_get(t_hashtbl *tbl, uint8_t *key, uint16_t keysz, void **hook)
 		fill_distance_to_initinx(tbl, cur_inx, &probe_dist);
 		if (tbl->buckets[cur_inx].data == NULL || i > probe_dist)
 			break;
-		if (memcmp(tbl->buckets[cur_inx].data, key, keysz) == 0)
+		if (tbl->buckets[cur_inx].key == key)
 		{
 			*hook = tbl->buckets[cur_inx].data;
 			found = true;

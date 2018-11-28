@@ -1,5 +1,24 @@
 #include "../incl/hermes.h"
 
+void		hex_print(uint8_t *blob, size_t len)
+{
+	bool	nlspace;
+
+	nlspace = false;
+	size_t  i;
+	for (i = 0; i < len; i++)
+	{
+		printf("%02x ", blob[i]);
+		if (i % 7 == 0)
+		{
+			printf("%s", nlspace ? "\n" : " " );
+			nlspace = !nlspace;
+		}
+	}
+	printf("\n");
+}
+
+
 /* checksum code is borrowed from roman10.net thanks for the explanations! */
 static unsigned short compute_checksum(unsigned short *addr, unsigned int count)
 {
@@ -70,9 +89,9 @@ int 					make_rx_filter(t_thread *thread, size_t total)
 		pcap_freecode(&thread->rxfilter.prog);
 	while (i < total)
 	{
-		x += sprintf(&bpfexp[x], "src host %s ", inet_ntoa(thread->hstgrp[i].result->ip));
+		x += sprintf(&bpfexp[x], "src %s ", inet_ntoa(thread->hstgrp[i].result->ip));
 		if (i + 1 < total)
-			x += sprintf(&bpfexp[x], "and ");
+			x += sprintf(&bpfexp[x], "or ");
 		i++;
 	}
 	if (pcap_compile(thread->rxfilter.handle, &thread->rxfilter.prog, bpfexp, 0, PCAP_NETMASK_UNKNOWN) == -1)
@@ -82,20 +101,52 @@ int 					make_rx_filter(t_thread *thread, size_t total)
 	return (SUCCESS);
 }
 
-void				targetset_to_hstgrp(t_targetset *set, t_thread *thread, t_env *env)
+int targetset_to_hstgrp(t_targetset *set, t_thread *thread,
+						t_env *env)
 {
-	int				i;
+	int				y;
+	void			*hook;
 	t_ip4rng		*rng;
 	t_ip4			start;
 	t_node			*tmp;
+	void			*val;
 
-	i = 0;
+	y = 0;
 	tmp = set->ips;
+	thread->hstgrpsz = (uint8_t)set->total;
 	while (tmp)
 	{
-		thread->hstgrp[i].result = new_result();
-		thread->hstgrp[i].result->ip.s_addr = ((t_ip4*)tmp->data)->s_addr;
-		thread->hstgrp[i++].result->portstats = memalloc(sizeof(t_portstat *) * (env->ports.total + 1));
+		if (!(thread->hstgrp[y].result = new_result()))
+			return (hermes_error(FAILURE, "new_result() %s", strerror(errno)));
+		thread->hstgrp[y].result->ip.s_addr = ((t_ip4*)tmp->data)->s_addr;
+		printf("%s\n", inet_ntoa(thread->hstgrp[y].result->ip));
+		printf("ports total %d\n", env->ports.total);
+		if (!(thread->hstgrp[y].result->portstats = memalloc(sizeof(t_portstat) * (env->ports.total + 1))))
+			return (hermes_error(FAILURE, "memalloc() %s", strerror(errno)));
+		for (int x = 0; x < env->ports.total; x++)
+		{
+			thread->hstgrp[y].result->portstats[x].port = env->ports.flat[x];
+			val = &thread->hstgrp[y].result->portstats[x];
+			hashtbl_add(thread->hstgrp[y].lookup, env->ports.flat[x], &val);
+			if (hashtbl_get(thread->hstgrp[y].lookup, env->ports.flat[x], &hook) == false)
+			{
+				hermes_error(FAILURE, "not even\n");
+				exit(EXIT_FAILURE);
+			}
+		}
+		val = &thread->hstgrp[y];
+		if (hashtbl_add(thread->lookup, thread->hstgrp[y].result->ip.s_addr,
+					 &val) != true)
+		{
+			hermes_error(FAILURE, "mother fucking hash table fucking hash table\n");
+			exit(EXIT_FAILURE);
+		}
+		if (hashtbl_get(thread->lookup, thread->hstgrp[y].result->ip.s_addr, &hook) != true)
+		{
+			hermes_error(FAILURE, "fucking hash table\n");
+			exit(EXIT_FAILURE);
+		}
+		y++;
 		tmp = tmp->right;
 	}
 	del_list(&set->ips, true);
@@ -106,30 +157,31 @@ void				targetset_to_hstgrp(t_targetset *set, t_thread *thread, t_env *env)
 		start.s_addr = rng->start;
 		while (ip4_cmp(&start, &rng->end) <= 0)
 		{
-			thread->hstgrp[i].result = new_result();
-			thread->hstgrp[i].result->ip.s_addr = start.s_addr;
-			thread->hstgrp[i++].result->portstats = memalloc(sizeof(t_portstat *) * (env->ports.total + 1));
+			if (!(thread->hstgrp[y].result = new_result()))
+				return (hermes_error(FAILURE, "new_result() %s", strerror(errno)));
+			thread->hstgrp[y].result->ip.s_addr = ((t_ip4*)tmp->data)->s_addr;
+			if (!(thread->hstgrp[y].result->portstats = memalloc(sizeof(t_portstat) * (env->ports.total + 1))))
+				return (hermes_error(FAILURE, "memalloc() %s", strerror(errno)));
+			if (!(thread->hstgrp[y].lookup = new_hashtbl(env->ports.total)))
+				return (hermes_error(FAILURE, "new_hashtbl() %s", strerror(errno)));
+			for (int j = 0; j < env->ports.total; j++)
+			{
+				thread->hstgrp[y].result->portstats[j].port = env->ports.flat[j];
+				hashtbl_add(thread->hstgrp[y].lookup, env->ports.flat[j],
+							 (void **)&thread->hstgrp[y].result->portstats[j]);
+			}
+			hashtbl_add(thread->lookup, thread->hstgrp[y].result->ip.s_addr,
+						 (void **)&thread->hstgrp[y]);
+			y++;
 			start.s_addr = ip4_increment(start.s_addr, 1);
 		}
 		tmp = tmp->right;
 	}
 	del_list(&set->iprngs, true);
-	thread->hstgrpsz = (uint8_t)set->total;
+	return (SUCCESS);
 }
 
-void add_results_to_lookup(t_thread *thread, size_t count)
-{
-	size_t			i;
-
-	i = 0;
-	while (i < count)
-	{
-		hashtbl_add(thread->lookup, (uint8_t *)&thread->hstgrp[i].result->ip, 4, (void **)&thread->hstgrp[i]);
-		i++;
-	}
-}
-
-void				fill_tx_ring(t_thread *thread, t_frame *ethframe, uint16_t *alive)
+void fill_tx_ring(t_thread *thread, t_frame *ethframe)
 {
 	struct tpacket2_hdr *frame;
 	void				*data;
@@ -144,12 +196,17 @@ void				fill_tx_ring(t_thread *thread, t_frame *ethframe, uint16_t *alive)
 	dstports = thread->pool->env->dstports;
 	while (hst_i < thread->hstgrpsz && ring_i < thread->txring.tpr.tp_frame_nr)
 	{
+		if (thread->hstgrp[hst_i].health.done == true)
+		{
+			hst_i++;
+			continue;
+		}
 		frame = thread->txring.ring + (thread->txring.tpr.tp_frame_size * ring_i);
-		data = (void *)frame + thread->txring.doffset; /* check data offset*/
+		data = (void *)frame + thread->txring.doffset;
 		if (frame->tp_status == TP_STATUS_WRONG_FORMAT)
 			hermes_error(FAILURE, "TX_RING wrong format in frame %i of thread %d", ring_i++, thread->id);
 		else if (frame->tp_status == TP_STATUS_LOSING)
-			hermes_error(FAILURE, "issue detected during send TX_RING frame %i of thread %d", ring_i++, thread->id);
+			hermes_error(FAILURE, "issue during send TX_RING frame %i of thread %d", ring_i++, thread->id);
 		else if (frame->tp_status == TP_STATUS_AVAILABLE)
 		{
 			if (thread->hstgrp[hst_i].health.portinx < thread->pool->env->ports.total)
@@ -162,17 +219,18 @@ void				fill_tx_ring(t_thread *thread, t_frame *ethframe, uint16_t *alive)
 				memcpy(data, ethframe->buffer, ethframe->size);
 				frame->tp_len = ethframe->size;
 				frame->tp_status = TP_STATUS_SEND_REQUEST;
-				thread->hstgrp[hst_i++].health.portinx += 1;
+				printf("setup a frame\n");
+				hst_i++;
 				ring_i++;
 			}
 			else
-			{
-				*alive -= 1;
 				hst_i++;
-			}
 		}
 		else
+		{
 			ring_i++;
+		}
+
 	}
 }
 
@@ -185,10 +243,12 @@ void				send_task(t_thread *thread)
 	if (btx < 0)
 		hermes_error(EXIT_FAILURE, "send() %s", strerror(errno));
 	else if (btx == 0)
-		;
+	{
+		printf("didn't send anything.\n");
+	}
 	else
 	{
-		tot += btx /  sizeof(struct iphdr) + sizeof(struct tcphdr);
+		tot += btx /  sizeof(struct ethhdr) + sizeof(struct iphdr) + sizeof(struct tcphdr);
 		printf("sent %d packets\n", tot);
 	}
 }
@@ -213,6 +273,8 @@ void				init_iphdr(t_thread *thread, t_frame *frame)
 void				init_tcphdr(t_thread *thread, struct tcphdr *tcp)
 {
 	(void)thread;
+	tcp->seq = htonl(1);
+	tcp->ack = 0;
 	tcp->doff = 6;
 	tcp->window = htons(1024);
 	tcp->syn = true;
@@ -243,18 +305,87 @@ void				init_ethframe(t_thread *thread, t_frame *frame)
 	init_tcpopt_mss(frame->tcpopt);
 }
 
-void				syn_scan(t_thread *thread)
+void	handle_packet(u_char *user, const struct pcap_pkthdr *hdr, const u_char *data)
 {
-	t_frame			frame;
-	uint16_t		alive;
+	struct tcphdr	*tcp;
+	t_portstat 		*stat;
+	void			*bkt_data;
+	t_host			*host;
+	struct iphdr	*ip;
+	uint16_t		*ports;
+	t_thread		*thread;
+
+	thread = (t_thread *)user;
+	ports = thread->pool->env->ports.flat;
+	ip = (struct iphdr *)(data + sizeof(struct ethhdr));
+	tcp = (struct tcphdr *)((uint8_t *)ip + sizeof(struct iphdr));
+	if (hashtbl_get(thread->lookup, ip->saddr, &bkt_data) == true)
+	{
+		host = (t_host *)bkt_data;
+		printf("found bkt_data for %s current port: %u\n", inet_ntoa(host->result->ip), ports[host->health.portinx]);
+		printf("recv'd port %u\n", ntohs(tcp->source));
+		tcp->source = ntohs(tcp->source);
+		if (tcp->source == ports[host->health.portinx])
+		{
+			printf("correct port\n");
+			if (hashtbl_get(host->lookup, tcp->source, (void **)&stat) == true)
+			{
+				printf("got portstat\n");
+				stat->status = STAT_OPEN;
+				if (host->health.portinx + 1 == thread->pool->env->ports.total)
+				{
+					host->health.done = true;
+					thread->scancnt -= 1;
+				}
+				host->health.portinx++;
+			}
+		}
+	}
+	hex_print((uint8_t *)data, hdr->caplen);
+}
+
+long					timediff_ms(struct timeval *then, struct timeval *now)
+{
+	long		x;
+
+	x = (long)(then->tv_sec - now->tv_sec) * 1000L +
+			(long)(then->tv_usec - now->tv_usec) / 1000L;
+	return (x);
+}
+
+void					syn_scan(t_thread *thread)
+{
+	struct timeval		sent = {0};
+	struct timeval		now = {0};
+	long ms;
+	int					ret;
+	t_frame				frame;
 
 	memset(&frame, 0, sizeof(t_frame));
 	init_ethframe(thread, &frame);
-	alive = thread->hstgrpsz;
-	while (alive > 0)
+	thread->scancnt = thread->hstgrpsz;
+	while (thread->scancnt > 0)
 	{
-		fill_tx_ring(thread, &frame, &alive);
-		send_task(thread);
+		gettimeofday(&now, NULL);
+		if ((ms = timediff_ms(&now, &sent)) >= DEF_INIT_RTT_TIMEOUT)
+		{
+			printf("ms %ld\n", ms);
+			fill_tx_ring(thread, &frame);
+			send_task(thread);
+			gettimeofday(&sent, NULL);
+			thread->rxfilter.fd.events = POLL_IN;
+			if ((ret = poll(&thread->rxfilter.fd, 1, DEF_INIT_RTT_TIMEOUT)) < 0)
+				hermes_error(FAILURE, "poll() %s", strerror(errno));
+			if (ret > 0)
+				pcap_dispatch(thread->rxfilter.handle,
+							  thread->hstgrpsz, handle_packet, (u_char*)thread);
+			else
+				printf("didn't get anything\n");
+		}
+		else
+		{
+			usleep((useconds_t) ms * 1000);
+		}
 
 	}
 	free(frame.buffer);
@@ -264,7 +395,6 @@ void				syn_scan(t_thread *thread)
 void				run_scan(t_thread *thread, t_targetset *set)
 {
 	targetset_to_hstgrp(set, thread, thread->pool->env);
-	add_results_to_lookup(thread, set->total);
 	make_rx_filter(thread, set->total);
 	syn_scan(thread);
 }

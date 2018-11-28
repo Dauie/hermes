@@ -38,11 +38,15 @@ int						prepare_pcap_rx(t_thread *thread)
 	int				timeout;
 
 	timeout = thread->pool->env->opts.init_rtt_timeo;
-
-	if (!(thread->rxfilter.handle = pcap_open_live(thread->pool->iface.name, THRD_HSTGRP_MAX, 0, timeout, errbuff)))
+	printf("rtt timeo %d", thread->pool->env->opts.init_rtt_timeo);
+	if (!(thread->rxfilter.handle = pcap_open_live(thread->pool->iface.name, PCAP_SNAPLEN, 0, timeout / 3, errbuff)))
 		return (hermes_error(FAILURE, "pcap_open_live() %s", errbuff));
 	if (errbuff[0] != 0)
-		hermes_error(0, "pcap_open_live() %s", errbuff);
+		hermes_error(FAILURE, "pcap_open_live() %s", errbuff);
+	if ((thread->rxfilter.fd.fd = pcap_get_selectable_fd(thread->rxfilter.handle)) < 0)
+		return (hermes_error(FAILURE, "pacp_get_selectable_fd() interface does not support polling"));
+//	if (pcap_setnonblock(thread->rxfilter.handle, true, errbuff) != true)
+//		return (hermes_error(FAILURE, "pcap_setnonblock() %s", errbuff));
 	return (SUCCESS);
 }
 
@@ -74,7 +78,7 @@ int						prepare_packetmmap_tx_ring(t_thread *thread)
 		toggle_thread_alive(thread);
 		return (hermes_error(FAILURE, "getsockopt() PACKET_HDRLEN %s", strerror(errno)));
 	}
-	printf("packet hdrlen %d\n", thread->txring.hdrlen);
+
 	/* Step 3 determine sizes for PACKET_TX_RING and allocate txring via setsockopt() */
 	thread->txring.tpr.tp_block_size = (uint)getpagesize();
 	thread->txring.tpr.tp_frame_size = thread->txring.hdrlen + sizeof(struct iphdr) + DEF_TRAN_HDRLEN + thread->pool->env->cpayload_len;
@@ -108,12 +112,6 @@ int						prepare_packetmmap_tx_ring(t_thread *thread)
 		toggle_thread_alive(thread);
 		return (hermes_error(FAILURE, "bind() %s", strerror(errno)));
 	}
-	/* ha_type and pkt_type are set on recv'd msgs */
-	thread->txring.peer_ll.sll_ifindex = thread->pool->iface.inx;
-	thread->txring.peer_ll.sll_protocol = htons(ETH_P_ALL);
-	thread->txring.peer_ll.sll_family = AF_PACKET;
-	thread->txring.peer_ll.sll_halen = ETH_ALEN;
-	memcpy(thread->txring.peer_ll.sll_addr, thread->pool->iface.gw_hwaddr, ETH_ALEN);
 	return (SUCCESS);
 }
 
@@ -133,22 +131,37 @@ void					*thread_loop(void *thrd)
 	t_thread			*thread;
 
 	thread = (t_thread *)thrd;
-	printf("im alive %d\n", thread->id);
-	thread->hstgrp = memalloc(sizeof(t_host) * (THRD_HSTGRP_MAX));
+	if (!(thread->hstgrp = memalloc(sizeof(t_host) * (THRD_HSTGRP_MAX))))
+	{
+		hermes_error(FAILURE, "memalloc() %s", strerror(errno));
+		return (NULL);
+	}
+	if (!(thread->lookup = new_hashtbl(THRD_HSTGRP_MAX)))
+	{
+		hermes_error(FAILURE, "new_hashtable() %s", strerror(errno));
+		return (NULL);
+	}
+	for (int i = 0; i < THRD_HSTGRP_MAX; i++)
+	{
+		if (!(thread->hstgrp[i].lookup = new_hashtbl(thread->pool->env->ports.total)))
+		{
+			hermes_error(FAILURE, "new_hashtbl() %s", strerror(errno));
+			return (NULL);
+		}
+	}
 	prepare_thread_rx_tx(thread);
-	thread->lookup = new_hashtbl(THRD_HSTGRP_MAX);
-	printf("got setup %d\n", thread->id);
+	printf("im alive %d\n", thread->id);
 	while (thread->alive)
 	{
 		pthread_mutex_lock(&thread->pool->work_mtx);
 		if (thread->pool->work->total > 0)
 		{
 			memset(&work, 0, sizeof(t_targetset));
-			transfer_work(&work, thread->pool->work, thread->amt);
+			transfer_work(&work, thread->pool->work, thread->reqamt);
 			pthread_mutex_unlock(&thread->pool->work_mtx);
 			if (work.total > 0)
 			{
-				thread->amt *= (thread->amt < THRD_HSTGRP_MAX) ? 2 : 1;
+				thread->reqamt *= (thread->reqamt < THRD_HSTGRP_MAX) ? 2 : 1;
 				pthread_mutex_lock(&thread->pool->amt_working_mtx);
 				thread->pool->amt_working += 1;
 				thread->working = true;
@@ -223,7 +236,7 @@ t_thread_pool			*init_threadpool(t_env *env, t_targetset *workpool,
 	while (++i < pool->thread_amt)
 	{
 		pool->threads[i].id = (uint8_t)(i + 1);
-		pool->threads[i].amt = 1;
+		pool->threads[i].reqamt = 1;
 		pool->threads[i].pool = pool;
 		pool->threads[i].alive = true;
 		pthread_mutex_lock(&pool->amt_alive_mtx);

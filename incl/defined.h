@@ -17,6 +17,8 @@
 # define EPHIM_MAX (62142)
 # define EPHIM_MIN (32142)
 
+# define PCAP_SNAPLEN (60)
+
 # ifndef fast_swap_ints
 # define fast_swap_ints(x, y) ((x ^= y),(y ^= x),(x ^= y))
 # endif /* fast_swap_ints */
