@@ -183,7 +183,7 @@ int targetset_to_hstgrp(t_targetset *set, t_thread *thread,
 
 void					fill_tx_ring(t_thread *thread, t_frame *ethframe)
 {
-	struct tpacket2_hdr *frame;
+	struct tpacket3_hdr *frame;
 	void				*data;
 	uint16_t			*srcports;
 	uint16_t			*dstports;
@@ -201,36 +201,32 @@ void					fill_tx_ring(t_thread *thread, t_frame *ethframe)
 			hst_i++;
 			continue;
 		}
-		frame = thread->txring.ring + (thread->txring.tpr.tp_frame_size * ring_i);
-		data = (uint8_t *)frame + thread->txring.doffset;
-		if (frame->tp_status == TP_STATUS_WRONG_FORMAT)
+		frame = (thread->txring.ring + (thread->txring.tpr.tp_frame_size * ring_i));
+		if ((volatile uint32_t)frame->tp_status == TP_STATUS_WRONG_FORMAT)
 			hermes_error(FAILURE, "TX_RING wrong format in frame %i of thread %d", ring_i++, thread->id);
-		else if (frame->tp_status == TP_STATUS_LOSING)
+		else if ((volatile uint32_t)frame->tp_status == TP_STATUS_LOSING)
 			hermes_error(FAILURE, "issue during send TX_RING frame %i of thread %d", ring_i++, thread->id);
-		else if (frame->tp_status == TP_STATUS_AVAILABLE)
+		else if ((volatile uint32_t)frame->tp_status == TP_STATUS_AVAILABLE)
 		{
-			if (thread->hstgrp[hst_i].health.portinx < thread->pool->env->ports.total)
-			{
-				ethframe->ip->daddr = thread->hstgrp[hst_i].result->ip.s_addr;
-				ip_checksum(ethframe->ip);
-				ethframe->tcp->source = htons(dstports[thread->hstgrp[hst_i].health.portinx]);
-				ethframe->tcp->dest = htons(srcports[thread->hstgrp[hst_i].health.portinx]);
-				tcp_checksum(ethframe->ip, (uint16_t *)ethframe->tcp);
-				memcpy(data, ethframe->buffer, ethframe->size);
-				frame->tp_len = ethframe->size;
-				frame->tp_status = TP_STATUS_SEND_REQUEST;
-				printf("setup a frame\n");
-				hst_i++;
-				ring_i++;
-			}
-			else
-				hst_i++;
+			data = (uint8_t *)frame + thread->txring.doffset;
+			ethframe->ip->daddr = thread->hstgrp[hst_i].result->ip.s_addr;
+			ip_checksum(ethframe->ip);
+			ethframe->tcp->source = htons(dstports[thread->hstgrp[hst_i].health.portinx]);
+			ethframe->tcp->dest = htons(srcports[thread->hstgrp[hst_i].health.portinx]);
+			tcp_checksum(ethframe->ip, (uint16_t *)ethframe->tcp);
+			memcpy(data, ethframe->buffer, ethframe->size);
+			frame->tp_next_offset = 0;
+			frame->tp_len = ethframe->size;
+			frame->tp_status = TP_STATUS_SEND_REQUEST;
+			printf("setup a frame\n");
+			hst_i++;
+			ring_i++;
 		}
 		else
 		{
+			printf("skipped ring with status %d\n", frame->tp_status);
 			ring_i++;
 		}
-
 	}
 }
 
@@ -322,21 +318,18 @@ void	handle_packet(u_char *user, const struct pcap_pkthdr *hdr, const u_char *da
 	if (hashtbl_get(thread->lookup, ip->saddr, &bkt_data) == true)
 	{
 		host = (t_host *)bkt_data;
-		printf("found bkt_data for %s current port: %u\n", inet_ntoa(host->result->ip), ports[host->health.portinx]);
-		printf("recv'd port %u\n", ntohs(tcp->source));
 		tcp->source = ntohs(tcp->source);
 		if (tcp->source == ports[host->health.portinx])
 		{
-			printf("correct port\n");
 			if (hashtbl_get(host->lookup, tcp->source, (void **)&stat) == true)
 			{
-				printf("got portstat\n");
 				stat->status = STAT_OPEN;
 				if (host->health.portinx + 1 == thread->pool->env->ports.total)
 				{
 					host->health.done = true;
 					thread->scancnt -= 1;
 				}
+				printf("packet processed\n");
 				host->health.portinx++;
 			}
 		}
@@ -369,7 +362,6 @@ void					syn_scan(t_thread *thread)
 		gettimeofday(&now, NULL);
 		if ((ms = timediff_ms(&now, &sent)) >= DEF_INIT_RTT_TIMEOUT)
 		{
-			printf("ms %ld\n", ms);
 			fill_tx_ring(thread, &frame);
 			send_task(thread);
 			gettimeofday(&sent, NULL);

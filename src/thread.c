@@ -39,7 +39,7 @@ int						prepare_pcap_rx(t_thread *thread)
 
 	timeout = thread->pool->env->opts.init_rtt_timeo;
 	printf("rtt timeo %d", thread->pool->env->opts.init_rtt_timeo);
-	if (!(thread->rxfilter.handle = pcap_open_live(thread->pool->iface.name, PCAP_SNAPLEN, 0, timeout / 3, errbuff)))
+	if (!(thread->rxfilter.handle = pcap_open_live(thread->pool->iface.name, PCAP_SNAPLEN, 0, timeout, errbuff)))
 		return (hermes_error(FAILURE, "pcap_open_live() %s", errbuff));
 	if (errbuff[0] != 0)
 		hermes_error(FAILURE, "pcap_open_live() %s", errbuff);
@@ -50,9 +50,37 @@ int						prepare_pcap_rx(t_thread *thread)
 	return (SUCCESS);
 }
 
+int							extra_sock_opts(int sock, uint32_t size)
+{
+	uint32_t				cursz;
+	socklen_t				len;
+
+	len = sizeof(cursz);
+	if (getsockopt(sock, SOL_SOCKET, SO_SNDBUF, &cursz, &len) < 0)
+		return (hermes_error(FAILURE, "getsockopt SO_SNDBUF"));
+	if (cursz < size)
+	{
+		if (setsockopt(sock, SOL_SOCKET, SO_SNDBUF, &size, sizeof(size)) < 0)
+			hermes_error(FAILURE, "setsockopt() SO_SNDBUF");
+	}
+	/* queue disc bypass */
+//	const int32_t sock_disc_byp = 1;
+//	if (setsockopt(sock, SOL_PACKET, PACKET_QDISC_BYPASS, &sock_disc_byp, sizeof(sock_disc_byp)) < 0)
+//	{
+//		return (hermes_error(FAILURE, "setsockopt() PACKET_QDISC_BYPASS"));
+//	}
+	/* sock discard */
+//	const int32_t  sock_discard = 1;
+//	if (setsockopt(sock, SOL_PACKET, PACKET_LOSS, &sock_discard, sizeof(sock_discard)) < 0)
+//	{
+//		return (hermes_error(FAILURE, "setsockopt() PACKET_LOSS"));
+//	}
+	return (SUCCESS);
+}
+
+
 int						prepare_packetmmap_tx_ring(t_thread *thread)
 {
-	uint32_t			len;
 	int					tpacket_v;
 	struct sockaddr_ll	sll_loc;
 
@@ -63,47 +91,6 @@ int						prepare_packetmmap_tx_ring(t_thread *thread)
 		toggle_thread_alive(thread);
 		return (hermes_error(FAILURE, "socket() %s", strerror(errno)));
 	}
-	tpacket_v = TPACKET_V1;
-#ifndef TPACKET_V2
-	tpacket_v = TPACKET_V2;
-	if (setsockopt(thread->sock, SOL_PACKET, PACKET_VERSION, &tpacket_v, sizeof(tpacket_v)) < 0)
-	{
-		toggle_thread_alive(thread);
-		return (hermes_error(FAILURE, "setsockopt() PACKET_VERSION %s", strerror(errno)));
-	}
-#endif
-	len = sizeof(thread->txring.hdrlen);
-	if (getsockopt(thread->sock, SOL_PACKET, PACKET_HDRLEN, &thread->txring.hdrlen, &len) < 0)
-	{
-		toggle_thread_alive(thread);
-		return (hermes_error(FAILURE, "getsockopt() PACKET_HDRLEN %s", strerror(errno)));
-	}
-
-	/* Step 3 determine sizes for PACKET_TX_RING and allocate txring via setsockopt() */
-	thread->txring.tpr.tp_block_size = (uint)getpagesize();
-	thread->txring.tpr.tp_frame_size = thread->txring.tpr.tp_block_size;
-//	thread->txring.tpr.tp_frame_size = pow2_round(thread->txring.tpr.tp_frame_size);
-	thread->txring.tpr.tp_block_nr = (THRD_HSTGRP_MAX / (thread->txring.tpr.tp_block_size / thread->txring.tpr.tp_frame_size));
-	thread->txring.tpr.tp_frame_nr = thread->txring.tpr.tp_block_nr * (thread->txring.tpr.tp_block_size / thread->txring.tpr.tp_frame_size);
-	thread->txring.size = thread->txring.tpr.tp_block_size * thread->txring.tpr.tp_block_nr;
-	thread->txring.doffset = TPACKET_ALIGN(thread->txring.hdrlen);
-	if (setsockopt(thread->sock, SOL_PACKET, PACKET_TX_RING, (void *)&thread->txring.tpr, sizeof(thread->txring.tpr)) < 0)
-	{
-		toggle_thread_alive(thread);
-		return (hermes_error(FAILURE, "setsockopt() PACKET_TX_RING %s", strerror(errno)));
-	}
-	printf("mmap PACKET_TX_RING success\n");
-
-	/* Step 4 actually map ring to user space */
-	if (!(thread->txring.ring = mmap(0, thread->txring.size,
-			PROT_READ | PROT_WRITE,
-			MAP_SHARED | MAP_LOCKED | MAP_POPULATE,
-			thread->sock, 0)))
-	{
-		toggle_thread_alive(thread);
-		return (hermes_error(FAILURE, "mmap() TX_RING %s", strerror(errno)));
-	}
-	/* TODO possibly increase iface mtu */
 	memset(&sll_loc, 0, sizeof(struct sockaddr_ll));
 	memcpy(&sll_loc.sll_addr, thread->pool->iface.if_hwaddr, ETH_ALEN);
 	sll_loc.sll_ifindex = thread->pool->iface.inx;
@@ -115,16 +102,43 @@ int						prepare_packetmmap_tx_ring(t_thread *thread)
 		toggle_thread_alive(thread);
 		return (hermes_error(FAILURE, "bind() %s", strerror(errno)));
 	}
+	tpacket_v = TPACKET_V3;
+	if (setsockopt(thread->sock, SOL_PACKET, PACKET_VERSION, &tpacket_v, sizeof(tpacket_v)) < 0)
+	{
+		toggle_thread_alive(thread);
+		return (hermes_error(FAILURE, "setsockopt() PACKET_VERSION %s", strerror(errno)));
+	}
+	/* Step 3 determine sizes for PACKET_TX_RING and allocate txring via setsockopt() */
+	thread->txring.tpr.tp_block_size = (uint)getpagesize();
+	thread->txring.tpr.tp_frame_size = TPACKET3_HDRLEN + sizeof(struct ethhdr) + sizeof(struct iphdr) + DEF_TRAN_HDRLEN + thread->pool->env->cpayload_len;
+	thread->txring.tpr.tp_frame_size = pow2_round(thread->txring.tpr.tp_frame_size);
+	thread->txring.tpr.tp_block_nr = (THRD_HSTGRP_MAX / (thread->txring.tpr.tp_block_size / thread->txring.tpr.tp_frame_size));
+	thread->txring.tpr.tp_frame_nr = thread->txring.tpr.tp_block_nr * (thread->txring.tpr.tp_block_size / thread->txring.tpr.tp_frame_size);
+	thread->txring.size = thread->txring.tpr.tp_block_size * thread->txring.tpr.tp_block_nr;
+	thread->txring.doffset = sizeof(struct tpacket3_hdr);
+	if (setsockopt(thread->sock, SOL_PACKET, PACKET_TX_RING, (void *)&thread->txring.tpr, sizeof(thread->txring.tpr)) < 0)
+	{
+		toggle_thread_alive(thread);
+		return (hermes_error(FAILURE, "setsockopt() PACKET_TX_RING %s", strerror(errno)));
+	}
+	printf("frame size: %d | blocksize: %d | block count %d | frame count %d\n", thread->txring.tpr.tp_frame_size, thread->txring.tpr.tp_block_size, thread->txring.tpr.tp_block_nr, thread->txring.tpr.tp_frame_nr);
+	extra_sock_opts(thread->sock, thread->txring.size);
+	/* Step 4 actually map ring to user space */
+	if (!(thread->txring.ring = mmap(0, thread->txring.size,
+			PROT_READ | PROT_WRITE,
+			MAP_SHARED,
+			thread->sock, 0)))
+	{
+		toggle_thread_alive(thread);
+		return (hermes_error(FAILURE, "mmap() TX_RING %s", strerror(errno)));
+	}
 	return (SUCCESS);
 }
 
 int						prepare_thread_rx_tx(t_thread *thread)
 {
-	printf("thread %d preparing ring\n", thread->id);
 	prepare_packetmmap_tx_ring(thread);
-	printf("thread %d prepared ring. doing rx now...\n", thread->id);
 	prepare_pcap_rx(thread);
-	printf("thread %d finished preparing rx\n", thread->id);
 	return (SUCCESS);
 }
 

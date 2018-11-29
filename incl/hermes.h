@@ -203,12 +203,9 @@ typedef struct			s_resultset
 
 typedef struct			s_tx_ring
 {
-	uint8_t				mode;
-	uint32_t			tpacketv;
-	struct tpacket_req	tpr;
+	struct tpacket_req3	tpr;
 	uint32_t			doffset;
 	void				*ring;
-	uint32_t			hdrlen;
 	uint32_t			size;
 }						t_txring;
 
