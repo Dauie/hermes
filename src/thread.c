@@ -81,8 +81,8 @@ int						prepare_packetmmap_tx_ring(t_thread *thread)
 
 	/* Step 3 determine sizes for PACKET_TX_RING and allocate txring via setsockopt() */
 	thread->txring.tpr.tp_block_size = (uint)getpagesize();
-	thread->txring.tpr.tp_frame_size = thread->txring.hdrlen + sizeof(struct iphdr) + DEF_TRAN_HDRLEN + thread->pool->env->cpayload_len;
-	thread->txring.tpr.tp_frame_size = pow2_round(thread->txring.tpr.tp_frame_size);
+	thread->txring.tpr.tp_frame_size = thread->txring.tpr.tp_block_size;
+//	thread->txring.tpr.tp_frame_size = pow2_round(thread->txring.tpr.tp_frame_size);
 	thread->txring.tpr.tp_block_nr = (THRD_HSTGRP_MAX / (thread->txring.tpr.tp_block_size / thread->txring.tpr.tp_frame_size));
 	thread->txring.tpr.tp_frame_nr = thread->txring.tpr.tp_block_nr * (thread->txring.tpr.tp_block_size / thread->txring.tpr.tp_frame_size);
 	thread->txring.size = thread->txring.tpr.tp_block_size * thread->txring.tpr.tp_block_nr;
@@ -95,7 +95,10 @@ int						prepare_packetmmap_tx_ring(t_thread *thread)
 	printf("mmap PACKET_TX_RING success\n");
 
 	/* Step 4 actually map ring to user space */
-	if (!(thread->txring.ring = mmap(0,thread->txring.size, PROT_READ|PROT_WRITE, MAP_SHARED, thread->sock, 0)))
+	if (!(thread->txring.ring = mmap(0, thread->txring.size,
+			PROT_READ | PROT_WRITE,
+			MAP_SHARED | MAP_LOCKED | MAP_POPULATE,
+			thread->sock, 0)))
 	{
 		toggle_thread_alive(thread);
 		return (hermes_error(FAILURE, "mmap() TX_RING %s", strerror(errno)));

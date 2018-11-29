@@ -181,7 +181,7 @@ int targetset_to_hstgrp(t_targetset *set, t_thread *thread,
 	return (SUCCESS);
 }
 
-void fill_tx_ring(t_thread *thread, t_frame *ethframe)
+void					fill_tx_ring(t_thread *thread, t_frame *ethframe)
 {
 	struct tpacket2_hdr *frame;
 	void				*data;
@@ -202,7 +202,7 @@ void fill_tx_ring(t_thread *thread, t_frame *ethframe)
 			continue;
 		}
 		frame = thread->txring.ring + (thread->txring.tpr.tp_frame_size * ring_i);
-		data = (void *)frame + thread->txring.doffset;
+		data = (uint8_t *)frame + thread->txring.doffset;
 		if (frame->tp_status == TP_STATUS_WRONG_FORMAT)
 			hermes_error(FAILURE, "TX_RING wrong format in frame %i of thread %d", ring_i++, thread->id);
 		else if (frame->tp_status == TP_STATUS_LOSING)
@@ -237,9 +237,9 @@ void fill_tx_ring(t_thread *thread, t_frame *ethframe)
 void				send_task(t_thread *thread)
 {
 	ssize_t			btx = 0;
-	int				tot = 0;
+	int				totpkt = 0;
 
-	btx = send(thread->sock, NULL, 0, MSG_WAITALL);
+	btx = sendto(thread->sock, NULL, 0, 0, NULL, 0);
 	if (btx < 0)
 		hermes_error(EXIT_FAILURE, "send() %s", strerror(errno));
 	else if (btx == 0)
@@ -248,8 +248,8 @@ void				send_task(t_thread *thread)
 	}
 	else
 	{
-		tot += btx /  sizeof(struct ethhdr) + sizeof(struct iphdr) + sizeof(struct tcphdr);
-		printf("sent %d packets\n", tot);
+		totpkt += btx / (sizeof(struct ethhdr) + sizeof(struct iphdr) + sizeof(struct tcphdr));
+		printf("sent %d packets\n", totpkt);
 	}
 }
 
