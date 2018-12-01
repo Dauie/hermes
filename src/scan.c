@@ -181,17 +181,19 @@ int targetset_to_hstgrp(t_targetset *set, t_thread *thread,
 	return (SUCCESS);
 }
 
-void					fill_tx_ring(t_thread *thread, t_frame *ethframe)
+int						fill_tx_ring(t_thread *thread, t_frame *ethframe)
 {
-	struct tpacket3_hdr *frame;
+	struct tpacket3_hdr	*frame;
 	void				*data;
 	uint16_t			*srcports;
 	uint16_t			*dstports;
 	uint				ring_i;
 	uint				hst_i;
+	int					ret;
 
 	ring_i = 0;
 	hst_i = 0;
+	ret = 0;
 	srcports = thread->pool->env->ports.flat;
 	dstports = thread->pool->env->dstports;
 	while (hst_i < thread->hstgrpsz && ring_i < thread->txring.tpr.tp_frame_nr)
@@ -201,33 +203,32 @@ void					fill_tx_ring(t_thread *thread, t_frame *ethframe)
 			hst_i++;
 			continue;
 		}
-		frame = (thread->txring.ring + (thread->txring.tpr.tp_frame_size * ring_i));
-		if ((volatile uint32_t)frame->tp_status == TP_STATUS_WRONG_FORMAT)
-			hermes_error(FAILURE, "TX_RING wrong format in frame %i of thread %d", ring_i++, thread->id);
-		else if ((volatile uint32_t)frame->tp_status == TP_STATUS_LOSING)
-			hermes_error(FAILURE, "issue during send TX_RING frame %i of thread %d", ring_i++, thread->id);
-		else if ((volatile uint32_t)frame->tp_status == TP_STATUS_AVAILABLE)
+		frame = (struct tpacket3_hdr *)(thread->txring.ring + (thread->txring.tpr.tp_frame_size * ring_i));
+		switch((volatile uint32_t)frame->tp_status)
 		{
-			data = (uint8_t *)frame + thread->txring.doffset;
-			ethframe->ip->daddr = thread->hstgrp[hst_i].result->ip.s_addr;
-			ip_checksum(ethframe->ip);
-			ethframe->tcp->source = htons(dstports[thread->hstgrp[hst_i].health.portinx]);
-			ethframe->tcp->dest = htons(srcports[thread->hstgrp[hst_i].health.portinx]);
-			tcp_checksum(ethframe->ip, (uint16_t *)ethframe->tcp);
-			memcpy(data, ethframe->buffer, ethframe->size);
-			frame->tp_next_offset = 0;
-			frame->tp_len = ethframe->size;
-			frame->tp_status = TP_STATUS_SEND_REQUEST;
-			printf("setup a frame\n");
-			hst_i++;
-			ring_i++;
-		}
-		else
-		{
-			printf("skipped ring with status %d\n", frame->tp_status);
-			ring_i++;
+			case TP_STATUS_WRONG_FORMAT:
+				return(hermes_error(FAILURE, "TX_RING wrong format in frame %i of thread %d", ring_i, thread->id));
+			case TP_STATUS_AVAILABLE:
+				data = (uint8_t *)frame + thread->txring.doffset;
+				ethframe->ip->daddr = thread->hstgrp[hst_i].result->ip.s_addr;
+				ip_checksum(ethframe->ip);
+				ethframe->tcp->source = htons(dstports[thread->hstgrp[hst_i].health.portinx]);
+				ethframe->tcp->dest = htons(srcports[thread->hstgrp[hst_i].health.portinx]);
+				tcp_checksum(ethframe->ip, (uint16_t *)ethframe->tcp);
+				memcpy(data, ethframe->buffer, ethframe->size);
+				frame->tp_next_offset = 0;
+				frame->tp_len = ethframe->size;
+				frame->tp_status = TP_STATUS_SEND_REQUEST;
+				printf("setup a frame\n");
+				ret++; hst_i++; ring_i++;
+				break;
+			default:
+				printf("skipped ring with status %d\n", frame->tp_status);
+				ring_i++;
+				break;
 		}
 	}
+	return (ret);
 }
 
 void				send_task(t_thread *thread)
@@ -235,7 +236,8 @@ void				send_task(t_thread *thread)
 	ssize_t			btx = 0;
 	int				totpkt = 0;
 
-	btx = sendto(thread->sock, NULL, 0, 0, NULL, 0);
+	int errn = errno;
+	btx = send(thread->sock, NULL, 0, 0);
 	if (btx < 0)
 		hermes_error(EXIT_FAILURE, "send() %s", strerror(errno));
 	else if (btx == 0)
@@ -246,6 +248,10 @@ void				send_task(t_thread *thread)
 	{
 		totpkt += btx / (sizeof(struct ethhdr) + sizeof(struct iphdr) + sizeof(struct tcphdr));
 		printf("sent %d packets\n", totpkt);
+	}
+	if (errn != errno)
+	{
+		printf("issues: %s", strerror(errno));
 	}
 }
 
