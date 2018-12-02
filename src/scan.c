@@ -6,6 +6,7 @@ void		hex_print(uint8_t *blob, size_t len)
 
 	nlspace = false;
 	size_t  i;
+	printf("\n'");
 	for (i = 0; i < len; i++)
 	{
 		printf("%02x ", blob[i]);
@@ -15,7 +16,7 @@ void		hex_print(uint8_t *blob, size_t len)
 			nlspace = !nlspace;
 		}
 	}
-	printf("\n");
+	printf("'\n\n");
 }
 
 
@@ -277,7 +278,7 @@ void				init_tcphdr(t_thread *thread, struct tcphdr *tcp)
 	(void)thread;
 	tcp->seq = htonl(1);
 	tcp->ack = 0;
-	tcp->doff = 6;
+	tcp->doff = 5;
 	tcp->window = htons(1024);
 	tcp->syn = true;
 }
@@ -294,17 +295,17 @@ void				init_ethframe(t_thread *thread, t_frame *frame)
 
 	/* below line will change when more scan types are implemented */
 	frame->size = sizeof(struct ethhdr) + sizeof(struct iphdr) +
-					sizeof(struct tcphdr) + sizeof(t_tcpopt) +
+					sizeof(struct tcphdr) /*+ sizeof(t_tcpopt)*/ +
 						thread->pool->env->cpayload_len;
 	frame->buffer = memalloc(sizeof(uint8_t) * frame->size);
 	frame->eth = (struct ethhdr *)frame->buffer;
 	frame->ip = (struct iphdr *)((uint8_t *)frame->eth + sizeof(struct ethhdr));
 	frame->tcp = (struct tcphdr *)((uint8_t *)frame->ip + sizeof(struct iphdr));
-	frame->tcpopt = (t_tcpopt *)((uint8_t *)frame->tcp + sizeof(struct tcphdr));
+//	frame->tcpopt = (t_tcpopt *)((uint8_t *)frame->tcp + sizeof(struct tcphdr));
 	init_ethhdr(thread, frame->eth);
 	init_iphdr(thread, frame);
 	init_tcphdr(thread, frame->tcp);
-	init_tcpopt_mss(frame->tcpopt);
+//	init_tcpopt_mss(frame->tcpopt);
 }
 
 void	handle_packet(u_char *user, const struct pcap_pkthdr *hdr, const u_char *data)
@@ -340,6 +341,7 @@ void	handle_packet(u_char *user, const struct pcap_pkthdr *hdr, const u_char *da
 			}
 		}
 	}
+
 	hex_print((uint8_t *)data, hdr->caplen);
 }
 

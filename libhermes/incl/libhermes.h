@@ -10,7 +10,8 @@
 # include <stdarg.h>
 # include <stdbool.h>
 # include <limits.h>
-
+# include <pthread.h>
+# include <signal.h>
 # include "error_codes.h"
 
 /*

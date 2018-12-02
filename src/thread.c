@@ -142,8 +142,10 @@ int						prepare_packetmmap_tx_ring(t_thread *thread)
 
 int						prepare_thread_rx_tx(t_thread *thread)
 {
-	prepare_packetmmap_tx_ring(thread);
-	prepare_pcap_rx(thread);
+	if (prepare_packetmmap_tx_ring(thread) == FAILURE)
+		return (hermes_error(FAILURE, "prepare_packetmmap_tx_ring()"));
+	if (prepare_pcap_rx(thread) == FAILURE)
+		return (hermes_error(FAILURE, "prepare_pcap_rx()"));
 	return (SUCCESS);
 }
 
@@ -154,24 +156,16 @@ void					*thread_loop(void *thrd)
 
 	thread = (t_thread *)thrd;
 	if (!(thread->hstgrp = memalloc(sizeof(t_host) * (THRD_HSTGRP_MAX))))
-	{
-		hermes_error(FAILURE, "memalloc() %s", strerror(errno));
-		return (NULL);
-	}
+		return ((void *)(uint64)hermes_error(FAILURE, "memalloc() %s", strerror(errno)));
+
 	if (!(thread->lookup = new_hashtbl(THRD_HSTGRP_MAX)))
-	{
-		hermes_error(FAILURE, "new_hashtable() %s", strerror(errno));
-		return (NULL);
-	}
+		return ((void *)(uint64)hermes_error(FAILURE, "new_hashtable() %s", strerror(errno)));
+
 	for (int i = 0; i < THRD_HSTGRP_MAX; i++)
-	{
 		if (!(thread->hstgrp[i].lookup = new_hashtbl(thread->pool->env->ports.total)))
-		{
-			hermes_error(FAILURE, "new_hashtbl() %s", strerror(errno));
-			return (NULL);
-		}
-	}
-	prepare_thread_rx_tx(thread);
+			return ((void *)(uint64)hermes_error(FAILURE, "new_hashtbl() %s", strerror(errno)));
+	if (prepare_thread_rx_tx(thread) == FAILURE)
+		return ((void *)(uint64)hermes_error(FAILURE, "prepare_thread_tx_rx()"));
 	printf("im alive %d\n", thread->id);
 	while (thread->alive)
 	{
@@ -219,9 +213,7 @@ int					prepare_interface(t_thread_pool *pool)
 
 	/* Get the name of an interface we can send on */
 	if (!(pool->iface.name = pcap_lookupdev(errbuff)))
-	{
 		return (hermes_error(FAILURE, "pcap_lookupdev() %s", errbuff));
-	}
 	if (get_iface_info(&pool->iface) == FAILURE)
 		return (hermes_error(FAILURE, "issues finding interface configuration for '%s'", pool->iface.name));
 	return (SUCCESS);
@@ -236,24 +228,24 @@ t_thread_pool			*init_threadpool(t_env *env, t_targetset *workpool,
 
 	i = -1;
 	if (!(pool = memalloc(sizeof(t_thread_pool))))
-		return (NULL);
+		return ((void *)(uint64_t)hermes_error(FAILURE, "malloc() %s", strerror(errno)));
 	pool->thread_amt = env->opts.thread_count;
 	if (!(pool->threads = memalloc(sizeof(t_thread) * pool->thread_amt)))
-		return (NULL);
+		return ((void *)(uint64_t)hermes_error(FAILURE, "malloc() %s", strerror(errno)));
 	pool->reqest_amt = pool->thread_amt;
 	pool->results = results;
 	pool->work = workpool;
 	pool->env = env;
 	if (pthread_mutex_init(&pool->work_mtx, NULL) != 0)
-		hermes_error(EXIT_FAILURE, "pthread_mutex_init()");
+		return ((void *)(uint64_t)hermes_error(FAILURE, "pthread_mutex_init()"));
 	if (pthread_mutex_init(&pool->results_mtx, NULL) != 0)
-		hermes_error(EXIT_FAILURE, "pthread_mutex_init()");
+		return ((void *)(uint64_t)hermes_error(FAILURE, "pthread_mutex_init()"));
 	if (pthread_mutex_init(&pool->amt_working_mtx, NULL) != 0)
-		hermes_error(EXIT_FAILURE, "pthread_mutex_init()");
+		return ((void *)(uint64_t)hermes_error(FAILURE, "pthread_mutex_init()"));
 	if (pthread_mutex_init(&pool->amt_alive_mtx, NULL) != 0)
-		hermes_error(EXIT_FAILURE, "pthread_mutex_init()");
+		return ((void *)(uint64_t)hermes_error(FAILURE, "pthread_mutex_init()"));
 	if (prepare_interface(pool) == FAILURE)
-		return (NULL);
+		return ((void *)(uint64_t)hermes_error(FAILURE, "prepare_interface()"));
 	while (++i < pool->thread_amt)
 	{
 		pool->threads[i].id = (uint8_t)(i + 1);

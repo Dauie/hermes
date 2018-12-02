@@ -4,8 +4,6 @@
 # include "../libhermes/incl/libhermes.h"
 # include "../binn/src/binn.h"
 
-# include <pthread.h>
-# include <signal.h>
 # include <sys/socket.h>
 # include <sys/poll.h>
 # include <sys/time.h>

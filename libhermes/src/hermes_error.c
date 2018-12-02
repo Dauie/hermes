@@ -14,6 +14,9 @@ int				hermes_error(int errcode, char *fmt, ...) {
 	}
 	if (errcode == EXIT_FAILURE)
 		exit(errcode);
-	else
+	else if (errcode == TEXIT_FAILURE)
+	{
+		pthread_exit(PTR_FAILURE);
+	}
 		return (errcode);
 }
