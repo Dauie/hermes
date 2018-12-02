@@ -96,11 +96,11 @@ int			 main(int ac, char **av)
 	if (ac < 2)
 		return (FAILURE); // usage();
 	if (!(mgr = new_mgr()))
-		return (FAILURE);
+		return (hermes_error(EXIT_FAILURE, "malloc() %s", strerror(errno)));
 	if (parse_opts(mgr, ac, av) == FAILURE)
-		return (EXIT_FAILURE);
+		return (hermes_error(EXIT_FAILURE, "parse_opts()"));
 	if (sanity_check(mgr) == FAILURE)
-		return (EXIT_FAILURE);
+		return (hermes_error(FAILURE, "sanity_check()"));
 	do_exclusions(mgr);
 	convert_assets(mgr);
 	manager_loop(mgr);

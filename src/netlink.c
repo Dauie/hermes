@@ -2,17 +2,17 @@
 
 # define LRGBUFF (8192)
 
-typedef struct s_nlreq
+typedef struct		s_nlreq
 {
-	struct nlmsghdr hdr;
-	struct rtgenmsg gen;
-}				t_nlreq;
+	struct nlmsghdr	hdr;
+	struct rtgenmsg	gen;
+}					t_nlreq;
 
-typedef struct s_nlpair
+typedef struct		s_nlpair
 {
-	int (*f)(t_iface *, struct nlmsghdr *);
+	int				(*f)(t_iface *, struct nlmsghdr *);
 	uint16_t		type;
-}				t_nlpair;
+}					t_nlpair;
 
 /* OK */
 int					parse_l2_resp(t_iface *info, struct nlmsghdr *hdr)
@@ -234,6 +234,7 @@ int						recv_parse_req(int sock, t_iface *info, struct sockaddr_nl *kernel, t_n
 	return (found ? SUCCESS : FAILURE);
 }
 
+/* TODO: if gateway L2 address is not avail, we need to send an ARP request */
 int						get_iface_info(t_iface *info)
 {
 	struct sockaddr_nl	kernel;
@@ -261,7 +262,7 @@ int						get_iface_info(t_iface *info)
 
 	/* Get mac address & index of our interface */
 	if (send_nlinforeq(sock, &loc, &kernel, RTM_GETLINK) == FAILURE)
-		return (FAILURE);
+		return (hermes_error(FAILURE, "send_nlinforeq()"));
 	conf.f = parse_l2_resp;
 	conf.type = RTM_NEWLINK;
 	if (recv_parse_req(sock, info, &kernel, &conf) == FAILURE)
@@ -269,27 +270,27 @@ int						get_iface_info(t_iface *info)
 
 	/* Get interface ip address */
 	if (send_nlinforeq(sock, &loc, &kernel, RTM_GETADDR) == FAILURE)
-		return (FAILURE);
+		return (hermes_error(FAILURE, "send_nlinforeq()"));
 	conf.f = parse_l3resp;
 	conf.type = RTM_NEWADDR;
 	if (recv_parse_req(sock, info, &kernel, &conf) == FAILURE)
-		return (FAILURE);
+		return (hermes_error(FAILURE, "send_nlinforeq()"));
 
 	/* get our default gateway's ip */
 	if (send_nlinforeq(sock, &loc, &kernel, RTM_GETROUTE) == FAILURE)
-		return (FAILURE);
+		return (hermes_error(FAILURE, "send_nlinforeq()"));
 	conf.f = parse_routeresp;
 	conf.type = RTM_NEWROUTE;
 	if (recv_parse_req(sock, info, &kernel, &conf) == FAILURE)
-		return (FAILURE);
+		return (hermes_error(FAILURE, "send_nlinforeq()"));
 
 	/* get default gateway's mac address*/
 	if (send_nlinforeq(sock, &loc, &kernel, RTM_GETNEIGH) == FAILURE)
-		return (FAILURE);
+		return (hermes_error(FAILURE, "send_nlinforeq()"));
 	conf.f = parse_neighresp;
 	conf.type = RTM_NEWNEIGH;
 	if (recv_parse_req(sock, info, &kernel, &conf) == FAILURE)
-		return (FAILURE);
+		return (hermes_error(FAILURE, "send_nlinforeq()"));
 
 	if (info->gw_ip.s_addr == info->if_ip.s_addr)
 		printf("They really are equal\n");

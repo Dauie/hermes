@@ -1,5 +1,6 @@
 #include "../../incl/hermes.h"
 
+/* TODO look at strtol() for str->int conv */
 int				parse_port(uint16_t *port, char *input)
 {
 	int			ret;
@@ -19,7 +20,8 @@ static int		add_port(t_portset *set, char *input)
 
 	if (parse_port(&port, input) == FAILURE)
 		return (hermes_error(FAILURE, "bad port_stats specified %s", input));
-	data = new_port();
+	if (!(data = new_port()))
+		return (hermes_error(FAILURE, "new_port()"));
 	data->port = (uint16_t)port;
 	if (add_node_bst(&set->ports, (void **)&data, port_cmp) == true)
 	{
@@ -27,7 +29,7 @@ static int		add_port(t_portset *set, char *input)
 		set->port_cnt++;
 		return (SUCCESS);
 	}
-	return (FAILURE);
+	return (SUCCESS); /* no failure on duplicate adds need more elegant solution for real errors */
 }
 
 int				add_range_portset(t_portset *set, char **range)
@@ -52,9 +54,10 @@ int				add_range_portset(t_portset *set, char **range)
 		set->rng_cnt++;
 		return (SUCCESS);
 	}
-	return (FAILURE);
+	return (SUCCESS); /* no failure on duplicate adds need more elegant solution for real errors */
 }
 
+/* TODO: get rid of strsplit() (unnecessary allocation) */
 int				handle_port(t_portset *set, char *input)
 {
 	char		*port;

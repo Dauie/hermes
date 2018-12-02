@@ -17,10 +17,10 @@ static int				daemon_loop(t_wmgr *session, int lsock)
 		if (accept_wrapper(session, lsock) == FAILURE)
 			continue;
 		if ((session->id = fork()) < 0)
-			hermes_error(EXIT_FAILURE, "fork() %s", strerror(errno));
+			return (hermes_error(FAILURE, "fork() %s", strerror(errno)));
 		else if (session->id > 0)
 		{
-			signal(SIGCHLD,SIG_IGN);
+			signal(SIGCHLD, SIG_IGN);
 			close(session->sock);
 		}
 		else
@@ -32,14 +32,15 @@ static int				daemon_loop(t_wmgr *session, int lsock)
 	return (SUCCESS);
 }
 
-static void				setsockopt_wrapper(int lsock)
+static int 				setsockopt_wrapper(int lsock)
 {
 	int					opt;
 
 	opt = true;
 	if (setsockopt(lsock, SOL_SOCKET, SO_REUSEADDR,
 				   (char *)&opt, sizeof(opt)) < 0)
-		hermes_error(FAILURE, "setsockopt() %s", strerror(errno));
+		return (hermes_error(FAILURE, "setsockopt() %s", strerror(errno)));
+	return (SUCCESS);
 }
 
 void					destroy_worker_session(t_wmgr	**session)

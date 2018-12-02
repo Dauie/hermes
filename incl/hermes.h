@@ -4,8 +4,6 @@
 # include "../libhermes/incl/libhermes.h"
 # include "../binn/src/binn.h"
 
-# include <pthread.h>
-# include <signal.h>
 # include <sys/socket.h>
 # include <sys/poll.h>
 # include <sys/time.h>
@@ -203,9 +201,9 @@ typedef struct			s_resultset
 
 typedef struct			s_tx_ring
 {
+	uint8_t				*ring;
 	struct tpacket_req3	tpr;
 	uint32_t			doffset;
-	void				*ring;
 	uint32_t			size;
 }						t_txring;
 

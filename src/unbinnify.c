@@ -1,6 +1,6 @@
 #include "../incl/hermes.h"
 
-static void		get_portlist_from_binnlist(t_node **tree, binn *list)
+static int		get_portlist_from_binnlist(t_node **tree, binn *list)
 {
 	int			cnt;
 	t_port		*port;
@@ -8,13 +8,15 @@ static void		get_portlist_from_binnlist(t_node **tree, binn *list)
 	cnt = binn_count(list);
 	for (int i = 1; i <= cnt; i++)
 	{
-		port = new_port();
+		if (!(port = new_port()))
+			return (hermes_error(FAILURE, "new_port()"));
 		port->port = binn_list_uint16(list, i);
 		list_add_head(tree, (void **) &port);
 	}
+	return (SUCCESS);
 }
 
-static void		get_ip4list_from_binnlist(t_node **clist, binn *list)
+static int		get_ip4list_from_binnlist(t_node **clist, binn *list)
 {
 	int			cnt;
 	t_ip4		*ip;
@@ -22,13 +24,15 @@ static void		get_ip4list_from_binnlist(t_node **clist, binn *list)
 	cnt = binn_count(list);
 	for (int i = 1; i <= cnt; i++)
 	{
-		ip = new_ip4();
+		if (!(ip = new_ip4()))
+			return (hermes_error(FAILURE, "new_ip4()"));
 		ip->s_addr = binn_list_uint32(list, i);
 		list_add_head(clist, (void **) &ip);
 	}
+	return (SUCCESS);
 }
 
-static void		get_prtrnglist_from_binnlist(t_node **clst, binn *list)
+static int		get_prtrnglist_from_binnlist(t_node **clst, binn *list)
 {
 	int			cnt;
 	t_prtrng	*rng;
@@ -37,16 +41,18 @@ static void		get_prtrnglist_from_binnlist(t_node **clst, binn *list)
 	cnt = binn_count(list);
 	for (int i = 1; i <= cnt; i++)
 	{
-		rng = new_portrange();
+		if (!(rng = new_portrange()))
+			hermes_error(FAILURE, "new_portrange()");
 		obj = binn_list_object(list, i);
 		binn_object_get_uint16(obj, "size", &rng->size);
 		binn_object_get_uint16(obj, "start", &rng->start);
 		binn_object_get_uint16(obj, "end", &rng->end);
 		list_add_head(clst, (void **) &rng);
 	}
+	return (SUCCESS);
 }
 
-static void		get_ip4rnglist_from_binnlist(t_node **clst, binn *list)
+static int		get_ip4rnglist_from_binnlist(t_node **clst, binn *list)
 {
 	int			cnt;
 	t_ip4rng	*rng;
@@ -55,34 +61,39 @@ static void		get_ip4rnglist_from_binnlist(t_node **clst, binn *list)
 	cnt = binn_count(list);
 	for (int i = 1; i <= cnt; i++)
 	{
-		rng = new_ip4range();
+		if (!(rng = new_ip4range()))
+			return (hermes_error(FAILURE, "new_ip4range()"));
 		obj = binn_list_object(list, i);
 		binn_object_get_uint32(obj, "size", &rng->size);
 		binn_object_get_uint32(obj, "start", &rng->start);
 		binn_object_get_uint32(obj, "end", &rng->end);
 		list_add_head(clst, (void **) &rng);
 	}
+	return (SUCCESS);
 }
 
-void			get_portstatlist_from_binnlist(binn *list, t_portstat **stats)
+int				get_portstatlist_from_binnlist(binn *list, t_portstat **stats)
 {
 	int			cnt;
 	t_portstat	*pstat;
 	binn		*obj;
 
 	cnt = binn_count(list);
-	stats = memalloc(sizeof(t_portstat *) * cnt);
+	if (!(stats = memalloc(sizeof(t_portstat *) * cnt)))
+		return (hermes_error(FAILURE, "malloc() %s", strerror(errno)));
 	for (int i = 1; i <= cnt; i++)
 	{
-		pstat = new_portstat();
+		if (!(pstat = new_portstat()))
+			return (hermes_error(FAILURE, "new_portstat()"));
 		obj = binn_list_object(list, i);
 		binn_object_get_uint16(obj, "port", &pstat->port);
 		binn_object_get_uint16(obj, "status", &pstat->status);
 		stats[i] = pstat;
 	}
+	return (SUCCESS);
 }
 
-void			get_resultlist_from_binnlist(binn *list, t_node **clist, t_targetset *account)
+int 			get_resultlist_from_binnlist(binn *list, t_node **clist, t_targetset *account)
 {
 	int			cnt;
 	t_result	*res;
@@ -90,12 +101,12 @@ void			get_resultlist_from_binnlist(binn *list, t_node **clist, t_targetset *acc
 	binn		*portstats;
 
 	cnt = binn_count(list);
-	printf("count %d\n", cnt);
 	for (int i = 1; i <= cnt; i++)
 	{
-		printf("%d\n", i);
-		res = new_result();
-		obj = binn_list_object(list, i);
+		if (!(res = new_result()))
+			return (hermes_error(FAILURE, "new_result()"));
+		if (!(obj = binn_list_object(list, i)))
+			return (hermes_error(FAILURE, "binn_list_object()"));
 		binn_object_get_uint32(obj, "ip", &res->ip.s_addr);
 		remove_ip_targetset(account, res->ip.s_addr);
 		if (binn_object_get_list(obj, "port_stats", (void **)&portstats) == true)
@@ -104,6 +115,7 @@ void			get_resultlist_from_binnlist(binn *list, t_node **clist, t_targetset *acc
 		}
 		list_add_head(clist, (void **) &res);
 	}
+	return (SUCCESS);
 }
 
 void			unbinnify_resultset(t_resultset *set, t_targetset *work,  binn *obj)
@@ -171,6 +183,7 @@ void			unbinnify_opts(t_opts *opts, binn *obj)
 	binn_object_get_uint8(obj, "verbose_level", &opts->verbose_level);
 }
 
+/* TODO more error checking! */
 void			unbinnify_env(t_env *env, binn *obj)
 {
 	binn		*member;
@@ -183,18 +196,15 @@ void			unbinnify_env(t_env *env, binn *obj)
 	{
 		env->ack_ports = new_portset();
 		unbinnify_portset(env->ack_ports, member);
-		free(member);
 	}
 	if (binn_object_get_object(obj, "syn_ports", (void **)&member) == true)
 	{
 		env->syn_ports = new_portset();
 		unbinnify_portset(env->syn_ports, member);
-		free(member);
 	}
 	if (binn_object_get_object(obj, "udp_ports", (void **)&member) == true)
 	{
 		env->udp_ports = new_portset();
 		unbinnify_portset(env->udp_ports, member);
-		free(member);
 	}
 }

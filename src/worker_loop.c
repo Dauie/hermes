@@ -66,10 +66,12 @@ int					send_results(t_wmgr *session)
 {
 	binn			*obj;
 
-	obj = binnify_resultset(&session->results);
-	if (hermes_send_binn(session->sock, C_OBJ_RES, obj) == FAILURE)
+	if (!(obj = binnify_resultset(&session->results)))
+		return (hermes_error(FAILURE, "binnify_resultset()"));
+	printf("sending result\n");
+	if (hermes_send_binn(session->sock, C_OBJ_RES, obj) < 0)
 	{
-		free(obj);
+		binn_free(obj);
 		return (hermes_error(FAILURE, "send_results()"));
 	}
 	binn_free(obj);
@@ -110,7 +112,7 @@ void				worker_check_results(t_wmgr *session)
 	if (session->results.result_cnt > 0)
 	{
 		if (send_results(session) == FAILURE)
-			hermes_error(FAILURE, "hstgrp unsent");
+			hermes_error(FAILURE, "send_results()");
 	}
 	pthread_mutex_unlock(&session->tpool->results_mtx);
 }

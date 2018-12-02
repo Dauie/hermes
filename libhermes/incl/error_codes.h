@@ -8,4 +8,8 @@ typedef enum	s_ret_codes
 	SUCCESS = 0,
 }				t_ret_codes;
 
+# define PTR_FAILURE ((void*)-1)
+
+# define TEXIT_FAILURE (2)
+
 #endif //HERMES_ERROR_CODES_H
