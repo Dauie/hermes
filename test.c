@@ -1,6 +1,5 @@
 #include "incl/hermes.h"
 
-
 int				main(void)
 {
 	t_iface		iface;

@@ -27,7 +27,7 @@ void                tpool_event(t_thread_pool *pool)
 void                tpool_wait(t_thread_pool *pool)
 {
 	pthread_mutex_lock(&pool->tsem->stop);
-	while (pool->work_pool->total == 0)
+	while (pool->work->total == 0)
 		pthread_cond_wait(&pool->tsem->wait, &pool->tsem->stop);
 	pthread_mutex_unlock(&pool->tsem->stop);
 }
@@ -60,6 +60,7 @@ void					kill_threadpool(t_thread_pool **pool)
 	(void)pool;
 	return ;
 }
+*/
 
 /*
 ** Transmission process is similar to capture as shown below.
@@ -194,7 +195,6 @@ int						prepare_thread_rx_tx(t_thread *thread)
 void					*thread_loop(void *thrd)
 {
 	t_targetset		work;
-	t_thread_pool   *tpool;
 	t_thread		*thread;
 
 	thread = (t_thread *)thrd;
@@ -286,10 +286,6 @@ t_thread_pool			*init_threadpool(t_env *env, t_targetset *workpool,
 	pool->thread_amt = env->opts.thread_count;
 	if (!(pool->threads = memalloc(sizeof(t_thread) * pool->thread_amt)))
 		return (NULL);
-	pool->reqest_amt = pool->thread_amt;
-	pool->results = results;
-	pool->work = workpool;
-	pool->env = env;
 	if (pthread_mutex_init(&pool->work_mtx, NULL) != 0)
 		hermes_error(EXIT_FAILURE, "pthread_mutex_init()");
 	if (pthread_mutex_init(&pool->results_mtx, NULL) != 0)
@@ -309,7 +305,7 @@ t_thread_pool			*init_threadpool(t_env *env, t_targetset *workpool,
 	pool->thread_amt = env->opts.thread_count;
 	pool->reqest_amt = pool->thread_amt;
 	pool->results = results;
-	pool->work_pool = workpool;
+	pool->work = workpool;
 	pool->env = env;
 	while (++i < pool->thread_amt)
 	{

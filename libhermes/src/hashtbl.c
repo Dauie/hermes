@@ -2,7 +2,7 @@
 
 int			fill_distance_to_initinx(t_hashtbl *tbl, uint16_t stored_i, uint16_t *distance)
 {
-	uint16_t index_init;
+	uint16_t init_i;
 
 	if (tbl->buckets[stored_i].data == NULL)
 		return FAILURE;
