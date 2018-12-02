@@ -77,7 +77,7 @@ void			get_portstatlist_from_binnlist(binn *list, t_portstat **stats)
 		pstat = new_portstat();
 		obj = binn_list_object(list, i);
 		binn_object_get_uint16(obj, "port", &pstat->port);
-		binn_object_get_uint8(obj, "status", &pstat->status);
+		binn_object_get_uint16(obj, "status", &pstat->status);
 		stats[i] = pstat;
 	}
 }
@@ -100,7 +100,7 @@ void			get_resultlist_from_binnlist(binn *list, t_node **clist, t_targetset *acc
 		remove_ip_targetset(account, res->ip.s_addr);
 		if (binn_object_get_list(obj, "port_stats", (void **)&portstats) == true)
 		{
-			get_portstatlist_from_binnlist(portstats, res->portstats);
+			get_portstatlist_from_binnlist(portstats, &res->portstats); /* taking the address of portstats to shut the compiler up, need to fix this.*/
 		}
 		list_add_head(clist, (void **) &res);
 	}
@@ -114,7 +114,7 @@ void			unbinnify_resultset(t_resultset *set, t_targetset *work,  binn *obj)
 	binn_object_get_uint32(obj, "byte_size", &set->byte_size);
 	binn_object_get_uint32(obj, "result_cnt", &res_cnt);
 	set->result_cnt += res_cnt;
-	if (binn_object_get_list(obj, "results", (void **)&results) == true)
+	if (binn_object_get_list(obj, "hstgrp", (void **)&results) == true)
 		get_resultlist_from_binnlist(results, &set->results, work);
 }
 
