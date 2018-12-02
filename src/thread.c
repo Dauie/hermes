@@ -149,7 +149,6 @@ int						prepare_packetmmap_tx_ring(t_thread *thread)
 		toggle_thread_alive(thread);
 		return (hermes_error(FAILURE, "setsockopt() PACKET_VERSION %s", strerror(errno)));
 	}
-
 	/* Determine sizes for PACKET_TX_RING and allocate txring via setsockopt() */
 	thread->txring.tpr.tp_block_size = (uint)getpagesize();
 	thread->txring.tpr.tp_frame_size = TPACKET3_HDRLEN + sizeof(struct ethhdr) + sizeof(struct iphdr) + DEF_TRAN_HDRLEN + thread->pool->env->cpayload_len;
@@ -190,7 +189,7 @@ int						prepare_packetmmap_tx_ring(t_thread *thread)
 	return (SUCCESS);
 }
 
-int						prepare_thread_rx_tx(t_thread *thread)
+int							prepare_thread_rx_tx(t_thread *thread)
 {
 	if (prepare_packetmmap_tx_ring(thread) == FAILURE)
 		return (hermes_error(FAILURE, "prepare_packetmmap_tx_ring()"));
@@ -219,6 +218,7 @@ void					*thread_loop(void *thrd)
 	printf("im alive %d\n", thread->id);
 	while (thread->alive)
 	{
+		tpool_wait(thread->pool);
 		pthread_mutex_lock(&thread->pool->work_mtx);
 		if (thread->pool->work->total > 0)
 		{
@@ -281,6 +281,8 @@ t_thread_pool			*init_threadpool(t_env *env, t_targetset *workpool,
 		return ((void *)(uint64_t)hermes_error(FAILURE, "malloc() %s", strerror(errno)));
 	pool->thread_amt = env->opts.thread_count;
 	if (!(pool->threads = memalloc(sizeof(t_thread) * pool->thread_amt)))
+		return ((void *)(uint64_t)hermes_error(FAILURE, "malloc() %s", strerror(errno)));
+	if (!(pool->tsem = memalloc(sizeof(t_sem))))
 		return ((void *)(uint64_t)hermes_error(FAILURE, "malloc() %s", strerror(errno)));
 	pool->reqest_amt = pool->thread_amt;
 	pool->results = results;

@@ -205,12 +205,12 @@ int						fill_tx_ring(t_thread *thread, t_frame *ethframe)
 			continue;
 		}
 		frame = (struct tpacket3_hdr *)(thread->txring.ring + (thread->txring.tpr.tp_frame_size * ring_i));
-		switch((volatile uint32_t)frame->tp_status)
+		switch ((volatile uint32_t)frame->tp_status)
 		{
 			case TP_STATUS_WRONG_FORMAT:
-				return(hermes_error(FAILURE, "TX_RING wrong format in frame %i of thread %d", ring_i, thread->id));
+				return (hermes_error(FAILURE, "TX_RING wrong format in frame %i of thread %d", ring_i, thread->id));
 			case TP_STATUS_AVAILABLE:
-				data = (uint8_t *)frame + thread->txring.doffset;
+				data = (void*)frame + thread->txring.doffset;
 				ethframe->ip->daddr = thread->hstgrp[hst_i].result->ip.s_addr;
 				ip_checksum(ethframe->ip);
 				ethframe->tcp->source = htons(dstports[thread->hstgrp[hst_i].health.portinx]);
@@ -238,7 +238,8 @@ void				send_task(t_thread *thread)
 	int				totpkt = 0;
 
 	int errn = errno;
-	btx = send(thread->sock, NULL, 0, 0);
+	btx = sendto(thread->sock, NULL, 0, MSG_DONTWAIT, NULL, 0);
+	printf("btx %lu\n", btx);
 	if (btx < 0)
 		hermes_error(EXIT_FAILURE, "send() %s", strerror(errno));
 	else if (btx == 0)
