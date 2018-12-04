@@ -363,10 +363,7 @@ void					test_run_scan(t_env *env, t_targetset *targets,
 									  t_resultset *res_ptr,
 									  pthread_mutex_t *res_mtx);
 
-void					kill_threadpool(t_thread_pool **pool);
-void					print_ip_struct(t_node *ip4);
-void					print_iprng_struct(t_node *iprng);
-void					print_targetset(t_targetset *set);
+
 int						prepare_packetmmap_tx_ring(t_thread *thread);
 int 					targetset_to_hstgrp(t_targetset *set, t_thread *thread,
 						t_env *env);

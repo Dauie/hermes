@@ -24,16 +24,17 @@ void		hex_print(uint8_t *blob, size_t len)
 static unsigned short compute_checksum(unsigned short *addr, unsigned int count)
 {
 	register unsigned long sum = 0;
+
 	while (count > 1)
 	{
-		sum += * addr++;
+		sum += *addr++;
 		count -= 2;
 	}
 	if(count > 0)
 	{
 		sum += ((*addr)&htons(0xFF00));
 	}
-	while (sum>>16)
+	while (sum >> 16)
 	{
 		sum = (sum & 0xffff) + (sum >> 16);
 	}
@@ -55,24 +56,22 @@ void tcp_checksum(struct iphdr *ip, unsigned short *ippayload)
 	tcphdrp = (struct tcphdr*)(ippayload);
 	len = ntohs(ip->tot_len) - (uint16_t)(ip->ihl<<2);
 	sum = 0;
-	sum += (ip->saddr>>16)&0xFFFF;
-	sum += (ip->saddr)&0xFFFF;
-	sum += (ip->daddr>>16)&0xFFFF;
-	sum += (ip->daddr)&0xFFFF;
+	sum += (ip->saddr >> 16) & 0xFFFF;
+	sum += (ip->saddr) & 0xFFFF;
+	sum += (ip->daddr >> 16) & 0xFFFF;
+	sum += (ip->daddr) & 0xFFFF;
 	sum += htons(IPPROTO_TCP);
 	sum += htons(len);
-
 	tcphdrp->check = 0;
-	while (len > 1) {
+	while (len > 1)
+	{
 		sum += * ippayload++;
 		len -= 2;
 	}
-	if(len > 0) {
-		sum += ((*ippayload)&htons(0xFF00));
-	}
-	while (sum>>16) {
+	if(len > 0)
+		sum += ((*ippayload) & htons(0xFF00));
+	while (sum >> 16)
 		sum = (sum & 0xffff) + (sum >> 16);
-	}
 	sum = ~sum;
 	tcphdrp->check = (unsigned short)sum;
 }
@@ -106,7 +105,6 @@ int targetset_to_hstgrp(t_targetset *set, t_thread *thread,
 						t_env *env)
 {
 	int				y;
-	void			*hook;
 	t_ip4rng		*rng;
 	t_ip4			start;
 	t_node			*tmp;
@@ -129,24 +127,10 @@ int targetset_to_hstgrp(t_targetset *set, t_thread *thread,
 			thread->hstgrp[y].result->portstats[x].port = env->ports.flat[x];
 			val = &thread->hstgrp[y].result->portstats[x];
 			hashtbl_add(thread->hstgrp[y].lookup, env->ports.flat[x], &val);
-			if (hashtbl_get(thread->hstgrp[y].lookup, env->ports.flat[x], &hook) == false)
-			{
-				hermes_error(FAILURE, "not even\n");
-				exit(EXIT_FAILURE);
-			}
 		}
 		val = &thread->hstgrp[y];
-		if (hashtbl_add(thread->lookup, thread->hstgrp[y].result->ip.s_addr,
-					 &val) != true)
-		{
-			hermes_error(FAILURE, "mother fucking hash table fucking hash table\n");
-			exit(EXIT_FAILURE);
-		}
-		if (hashtbl_get(thread->lookup, thread->hstgrp[y].result->ip.s_addr, &hook) != true)
-		{
-			hermes_error(FAILURE, "fucking hash table\n");
-			exit(EXIT_FAILURE);
-		}
+		if (hashtbl_add(thread->lookup, thread->hstgrp[y].result->ip.s_addr, &val) == false)
+			return (hermes_error(FAILURE, "hashtbl_add()\n"));
 		y++;
 		tmp = tmp->right;
 	}
@@ -247,7 +231,7 @@ void				send_task(t_thread *thread)
 	}
 	else
 	{
-		totpkt += btx / (sizeof(struct ethhdr) + sizeof(struct iphdr) + sizeof(struct tcphdr));
+		totpkt += btx / (sizeof(struct ethhdr) + sizeof(struct iphdr) + sizeof(struct tcphdr) + sizeof(t_tcpopt));
 		printf("sent %d packets\n", totpkt);
 	}
 	if (errn != errno)
@@ -278,7 +262,7 @@ void				init_tcphdr(t_thread *thread, struct tcphdr *tcp)
 	(void)thread;
 	tcp->seq = htonl(1);
 	tcp->ack = 0;
-	tcp->doff = 5;
+	tcp->doff = 6;
 	tcp->window = htons(1024);
 	tcp->syn = true;
 }
@@ -295,17 +279,17 @@ void				init_ethframe(t_thread *thread, t_frame *frame)
 
 	/* below line will change when more scan types are implemented */
 	frame->size = sizeof(struct ethhdr) + sizeof(struct iphdr) +
-					sizeof(struct tcphdr) /*+ sizeof(t_tcpopt)*/ +
+					sizeof(struct tcphdr) + sizeof(t_tcpopt) +
 						thread->pool->env->cpayload_len;
 	frame->buffer = memalloc(sizeof(uint8_t) * frame->size);
 	frame->eth = (struct ethhdr *)frame->buffer;
 	frame->ip = (struct iphdr *)((uint8_t *)frame->eth + sizeof(struct ethhdr));
 	frame->tcp = (struct tcphdr *)((uint8_t *)frame->ip + sizeof(struct iphdr));
-//	frame->tcpopt = (t_tcpopt *)((uint8_t *)frame->tcp + sizeof(struct tcphdr));
+	frame->tcpopt = (t_tcpopt *)((uint8_t *)frame->tcp + sizeof(struct tcphdr));
 	init_ethhdr(thread, frame->eth);
 	init_iphdr(thread, frame);
 	init_tcphdr(thread, frame->tcp);
-//	init_tcpopt_mss(frame->tcpopt);
+	init_tcpopt_mss(frame->tcpopt);
 }
 
 void	handle_packet(u_char *user, const struct pcap_pkthdr *hdr, const u_char *data)
@@ -341,7 +325,6 @@ void	handle_packet(u_char *user, const struct pcap_pkthdr *hdr, const u_char *da
 			}
 		}
 	}
-
 	hex_print((uint8_t *)data, hdr->caplen);
 }
 

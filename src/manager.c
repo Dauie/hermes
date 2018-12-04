@@ -314,7 +314,7 @@ void				send_workers_work(t_mgr *mgr)
 	}
 }
 
-void				flatten_portset(t_portset *set)
+int					flatten_portset(t_portset *set)
 {
 	t_prtrng		*rng;
 	uint16_t		start;
@@ -323,10 +323,7 @@ void				flatten_portset(t_portset *set)
 
 	i = 0;
 	if (!(set->flat = memalloc(sizeof(uint16_t) * (set->total + 1))))
-	{
-		hermes_error(FAILURE, "malloc() %s", strerror(errno));
-		return;
-	}
+		return (hermes_error(FAILURE, "malloc() %s", strerror(errno)));
 	tmp = set->ports;
 	while (tmp)
 	{
@@ -342,36 +339,40 @@ void				flatten_portset(t_portset *set)
 			set->flat[i++] = start++;
 		tmp = tmp->right;
 	}
+	return (SUCCESS);
 }
 
-void				flatten_all_portsets(t_env *env)
+int				flatten_all_portsets(t_env *env)
 {
 	if (env->ports.total > 0)
-		flatten_portset(&env->ports);
+	{
+		if (flatten_portset(&env->ports) == FAILURE)
+			return (hermes_error(FAILURE, "flatten_portset()"));
+		del_list(&env->ports.ports, true);
+		del_list(&env->ports.prtrngs, true);
+	}
 	if (env->ack_ports && env->ack_ports->total > 0)
 	{
-		flatten_portset(env->ack_ports);
+		if (flatten_portset(env->ack_ports) == FAILURE)
+			return (hermes_error(FAILURE, "flatten_portset()"));
 		del_list(&env->ack_ports->ports, true);
 		del_list(&env->ack_ports->prtrngs, true);
-		free(env->ack_ports);
-		env->ack_ports = NULL;
 	}
 	if (env->syn_ports && env->syn_ports->total > 0)
 	{
-		flatten_portset(env->syn_ports);
+		if (flatten_portset(env->syn_ports) == FAILURE)
+			return (hermes_error(FAILURE, "flatten_portset()"));
 		del_list(&env->syn_ports->ports, true);
 		del_list(&env->syn_ports->prtrngs, true);
-		free(env->syn_ports);
-		env->syn_ports = NULL;
 	}
 	if (env->udp_ports && env->udp_ports->total > 0)
 	{
-		flatten_portset(env->udp_ports);
+		if (flatten_portset(env->udp_ports) == FAILURE)
+			return (hermes_error(FAILURE, "flatten_portset()"));
 		del_list(&env->udp_ports->ports, true);
 		del_list(&env->udp_ports->prtrngs, true);
-		free(env->udp_ports);
-		env->udp_ports = NULL;
 	}
+	return (SUCCESS);
 }
 
 uint16_t		*make_tcp_dstports(size_t size)
@@ -384,19 +385,9 @@ uint16_t		*make_tcp_dstports(size_t size)
 	srand((uint)time(NULL));
 	range = EPHIM_MAX - EPHIM_MIN;
 	if (!(dstp = memalloc(sizeof(uint16_t) * size)))
-	{
-		hermes_error(FAILURE, "malloc() %s", strerror(errno));
-		return (NULL);
-	}
+		return ((void*)(uint64_t)hermes_error(FAILURE, "malloc() %s", strerror(errno)));
 	while (i < size)
-	{
 		dstp[i++] = (uint16_t)(rand() % range + EPHIM_MIN);
-	}
-	i = 0;
-	while (i < size)
-	{
-		printf("%u\n", dstp[i++]);
-	}
 	return (dstp);
 }
 
@@ -408,14 +399,16 @@ int					manager_loop(t_mgr *mgr)
 	memset(&mgr->results, 0, sizeof(t_resultset));
 	mgr->stat.running = true;
 	flatten_all_portsets(&mgr->env);
-	mgr->env.dstports = make_tcp_dstports(mgr->env.ports.total);
+	if (!(mgr->env.dstports = make_tcp_dstports(mgr->env.ports.total)))
+		return (hermes_error(FAILURE, "make_tcp_dstports()"));
 	if (mgr->env.opts.thread_count > 0)
 	{
 		if (!(mgr->tpool = init_threadpool(&mgr->env, &mgr->thread_work, &mgr->results)))
-			hermes_error(EXIT_FAILURE, "init_threadpool()");
+			return (hermes_error(FAILURE, "init_threadpool()"));
 	}
 	if (mgr->workers.cnt > 0)
-		init_workers(mgr, &fds);
+		if (init_workers(mgr, &fds) == FAILURE)
+			return (hermes_error(FAILURE, "init_workers()"));
 	while (mgr->stat.running == true)
 	{
 		if (mgr->workers.cnt > 0)
@@ -429,8 +422,7 @@ int					manager_loop(t_mgr *mgr)
 		if (check_if_finished(mgr) == true)
 			mgr->stat.running = false;
 	}
-	if (mgr->tpool)
-		kill_threadpool(&mgr->tpool);
+	/* TODO free thread pool resources */
 	free(fds);
 	return (SUCCESS);
 }

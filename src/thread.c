@@ -6,11 +6,6 @@ void					toggle_thread_alive(t_thread *thread)
 	thread->alive = false;
 
 }
-void					kill_threadpool(t_thread_pool **pool)
-{
-	(void)pool;
-	return ;
-}
 
 /*
 ** Transmission process is similar to capture as shown below.
@@ -70,11 +65,11 @@ int							extra_sock_opts(int sock, uint32_t size)
 //		return (hermes_error(FAILURE, "setsockopt() PACKET_QDISC_BYPASS"));
 //	}
 	/* sock discard */
-//	const int32_t  sock_discard = 1;
-//	if (setsockopt(sock, SOL_PACKET, PACKET_LOSS, &sock_discard, sizeof(sock_discard)) < 0)
-//	{
-//		return (hermes_error(FAILURE, "setsockopt() PACKET_LOSS"));
-//	}
+	const int32_t  sock_discard = 0;
+	if (setsockopt(sock, SOL_PACKET, PACKET_LOSS, &sock_discard, sizeof(sock_discard)) < 0)
+	{
+		return (hermes_error(FAILURE, "setsockopt() PACKET_LOSS"));
+	}
 	return (SUCCESS);
 }
 
@@ -102,7 +97,7 @@ int						prepare_packetmmap_tx_ring(t_thread *thread)
 
 	/* Determine sizes for PACKET_TX_RING and allocate txring via setsockopt() */
 	thread->txring.tpr.tp_block_size = (uint)getpagesize();
-	thread->txring.tpr.tp_frame_size = TPACKET3_HDRLEN + sizeof(struct ethhdr) + sizeof(struct iphdr) + DEF_TRAN_HDRLEN + thread->pool->env->cpayload_len;
+	thread->txring.tpr.tp_frame_size = TPACKET3_HDRLEN + sizeof(struct ethhdr) + sizeof(struct iphdr) + sizeof(struct tcphdr) + sizeof(t_tcpopt) + thread->pool->env->cpayload_len;
 	thread->txring.tpr.tp_frame_size = pow2_round(thread->txring.tpr.tp_frame_size);
 	thread->txring.tpr.tp_block_nr = (THRD_HSTGRP_MAX / (thread->txring.tpr.tp_block_size / thread->txring.tpr.tp_frame_size));
 	thread->txring.tpr.tp_frame_nr = thread->txring.tpr.tp_block_nr * (thread->txring.tpr.tp_block_size / thread->txring.tpr.tp_frame_size);
@@ -156,16 +151,28 @@ void					*thread_loop(void *thrd)
 
 	thread = (t_thread *)thrd;
 	if (!(thread->hstgrp = memalloc(sizeof(t_host) * (THRD_HSTGRP_MAX))))
-		return ((void *)(uint64)hermes_error(FAILURE, "memalloc() %s", strerror(errno)));
-
-	if (!(thread->lookup = new_hashtbl(THRD_HSTGRP_MAX)))
-		return ((void *)(uint64)hermes_error(FAILURE, "new_hashtable() %s", strerror(errno)));
-
-	for (int i = 0; i < THRD_HSTGRP_MAX; i++)
-		if (!(thread->hstgrp[i].lookup = new_hashtbl(thread->pool->env->ports.total)))
-			return ((void *)(uint64)hermes_error(FAILURE, "new_hashtbl() %s", strerror(errno)));
-	if (prepare_thread_rx_tx(thread) == FAILURE)
-		return ((void *)(uint64)hermes_error(FAILURE, "prepare_thread_tx_rx()"));
+	{
+		toggle_thread_alive(thread);
+		hermes_error(FAILURE, "memalloc() %s", strerror(errno));
+	}
+	if (thread->alive && !(thread->lookup = new_hashtbl(THRD_HSTGRP_MAX)))
+	{
+		toggle_thread_alive(thread);
+		hermes_error(FAILURE, "new_hashtable() %s", strerror(errno));
+	}
+	for (int i = 0; i < THRD_HSTGRP_MAX && thread->alive; i++)
+	{
+		if (thread->alive && !(thread->hstgrp[i].lookup = new_hashtbl(thread->pool->env->ports.total)))
+		{
+			toggle_thread_alive(thread);
+			hermes_error(FAILURE, "new_hashtbl() %s", strerror(errno));
+		}
+	}
+	if (thread->alive && prepare_thread_rx_tx(thread) == FAILURE)
+	{
+		toggle_thread_alive(thread);
+		hermes_error(FAILURE, "prepare_thread_tx_rx()");
+	}
 	printf("im alive %d\n", thread->id);
 	while (thread->alive)
 	{
@@ -215,7 +222,7 @@ int					prepare_interface(t_thread_pool *pool)
 	if (!(pool->iface.name = pcap_lookupdev(errbuff)))
 		return (hermes_error(FAILURE, "pcap_lookupdev() %s", errbuff));
 	if (get_iface_info(&pool->iface) == FAILURE)
-		return (hermes_error(FAILURE, "issues finding interface configuration for '%s'", pool->iface.name));
+		return (hermes_error(FAILURE, "cannot find interface configuration for '%s'", pool->iface.name));
 	return (SUCCESS);
 }
 
