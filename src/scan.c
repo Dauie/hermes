@@ -182,15 +182,26 @@ int targetset_to_hstgrp(t_targetset *set, t_thread *thread,
 	return (SUCCESS);
 }
 
-void                    pack_tcp(t_thread *thread, t_frame **ethframe)
+// TODO
+//void                    tcp_bad_checksum()
+
+void                    pack_tcp(t_thread *thread, t_frame **ethframe, uint16_t *srcprts, uint16_t *dstprts, uint hst_i)
 {
-	(*ethframe)->tcp->source = htons(dstports[thread->hstgrp[hst_i].health.portinx]);
-	(*ethframe)->tcp->dest = htons(srcports[thread->hstgrp[hst_i].health.portinx]);
+	(*ethframe)->tcp->source = htons(dstprts[thread->hstgrp[hst_i].health.portinx]);
+	(*ethframe)->tcp->dest = htons(srcprts[thread->hstgrp[hst_i].health.portinx]);
 	// TODO :
-	if (thread->pool->env->opts.bitops.do_bad_checksum)
-		tcp_bad_checksum(ethframe->ip, (uint16_t *) ethframe->tcp);
-	else
-		tcp_checksum(ethframe->ip, (uint16_t *) ethframe->tcp);
+//	if (thread->pool->env->opts.bitops.do_bad_checksum)
+//		tcp_bad_checksum((*ethframe)->ip, (uint16_t *) (*ethframe)->tcp);
+//	else
+	tcp_checksum((*ethframe)->ip, (uint16_t *) (*ethframe)->tcp);
+}
+
+void                    pack_udp(t_thread *thread, t_frame **ethframe, uint16_t *srcprts, uint16_t *dstprts)
+{
+	(void)thread;
+	(void)ethframe;
+	(void)srcprts;
+	(void)dstprts;
 }
 
 int						fill_tx_ring(t_thread *thread, t_frame *ethframe)
@@ -230,9 +241,9 @@ int						fill_tx_ring(t_thread *thread, t_frame *ethframe)
 				ip_checksum(ethframe->ip);
 
 				if (ethframe->proto_opt == SOCK_STREAM)
-					pack_tcp(thread, &ethframe);
+					pack_tcp(thread, &ethframe, srcports, dstports, hst_i);
 				else if (ethframe->proto_opt == SOCK_DGRAM)
-					pack_udp(thread, &ethframe);
+					pack_udp(thread, &ethframe, srcports, dstports);
 
 				memcpy(data, ethframe->buffer, ethframe->size);
 				frame->tp_next_offset = 0;
@@ -386,6 +397,11 @@ long					timediff_ms(struct timeval *then, struct timeval *now)
 	x = (long)(then->tv_sec - now->tv_sec) * 1000L +
 			(long)(then->tv_usec - now->tv_usec) / 1000L;
 	return (x);
+}
+
+void                    xmas_scan(t_thread *thread)
+{
+	(void)thread;
 }
 
 void					syn_scan(t_thread *thread)

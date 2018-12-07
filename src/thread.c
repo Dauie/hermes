@@ -241,7 +241,7 @@ void					*thread_loop(void *thrd)
 					printf("loopin\n");
 //					printf("func %p\n", head->data);
 //					printf("func %p\n", syn_scan);
-					run_scan(thread, &work, ((t_v_func*)head->data)->func);
+					run_scan(thread, &work, ((void*)head->data));
 				}
 				pthread_mutex_unlock(&thread->pool->scnlst_mtx);
 				pthread_mutex_lock(&thread->pool->amt_working_mtx);
@@ -286,40 +286,51 @@ void                    opts_to_scan(t_thread_pool *pool)
 
 	s = (t_v_func*)memalloc(sizeof(t_v_func));
 	opts = pool->env->opts.bitops;
+	/*
+	 * add host discovery first
+	 * to determing if host is
+	 * available
+	 */
 	if (!opts.skip_hst_discov)
 	{
 		if (opts.do_syn_discov)
-			;
+		{;}
 		if (opts.do_tstamp_discov)
-			;
+		{;}
 		if (opts.do_ack_discov)
-			;
+		{;}
 		if (opts.do_nmask_discov)
-			;
+		{;}
 		if (opts.do_echo_discov)
-			;
+		{;}
 		if (opts.do_tracert)
-			;
+		{;}
 	}
+	/*
+	 * add scan routines
+	 */
 	if (opts.do_syn_scan)
 	{
 		s->func = syn_scan;
-		list_add_head(&pool->scanlist, (void**)&s);
+		list_add_head(&pool->scanlist, (void**)&s->func);
 	}
 	if (opts.do_xmas_scan)
-		;
-	if (opts.do_udp_scan)
-		;
-	if (opts.do_ping_scan)
-		;
-	if (opts.do_ack_scan)
-		;
-	if (opts.do_null_scan)
-		;
-	if (opts.do_fin_scan)
-		;
-	if (opts.do_list_scan)
-		;
+	{
+		s->func = xmas_scan;
+		list_add_head(&pool->scanlist, (void**)&s->func);
+	}
+//	if (opts.do_udp_scan)
+//		;
+//	if (opts.do_ping_scan)
+//		;
+//	if (opts.do_ack_scan)
+//		;
+//	if (opts.do_null_scan)
+//		;
+//	if (opts.do_fin_scan)
+//		;
+//	if (opts.do_list_scan)
+//		;
 }
 
 t_thread_pool			*init_threadpool(t_env *env, t_targetset *workpool,

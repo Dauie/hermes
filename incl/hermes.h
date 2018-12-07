@@ -397,8 +397,12 @@ int						make_rx_filter(t_thread *thread, size_t total);
 uint16_t				*make_tcp_dstports(size_t size);
 int						get_iface_info(t_iface *info);
 
-void					syn_scan(t_thread *thread);
-
 binn					*binnify_resultset(t_resultset *set);
+
+/*
+** Scan Routines
+*/
+void					syn_scan(t_thread *thread);
+void                    xmas_scan(t_thread *thread);
 
 #endif
