@@ -49,10 +49,8 @@
 # define TX_M_UNINIT (0)
 # define TX_M_TCP (1)
 # define TX_M_UDP (2)
-/*
-**	Quick Access to Node Types
-*/
 
+# define TCP_PROTO  (1)
 # define TCP_OPT_MSS (2)
 
 #ifndef WORKER_DATA

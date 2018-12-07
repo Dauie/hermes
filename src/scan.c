@@ -182,8 +182,22 @@ int targetset_to_hstgrp(t_targetset *set, t_thread *thread,
 	return (SUCCESS);
 }
 
+void                    pack_tcp(t_thread *thread, t_frame **ethframe)
+{
+	(*ethframe)->tcp->source = htons(dstports[thread->hstgrp[hst_i].health.portinx]);
+	(*ethframe)->tcp->dest = htons(srcports[thread->hstgrp[hst_i].health.portinx]);
+	// TODO :
+	if (thread->pool->env->opts.bitops.do_bad_checksum)
+		tcp_bad_checksum(ethframe->ip, (uint16_t *) ethframe->tcp);
+	else
+		tcp_checksum(ethframe->ip, (uint16_t *) ethframe->tcp);
+}
+
 int						fill_tx_ring(t_thread *thread, t_frame *ethframe)
 {
+    /*
+     * TODO : comment this function
+     */
 	struct tpacket3_hdr	*frame;
 	void				*data;
 	uint16_t			*srcports;
@@ -205,7 +219,8 @@ int						fill_tx_ring(t_thread *thread, t_frame *ethframe)
 			continue;
 		}
 		frame = (struct tpacket3_hdr *)(thread->txring.ring + (thread->txring.tpr.tp_frame_size * ring_i));
-		switch ((volatile uint32_t)frame->tp_status)
+        printf("frame addr || %p\n", frame);
+        switch ((volatile uint32_t)frame->tp_status)
 		{
 			case TP_STATUS_WRONG_FORMAT:
 				return (hermes_error(FAILURE, "TX_RING wrong format in frame %i of thread %d", ring_i, thread->id));
@@ -213,9 +228,12 @@ int						fill_tx_ring(t_thread *thread, t_frame *ethframe)
 				data = (void*)frame + thread->txring.doffset;
 				ethframe->ip->daddr = thread->hstgrp[hst_i].result->ip.s_addr;
 				ip_checksum(ethframe->ip);
-				ethframe->tcp->source = htons(dstports[thread->hstgrp[hst_i].health.portinx]);
-				ethframe->tcp->dest = htons(srcports[thread->hstgrp[hst_i].health.portinx]);
-				tcp_checksum(ethframe->ip, (uint16_t *)ethframe->tcp);
+
+				if (ethframe->proto_opt == SOCK_STREAM)
+					pack_tcp(thread, &ethframe);
+				else if (ethframe->proto_opt == SOCK_DGRAM)
+					pack_udp(thread, &ethframe);
+
 				memcpy(data, ethframe->buffer, ethframe->size);
 				frame->tp_next_offset = 0;
 				frame->tp_len = ethframe->size;
@@ -238,7 +256,7 @@ void				send_task(t_thread *thread)
 	int				totpkt = 0;
 
 	int errn = errno;
-	btx = sendto(thread->sock, NULL, 0, MSG_DONTWAIT, NULL, 0);
+	btx = sendto(thread->sock, NULL, 0, 0, NULL, 0);
 	printf("btx %lu\n", btx);
 	if (btx < 0)
 		hermes_error(EXIT_FAILURE, "send() %s", strerror(errno));
@@ -274,12 +292,18 @@ void				init_iphdr(t_thread *thread, t_frame *frame)
 	frame->ip->saddr = thread->pool->iface.if_ip.s_addr; /* already in nbo */
 }
 
+void				init_udphdr(t_thread *thread, struct udphdr *udp)
+{
+	(void)thread;
+	(void)udp;
+}
+
 void				init_tcphdr(t_thread *thread, struct tcphdr *tcp)
 {
 	(void)thread;
 	tcp->seq = htonl(1);
 	tcp->ack = 0;
-	tcp->doff = 5;
+	tcp->doff = 5; // TODO : make this dynamic
 	tcp->window = htons(1024);
 	tcp->syn = true;
 }
@@ -291,7 +315,7 @@ void				init_tcpopt_mss(t_tcpopt *opt)
 	opt->val = htons(1460);
 }
 
-void				init_ethframe(t_thread *thread, t_frame *frame)
+void				init_ethframe(t_thread *thread, t_frame *frame, int proto)
 {
 
 	/* below line will change when more scan types are implemented */
@@ -301,11 +325,20 @@ void				init_ethframe(t_thread *thread, t_frame *frame)
 	frame->buffer = memalloc(sizeof(uint8_t) * frame->size);
 	frame->eth = (struct ethhdr *)frame->buffer;
 	frame->ip = (struct iphdr *)((uint8_t *)frame->eth + sizeof(struct ethhdr));
-	frame->tcp = (struct tcphdr *)((uint8_t *)frame->ip + sizeof(struct iphdr));
+	if (proto == SOCK_STREAM)
+	{
+		printf("proto is TCP\n");
+		frame->tcp = (struct tcphdr *)((uint8_t *)frame->ip + sizeof(struct iphdr));
+		init_tcphdr(thread, frame->tcp);
+	}
+	else if (proto == SOCK_DGRAM)
+	{
+		frame->udp = (struct udphdr*)((uint8_t*)frame->ip + sizeof(struct iphdr));
+		init_udphdr(thread, frame->udp);
+	}
 //	frame->tcpopt = (t_tcpopt *)((uint8_t *)frame->tcp + sizeof(struct tcphdr));
 	init_ethhdr(thread, frame->eth);
 	init_iphdr(thread, frame);
-	init_tcphdr(thread, frame->tcp);
 //	init_tcpopt_mss(frame->tcpopt);
 }
 
@@ -363,8 +396,10 @@ void					syn_scan(t_thread *thread)
 	int					ret;
 	t_frame				frame;
 
+	if (!thread)
+		return ;
 	memset(&frame, 0, sizeof(t_frame));
-	init_ethframe(thread, &frame);
+	init_ethframe(thread, &frame, SOCK_STREAM);
 	thread->scancnt = thread->hstgrpsz;
 	while (thread->scancnt > 0)
 	{
@@ -393,9 +428,13 @@ void					syn_scan(t_thread *thread)
 	frame.buffer = NULL;
 }
 
-void				run_scan(t_thread *thread, t_targetset *set)
+void				run_scan(t_thread *thread, t_targetset *set, void (*scan)(t_thread *thread))
 {
 	targetset_to_hstgrp(set, thread, thread->pool->env);
 	make_rx_filter(thread, set->total);
-	syn_scan(thread);
+	printf("scanning\n");
+	if (!scan || !*scan)
+		hermes_error(FAILURE, "null scan function");
+	else
+		scan(thread);
 }

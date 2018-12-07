@@ -9,6 +9,7 @@ t_node			*new_node(void **data)
 		hermes_error(errno, "malloc() %s", strerror(errno));
 		return (NULL);
 	}
+	printf("data %p\n", *data);
 	node->data = *data;
 	return (node);
 }

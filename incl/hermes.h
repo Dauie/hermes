@@ -20,6 +20,7 @@
 # include <linux/if_packet.h> /* TODO not portable */
 # include <linux/if_arp.h>
 /* netlink */
+# include <linux/udp.h>
 # include <linux/tcp.h>
 # include <sys/ioctl.h>
 # include <sys/mman.h>
@@ -79,7 +80,7 @@ typedef struct			s_portset
 typedef struct			s_optbitf
 {
 	uint64_t			no_rand_ports: 1;
-	uint64_t			skip_hst_discov: 1;			/* Skip host discovery */
+	uint64_t			skip_hst_discov: 1; 		/* Skip host discovery */
 	uint64_t			do_list_scan: 1;			/* Do not send any probes, just do reverse dns resolution on target list */
 	uint64_t			do_ping_scan: 1;			/* Do not send any probes, just do ping scan, and traceroute or OS Detection if specified, then quit */
 	uint64_t			do_echo_discov: 1;			/* Send ICMP ECHO_REQUEST probe during host discovery */
@@ -247,6 +248,10 @@ typedef struct          s_sem
 	pthread_mutex_t     stop;
 }                       t_sem;
 
+typedef struct          s_v_func {
+	void                (*func)();
+}                       t_v_func;
+
 typedef struct 			s_thread_pool
 {
 	t_iface				iface;
@@ -258,9 +263,11 @@ typedef struct 			s_thread_pool
 	t_resultset			*results;
 	t_targetset 		*work;
 	t_env				*env;
+	t_node              *scanlist;
 	pthread_mutex_t		amt_alive_mtx;
 	pthread_mutex_t		amt_working_mtx;
 	pthread_mutex_t		results_mtx;
+	pthread_mutex_t     scnlst_mtx;
 	t_sem               *tsem;
 	pthread_mutex_t		work_mtx;
 }						t_thread_pool;
@@ -304,13 +311,15 @@ typedef struct			s_eframe
 {
 	struct ethhdr		*eth;
 	struct iphdr		*ip;
-	struct tcphdr		*tcp;
+	union {
+		struct tcphdr		*tcp;
+		struct udphdr       *udp;
+	};
+	int                 proto_opt;
 	t_tcpopt			*tcpopt;
 	uint8_t				*buffer;
 	uint16_t			size;
 }						t_frame;
-
-
 
 t_mgr					*new_mgr(void);
 t_env					*new_job(void);
@@ -383,12 +392,12 @@ void					print_targetset(t_targetset *set);
 int						prepare_packetmmap_tx_ring(t_thread *thread);
 int 					targetset_to_hstgrp(t_targetset *set, t_thread *thread,
 						t_env *env);
-void					run_scan(t_thread *thread, t_targetset *set);
+void					run_scan(t_thread *thread, t_targetset *set, void (*scan)(t_thread *thread));
 int						make_rx_filter(t_thread *thread, size_t total);
 uint16_t				*make_tcp_dstports(size_t size);
 int						get_iface_info(t_iface *info);
 
-
+void					syn_scan(t_thread *thread);
 
 binn					*binnify_resultset(t_resultset *set);
 
