@@ -438,17 +438,21 @@ void					syn_scan(t_thread *thread)
 		{
 			usleep((useconds_t) ms * 1000);
 		}
-
+		thread->scancnt--;
 	}
 	free(frame.buffer);
 	frame.buffer = NULL;
 }
 
-void				run_scan(t_thread *thread, t_targetset *set, void (*scan)(t_thread *thread))
+void				run_scan(t_thread *thread, t_targetset *set, t_node *list)
 {
 	targetset_to_hstgrp(set, thread, thread->pool->env);
 	make_rx_filter(thread, set->total);
 	printf("scanning\n");
+	for (t_node* head = list; head; head = head->right)
+	{
+
+	}
 	if (!scan || !*scan)
 		hermes_error(FAILURE, "null scan function");
 	else

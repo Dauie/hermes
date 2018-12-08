@@ -234,16 +234,14 @@ void					*thread_loop(void *thrd)
 				thread->working = true;
 				pthread_mutex_unlock(&thread->pool->amt_working_mtx);
 				/* TODO have randomized port option working.*/
-				pthread_mutex_lock(&thread->pool->scnlst_mtx);
 				for (t_node *head = thread->pool->scanlist;
 					head; head = head->right)
 				{
 					printf("loopin\n");
 //					printf("func %p\n", head->data);
 //					printf("func %p\n", syn_scan);
-					run_scan(thread, &work, ((void*)head->data));
+					run_scan(thread, &work, thread->pool->scanlist);
 				}
-				pthread_mutex_unlock(&thread->pool->scnlst_mtx);
 				pthread_mutex_lock(&thread->pool->amt_working_mtx);
 				thread->pool->amt_working -= 1;
 				thread->working = false;
@@ -281,8 +279,8 @@ int					prepare_interface(t_thread_pool *pool)
 
 void                    opts_to_scan(t_thread_pool *pool)
 {
-	t_optbitf opts;
-	t_v_func *s;
+	t_v_func    *s;
+	t_optbitf   opts;
 
 	s = (t_v_func*)memalloc(sizeof(t_v_func));
 	opts = pool->env->opts.bitops;
@@ -331,6 +329,8 @@ void                    opts_to_scan(t_thread_pool *pool)
 //		;
 //	if (opts.do_list_scan)
 //		;
+	free(s);
+	s = NULL;
 }
 
 t_thread_pool			*init_threadpool(t_env *env, t_targetset *workpool,
