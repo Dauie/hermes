@@ -1,6 +1,6 @@
 #include "../../incl/hermes.h"
 
-/* TODO look at strtol() for str->int conv */
+/* TODO look at strtol() for str=>int conv */
 int				parse_port(uint16_t *port, char *input)
 {
 	int			ret;
@@ -23,6 +23,7 @@ static int		add_port(t_portset *set, char *input)
 	if (!(data = new_port()))
 		return (hermes_error(FAILURE, "new_port()"));
 	data->port = (uint16_t)port;
+//	printf("%d\n", data->port);
 	if (add_node_bst(&set->ports, (void **)&data, port_cmp) == true)
 	{
 		set->total++;

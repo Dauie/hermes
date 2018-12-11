@@ -234,17 +234,14 @@ void					*thread_loop(void *thrd)
 				thread->working = true;
 				pthread_mutex_unlock(&thread->pool->amt_working_mtx);
 				/* TODO have randomized port option working.*/
-				for (t_node *head = thread->pool->scanlist;
-					head; head = head->right)
-				{
-					printf("loopin\n");
 //					printf("func %p\n", head->data);
 //					printf("func %p\n", syn_scan);
-					run_scan(thread, &work, thread->pool->scanlist);
-				}
+				run_scan(thread, &work);
 				pthread_mutex_lock(&thread->pool->amt_working_mtx);
+//				printf("amt working => %d\n", thread->pool->amt_working);
 				thread->pool->amt_working -= 1;
 				thread->working = false;
+//				printf("amt working => %d\n", thread->pool->amt_working);
 				pthread_mutex_unlock(&thread->pool->amt_working_mtx);
 			}
 		}
@@ -277,13 +274,13 @@ int					prepare_interface(t_thread_pool *pool)
 	return (SUCCESS);
 }
 
-void                    opts_to_scan(t_thread_pool *pool)
+void                    opts_to_scan(t_thread *thrd)
 {
 	t_v_func    *s;
 	t_optbitf   opts;
 
 	s = (t_v_func*)memalloc(sizeof(t_v_func));
-	opts = pool->env->opts.bitops;
+	opts = thrd->pool->env->opts.bitops;
 	/*
 	 * add host discovery first
 	 * to determing if host is
@@ -292,7 +289,10 @@ void                    opts_to_scan(t_thread_pool *pool)
 	if (!opts.skip_hst_discov)
 	{
 		if (opts.do_syn_discov)
-		{;}
+		{
+			s->intfunc = syn_discov;
+			list_add_head(&thrd->hstdcvry, (void**)&s->intfunc);
+		}
 		if (opts.do_tstamp_discov)
 		{;}
 		if (opts.do_ack_discov)
@@ -309,13 +309,13 @@ void                    opts_to_scan(t_thread_pool *pool)
 	 */
 	if (opts.do_syn_scan)
 	{
-		s->func = syn_scan;
-		list_add_head(&pool->scanlist, (void**)&s->func);
+		s->voidfunc = syn_scan;
+		list_add_head(&thrd->scnlst, (void**)&s->voidfunc);
 	}
 	if (opts.do_xmas_scan)
 	{
-		s->func = xmas_scan;
-		list_add_head(&pool->scanlist, (void**)&s->func);
+		s->voidfunc = xmas_scan;
+		list_add_head(&thrd->scnlst, (void**)&s->voidfunc);
 	}
 //	if (opts.do_udp_scan)
 //		;
@@ -329,8 +329,8 @@ void                    opts_to_scan(t_thread_pool *pool)
 //		;
 //	if (opts.do_list_scan)
 //		;
-	free(s);
-	s = NULL;
+//	free(s);
+//	s = NULL;
 }
 
 t_thread_pool			*init_threadpool(t_env *env, t_targetset *workpool,
@@ -378,10 +378,8 @@ t_thread_pool			*init_threadpool(t_env *env, t_targetset *workpool,
 			pool->amt_alive -= 1;
 			pthread_mutex_unlock(&pool->amt_alive_mtx);
 		}
+		opts_to_scan(&pool->threads[i]);
+		printf("opt out\n");
 	}
-//	if (!(pool->scanlist = (t_node*)memalloc(sizeof(t_node))))
-//		hermes_error(FAILURE, "malloc()");
-	opts_to_scan(pool);
-	printf("opt out\n");
 	return (pool);
 }

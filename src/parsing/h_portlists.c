@@ -24,8 +24,13 @@ int			h_scan_portset(t_mgr *mgr, char *input)
 
 int			h_syn_portset(t_mgr *mgr, char *input)
 {
-	if (!input)
-		return (hermes_error(EXIT_FAILURE, "no syn port_stats specified"));
+//	if (!input)
+//	{
+//		if (!mgr->env.syn_ports)
+//			mgr->env.syn_ports = new_portset();
+//		if (handle_port(mgr->env.syn_ports, "80") == FAILURE)
+//			return (hermes_error(EXIT_FAILURE, "issue parsing syn port_stats"));
+//	}
 	if (handle_port(mgr->env.syn_ports, input) == FAILURE)
 		return (hermes_error(EXIT_FAILURE, "issue parsing syn port_stats"));
 	mgr->env.opts.bitops.do_syn_discov = true;

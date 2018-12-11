@@ -344,7 +344,7 @@ void				init_ethframe(t_thread *thread, t_frame *frame, int proto)
 	}
 	else if (proto == SOCK_DGRAM)
 	{
-		frame->udp = (struct udphdr*)((uint8_t*)frame->ip + sizeof(struct iphdr));
+		frame->udp = (struct udphdr *)((uint8_t*)frame->ip + sizeof(struct iphdr));
 		init_udphdr(thread, frame->udp);
 	}
 //	frame->tcpopt = (t_tcpopt *)((uint8_t *)frame->tcp + sizeof(struct tcphdr));
@@ -386,7 +386,6 @@ void	handle_packet(u_char *user, const struct pcap_pkthdr *hdr, const u_char *da
 			}
 		}
 	}
-
 	hex_print((uint8_t *)data, hdr->caplen);
 }
 
@@ -402,6 +401,41 @@ long					timediff_ms(struct timeval *then, struct timeval *now)
 void                    xmas_scan(t_thread *thread)
 {
 	(void)thread;
+}
+
+int                     syn_discov(t_thread *thread)
+{
+	struct timeval		sent = {0};
+	struct timeval		now = {0};
+	long ms;
+	int					ret;
+	t_frame				frame;
+
+	if (!thread)
+		return (FAILURE);
+	memset(&frame, 0, sizeof(t_frame));
+	init_ethframe(thread, &frame, SOCK_STREAM);
+	gettimeofday(&now, NULL);
+	if ((ms = timediff_ms(&now, &sent)) >= DEF_INIT_RTT_TIMEOUT)
+	{
+		fill_tx_ring(thread, &frame);
+		send_task(thread);
+		gettimeofday(&sent, NULL);
+		thread->rxfilter.fd.events = POLL_IN;
+		if ((ret = poll(&thread->rxfilter.fd, 1, DEF_INIT_RTT_TIMEOUT)) < 0)
+			hermes_error(FAILURE, "poll() %s", strerror(errno));
+		if (ret > 0)
+			pcap_dispatch(thread->rxfilter.handle,
+			              thread->hstgrpsz, handle_packet, (u_char*)thread);
+		else
+			printf("didn't get anything from discovery\n");
+	}
+	else
+		usleep((useconds_t) ms * 1000);
+	free(frame.buffer);
+	frame.buffer = NULL;
+	printf("gotted ret %d\n", ret);
+	return (ret);
 }
 
 void					syn_scan(t_thread *thread)
@@ -432,29 +466,57 @@ void					syn_scan(t_thread *thread)
 				pcap_dispatch(thread->rxfilter.handle,
 							  thread->hstgrpsz, handle_packet, (u_char*)thread);
 			else
-				printf("didn't get anything\n");
+				printf("didn't get anything from scanning\n");
 		}
-		else
-		{
-			usleep((useconds_t) ms * 1000);
-		}
+//		else
+//		{
+//			usleep((useconds_t) ms * 1000);
+//		}
 		thread->scancnt--;
 	}
 	free(frame.buffer);
 	frame.buffer = NULL;
 }
 
-void				run_scan(t_thread *thread, t_targetset *set, t_node *list)
+void				run_scan(t_thread *thread, t_targetset *set)
 {
+	t_node  *head;
+	void    (*scan)(t_thread*);
+	int     (*disc)(t_thread*);
+	bool    hst_active;
+	int     stat;
+
 	targetset_to_hstgrp(set, thread, thread->pool->env);
 	make_rx_filter(thread, set->total);
-	printf("scanning\n");
-	for (t_node* head = list; head; head = head->right)
-	{
 
+	printf("scanning\n");
+
+	// TODO : if none of the scans return, set to false
+	hst_active = true;
+//	for (int i = 0; i < thread->pool->env->ports.port_cnt; i++) {printf("%d\n", thread->pool->env->dstports[i]);}
+	for (head = thread->hstdcvry; head; head = head->right)
+	{
+		disc = head->data;
+		stat = disc(thread);
+		// TODO : correct codes
+		if (stat != STAT_FILTERED &&
+			stat != STAT_CLOSEDFILTERED &&
+			stat != STAT_CLOSED)
+			hst_active = true;
+		hst_active = false;
+		printf("loopin 1\n");
 	}
-	if (!scan || !*scan)
-		hermes_error(FAILURE, "null scan function");
-	else
-		scan(thread);
+	//TODO : undo
+	hst_active = true;
+	if (hst_active)
+		for (head = thread->scnlst; head; head = head->right)
+		{
+			printf("loopin 2\n");
+			scan = head->data;
+			if (!scan || !*scan)
+				hermes_error(FAILURE, "null scan function");
+			else
+				scan(thread);
+		}
+	return ;
 }

@@ -230,6 +230,8 @@ typedef struct 			s_thread
 	struct s_thread_pool*pool;
 	t_host				*hstgrp;
 	t_hashtbl			*lookup;
+	t_node              *scnlst;
+	t_node              *hstdcvry;
 }						t_thread;
 
 typedef struct			s_iface
@@ -249,7 +251,10 @@ typedef struct          s_sem
 }                       t_sem;
 
 typedef struct          s_v_func {
-	void                (*func)();
+	union {
+		void            (*voidfunc)(t_thread*);
+		int             (*intfunc)(t_thread*);
+	};
 }                       t_v_func;
 
 typedef struct 			s_thread_pool
@@ -263,11 +268,9 @@ typedef struct 			s_thread_pool
 	t_resultset			*results;
 	t_targetset 		*work;
 	t_env				*env;
-	t_node              *scanlist;
 	pthread_mutex_t		amt_alive_mtx;
 	pthread_mutex_t		amt_working_mtx;
 	pthread_mutex_t		results_mtx;
-	pthread_mutex_t     scnlst_mtx;
 	t_sem               *tsem;
 	pthread_mutex_t		work_mtx;
 }						t_thread_pool;
@@ -392,12 +395,17 @@ void					print_targetset(t_targetset *set);
 int						prepare_packetmmap_tx_ring(t_thread *thread);
 int 					targetset_to_hstgrp(t_targetset *set, t_thread *thread,
 						t_env *env);
-void					run_scan(t_thread *thread, t_targetset *set, void (*scan)(t_thread *thread));
+void				    run_scan(t_thread *thread, t_targetset *set);
 int						make_rx_filter(t_thread *thread, size_t total);
 uint16_t				*make_tcp_dstports(size_t size);
 int						get_iface_info(t_iface *info);
 
 binn					*binnify_resultset(t_resultset *set);
+
+/*
+** Discovery Routines
+*/
+int                     syn_discov(t_thread *thread);
 
 /*
 ** Scan Routines

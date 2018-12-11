@@ -305,22 +305,22 @@ void				check_results(t_mgr *mgr)
 			mgr->results.result_cnt--;
 		}
 	}
-	if (mgr->tpool)
-	{
-		pthread_mutex_lock(&mgr->tpool->results_mtx);
-		while (mgr->tpool->results->results)
-		{
-			list_add_head(&mgr->results.results,
-			              &mgr->tpool->results->results->data);
-			list_rm_node(&mgr->tpool->results->results,
-			             &mgr->tpool->results->results, false);
-			mgr->tpool->results->result_cnt -= 1;
-			mgr->tpool->results->byte_size -= sizeof(mgr->tpool->results->byte_size);
-			mgr->results.result_cnt += 1;
-			mgr->results.byte_size += sizeof(mgr->results.results->data);
-		}
-		pthread_mutex_unlock(&mgr->tpool->results_mtx);
-	}
+//	if (mgr->tpool)
+//	{
+//		pthread_mutex_lock(&mgr->tpool->results_mtx);
+//		while (mgr->tpool->results->results)
+//		{
+//			list_add_head(&mgr->results.results,
+//			              &mgr->tpool->results->results->data);
+//			list_rm_node(&mgr->tpool->results->results,
+//			             &mgr->tpool->results->results, false);
+//			mgr->tpool->results->result_cnt -= 1;
+//			mgr->tpool->results->byte_size -= sizeof(mgr->tpool->results->byte_size);
+//			mgr->results.result_cnt += 1;
+//			mgr->results.byte_size += sizeof(mgr->results.results->data);
+//		}
+//		pthread_mutex_unlock(&mgr->tpool->results_mtx);
+//	}
 }
 
 void				send_workers_work(t_mgr *mgr)
